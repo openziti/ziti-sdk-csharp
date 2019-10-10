@@ -21,15 +21,15 @@
   <ItemGroup>
      <!--Condition="'$(IsPublicBuild)' == 'True'"-->
      
-     <Content Include="./../../build/x86/windows/dotnet_dll/Release/ziti_dll.dll" Link="runtimes/win-x86/native/ziti_dll.dll">
+     <Content Include="./../ziti-sdk-c/x86/ziti_dll.dll" Link="runtimes/win-x86/native/ziti_dll.dll">
        <PackagePath>runtimes/win-x86/native</PackagePath>
      </Content>
-     <Content Include="./../../build/x64/windows/dotnet_dll/Release/ziti_dll.dll" Link="runtimes/win-x64/native/ziti_dll.dll">
+     <Content Include="./../ziti-sdk-c/x64/ziti_dll.dll" Link="runtimes/win-x64/native/ziti_dll.dll">
          <PackagePath>runtimes/win-x64/native</PackagePath>
      </Content>
-      <Content Include="./../../build/x64/windows/dotnet_dll/Release/ziti_dll.dll" Link="runtimes/win/native/ziti_dll.dll">
-          <PackagePath>runtimes/win/native</PackagePath>
-      </Content>
+     <Content Include="./../ziti-sdk-c/x64/ziti_dll.dll" Link="runtimes/win/native/ziti_dll.dll">
+         <PackagePath>runtimes/win/native</PackagePath>
+     </Content>
   </ItemGroup>
 
   <ItemGroup>
