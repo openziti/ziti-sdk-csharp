@@ -10,7 +10,7 @@ namespace Ziti.Core.Example
     {
         static async Task Main(string[] args)
         {
-            byte[] wttrRequestAsBytes = Encoding.UTF8.GetBytes("GET /Rochester HTTP/1.0\r\n"
+            byte[] wttrRequestAsBytes = Encoding.UTF8.GetBytes("GET / HTTP/1.0\r\n"
                                                                + "Accept: *-/*\r\n"
                                                                + "Connection: close\r\n"
                                                                + "User-Agent: curl/7.59.0\r\n"

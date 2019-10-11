@@ -52,12 +52,12 @@ You should see output like:
 
 ## Using the C# SDK
 
-With the C# SDK built and with a NuGet local repository in place you can now open the example solution: Ziti.Core.Example.sln
+You can choose to use the latest version of the C# SDK which NetFoundry has published on nuget.org or you can 
+work with the C# SDK you built and deployed to your own NuGet local repository. Open the example 
+solution: Ziti.Core.Example.sln. In there is one project - Ziti.Core.Console. 
 
-In there is one project - Ziti.Core.Console. This is a sample application that uses the website wttr.in to return the weather forcast.
-
-Depending on the version you pushed into the local NuGet repository you may need to refresh the NuGet dependencies to pick up your build. 
-
-After getting the project to build you'll want to run it. If you have a ziti instance in place this will be easy. If you are not
-familiar with Ziti and need to create this service. Check out the docs over at https://nf-dev.github.io/ziti-doc/samples/index.html?tabs=csharp
+This is a sample application that allows you to make an http request to a website (http://wttr.in) to return 
+a weather forcast.  After getting the project to build you'll want to run it. If you have access to a Ziti network
+this will be easy. If you are not familiar with Ziti and need to create this service. Check out the docs 
+over at https://nf-dev.github.io/ziti-doc/samples/index.html?tabs=csharp
 
