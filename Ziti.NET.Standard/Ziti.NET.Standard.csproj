@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <!--TargetFramework>netstandard2.0</TargetFramework-->
+      <TargetFrameworks>netstandard2.0;net472;netcoreapp2.0</TargetFrameworks>
+      <!--TargetFrameworks>net461;netstandard2.0</TargetFrameworks-->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.0.20</Version>
+    <Authors>NetFoundry</Authors>
+    <Company>NetFoundry</Company>
+    <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
+    <Copyright>© 2019 NetFoundry, Inc. All rights reserved.</Copyright>
+    <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://nf-dev.github.io/ziti-doc/ziti</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nf-dev/ziti-sdk-csharp</RepositoryUrl>
+    <PackageIconUrl>https://nf-dev.github.io/ziti-doc/images/nflightbglogo_40.png</PackageIconUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+     <!--Condition="'$(IsPublicBuild)' == 'True'"-->
+     
+     <Content Include="./../ziti-sdk-c/x86/ziti_dll.dll" Link="runtimes/win-x86/native/ziti_dll.dll">
+       <PackagePath>runtimes/win-x86/native</PackagePath>
+     </Content>
+     <Content Include="./../ziti-sdk-c/x64/ziti_dll.dll" Link="runtimes/win-x64/native/ziti_dll.dll">
+         <PackagePath>runtimes/win-x64/native</PackagePath>
+     </Content>
+     <Content Include="./../ziti-sdk-c/x64/ziti_dll.dll" Link="runtimes/win/native/ziti_dll.dll">
+         <PackagePath>runtimes/win/native</PackagePath>
+     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="2019_NF TCL EULA.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\NetFoundry\" />
+  </ItemGroup>
+    
+</Project>
