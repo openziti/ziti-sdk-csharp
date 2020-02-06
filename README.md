@@ -16,8 +16,8 @@ This project expects both an x86 and x64 library to be built and to exist at the
 If you follow the build instructions for the [C SDK](https://github.com/nf-dev/ziti-sdk-c) you can then create 
 links to the built artifacts using `mklink`.
 
-* mklink /j x86 c:\git\github\ziti-sdk-c\build\x86\windows\dotnet_dll\Release
-* mklink /j x64 c:\git\github\ziti-sdk-c\build\x64\windows\dotnet_dll\Release
+* mklink /j ziti-sdk-c\x86 c:\git\github\ziti-sdk-c\build\x86\windows\dotnet_dll\Release
+* mklink /j ziti-sdk-c\x64 c:\git\github\ziti-sdk-c\build\x64\windows\dotnet_dll\Release
 
 ## Build the Ziti.NuGet.sln Project
 
@@ -41,9 +41,9 @@ Here's how you would make your own local NuGet repository on your developer mach
 * open a command prompt
 * set some environment variables:
 ** SET NUGET_PATH=C:\git\github\ziti-sdk-csharp\NuGet
-** SET VERSION=0.0.19  REM Or whatever the version is built - see the version of the Ziti.NET.Standard project
+** SET VERSION=0.5.16  REM Or whatever the version is built - see the version of the Ziti.NET.Standard project
 * Make a local nuget repo: `mkdir %NUGET_PATH%`
-* Push the package into the local repo: `nuget push -source %NUGET_PATH% Ziti.NET.Standard\bin\Release\Ziti.NET.Standard.0.0.19.nupkg`
+* Push the package into the local repo: `nuget push -source %NUGET_PATH% Ziti.NET.Standard\bin\Release\Ziti.NET.Standard.%VERSION%.nupkg`
 
 You should see output like:
 
