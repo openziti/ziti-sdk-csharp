@@ -60,4 +60,3 @@ This is a sample application that allows you to make an http request to a websit
 a weather forcast.  After getting the project to build you'll want to run it. If you have access to a Ziti network
 this will be easy. If you are not familiar with Ziti and need to create this service. Check out the docs 
 over at https://nf-dev.github.io/ziti-doc/samples/index.html?tabs=csharp
-
