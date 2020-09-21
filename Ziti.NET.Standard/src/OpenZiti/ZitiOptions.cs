@@ -26,7 +26,7 @@ namespace OpenZiti
     public class ZitiOptions
     {
         /// <summary>
-        /// A file on the local filesystem that was created from the <see cref="Enrollment.Enroll(Enrollment.Options, string, object)"/> 
+        /// A file on the local filesystem that was created from the <see cref="ZitiEnrollment.Enroll(ZitiEnrollment.Options, string, object)"/> 
         /// process.
         /// 
         /// When using ConfigFile do not supply <see cref="ControllerUrl"/> or an error will occur.
@@ -102,7 +102,7 @@ namespace OpenZiti
 
         private int after_ziti_init_native(IntPtr ziti_context, int status, GCHandle init_ctx)
         {
-            Util.CheckStatus(status);
+            ZitiUtil.CheckStatus(status);
             this.nativeCtx = ziti_context;
             context = new ZitiContext(ziti_context);
             this.InitComplete(context, (ZitiStatus)status, init_ctx.Target);
@@ -114,12 +114,12 @@ namespace OpenZiti
         {
             if (status < 0)
             {
-                Util.CheckStatus(status);
+                ZitiUtil.CheckStatus(status);
             }
             else
             {
                 ZitiService svc = new ZitiService(context, ziti_service);
-                this.ServiceChange(context, svc, (ZitiStatus)status, status, Util.GetTarget(on_service_context));
+                this.ServiceChange(context, svc, (ZitiStatus)status, status, ZitiUtil.GetTarget(on_service_context));
                 on_service_context.SafeFreeGCHandle();
             }
         }

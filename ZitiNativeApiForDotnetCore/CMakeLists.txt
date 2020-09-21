@@ -57,6 +57,3 @@ execute_process(
     COMMAND_ECHO STDOUT
     OUTPUT_FILE ${PROJECT_SOURCE_DIR}/../DotnetCoreConsole1/OpenZiti/ZitiStatus.cs
 )
-
-#C:\git\github\openziti\ziti-sdk-csharp\DotnetCoreConsole1\DotnetCoreConsole1.csproj
-# cl.exe /C /EP /I build\x64\_deps\ziti-sdk-c-src\includes library\sharp-errors.c > ../DotnetCoreConsole1/OpenZiti/ZitiStatus.cs

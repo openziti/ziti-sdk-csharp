@@ -21,7 +21,7 @@ using OpenZiti.Native;
 
 namespace OpenZiti
 {
-    public class Enrollment
+    public class ZitiEnrollment
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AfterEnrollment(EnrollmentResult result);
@@ -50,7 +50,7 @@ namespace OpenZiti
 
         static public void native_on_ziti_enroll(IntPtr ziti_config, int status, string errorMessage, GCHandle context)
         {
-            Util.CheckStatus(status);
+            ZitiUtil.CheckStatus(status);
 
             int jsonMaxSize = 2 << 16; //64k
             byte[] bytes = new byte[jsonMaxSize];

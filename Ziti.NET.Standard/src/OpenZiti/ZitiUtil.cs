@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 
 namespace OpenZiti
 {
-    public static class Util
+    public static class ZitiUtil
     {
         public readonly static GCHandle NO_CONTEXT = GCHandle.Alloc(new object());
 
@@ -43,7 +43,7 @@ namespace OpenZiti
         }
         public static void Check(this ZitiStatus status)
         {
-            Util.CheckStatus(status);
+            ZitiUtil.CheckStatus(status);
         }
 
         public static object GetTarget(GCHandle handle)

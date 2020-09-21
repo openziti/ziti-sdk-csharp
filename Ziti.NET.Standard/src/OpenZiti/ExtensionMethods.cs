@@ -45,7 +45,7 @@ namespace OpenZiti
         /// <param name="handle"></param>
         public static void SafeFreeGCHandle(this GCHandle handle)
         {
-            if (Util.NO_CONTEXT == handle)
+            if (ZitiUtil.NO_CONTEXT == handle)
             {
                 return; //never call free on the NO_CONTEXT handle...
             }

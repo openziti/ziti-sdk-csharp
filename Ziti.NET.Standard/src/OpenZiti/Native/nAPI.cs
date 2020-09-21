@@ -50,77 +50,89 @@ namespace OpenZiti.Native
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_default_loop")]
         internal static extern IntPtr z4d_default_loop();
 
-        //defined in C: extern const char *ziti_get_controller(ziti_context ztx);
-        //defined in C: extern const ziti_version *ziti_get_version();
         //defined in C: extern int ziti_service_available(ziti_context ztx, const char *service, ziti_service_cb cb, void *ctx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_service_available")]
+        internal static extern int ziti_service_available(IntPtr native_context, string service_name, ziti_service_cb cb, GCHandle context);
+
         //defined in C: extern int ziti_set_timeout(ziti_context ztx, int timeout);
-        //defined in C: extern int ziti_shutdown(ziti_context ztx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_set_timeout")]
+        internal static extern int ziti_set_timeout(IntPtr native_context, int timeout);
+
         //defined in C: extern void ziti_dump(ziti_context ztx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_dump")]
+        internal static extern int ziti_dump(IntPtr native_context);
+
         //defined in C: extern void ziti_get_transfer_rates(ziti_context ztx, double *up, double *down);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_transfer_rates")]
+        internal static extern void ziti_get_transfer_rates(IntPtr native_context, ref double up, ref double down);
 
         //defined in C: extern int ziti_init(string config, uv_loop_t *loop, ziti_init_cb init_cb, void* init_ctx);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init")]
         internal static extern int ziti_init(string config, IntPtr loop, ziti_init_cb init_cb, GCHandle init_ctx);
 
         //defined in C: extern int ziti_conn_init(ziti_context ztx, ziti_connection* conn, void* data);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "ziti_conn_init")]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_init")]
         internal static extern int ziti_conn_init(IntPtr ziti_context, out IntPtr ziti_connection, GCHandle connection_context);
 
         //defined in C: extern int ziti_dial(ziti_connection conn, const char *service, ziti_conn_cb cb, ziti_data_cb data_cb);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "ziti_dial")]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_dial")]
         internal static extern int ziti_dial(IntPtr ziti_connection, string serviceName, ziti_conn_cb conn_cb, ziti_data_cb data_cb);
 
         //defined in C: extern int ziti_write(ziti_connection conn, uint8_t *data, size_t length, ziti_write_cb write_cb, void *write_ctx);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "ziti_write")]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_write")]
         internal static extern int ziti_write(IntPtr conn, byte[] data, int length, ziti_write_cb afterData, GCHandle dataContext);
 
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "ziti_shutdown")]
+        //defined in C: extern int ziti_shutdown(ziti_context ztx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_shutdown")]
         internal static extern int ziti_shutdown(IntPtr ziti_context);
 
         //defined in C: extern int ziti_enroll(ziti_enroll_opts *opts, uv_loop_t *loop, ziti_enroll_cb enroll_cb, void *enroll_ctx);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "ziti_enroll")]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_enroll")]
         internal static extern int ziti_enroll(ref ziti_enroll_options opts, IntPtr loop, ziti_enroll_cb enroll_cb, GCHandle enroll_context);
 
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "json_from_ziti_config")]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "json_from_ziti_config")]
         internal static extern int json_from_ziti_config(IntPtr ziti_config, byte[] rawjson, int maxlen, out int len);
 
         //defined in C: extern int ziti_listen(ziti_connection serv_conn, const char *service, ziti_listen_cb lcb, ziti_client_cb cb);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_listen")]
         internal static extern int ziti_listen(IntPtr serv_conn, string service, ziti_listen_cb lcb, ziti_client_cb cb);
 
         //defined in C: extern void *ziti_conn_data(ziti_connection conn);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_data")]
         internal static extern IntPtr ziti_conn_data(IntPtr conn);
 
         //defined in C: extern int ziti_accept(ziti_connection clt, ziti_conn_cb cb, ziti_data_cb data_cb);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_accept")]
         internal static extern int ziti_accept(IntPtr conn, ziti_conn_cb cb, ziti_data_cb data_cb);
 
         //defined in C: extern int ziti_init_opts(ziti_options *options, uv_loop_t *loop, void *init_ctx);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init_opts")]
         internal static extern int ziti_init_opts(IntPtr options, IntPtr loop, GCHandle init_ctx);
 
-        //defined in C: extern const ziti_version *ziti_get_controller_version(ziti_context ztx);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
-        internal static extern IntPtr ziti_get_controller_version(IntPtr ztx);
+        //defined in C: extern const char *ziti_get_controller(ziti_context ztx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_controller_version")]
+        internal static extern string ziti_get_controller_version(IntPtr ztx);
 
         //defined in C: extern const ziti_identity *ziti_get_identity(ziti_context ztx);
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_identity")]
         internal static extern IntPtr ziti_get_identity(IntPtr ztx);
 
+        //defined in C: extern const ziti_version *ziti_get_version();
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_version")]
+        internal static extern IntPtr ziti_get_version();
 
         //defined in z4d helper C dll for C#
         //            : extern int z4d_close_connection(ziti_connection con);
         // 
         //defined in C: extern int ziti_close(ziti_connection *conn);
         // CANNOT find a way to take the address of the IntPtr
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_ziti_close")]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_ziti_close")]
         internal static extern int z4d_ziti_close(IntPtr conn);
 
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_uv_run")]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_uv_run")]
         internal static extern int z4d_uv_run(IntPtr loop);
 
-        [System.Runtime.InteropServices.DllImport(API.Z4D_DLL_PATH)]
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "json_from_ziti_config")]
         internal static extern IntPtr z4d_all_config_types();
     }
     internal struct ziti_version
