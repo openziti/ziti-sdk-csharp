@@ -7,8 +7,7 @@ on:
     branches: [ $default-branch ]
 
 jobs:
-  build:
-
+  build_csdk:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -16,17 +15,21 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
-
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ziti4dotnet-${{ os }}
       - name: make build dir
         run: cmake -E make_directory ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build
       - name: configure cmake
         run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build
       - name: build
         run: cmake --build ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build
-      - name: test
-        working-directory: ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build
-        run: ctest -VV --no-compress-output
+
+  build_dotnet:
+    runs-on: windows-latest
+    steps:
+      - uses actions/download-artifact@v2
