@@ -5,26 +5,28 @@ using OpenZiti;
 
 namespace OpenZiti.Samples
 {
-    class HostedServiceExample
+    class HostedService
     {
-        public static void Host(string configFile)
+        public static void Run(string[] args)
         {
+            CheckUsage(args);
             ZitiOptions opts = new ZitiOptions()
             {
-                InitComplete = Util.CheckStatus,
-                ServiceChange = serviceAvailable,
-                ConfigFile = @"c:\temp\id.json",
+                InitComplete = ZitiUtil.CheckStatus,
+                ServiceChange = onServiceChange,
+                ConfigFile = args[0],
                 ServiceRefreshInterval = 15,
                 MetricsType = RateType.INSTANT,
                 RouterKeepalive = 15,
+                Context = args[2],
             };
             ZitiIdentity id = new ZitiIdentity(opts);
             API.Run();
         }
 
-        private static void serviceAvailable(ZitiContext zitiContext, ZitiService service, ZitiStatus status, int flags, object serviceContext)
+        private static void onServiceChange(ZitiContext zitiContext, ZitiService service, ZitiStatus status, int flags, object serviceContext)
         {
-            if (service.Name == "ssh-service")
+            if (service.Name == serviceContext.ToString())
             {
                 //start a listener on the socket
                 service.Listen(listenCallback, onClientConnect);
@@ -63,10 +65,10 @@ namespace OpenZiti.Samples
 
         private static void onClientAccept(ZitiConnection clientConnection, ZitiStatus status)
         {
-            Util.CheckStatus(status);
+            ZitiUtil.CheckStatus(status);
 
             string msg = "Hello from byte counter!";
-            clientConnection.Write(Encoding.UTF8.GetBytes(msg), msg.Length, afterDataWritten, Util.NO_CONTEXT);
+            clientConnection.Write(Encoding.UTF8.GetBytes(msg), msg.Length, afterDataWritten, ZitiUtil.NO_CONTEXT);
         }
 
         private static void onClientData(ZitiConnection clientConnection, byte[] data, int len, ZitiStatus status)
@@ -77,7 +79,7 @@ namespace OpenZiti.Samples
                 Console.WriteLine("client sent: " + recd);
 
                 string reply = "counted bytes: " + recd.Length;
-                clientConnection.Write(Encoding.UTF8.GetBytes(reply), reply.Length, aftterDataWritten, Util.NO_CONTEXT);
+                clientConnection.Write(Encoding.UTF8.GetBytes(reply), reply.Length, aftterDataWritten, ZitiUtil.NO_CONTEXT);
             }
             else
             {
@@ -96,7 +98,18 @@ namespace OpenZiti.Samples
 
         private static void aftterDataWritten(ZitiConnection connection, ZitiStatus status, object context)
         {
-            Util.CheckStatus(status);
+            ZitiUtil.CheckStatus(status);
+        }
+
+        public static void CheckUsage(string[] args)
+        {
+            if (args.Length < 3)
+            {
+                string appname = System.AppDomain.CurrentDomain.FriendlyName;
+                Console.WriteLine("Usage:");
+                Console.WriteLine($"\t{appname} {args[0]} {args[1]} <service-name-to-host>");
+                throw new ArgumentException("too few arguments");
+            }
         }
     }
 }

@@ -15,6 +15,34 @@ namespace OpenZiti.Samples
         static NetworkStream hackyStream;
         static ZitiConnection hackyZitiConn;
 
+        public static void Run(string[] args)
+        {
+            CheckUsage(args);
+            ZitiOptions opts = new ZitiOptions()
+            {
+                InitComplete = ZitiUtil.CheckStatus,
+                ServiceChange = onServiceChange,
+                ConfigFile = args[0],
+                ServiceRefreshInterval = 15,
+                MetricsType = RateType.INSTANT,
+                RouterKeepalive = 15,
+                Context = args[2],
+            };
+
+            ZitiIdentity id = new ZitiIdentity(opts);
+            API.Run();
+        }
+
+        private static async void onServiceChange(ZitiContext zitiContext, ZitiService service, ZitiStatus status, int flags, object serviceContext)
+        {
+            if (serviceContext.ToString().StartsWith(service.Name))
+            {
+                UInt16 port = UInt16.Parse(serviceContext.ToString().Split(":")[1]);
+                //start a listener on the socket
+                await TcpProxy.RunServerAsync(IPAddress.Any, port, service);
+            }
+        }
+
         private static void HandleClientAsync(TcpClient client, ZitiService service)
         {
             var stream = client.GetStream();
@@ -71,7 +99,7 @@ namespace OpenZiti.Samples
                 try
                 {
                     int read = await stream.ReadAsync(buffer, 0, 1024);
-                    connection.Write(buffer, read, afterDataWritten, Util.NO_CONTEXT);
+                    connection.Write(buffer, read, afterDataWritten, ZitiUtil.NO_CONTEXT);
                 }
                 catch(Exception /*e*/)
                 {
@@ -83,7 +111,7 @@ namespace OpenZiti.Samples
         /// <summary>
         /// Method to be used on seperate thread.
         /// </summary>
-        public static async Task RunServerAsync(IPAddress address, int port, ZitiService svc)
+        public static async Task RunServerAsync(IPAddress address, UInt16 port, ZitiService svc)
         {
             Console.WriteLine("S: Server started on port {0}", port);
             var listener = new TcpListener(address, port);
@@ -93,6 +121,17 @@ namespace OpenZiti.Samples
                 var client = await listener.AcceptTcpClientAsync();
                 Console.WriteLine("accepted a connection");
                 HandleClientAsync(client, svc);
+            }
+        }
+
+        public static void CheckUsage(string[] args)
+        {
+            if (args.Length < 3)
+            {
+                string appname = System.AppDomain.CurrentDomain.FriendlyName;
+                Console.WriteLine("Usage:");
+                Console.WriteLine($"\t{appname} {args[0]} {args[1]} <service-name>:<port-to-listen>");
+                throw new ArgumentException("too few arguments");
             }
         }
     }

@@ -25,6 +25,22 @@ namespace OpenZiti
     /// </summary>
     public class ZitiOptions
     {
+        ~ZitiOptions()
+        {
+            if(Context != null)
+            {
+                try
+                {
+                    initialContext.Free();
+                }
+                catch(Exception e)
+                {
+                    //ignore any errors
+                    System.Diagnostics.Debug.WriteLine("Exception freeing context: " + e.Message);
+                }
+            }
+        }
+
         /// <summary>
         /// A file on the local filesystem that was created from the <see cref="ZitiEnrollment.Enroll(ZitiEnrollment.Options, string, object)"/> 
         /// process.
@@ -58,7 +74,20 @@ namespace OpenZiti
         /// Enables TCP keepalive to detect connection drops faster. Default is 0.
         /// </summary>
         public Int32 RouterKeepalive;
-        public GCHandle ctx;
+
+        /// <summary>
+        /// Arbitrary context you wish to be passed back
+        /// </summary>
+        public object Context
+        {
+            get { return _context; }
+            set
+            {
+                _context = value; 
+                initialContext = GCHandle.Alloc(Context);
+            }
+        }
+        object _context = null;
 
 #pragma warning disable 0649 //hide these warnings for now
         /// <summary>
@@ -72,11 +101,12 @@ namespace OpenZiti
         private IntPtr nativeptr = IntPtr.Zero;
         private IntPtr nativeCtx = IntPtr.Zero;
         private ZitiContext context = null;
+        private GCHandle initialContext { get; set; }
 
         internal IntPtr ToNative()
         {
             if (nativeptr != IntPtr.Zero) return nativeptr;
-
+            
             ziti_options opts = new ziti_options
             {
                 config = this.ConfigFile,
@@ -87,7 +117,7 @@ namespace OpenZiti
                 service_cb = this.service_available_native,
                 metrics_type = this.MetricsType,
                 refresh_interval = this.ServiceRefreshInterval,
-                ctx = this.ctx,
+                ctx = initialContext,
                 router_keepalive = this.RouterKeepalive
             };
             nativeptr = Marshal.AllocHGlobal(Marshal.SizeOf(opts));
@@ -98,14 +128,15 @@ namespace OpenZiti
         internal void Dispose()
         {
             Marshal.FreeHGlobal(nativeptr);
+            initialContext.Free();
         }
 
         private int after_ziti_init_native(IntPtr ziti_context, int status, GCHandle init_ctx)
         {
             ZitiUtil.CheckStatus(status);
-            this.nativeCtx = ziti_context;
+            nativeCtx = ziti_context;
             context = new ZitiContext(ziti_context);
-            this.InitComplete(context, (ZitiStatus)status, init_ctx.Target);
+            InitComplete(context, (ZitiStatus)status, init_ctx.Target);
             init_ctx.SafeFreeGCHandle();
             return 0;
         }
@@ -119,8 +150,7 @@ namespace OpenZiti
             else
             {
                 ZitiService svc = new ZitiService(context, ziti_service);
-                this.ServiceChange(context, svc, (ZitiStatus)status, status, ZitiUtil.GetTarget(on_service_context));
-                on_service_context.SafeFreeGCHandle();
+                ServiceChange(context, svc, (ZitiStatus)status, status, ZitiUtil.GetTarget(on_service_context));
             }
         }
     }

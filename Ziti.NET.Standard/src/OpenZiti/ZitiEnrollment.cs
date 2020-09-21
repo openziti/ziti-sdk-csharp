@@ -24,14 +24,20 @@ namespace OpenZiti
     public class ZitiEnrollment
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void AfterEnrollment(EnrollmentResult result);
+        public delegate void AfterEnrollment(EnrollmentResult result, object context);
+
+        private class EnrollmentContext
+        {
+            internal AfterEnrollment cb;
+            internal object context;
+        }
 
         public struct EnrollmentResult
         {
             public string Json;
         }
 
-        public static void Enroll(Options opts, AfterEnrollment afterEnrollment)
+        public static void Enroll(Options opts, AfterEnrollment afterEnrollment, object context)
         {
             ziti_enroll_options native_opts = new ziti_enroll_options()
             {
@@ -40,12 +46,13 @@ namespace OpenZiti
                 enroll_key = opts.EnrollKey,
             };
 
-            Native.API.ziti_enroll(ref native_opts, Native.API.z4d_default_loop(), native_on_ziti_enroll, GCHandle.Alloc(afterEnrollment));
-        }
+            EnrollmentContext ctx = new EnrollmentContext()
+            {
+                cb = afterEnrollment,
+                context = context,
+            };
 
-        internal static void Enroll(Options opts, string v, object afterEnrollment)
-        {
-            throw new NotImplementedException();
+            Native.API.ziti_enroll(ref native_opts, Native.API.z4d_default_loop(), native_on_ziti_enroll, GCHandle.Alloc(ctx));
         }
 
         static public void native_on_ziti_enroll(IntPtr ziti_config, int status, string errorMessage, GCHandle context)
@@ -62,8 +69,9 @@ namespace OpenZiti
             {
                 Json = Encoding.UTF8.GetString(bytes, 0, len),
             };
-            AfterEnrollment cb = (AfterEnrollment)context.Target;
-            cb(result);
+
+            EnrollmentContext ctx = (EnrollmentContext)context.Target;
+            ctx.cb(result, ctx.context);
             context.SafeFreeGCHandle();
         }
 

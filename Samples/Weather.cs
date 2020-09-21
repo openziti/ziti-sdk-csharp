@@ -23,27 +23,29 @@ namespace OpenZiti.Samples
     public class Weather
     {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
-        public static void ExampleWeather()
+        public static void Run(string[] args)
         {
+            CheckUsage(args);
             ZitiOptions opts = new ZitiOptions();
-            opts.InitComplete = Util.CheckStatus;
-            opts.ServiceChange = weather_service_cb;
-            opts.ConfigFile = @"c:\temp\id.json";
+            opts.InitComplete = ZitiUtil.CheckStatus;
+            opts.ServiceChange = onServiceChange;
+            opts.ConfigFile = args[0];
             opts.ServiceRefreshInterval = 15;
+            opts.Context = args[2];
             ZitiIdentity id = new ZitiIdentity(opts);
             API.Run();
         }
 
-        private static void weather_service_cb(ZitiContext zitiContext, ZitiService service, ZitiStatus status, int flags, object serviceContext)
+        private static void onServiceChange(ZitiContext zitiContext, ZitiService service, ZitiStatus status, int flags, object serviceContext)
         {
-            if (service.Name == "demo-weather-service")
+            if (service.Name == serviceContext.ToString())
             {
                 service.Dial(onConnected, onData);
             }
         }
         private static void onConnected(ZitiConnection connection, ZitiStatus status)
         {
-            Util.CheckStatus(status);
+            ZitiUtil.CheckStatus(status);
 
             Console.WriteLine("sending HTTP request: " + connection.ConnectionContext);
 
@@ -59,7 +61,7 @@ namespace OpenZiti.Samples
 
         private static void afterDataWritten(ZitiConnection connection, ZitiStatus status, object context)
         {
-            Util.CheckStatus(status);
+            ZitiUtil.CheckStatus(status);
         }
 
         private static void onData(ZitiConnection connection, ZitiStatus status, byte[] data)
@@ -81,6 +83,17 @@ namespace OpenZiti.Samples
                 ConsoleHelper.OutputResponseToConsole(ms.ToArray());
                 connection.Close();
                 Environment.Exit(0);
+            }
+        }
+
+        public static void CheckUsage(string[] args)
+        {
+            if (args.Length < 3)
+            {
+                string appname = System.AppDomain.CurrentDomain.FriendlyName;
+                Console.WriteLine("Usage:");
+                Console.WriteLine($"\t{appname} {args[0]} {args[1]} <service-name>");
+                throw new ArgumentException("too few arguments");
             }
         }
     }
