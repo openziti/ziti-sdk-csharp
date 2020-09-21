@@ -19,33 +19,62 @@ using System.Runtime.InteropServices;
 
 namespace OpenZiti
 {
+    /// <summary>
+    /// Represents the connection to the Ziti Network.
+    /// </summary>
     public class ZitiConnection
     {
-        public object ConnectionContext { get; private set; }
+        /// <summary>
+        /// Any additional context that needs to be stored along with the <see cref="ZitiConnection"/>. Must be
+        /// supplied when the <see cref="ZitiConnection"/> is created.
+        /// </summary>
+        public object ConnectionContext
+        {
+            get
+            {
+                return nativeConnContext.Target;
+            }
+            private set
+            {
+                _connectionContext = value;
+                nativeConnContext = GCHandle.Alloc(_connectionContext);
+            }
+        }
 
         internal byte[] NO_DATA = new byte[0];
         internal IntPtr nativeConnection = IntPtr.Zero;
 
         private ZitiService service = null;
         private ZitiContext zitiContext = null;
-        private GCHandle nativeConnContext = default;
+        private object _connectionContext;
+        private GCHandle nativeConnContext = ZitiUtil.NO_CONTEXT;
         private OnZitiDataWritten aafterData;
         private OnClientAccept onAccept;
         private OnZitiClientData onClientData;
 
+        /// <summary>
+        /// The only constructor for <see cref="ZitiConnection"/>. A valid <see cref="ZitiService"/> and
+        /// <see cref="ZitiContext"/> must be provided.
+        /// </summary>
+        /// <param name="service">The <see cref="ZitiService"/> to construct a <see cref="ZitiConnection"/> with</param>
+        /// <param name="context"></param>
+        /// <param name="connectionContext">Additional context that needs to be stored along with the <see cref="ZitiConnection"/></param>
         public ZitiConnection(ZitiService service, ZitiContext context, object connectionContext)
         {
             this.service = service;
             ConnectionContext = connectionContext;
-            if(connectionContext != null)
-            {
-                //make a GCHandle...
-                nativeConnContext = GCHandle.Alloc(connectionContext);
-            }
 
             //make initialze a connection in native code
             Native.API.ziti_conn_init(context.nativeZitiContext, out nativeConnection, nativeConnContext);
             zitiContext = context;
+        }
+
+        ~ZitiConnection()
+        {
+            if(_connectionContext != null)
+            {
+                nativeConnContext.SafeFreeGCHandle();
+            }
         }
 
         public void Dial(OnZitiConnected onConnected, OnZitiDataReceived dataReceived)

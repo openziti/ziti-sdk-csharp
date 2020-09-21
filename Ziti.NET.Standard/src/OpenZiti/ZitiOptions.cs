@@ -31,7 +31,7 @@ namespace OpenZiti
             {
                 try
                 {
-                    initialContext.Free();
+                    initialContext.SafeFreeGCHandle();
                 }
                 catch(Exception e)
                 {
@@ -128,7 +128,7 @@ namespace OpenZiti
         internal void Dispose()
         {
             Marshal.FreeHGlobal(nativeptr);
-            initialContext.Free();
+            initialContext.SafeFreeGCHandle();
         }
 
         private int after_ziti_init_native(IntPtr ziti_context, int status, GCHandle init_ctx)

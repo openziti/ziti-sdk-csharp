@@ -37,6 +37,13 @@ namespace OpenZiti
             public string Json;
         }
 
+        public struct Options
+        {
+            public string Jwt { get; set; }
+            public string EnrollKey { get; set; }
+            public string EnrollCert { get; set; }
+        }
+
         public static void Enroll(Options opts, AfterEnrollment afterEnrollment, object context)
         {
             ziti_enroll_options native_opts = new ziti_enroll_options()
@@ -55,7 +62,7 @@ namespace OpenZiti
             Native.API.ziti_enroll(ref native_opts, Native.API.z4d_default_loop(), native_on_ziti_enroll, GCHandle.Alloc(ctx));
         }
 
-        static public void native_on_ziti_enroll(IntPtr ziti_config, int status, string errorMessage, GCHandle context)
+        static internal void native_on_ziti_enroll(IntPtr ziti_config, int status, string errorMessage, GCHandle context)
         {
             ZitiUtil.CheckStatus(status);
 
@@ -73,13 +80,6 @@ namespace OpenZiti
             EnrollmentContext ctx = (EnrollmentContext)context.Target;
             ctx.cb(result, ctx.context);
             context.SafeFreeGCHandle();
-        }
-
-        public struct Options
-        {
-            public string Jwt { get; set; }
-            public string EnrollKey { get; set; }
-            public string EnrollCert { get; set; }
         }
     }
 }

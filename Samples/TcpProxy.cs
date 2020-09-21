@@ -54,6 +54,7 @@ namespace OpenZiti.Samples
             hackyStream = clientStream;
             service.Dial(onConnected, onData);
         }
+
         private static async void onConnected(ZitiConnection connection, ZitiStatus status)
         {
             Console.WriteLine("great - we're connected... ok then");

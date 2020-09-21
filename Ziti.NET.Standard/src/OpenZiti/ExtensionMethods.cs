@@ -45,13 +45,20 @@ namespace OpenZiti
         /// <param name="handle"></param>
         public static void SafeFreeGCHandle(this GCHandle handle)
         {
-            if (ZitiUtil.NO_CONTEXT == handle)
+            try
             {
-                return; //never call free on the NO_CONTEXT handle...
+                if (ZitiUtil.NO_CONTEXT == handle)
+                {
+                    return; //never call free on the NO_CONTEXT handle...
+                }
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
             }
-            if (handle.IsAllocated)
+            catch(Exception e)
             {
-                handle.Free();
+                System.Diagnostics.Debug.WriteLine("an unexpected exception occrred in SafeFreeGCHandle: " + e.Message);
             }
         }
     }
