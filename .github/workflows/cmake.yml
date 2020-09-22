@@ -7,13 +7,11 @@ on:
     branches: [ $default-branch ]
 
 jobs:
-  build_csdk:
+  build-csdk-win:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
-          - ubuntu-latest
-          - macOS-latest
           - windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,15 +19,55 @@ jobs:
           fetch-depth: 0
       - uses: actions/upload-artifact@v2
         with:
-          name: ziti4dotnet-${{ runner.os }}
-      - name: make build dir
-        run: cmake -E make_directory ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build
+          name: ziti4dotnet-win.dll
+          path: ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-win/Release/ziti4dotnet.dll
+      - name: make build-win dir
+        run: cmake -E make_directory ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-win
       - name: configure cmake
-        run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build
+        run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-win
       - name: build
-        run: cmake --build ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build
-
-  build_dotnet:
-    runs-on: windows-latest
+        run: cmake --build ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-win --config Release
+        
+  build-csdk-linux:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - windows-latest
     steps:
-      - uses actions/download-artifact@v2
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ziti4dotnet-linux.so
+          path: ~/git/github/openziti/ziti-sdk-csharp-clean/ZitiNativeApiForDotnetCore/build-linux/Release/ziti4dotnet.so
+      - name: make build-linux dir
+        run: cmake -E make_directory ~/git/github/openziti/ziti-sdk-csharp-clean/ZitiNativeApiForDotnetCore/build-linux
+      - name: configure cmake
+        run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ~/git/github/openziti/ziti-sdk-csharp-clean/ZitiNativeApiForDotnetCore/build-linux
+      - name: build
+        run: cmake --build ~/git/github/openziti/ziti-sdk-csharp-clean/ZitiNativeApiForDotnetCore/build-linux --config Release
+        
+  build-csdk-macos:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ziti4dotnet-macos.so
+          path: ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-macos/Release/ziti4dotnet.so
+      - name: make build-macos dir
+        run: cmake -E make_directory ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-macos
+      - name: configure cmake
+        run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-macos
+      - name: build
+        run: cmake --build ${{runner.workspace}}/ZitiNativeApiForDotnetCore/build-macos --config Release
+
+
