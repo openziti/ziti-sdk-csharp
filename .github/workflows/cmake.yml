@@ -17,16 +17,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ziti4dotnet-win.dll
-          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/Release/ziti4dotnet.dll
       - name: make build-win dir
         run: cmake -E make_directory ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win
       - name: configure cmake
         run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win
       - name: build
         run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win --config Release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ziti4dotnet-win.dll
+          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/Release/ziti4dotnet.dll
         
   build-csdk-linux:
     runs-on: ${{ matrix.os }}
@@ -38,16 +38,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ziti4dotnet-linux.so
-          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-linux/Release/ziti4dotnet.so
       - name: make build-linux dir
         run: cmake -E make_directory ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-linux
       - name: configure cmake
         run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-linux
       - name: build
         run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-linux --config Release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ziti4dotnet-linux.so
+          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-linux/Release/ziti4dotnet.so
         
   build-csdk-macos:
     runs-on: ${{ matrix.os }}
@@ -59,15 +59,15 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ziti4dotnet-macos.so
-          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos/Release/ziti4dotnet.so
       - name: make build-macos dir
         run: cmake -E make_directory ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos
       - name: configure cmake
         run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos
       - name: build
         run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos --config Release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ziti4dotnet-macos.so
+          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos/Release/ziti4dotnet.so
 
 
