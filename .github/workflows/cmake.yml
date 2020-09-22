@@ -68,6 +68,6 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ziti4dotnet-macos.so
-          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos/libziti4dotnet.so
+          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos/libziti4dotnet.dylib
 
 
