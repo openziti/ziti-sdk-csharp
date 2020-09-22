@@ -33,7 +33,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - linux-latest
+          - ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ziti4dotnet-linux.so
-          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-linux/Release/ziti4dotnet.so
+          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-linux/Release/libziti4dotnet.so
         
   build-csdk-macos:
     runs-on: ${{ matrix.os }}
@@ -68,6 +68,6 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ziti4dotnet-macos.so
-          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos/Release/ziti4dotnet.so
+          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-macos/Release/libziti4dotnet.so
 
 
