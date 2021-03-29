@@ -9,7 +9,7 @@ set(ZITI_4_DOTNET_SOURCE
 add_library(ziti4dotnet SHARED ${ZITI_4_DOTNET_SOURCE} ${ZITI_4_DOTNET_HEADERS} )
 
 target_include_directories(ziti4dotnet
-        PUBLIC includes
+        PUBLIC ${CMAKE_HOME_DIRECTORY}/includes
 )
 
 target_compile_definitions(ziti4dotnet PUBLIC

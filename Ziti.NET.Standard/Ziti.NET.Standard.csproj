@@ -35,13 +35,13 @@
     <ItemGroup>
         <!--Condition="'$(IsPublicBuild)' == 'True'"-->
 
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x86/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
+        <Content Include="./../ZitiNativeApiForDotnetCore/build/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win-x86/native</PackagePath>
         </Content>
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/Release/ziti4dotnet.dll" Link="runtimes/win-x64/native/ziti4dotnet.dll">
+        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win-x64/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win-x64/native</PackagePath>
         </Content>
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/Release/ziti4dotnet.dll" Link="runtimes/win/native/ziti4dotnet.dll">
+        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win/native</PackagePath>
         </Content>
     </ItemGroup>

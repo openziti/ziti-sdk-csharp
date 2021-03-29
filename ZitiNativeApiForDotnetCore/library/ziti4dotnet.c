@@ -1,9 +1,8 @@
 #include <stdlib.h>
-#include <string.h>
 
 #include <ziti/ziti.h>
 #include <uv.h>
-#include <ziti4dotnet.h>
+#include "ziti4dotnet.h"
 
 #if _WIN32
 #define strncasecmp _strnicmp
@@ -11,7 +10,8 @@
 #endif
 
 int z4d_ziti_close(ziti_connection con) {
-    return ziti_close(&con);
+    return 0;
+    //return ziti_close(&con);
 }
 
 int z4d_uv_run(void* loop) {
