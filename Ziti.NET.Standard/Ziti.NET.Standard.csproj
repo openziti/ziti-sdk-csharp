@@ -7,12 +7,12 @@
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-        <DayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</DayOfYear>
-        <MonthDay>$([System.DateTime]::UtcNow.ToString(`1MMdd`))</MonthDay>
+        <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
         <SecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</SecondsOfDay>
+        <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_UtcNow().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</UtcSecondsOfDay>
         <major>0</major>
         <minor>7</minor>
-        <Version>$(major).$(minor).$(DayOfYear).$(SecondsOfDay)</Version>
+        <Version>$(major).$(minor).$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
         <Authors>NetFoundry</Authors>
         <Company>NetFoundry</Company>
         <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
