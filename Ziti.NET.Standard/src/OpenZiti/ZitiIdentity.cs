@@ -34,8 +34,8 @@ namespace OpenZiti
         /// <param name="InitOptions"></param>
         public ZitiIdentity(ZitiOptions InitOptions)
         {
-            this.InitOptions = InitOptions;
-            ZitiUtil.CheckStatus(Native.API.ziti_init_opts(InitOptions.ToNative(), Native.API.z4d_default_loop(), ZitiUtil.NO_CONTEXT));
+            this.InitOptions = InitOptions; 
+            ZitiUtil.CheckStatus(Native.API.ziti_init_with_opts(InitOptions.ToNative(), Native.API.z4d_default_loop()));
         }
     }
 }

@@ -1,22 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-   
+    <Target Name="DateTest" BeforeTargets="LocalPush">
+        <!--Error Text="ok error $(DayOfYear)  :  $(MonthDay)  :  $(Version)" /-->
+    </Target>
+
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        
-        <Hour>$([System.DateTime]::UtcNow.Hour)</Hour>
-        <Minute>$([System.DateTime]::UtcNow.Minute)</Minute>
-        <Second>$([System.DateTime]::UtcNow.Second)</Second>
-        <HourTimes1000>$([MSBuild]::Multiply($(Hour), 1000))</HourTimes1000>
-        <MinutesAsSeconds>$([MSBuild]::Multiply($(Minute), 60))</MinutesAsSeconds>
-        <HoursAndMinutes>$([MSBuild]::Add($(HourTimes1000), $(MinutesAsSeconds)))</HoursAndMinutes>
-        <HoursAndMinutesAndSeconds>$([MSBuild]::Add($(HoursAndMinutes), $(Second)))</HoursAndMinutesAndSeconds>
-        <YearAndDayOfYear>$([System.DateTime]::UtcNow.ToString(yy))$([System.DateTime]::UtcNow.DayOfYear)</YearAndDayOfYear>
-        
-        <Build>$([System.DateTime]::op_Subtraction($([System.DateTime]::get_Now().get_Date()),$([System.DateTime]::new(2000,1,1))).get_TotalDays())</Build>
-        <Revision>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</Revision>
-        <Version>0.6.$(YearAndDayOfYear).$(Revision)</Version>
-        
+
+        <DayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</DayOfYear>
+        <MonthDay>$([System.DateTime]::UtcNow.ToString(`1MMdd`))</MonthDay>
+        <SecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</SecondsOfDay>
+        <major>0</major>
+        <minor>7</minor>
+        <Version>$(major).$(minor).$(DayOfYear).$(SecondsOfDay)</Version>
         <Authors>NetFoundry</Authors>
         <Company>NetFoundry</Company>
         <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
@@ -26,6 +22,12 @@
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace>OpenZiti</RootNamespace>
+
+    
+</PropertyGroup>
+   
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
+      <WarningLevel>4</WarningLevel>
     </PropertyGroup>
 
     <ItemGroup>
@@ -54,7 +56,7 @@
     </ItemGroup>
 
     <Target Name="LocalPush" AfterTargets="GenerateNuspec">
-        <Message Text="Push NuGet Package to NuGet Feed $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" Importance="high"/>
+        <Message Text="Push NuGet Package to NuGet Feed $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" Importance="high" />
         <Exec Command="nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source c:\work\nuget-local"></Exec>
     </Target>
 </Project>

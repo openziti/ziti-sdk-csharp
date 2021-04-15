@@ -38,3 +38,7 @@ void* z4d_registerUVTimer(uv_loop_t * loop, uv_timer_cb timer_cb, uint64_t delay
     uv_timer_start(uvt, timer_cb, iterations, delay);
     return uvt;
 }
+
+void ziti_init_with_opts(ziti_options* opts, uv_loop_t* loop) {
+    ziti_init_opts(opts, loop);
+}

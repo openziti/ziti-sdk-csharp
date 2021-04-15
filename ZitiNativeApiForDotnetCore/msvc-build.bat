@@ -3,6 +3,7 @@ pushd .
 set CSDK_HOME=%~dp0
 cd /d %CSDK_HOME%
 
+set cmake=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe
 set BUILDFOLDER=%CSDK_HOME%build
 
 mkdir %BUILDFOLDER% 2> NUL
@@ -12,12 +13,12 @@ pushd %BUILDFOLDER%
 
 pushd %BUILDFOLDER%\x86
 REM cmake -S %BUILDFOLDER%\x86 -G "Visual Studio 16 2019" -A Win32 -DCMAKE_INSTALL_INCLUDEDIR=include -DCMAKE_INSTALL_LIBDIR=lib
-cmake -S %CSDK_HOME% -B %BUILDFOLDER%\x86 -G "Visual Studio 16 2019" -A Win32 -DCMAKE_INSTALL_INCLUDEDIR=include -DCMAKE_INSTALL_LIBDIR=lib
+"%cmake%" -S %CSDK_HOME% -B %BUILDFOLDER%\x86 -G "Visual Studio 16 2019" -A Win32 -DCMAKE_INSTALL_INCLUDEDIR=include -DCMAKE_INSTALL_LIBDIR=lib
 popd
 
 pushd %BUILDFOLDER%\x64
 REM cmake ..\.. -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_INCLUDEDIR=include -DCMAKE_INSTALL_LIBDIR=lib
-cmake -S %CSDK_HOME% -B %BUILDFOLDER%\x64 -G "Visual Studio 16 2019" -A Win32 -DCMAKE_INSTALL_INCLUDEDIR=include -DCMAKE_INSTALL_LIBDIR=lib
+"%cmake%" -S %CSDK_HOME% -B %BUILDFOLDER%\x64 -G "Visual Studio 16 2019" -A Win32 -DCMAKE_INSTALL_INCLUDEDIR=include -DCMAKE_INSTALL_LIBDIR=lib
 popd
 
 ECHO Build from cmake using: 

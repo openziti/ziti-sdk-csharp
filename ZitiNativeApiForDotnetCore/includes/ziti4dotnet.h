@@ -23,6 +23,7 @@ Z4D_API extern int z4d_uv_run(void* loop);
 Z4D_API extern const char** z4d_all_config_types();
 Z4D_API extern uv_loop_t* z4d_default_loop();
 Z4D_API void* z4d_registerUVTimer(uv_loop_t* loop, uv_timer_cb timer_cb, uint64_t iterations, uint64_t delay);
+Z4D_API void ziti_init_with_opts(ziti_options* opts, uv_loop_t* loop);
 
 #ifdef __cplusplus
 }

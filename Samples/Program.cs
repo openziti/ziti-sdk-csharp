@@ -11,7 +11,7 @@ namespace OpenZiti.Samples
         {
             try
             {
-                args = new string[] { @"c:\temp\id.json", "proxy", "ssh-service:2345" };
+                args = new string[] { @"c:\temp\id.json", "weather", "ssh-service:2345" };
 
                 CheckUsage(args);
 
@@ -37,7 +37,7 @@ namespace OpenZiti.Samples
                 Console.WriteLine("Sample execution completed successfully");
                 Console.WriteLine("==============================================================");
             } 
-            catch
+            catch(Exception e)
             {
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("Sample failed to execute");

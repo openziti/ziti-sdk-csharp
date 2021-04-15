@@ -106,8 +106,8 @@ namespace OpenZiti.Native
         internal static extern int ziti_accept(IntPtr conn, ziti_conn_cb cb, ziti_data_cb data_cb);
 
         //defined in C: extern int ziti_init_opts(ziti_options *options, uv_loop_t *loop, void *init_ctx);
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init_opts")]
-        internal static extern int ziti_init_opts(IntPtr options, IntPtr loop, GCHandle init_ctx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init_with_opts")]
+        internal static extern int ziti_init_with_opts(IntPtr options, IntPtr loop);
 
         //defined in C: extern const char *ziti_get_controller(ziti_context ztx);
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_controller_version")]
