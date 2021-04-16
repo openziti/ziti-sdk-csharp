@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ConsoleTestAppDotnet5": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
