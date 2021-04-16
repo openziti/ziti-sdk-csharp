@@ -64,7 +64,7 @@ namespace OpenZiti
             
             IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(native_opts));
             Marshal.StructureToPtr(native_opts, pnt, false);
-            Native.API.ziti_enroll(pnt, ref loop, ref ecb, GCHandle.Alloc(ctx));
+            Native.API.ziti_enroll(pnt, loop, ecb, GCHandle.Alloc(ctx));
         }
 
         static ziti_enroll_cb ecb = native_on_ziti_enroll;

@@ -112,7 +112,11 @@ namespace OpenZiti
             GCHandle enroll_context = GCHandle.Alloc(afterEnroll);
             IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(opts));
             Marshal.StructureToPtr(opts, pnt, false);
-            Native.API.ziti_enroll(pnt, ref loop, ref enroll_cb, GCHandle.FromIntPtr(pnt));
+            Native.API.ziti_enroll(pnt, loop, enroll_cb, GCHandle.FromIntPtr(pnt));
+        }
+
+        public static void DoSillyLoop(IntPtr loop) {
+            Native.API.DoSillyLoop(loop);
         }
 
         public static void Run(IntPtr loop)

@@ -52,3 +52,19 @@ void passAndPrint(void* anything){
 void* newLoop() {
     return uv_loop_new();
 }
+
+//typedef void (*uv_timer_cb)(uv_timer_t* handle);
+void cb(uv_timer_t* handle){
+    printf("yepyep\n");
+}
+uv_loop_t *loop;
+uv_timer_t gc_req;
+uv_timer_t fake_job_req;
+uv_timer_t timer_req;
+void DoSillyLoop(uv_loop_t * loop){
+
+    uv_timer_init(loop, &timer_req);
+    uv_timer_start(&timer_req, cb, 500, 2000);
+    printf("I started the timer... for loop %p\n", loop);
+
+}

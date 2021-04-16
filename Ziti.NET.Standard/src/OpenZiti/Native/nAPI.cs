@@ -83,7 +83,7 @@ namespace OpenZiti.Native
         //these functions should be declared in the same order as they appear in ziti.h to make diffing easier!
         //defined in C: extern int ziti_enroll(ziti_enroll_opts *opts, uv_loop_t *loop, ziti_enroll_cb enroll_cb, void *enroll_ctx);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_enroll")]
-        internal static extern int ziti_enroll(IntPtr /*ziti_enroll_options*/ opts, ref IntPtr loop, ref ziti_enroll_cb enroll_cb, GCHandle enroll_context);
+        internal static extern int ziti_enroll(IntPtr /*ziti_enroll_options*/ opts, IntPtr loop, ziti_enroll_cb enroll_cb, GCHandle enroll_context);
 
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_log_init", CallingConvention = CALL_CONVENTION)]
         internal static extern void ziti_log_init(IntPtr loop, int level, IntPtr/*log_writer*/ logger);
@@ -93,6 +93,9 @@ namespace OpenZiti.Native
 
         [DllImport(Z4D_DLL_PATH, EntryPoint = "newLoop", CallingConvention = CALL_CONVENTION)]
         internal static extern IntPtr newLoop();
+
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "DoSillyLoop", CallingConvention = CALL_CONVENTION)]
+        internal static extern void DoSillyLoop(IntPtr loop);
 
         //internal const string Z4D_DLL_PATH = @"ziti4dotnet";
         /*

@@ -26,6 +26,7 @@ Z4D_API void* z4d_registerUVTimer(uv_loop_t* loop, uv_timer_cb timer_cb, uint64_
 Z4D_API void passAndPrint(void* anything);
 Z4D_API void z4denroll(ziti_enroll_opts opts);
 Z4D_API void* newLoop();
+Z4D_API void DoSillyLoop(uv_loop_t * loop);
 
 //Z4D_API void ziti_init_with_opts(ziti_options* opts, uv_loop_t* loop);
 
