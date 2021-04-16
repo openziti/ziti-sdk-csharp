@@ -23,7 +23,7 @@ namespace OpenZiti
 {
     public class ZitiEnrollment
     {
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [UnmanagedFunctionPointer(Native.API.CALL_CONVENTION)]
         public delegate void AfterEnrollment(EnrollmentResult result, object context);
 
         private class EnrollmentContext
@@ -44,6 +44,8 @@ namespace OpenZiti
             public string EnrollCert { get; set; }
         }
 
+        static IntPtr loop = Native.API.z4d_default_loop();
+
         public static void Enroll(Options opts, AfterEnrollment afterEnrollment, object context)
         {
             ziti_enroll_options native_opts = new ziti_enroll_options()
@@ -59,8 +61,13 @@ namespace OpenZiti
                 context = context,
             };
 
-            Native.API.ziti_enroll(ref native_opts, Native.API.z4d_default_loop(), native_on_ziti_enroll, GCHandle.Alloc(ctx));
+            
+            IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(native_opts));
+            Marshal.StructureToPtr(native_opts, pnt, false);
+            Native.API.ziti_enroll(pnt, ref loop, ref ecb, GCHandle.Alloc(ctx));
         }
+
+        static ziti_enroll_cb ecb = native_on_ziti_enroll;
 
         static internal void native_on_ziti_enroll(IntPtr ziti_config, int status, string errorMessage, GCHandle context)
         {

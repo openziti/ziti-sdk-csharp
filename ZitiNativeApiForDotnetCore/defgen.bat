@@ -16,15 +16,15 @@ set dll_file=%2
 set dll_file_no_ext=%~n2
 set exports_file=%dll_file_no_ext%-exports.txt
 set def_file=%dll_file_no_ext%.def
-set lib_file=%dll_file_no_ext%.lib
+set lib_file=%dll_file_no_ext%.dll
 set lib_name=%dll_file_no_ext%
 
 echo ========================
-echo %dll_file%
-echo %exports_file%
-echo %def_file%
-echo %lib_file%
-echo %lib_name%
+echo  SOURCE DLL : %dll_file%
+echo EXPORT FILE : %exports_file%
+echo    DEF FILE : %def_file%
+echo    LIB FILE : %lib_file%
+echo    LIB NAME : %lib_name%
 echo ========================
 
 dumpbin /exports %dll_file% > %exports_file%
@@ -33,7 +33,7 @@ echo LIBRARY %lib_name% > %def_file%
 echo EXPORTS >> %def_file%
 for /f "skip=19 tokens=1,4" %%A in (%exports_file%) do if NOT "%%B" == "" (echo %%B @%%A >> %def_file%)
 
-rem lib /def:%def_file% /out:%lib_file% /machine:%machine%
+lib /def:%def_file% /out:%lib_file% /machine:%machine%
 
 REM Clean up temporary intermediate files
 rem del %exports_file% %def_file% %dll_file_no_ext%.exp

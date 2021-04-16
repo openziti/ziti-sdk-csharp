@@ -13,29 +13,49 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenZiti
 {
     public class ZitiIdentity
     {
-        /// <summary>
-        /// The options used to initialize a <see cref="ZitiIdentity"/>
-        /// </summary>
-        public ZitiOptions InitOptions { get; private set; }
+        public string ConfigFilePath { get; private set; }
 
-        /// <summary>
-        /// Allows adding arbitrary context to the <see cref="ZitiIdentity"/>
-        /// </summary>
-        public object Context { get; private set; }
+        private Native.IdentityFile nid;
 
-        /// <summary>
-        /// Creates a new <see cref="ZitiIdentity"/> with the provided <see cref="ZitiOptions"/>
-        /// </summary>
-        /// <param name="InitOptions"></param>
-        public ZitiIdentity(ZitiOptions InitOptions)
+        public string ControllerURL {
+            get {
+                return nid.ztAPI;
+            }
+        }
+
+        private ZitiIdentity()
         {
-            this.InitOptions = InitOptions; 
-            ZitiUtil.CheckStatus(Native.API.ziti_init_with_opts(InitOptions.ToNative(), Native.API.z4d_default_loop()));
+        }
+
+        public static ZitiIdentity FromFile(string identityFile) {
+
+            var jsonUtf8Bytes = File.ReadAllBytes(identityFile);
+            var jsonSpan = new ReadOnlySpan<byte>(jsonUtf8Bytes);
+
+            ZitiIdentity zid = new ZitiIdentity();
+            zid.ConfigFilePath = identityFile;
+            zid.nid = JsonSerializer.Deserialize<Native.IdentityFile>(jsonSpan);
+            return zid;
+        }
+
+        public void Start() {
+            ZitiOptions InitOptions = new ZitiOptions();
+            InitOptions.ConfigFile = ConfigFilePath;
+        }
+
+        public ZitiConnection Dial() {
+
+            ZitiConnection conn = null;// new ZitiConnection();
+            return conn;
         }
     }
 }

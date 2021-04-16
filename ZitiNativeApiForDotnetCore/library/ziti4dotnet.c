@@ -15,6 +15,7 @@ int z4d_ziti_close(ziti_connection con) {
 }
 
 int z4d_uv_run(void* loop) {
+    printf("I AM RUNNING THE LOOP %p\n", loop);
     return uv_run(loop, UV_RUN_DEFAULT);
 }
 
@@ -28,7 +29,6 @@ extern const char** z4d_all_config_types() {
 
 uv_loop_t* z4d_default_loop()
 {
-    void* loop = uv_default_loop();
     return uv_default_loop();
 }
 
@@ -39,6 +39,16 @@ void* z4d_registerUVTimer(uv_loop_t * loop, uv_timer_cb timer_cb, uint64_t delay
     return uvt;
 }
 
-void ziti_init_with_opts(ziti_options* opts, uv_loop_t* loop) {
+/*void ziti_init_with_opts(ziti_options* opts, uv_loop_t* loop) {
     ziti_init_opts(opts, loop);
+}*/
+
+void passAndPrint(void* anything){
+    printf("I AM PRINTING THE VALUE HERE: %p\n", anything);
+    printf("I AM PRINTING THE VALUE HERE: %p\n", anything);
+    printf("I AM PRINTING THE VALUE HERE: %p\n", anything);
+}
+
+void* newLoop() {
+    return uv_loop_new();
 }

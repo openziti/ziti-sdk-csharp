@@ -14,7 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenZiti
 {
@@ -48,11 +51,89 @@ namespace OpenZiti
         INSTANT, //Simple average from the last 5 sec
     };
 
-    public class API
-    {
-        public static void Run()
+    public class API {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        
+        public delegate void AfterEnroll(ZitiStatus status);
+
+        static Native.log_writer logger = logFunction;
+
+        static internal void logFunction(int level, string loc, string msg, uint msglen) {
+
+            switch (level) {
+                case 0:
+                    Logger.Warn("SDK_: level 0 should not be logged, please report: {0}", msg); break;
+                case 1:
+                    Logger.Error("SDKe: {0}\t{1}", loc, msg);
+                    break;
+
+                case 2:
+                    Logger.Warn("SDKw: {0}\t{1}", loc, msg);
+                    break;
+
+                case 3:
+                    Logger.Info("SDKi: {0}\t{1}", loc, msg);
+                    break;
+
+                case 4:
+                    Logger.Debug("SDKd: {0}\t{1}", loc, msg);
+                    break;
+
+                case 5:
+                    //VERBOSE:5
+                    Logger.Trace("SDKv: {0}\t{1}", loc, msg);
+                    break;
+
+                case 6:
+                    //TRACE:6
+                    Logger.Trace("SDKt: {0}\t{1}", loc, msg);
+                    break;
+
+                default:
+                    Logger.Warn("SDK_: level [%d] NOT recognized: {1}", level, msg);
+                    break;
+
+            }
+        }
+        static Native.ziti_enroll_cb enroll_cb = Callback.ziti_enroll_cb_impl;
+
+        public static void BeginEnroll(IntPtr loop, string identityFile, ref AfterEnroll afterEnroll) {
+
+
+            Logger.Error("Default Loop: {0}, this loop: {1}", Native.API.z4d_default_loop(), loop);
+
+            Native.API.ziti_log_init(loop, 11, Marshal.GetFunctionPointerForDelegate<Native.log_writer>(logger) );
+
+
+            Native.ziti_enroll_options opts = new Native.ziti_enroll_options() {
+                jwt = identityFile,
+            };
+
+            GCHandle enroll_context = GCHandle.Alloc(afterEnroll);
+            IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(opts));
+            Marshal.StructureToPtr(opts, pnt, false);
+            Native.API.ziti_enroll(pnt, ref loop, ref enroll_cb, GCHandle.FromIntPtr(pnt));
+        }
+
+        public static void Run(IntPtr loop)
         {
-            Native.API.z4d_uv_run(Native.API.z4d_default_loop());
+            Native.API.z4d_uv_run(loop);
+        }
+
+        public static IntPtr NewLoop() {
+            return Native.API.newLoop();
+        }
+    }
+
+    internal class Callback {
+        
+        public static void ziti_enroll_cb_impl(IntPtr ziti_config, int status, string errorMessage, GCHandle enroll_context) {
+            if (enroll_context.IsAllocated) {
+                API.AfterEnroll cb = (API.AfterEnroll)enroll_context.Target;
+                enroll_context.Free();
+            } else {
+                Console.WriteLine("well what the heck?");
+            }
         }
     }
 }

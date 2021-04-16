@@ -50,16 +50,6 @@ namespace OpenZiti
         public string ConfigFile { get; set; }
 
         /// <summary>
-        /// This callback is invoked after the <see cref="ZitiIdentity"/> is initialized
-        /// </summary>
-        public OnInit InitComplete;
-
-        /// <summary>
-        /// This callback is invoked whenever a change to a service is detected
-        /// </summary>
-        public OnServiceChange ServiceChange;
-
-        /// <summary>
         /// Controls how often (in seconds) the Ziti Controller will be polled for service changes. 
         /// If set to 0 <see cref="ServiceChange"/> will not be invoked. Default is 0.
         /// </summary>
@@ -69,11 +59,6 @@ namespace OpenZiti
         /// An enum indicating the type of metrics which will be recorded.
         /// </summary>
         public RateType MetricsType;
-
-        /// <summary>
-        /// Enables TCP keepalive to detect connection drops faster. Default is 0.
-        /// </summary>
-        public Int32 RouterKeepalive;
 
         /// <summary>
         /// Arbitrary context you wish to be passed back
@@ -113,12 +98,9 @@ namespace OpenZiti
                 controller = this.ControllerUrl,
                 tls = this.tls,
                 config_types = this.config_types,
-                init_cb = after_ziti_init_native,
-                service_cb = this.service_available_native,
                 metrics_type = this.MetricsType,
                 refresh_interval = this.ServiceRefreshInterval,
-                ctx = initialContext,
-                router_keepalive = this.RouterKeepalive
+                app_ctx = initialContext,
             };
             nativeptr = Marshal.AllocHGlobal(Marshal.SizeOf(opts));
             Marshal.StructureToPtr(opts, nativeptr, false);
@@ -129,29 +111,6 @@ namespace OpenZiti
         {
             Marshal.FreeHGlobal(nativeptr);
             initialContext.SafeFreeGCHandle();
-        }
-
-        private int after_ziti_init_native(IntPtr ziti_context, int status, GCHandle init_ctx)
-        {
-            ZitiUtil.CheckStatus(status);
-            nativeCtx = ziti_context;
-            context = new ZitiContext(ziti_context);
-            InitComplete(context, (ZitiStatus)status, init_ctx.Target);
-            init_ctx.SafeFreeGCHandle();
-            return 0;
-        }
-
-        private void service_available_native(IntPtr ziti_context, IntPtr ziti_service, int status, GCHandle on_service_context)
-        {
-            if (status < 0)
-            {
-                ZitiUtil.CheckStatus(status);
-            }
-            else
-            {
-                ZitiService svc = new ZitiService(context, ziti_service);
-                ServiceChange(context, svc, (ZitiStatus)status, status, ZitiUtil.GetTarget(on_service_context));
-            }
         }
     }
 }

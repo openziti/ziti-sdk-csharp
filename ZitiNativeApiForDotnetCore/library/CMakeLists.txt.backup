@@ -6,7 +6,7 @@ set(ZITI_4_DOTNET_SOURCE
         ${PROJECT_SOURCE_DIR}/library/ziti4dotnet.c
 )
 
-add_library(ziti4dotnet SHARED ${ZITI_4_DOTNET_SOURCE} ${ZITI_4_DOTNET_HEADERS} ziti.def )
+add_library(ziti4dotnet SHARED ${ZITI_4_DOTNET_SOURCE} ${ZITI_4_DOTNET_HEADERS} )
 
 target_include_directories(ziti4dotnet
         PUBLIC ${CMAKE_HOME_DIRECTORY}/includes
@@ -16,7 +16,6 @@ target_compile_definitions(ziti4dotnet PUBLIC
         BUILD_DATE=${BUILD_DATE}
         GIT_BRANCH=${GIT_BRANCH}
         GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
-        PRIVATE BUILDING_ZITI_SHARED=1
 )
 
 set_property(TARGET ziti4dotnet PROPERTY C_STANDARD 11)
@@ -27,5 +26,6 @@ target_compile_definitions(ziti4dotnet
         )
 
 target_link_libraries(ziti4dotnet
-        PUBLIC ziti
-        )
+         PUBLIC ziti_dll
+         PUBLIC uv
+)

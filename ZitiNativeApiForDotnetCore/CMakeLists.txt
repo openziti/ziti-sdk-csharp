@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.14)
 include(git.cmake)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_STANDARD 99)
+set( CMAKE_SUPPORT_WINDOWS_EXPORT_ALL_SYMBOLS 1 )
+set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(USING_ZITI_SHARED ON)
+set(BUILDING_ZITI_SHARED ON)
 
 if(NOT ZITI_SDK_C_BRANCH)
     #allow using a different branch of the CSDK easily

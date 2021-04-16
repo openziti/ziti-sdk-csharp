@@ -6,5 +6,6 @@ FetchContent_Declare(ziti-sdk-c
         )
 set(ZITI_BUILD_TESTS off)
 set(ZITI_BUILD_PROGRAMS off)
+set(BUILDING_ZITI_SHARED 1)
 FetchContent_MakeAvailable(ziti-sdk-c)
 

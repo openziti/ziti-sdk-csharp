@@ -31,7 +31,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Memory" Version="4.5.3" />
+        <PackageReference Include="NLog" Version="4.7.9" />
+        <PackageReference Include="System.Memory" Version="4.5.4" />
+        <PackageReference Include="System.Text.Json" Version="5.0.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -49,10 +51,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="2019_NF TCL EULA.txt">
+        <Resource Include="2019_NF TCL EULA.txt">
             <Pack>True</Pack>
             <PackagePath></PackagePath>
-        </None>
+        </Resource>
     </ItemGroup>
 
     <Target Name="LocalPush" AfterTargets="GenerateNuspec">
