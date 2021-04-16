@@ -5,64 +5,107 @@ using OpenZiti;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace ConsoleTestApp {
     class Program {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        static IntPtr loop;
         static void Main(string[] args) {
-
-            loop = OpenZiti.API.NewLoop();
-
-            var config = new LoggingConfiguration();
-            // Targets where to log to: File and Console
-            /*
-            var logfile = new FileTarget("logfile") {
-                FileName = ExpectedLogPathUI,
-                ArchiveEvery = FileArchivePeriod.Day,
-                ArchiveNumbering = ArchiveNumberingMode.Rolling,
-                MaxArchiveFiles = 7,
-                Layout = "[${date:format=yyyy-MM-ddTHH:mm:ss.fff}Z] ${level:uppercase=true:padding=5}\t${logger}\t${message}\t${exception:format=tostring}",
-            };
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
-            */
-            var logconsole = new ConsoleTarget("logconsole") {
-                 //Layout = "[${date:format=yyyy-MM-ddTHH:mm:ss.fff}Z] ${level:uppercase=true:padding=5}\t${logger}\t${message}\t${exception:format=tostring}",
-                //layout = "[${date:universalTime=true:format=yyyy-MM-ddTHH\:mm\:ss.fff}Z] ${level:uppercase=true:padding=5}&#009;${logger}&#009;${message}&#009;${exception:format=tostring}",
-                Layout = "[${date:format=yyyy-MM-ddTHH:mm:ss.fff}Z] ${level:uppercase=true:padding=5}\t${message}\t${exception:format=tostring}",
-
-            };
-
-            // Rules for mapping loggers to targets            
-            config.AddRule(LogLevel.Trace, LogLevel.Fatal, logconsole);
-
-            // Apply config           
-            LogManager.Configuration = config;
-
-            Logger.Info("this is a log message");
-            Logger.Info("this is a log message");
-            Logger.Info("this is a log message");
-            Logger.Info("this is a log message");
-
-
-            API.AfterEnroll ae = afterEnroll;
-            Task.Factory.StartNew(() => {
-                API.BeginEnroll(loop, @"c:\temp\id.jwt", ref ae);
-                API.Run(loop);
-            });
-            //ZitiIdentity id = ZitiIdentity.FromFile(@"tests/TestAssets/test-id.json");
-            //Assert.AreEqual("https://this-is-my-controller.netfoundry.io", id.ControllerURL);
-            //id.Start();
-
-            Task.Delay(30000).Wait();
-            Console.WriteLine("=============");
-            Console.WriteLine("=============");
-            Console.WriteLine("=============");
+            Logging.SimpleConsoleLogging(LogLevel.Info);
+            //enrollExample();
+            string ctx = "some context";
+            loadIdExample(ctx);
         }
 
-        private static void afterEnroll(ZitiStatus status) {
-            throw new NotImplementedException();
+        static void enrollExample() {
+            API.Enroll(@"c:\temp\id.jwt", afterEnroll);
+            API.Run();
+        }
+
+        
+        static void loadIdExample(object ctx) {
+
+            var zid = new ZitiIdentity();
+            ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
+                EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent | ZitiEventFlags.ZitiRouterEvent,
+                RefreshInterval = 5,
+                MetricType = RateType.INSTANT,
+                IdentityFile = @"c:\temp\id.json",
+                ApplicationContext = ctx,
+                ConfigurationTypes = new string[] { "all" },
+            };
+
+            opts.OnZitiContextEvent += Opts_OnZitiContextEvent;
+            opts.OnZitiRouterEvent += Opts_OnZitiRouterEvent;
+            opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
+            zid.Run(opts);
+            Logger.Error("=================LOOP IS COMPLETE=================");
+        }
+
+        private static void Opts_OnZitiContextEvent(object sender, ZitiContextEvent e) {
+            Logger.Error("I have a context event: {0}", e.Name);
+        }
+
+        private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
+            foreach (IntPtr p in e.Removed()) {
+                if (p != IntPtr.Zero) {
+                    Logger.Error("REMOVED SERVICE:");
+                    ziti_service svc = Marshal.PtrToStructure<ziti_service>(p);
+                }
+            }
+            foreach (IntPtr p in e.Changed()) {
+                if (p != IntPtr.Zero) {
+                    Logger.Error("UPDATED SERVICE:");
+                    ziti_service svc = Marshal.PtrToStructure<ziti_service>(p);
+                }
+            }
+            foreach (IntPtr p in e.Added()) {
+                if (p != IntPtr.Zero) {
+                    ziti_service svc = Marshal.PtrToStructure<ziti_service>(p);
+                    Logger.Error("ADDED SERVICE: {0}", svc.name);
+                }
+            }
+        }
+
+        private static void Opts_OnZitiRouterEvent(object sender, ZitiRouterEvent e) {
+            switch (e.Type) {
+                case RouterEventType.EdgeRouterConnected:
+                    Logger.Info("Connected to edge router: {0} running: {1}", e.Name, e.Version);
+                    break;
+                case RouterEventType.EdgeRouterDisconnected:
+                    Logger.Info("Disconnected from edge router: {0}", e.Name);
+                    break;
+                case RouterEventType.EdgeRouterRemoved:
+                    Logger.Info("Edge router removed: {0}", e.Name);
+                    break;
+                case RouterEventType.EdgeRouterUnavailable:
+                    Logger.Info("Edge router has become unavailable: {0}", e.Name);
+                    break;
+                default:
+                    Logger.Warn("UNEXPECTED RouterEvents [{0}]! Please report.", e.Type);
+                    break;
+            }
+        }
+
+        static object simpleLock = new object();
+
+        private static void afterEnroll(API.Enrollment.Result result) {
+            Logger.Error("ZITI STATUS : " + result.Status);
+            Logger.Error("    MESSAGE : " + result.Message);
+            if (result.Status == ZitiStatus.OK) {
+                Logger.Error("    ID.Cert : {0}[...]", result.IdInfo.IdMaterial.Certificate.Substring(0, 25));
+                Logger.Error("     ID.Key : {0}[...]", result.IdInfo.IdMaterial.Key.Substring(0, 25));
+                Logger.Error("      ID.CA : {0}[...]", result.IdInfo.IdMaterial.CA.Substring(0, 25));
+            } else {
+                Logger.Error("    ID.Cert : empty");
+                Logger.Error("     ID.Key : empty");
+                Logger.Error("      ID.CA : empty");
+            }
+            lock (simpleLock) {
+                Monitor.Pulse(simpleLock);
+            }
         }
     }
 }

@@ -66,7 +66,7 @@ namespace OpenZiti
             this.onData = onData;
             ZitiConnection conn = new ZitiConnection(this, zitiContext, "this is context in my connection");
             this.conn = conn;
-            Native.API.ziti_dial(conn.nativeConnection, Name, conn_cb, data_cb);
+            //xxx Native.API.ziti_dial(conn.nativeConnection, Name, conn_cb, data_cb);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace OpenZiti
 
             ZitiConnection conn = new ZitiConnection(this, zitiContext, "this is context in my connection");
             this.conn = conn;
-            Native.API.ziti_listen(conn.nativeConnection, Name, native_listen_cb, native_on_client_cb);
+            //xxx Native.API.ziti_listen(conn.nativeConnection, Name, native_listen_cb, native_on_client_cb);
         }
 
         private void conn_cb(IntPtr ziti_connection, int status)

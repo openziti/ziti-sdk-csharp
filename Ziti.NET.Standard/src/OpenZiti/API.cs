@@ -19,8 +19,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenZiti
-{
+namespace OpenZiti {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void OnInit(ZitiContext zitiContext, ZitiStatus status, object initContext);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -37,11 +36,10 @@ namespace OpenZiti
     public delegate void OnZitiClientConnected(ZitiConnection serverConnection, ZitiConnection clientConnection, ZitiStatus status);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void OnClientAccept(ZitiConnection clientConnection, ZitiStatus status);
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]   
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void OnZitiClientData(ZitiConnection clientConnection, byte[] data, int len, ZitiStatus status);
 
-    public enum RateType
-    {
+    public enum RateType {
         EWMA_1m, //Exponentially Weighted Moving Average - 1min
         EWMA_5m, //Exponentially Weighted Moving Average - 5min
         EWMA_15m, //Exponentially Weighted Moving Average - 15min
@@ -52,9 +50,50 @@ namespace OpenZiti
     };
 
     public class API {
+        public static class Enrollment {
+            public delegate void AfterEnroll(Result result);
+
+            internal class AfterEnrollWrapper {
+                public AfterEnroll afterEnroll;
+                public StructWrapper wrapper;
+                public AfterEnrollWrapper() { }
+            }
+
+            internal static void ziti_enroll_cb_impl(IntPtr ziti_config, int status, string msg, GCHandle enroll_context) {
+                if (enroll_context.IsAllocated) {
+                    Enrollment.AfterEnrollWrapper w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
+                    w.wrapper.Dispose();
+
+                    Result r = new Result() {
+                        Status = (ZitiStatus)status,
+                        Message = msg,
+                    };
+
+                    if (r.Status.Ok()) {
+                        ZitiIdentityFormat fromZiti = Marshal.PtrToStructure<ZitiIdentityFormat>(ziti_config);
+                        r.IdInfo = fromZiti;
+                    }
+
+                    w.afterEnroll(r);
+                } else {
+                    Console.WriteLine("well what the heck?");
+                }
+            }
+            public struct Result {
+                public ZitiIdentityFormat IdInfo;
+                public ZitiStatus Status;
+                public string Message;
+            }
+        }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        
-        public delegate void AfterEnroll(ZitiStatus status);
+
+        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.newLoop() };
+        public static UVLoop DefaultLoop {
+            get {
+                return defaultLoop;
+            }
+        }
+
 
         static Native.log_writer logger = logFunction;
 
@@ -95,33 +134,31 @@ namespace OpenZiti
 
             }
         }
-        static Native.ziti_enroll_cb enroll_cb = Callback.ziti_enroll_cb_impl;
+        static Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
 
-        public static void BeginEnroll(IntPtr loop, string identityFile, ref AfterEnroll afterEnroll) {
-
-
-            Logger.Error("Default Loop: {0}, this loop: {1}", Native.API.z4d_default_loop(), loop);
-
-            Native.API.ziti_log_init(loop, 11, Marshal.GetFunctionPointerForDelegate<Native.log_writer>(logger) );
+        public static void Enroll(string identityFile, Enrollment.AfterEnroll afterEnroll) {
+            var loop = API.DefaultLoop;
+            Native.API.ziti_log_init(loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate<Native.log_writer>(logger));
 
 
             Native.ziti_enroll_options opts = new Native.ziti_enroll_options() {
                 jwt = identityFile,
             };
 
-            GCHandle enroll_context = GCHandle.Alloc(afterEnroll);
-            IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(opts));
-            Marshal.StructureToPtr(opts, pnt, false);
-            Native.API.ziti_enroll(pnt, loop, enroll_cb, GCHandle.FromIntPtr(pnt));
+            Enrollment.AfterEnrollWrapper w = new Enrollment.AfterEnrollWrapper() {
+                afterEnroll = afterEnroll,
+                wrapper = new StructWrapper(opts),
+            };
+
+            //GCHandle enroll_context = GCHandle.Alloc(afterEnroll);
+            //IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(opts));
+            //Marshal.StructureToPtr(opts, pnt, false);
+            Native.API.ziti_enroll(w.wrapper.Ptr, loop.nativeUvLoop, enroll_cb, GCHandle.Alloc(w));
         }
 
-        public static void DoSillyLoop(IntPtr loop) {
-            Native.API.DoSillyLoop(loop);
-        }
 
-        public static void Run(IntPtr loop)
-        {
-            Native.API.z4d_uv_run(loop);
+        public static void Run() {
+            Native.API.z4d_uv_run(DefaultLoop.nativeUvLoop);
         }
 
         public static IntPtr NewLoop() {
@@ -129,15 +166,88 @@ namespace OpenZiti
         }
     }
 
-    internal class Callback {
-        
-        public static void ziti_enroll_cb_impl(IntPtr ziti_config, int status, string errorMessage, GCHandle enroll_context) {
-            if (enroll_context.IsAllocated) {
-                API.AfterEnroll cb = (API.AfterEnroll)enroll_context.Target;
-                enroll_context.Free();
+    class StructWrapper : IDisposable {
+        public IntPtr Ptr { get; private set; }
+
+        public StructWrapper(object obj) {
+            if (Ptr != null) {
+                Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
+                Marshal.StructureToPtr(obj, Ptr, false);
             } else {
-                Console.WriteLine("well what the heck?");
+                Ptr = IntPtr.Zero;
             }
         }
+
+        ~StructWrapper() {
+            if (Ptr != IntPtr.Zero) {
+                Marshal.FreeHGlobal(Ptr);
+                Ptr = IntPtr.Zero;
+            }
+        }
+
+        public void Dispose() {
+            Marshal.FreeHGlobal(Ptr);
+            Ptr = IntPtr.Zero;
+            GC.SuppressFinalize(this);
+        }
+
+        public static implicit operator IntPtr(StructWrapper w) {
+            return w.Ptr;
+        }
+    }
+
+
+
+    public struct ZitiIdentityFormat {
+        public string ControllerUrl;
+        public IdentityMaterial IdMaterial;
+    }
+
+    public struct IdentityMaterial {
+        public string Certificate;
+        public string Key;
+        public string CA;
+    }
+    public struct ziti_version {
+#pragma warning disable 0649
+        internal string version;
+        internal string revision;
+        internal string build_date;
+#pragma warning restore 0649
+    }
+
+    public enum RouterEventType {
+        EdgeRouterConnected,
+        EdgeRouterDisconnected,
+        EdgeRouterRemoved,
+        EdgeRouterUnavailable,
+    }
+
+    public struct ziti_service {
+        public string id;
+        public string name;
+        public string permissions;
+        public bool encryption;
+        public int perm_flags;
+        public string config;
+        //public posture_query_set posture_query_set;
+    }
+
+    public struct posture_query_set {
+        public string policy_id;
+        public bool is_passing;
+        public string policy_type;
+        public posture_query[] posture_queries;
+    }
+    public struct posture_query {
+        public string id;
+        public bool is_passing;
+        public string query_type;
+        public ziti_process process;
+        public int timeout;
+    }
+
+    public struct ziti_process {
+        public string path;
     }
 }

@@ -65,7 +65,7 @@ namespace OpenZiti
             ConnectionContext = connectionContext;
 
             //make initialze a connection in native code
-            Native.API.ziti_conn_init(context.nativeZitiContext, out nativeConnection, nativeConnContext);
+            //xxx Native.API.ziti_conn_init(context.nativeZitiContext, out nativeConnection, nativeConnContext);
             zitiContext = context;
         }
 
@@ -94,19 +94,21 @@ namespace OpenZiti
         public int Write(byte[] data, int len, OnZitiDataWritten afterDataWritten, object context)
         {
             aafterData = afterDataWritten;
-            return Native.API.ziti_write(nativeConnection, data, len, afterData, GCHandle.Alloc(context));
+            //xxx return Native.API.ziti_write(nativeConnection, data, len, afterData, GCHandle.Alloc(context));
+            return 0;
         }
 
         public int Accept(OnClientAccept onAccept, OnZitiClientData onClientData)
         {
             this.onAccept = onAccept;
             this.onClientData = onClientData;
-            return Native.API.ziti_accept(nativeConnection, native_on_accept, native_on_client_data);
+            //xxx return Native.API.ziti_accept(nativeConnection, native_on_accept, native_on_client_data);
+            return 0;
         }
 
         public void Close()
         {
-            Native.API.z4d_ziti_close(nativeConnection);
+            //xxx Native.API.z4d_ziti_close(nativeConnection);
         }
 
         private void native_on_accept(IntPtr ziti_connection, int status)
@@ -155,7 +157,7 @@ namespace OpenZiti
             internal OnZitiDataReceived dataReceived;
             internal void dial(string serviceName)
             {
-                Native.API.ziti_dial(conn.nativeConnection, serviceName, conn_cb, data_cb);
+                //xxx Native.API.ziti_dial(conn.nativeConnection, serviceName, conn_cb, data_cb);
             }
 
             private void conn_cb(IntPtr ziti_connection, int status)

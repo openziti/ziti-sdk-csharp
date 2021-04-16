@@ -17,11 +17,9 @@ limitations under the License.
 using System;
 using System.Runtime.InteropServices;
 
-namespace OpenZiti.Native
-{
+namespace OpenZiti.Native {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ziti_enroll_options
-    {
+    internal struct ziti_enroll_options {
         internal string jwt;
         internal string enroll_key;
         internal string enroll_cert;
@@ -43,6 +41,7 @@ namespace OpenZiti.Native
     // typedef void (* ziti_write_cb) (ziti_connection conn, ssize_t status, void* write_ctx);
     internal delegate void ziti_write_cb(IntPtr ziti_connection, int status, GCHandle write_context);
     // typedef void (* ziti_enroll_cb) (ziti_config* cfg, int status, char* err_message, void* enroll_ctx);
+    [UnmanagedFunctionPointer(API.CALL_CONVENTION)]
     internal delegate void ziti_enroll_cb(IntPtr ziti_config, int status, string errorMessage, GCHandle enroll_context);
     // typedef ssize_t(*ziti_data_cb)(ziti_connection conn, uint8_t* data, ssize_t length);
     internal delegate int ziti_data_cb(IntPtr conn, IntPtr data, int length);
@@ -71,6 +70,7 @@ namespace OpenZiti.Native
     //typedef void (*ziti_aq_mfa_cb)(ziti_context ztx, void* mfa_ctx, ziti_auth_query_mfa *aq_mfa, ziti_ar_mfa_cb response_cb);
     internal delegate void ziti_aq_mfa_cb(IntPtr ziti_context, IntPtr mfa_ctx, IntPtr aq_mfa, ziti_ar_mfa_cb response_cb);
     //typedef void (*ziti_event_cb)(ziti_context ztx, const ziti_event_t *event);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal delegate void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event);
 
     internal class API {
@@ -78,8 +78,11 @@ namespace OpenZiti.Native
 
         internal const string root = @"c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\dlls\";
         internal const string Z4D_DLL_PATH = @"C:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Debug\ziti4dotnet.dll";
-//        internal const string ZITI_DLL_PATH = root + @"ziti.dll";
-        
+        //        internal const string ZITI_DLL_PATH = root + @"ziti.dll";
+
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_default_loop", CallingConvention = CALL_CONVENTION)]
+        internal static extern IntPtr z4d_default_loop();
+
         //these functions should be declared in the same order as they appear in ziti.h to make diffing easier!
         //defined in C: extern int ziti_enroll(ziti_enroll_opts *opts, uv_loop_t *loop, ziti_enroll_cb enroll_cb, void *enroll_ctx);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_enroll")]
@@ -88,14 +91,72 @@ namespace OpenZiti.Native
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_log_init", CallingConvention = CALL_CONVENTION)]
         internal static extern void ziti_log_init(IntPtr loop, int level, IntPtr/*log_writer*/ logger);
 
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "passAndPrint", CallingConvention = CALL_CONVENTION)]
-        internal static extern void passAndPrint(IntPtr anything);
-
         [DllImport(Z4D_DLL_PATH, EntryPoint = "newLoop", CallingConvention = CALL_CONVENTION)]
         internal static extern IntPtr newLoop();
 
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "DoSillyLoop", CallingConvention = CALL_CONVENTION)]
-        internal static extern void DoSillyLoop(IntPtr loop);
+        //defined in C: extern int ziti_init_opts(ziti_options *options, uv_loop_t *loop, void *init_ctx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init_opts", CallingConvention = CALL_CONVENTION)]
+        internal static extern int ziti_init_opts(IntPtr/*ziti_options* */ options, IntPtr loop);
+
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_uv_run", CallingConvention = CALL_CONVENTION)]
+        internal static extern int z4d_uv_run(IntPtr loop);
+
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_all_config_types", CallingConvention = CALL_CONVENTION)]
+        internal static extern IntPtr z4d_all_config_types();
+
+        //defined in C: extern const ziti_identity *ziti_get_identity(ziti_context ztx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_identity", CallingConvention = CALL_CONVENTION)]
+        internal static extern IntPtr ziti_get_identity(IntPtr ztx);
+
+        //defined in C: extern const char *ziti_get_controller(ziti_context ztx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_controller", CallingConvention = CALL_CONVENTION)]
+        internal static extern IntPtr ziti_get_controller(IntPtr ztx);
+
+        //defined in C: extern const ziti_version *ziti_get_controller_version(ziti_context ztx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_controller_version", CallingConvention = CALL_CONVENTION)]
+        internal static extern IntPtr ziti_get_controller_version(IntPtr ztx);
+
+        //defined in C: extern const ziti_version *ziti_get_version();
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_version", CallingConvention = CALL_CONVENTION)]
+        internal static extern IntPtr ziti_get_version();
+
+        //defined in C: ziti_service* ziti_service_array_get(ziti_service_array arr, int idx);
+        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_service_array_get", CallingConvention = CALL_CONVENTION)]
+        internal static extern IntPtr ziti_service_array_get(IntPtr ziti_service_array, int idx);
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //internal const string Z4D_DLL_PATH = @"ziti4dotnet";
         /*
@@ -103,9 +164,7 @@ namespace OpenZiti.Native
          * */
         //internal const string Z4D_DLL_PATH = @"c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Release\ziti4dotnet.dll";
         //internal const string ZITI_DLL_PATH = @"c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Release\ziti4dotnet.dll";
-
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_default_loop", CallingConvention = CALL_CONVENTION)]
-        internal static extern IntPtr z4d_default_loop();
+        /*
 
         //defined in C: extern int ziti_service_available(ziti_context ztx, const char *service, ziti_service_cb cb, void *ctx);
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_service_available")]
@@ -122,11 +181,13 @@ namespace OpenZiti.Native
         //defined in C: extern void ziti_get_transfer_rates(ziti_context ztx, double *up, double *down);
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_transfer_rates")]
         internal static extern void ziti_get_transfer_rates(IntPtr native_context, ref double up, ref double down);
-
+        */
+        /*
         //defined in C: extern int ziti_init(string config, uv_loop_t *loop, ziti_init_cb init_cb, void* init_ctx);
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init")]
         internal static extern int ziti_init(string config, IntPtr loop, ziti_init_cb init_cb, GCHandle init_ctx);
-
+        */
+        /*
         //defined in C: extern int ziti_conn_init(ziti_context ztx, ziti_connection* conn, void* data);
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_init")]
         internal static extern int ziti_conn_init(IntPtr ziti_context, out IntPtr ziti_connection, GCHandle connection_context);
@@ -158,22 +219,6 @@ namespace OpenZiti.Native
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_accept")]
         internal static extern int ziti_accept(IntPtr conn, ziti_conn_cb cb, ziti_data_cb data_cb);
 
-        //defined in C: extern int ziti_init_opts(ziti_options *options, uv_loop_t *loop, void *init_ctx);
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init_with_opts")]
-        internal static extern int ziti_init_with_opts(IntPtr options, IntPtr loop);
-
-        //defined in C: extern const char *ziti_get_controller(ziti_context ztx);
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_controller_version")]
-        internal static extern string ziti_get_controller_version(IntPtr ztx);
-
-        //defined in C: extern const ziti_identity *ziti_get_identity(ziti_context ztx);
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_identity")]
-        internal static extern IntPtr ziti_get_identity(IntPtr ztx);
-
-        //defined in C: extern const ziti_version *ziti_get_version();
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_version")]
-        internal static extern IntPtr ziti_get_version();
-
         //defined in z4d helper C dll for C#
         //            : extern int z4d_close_connection(ziti_connection con);
         // 
@@ -182,22 +227,10 @@ namespace OpenZiti.Native
         [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_ziti_close")]
         internal static extern int z4d_ziti_close(IntPtr conn);
 
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_uv_run")]
-        internal static extern int z4d_uv_run(IntPtr loop);
+        */
+    }
 
-        [System.Runtime.InteropServices.DllImport(Z4D_DLL_PATH, EntryPoint = "json_from_ziti_config")]
-        internal static extern IntPtr z4d_all_config_types();
-    }
-    internal struct ziti_version
-    {
-#pragma warning disable 0649
-        internal string version;
-        internal string revision;
-        internal string build_date;
-#pragma warning restore 0649
-    }
-    internal struct ziti_identity
-    {
+    internal struct ziti_identity {
 #pragma warning disable 0649
         internal string id;
         internal string name;
@@ -215,7 +248,8 @@ namespace OpenZiti.Native
 
         internal IntPtr tls;
 
-        internal IntPtr config_types; //internal string[] /*internal char**/ config_types;
+        //internal IntPtr config_types; 
+        internal IntPtr /*internal char**/ config_types;
 
         internal Int32 refresh_interval; //the duration in seconds between checking for updates from the controller
         internal RateType metrics_type; //an enum describing the metrics to collect
@@ -239,8 +273,7 @@ namespace OpenZiti.Native
 #pragma warning restore 0649
     };
 
-    internal struct ziti_service
-    {
+    internal struct ziti_service {
 #pragma warning disable 0649
         internal string id;
         internal string name;
@@ -250,8 +283,25 @@ namespace OpenZiti.Native
 #pragma warning restore 0649
     }
 
-    internal struct tls_context
-    {
+    internal struct tls_context {
 
     }
+
+    struct ziti_context_event {
+        public int type;
+        public int ctrl_status;
+        public string err;
+    };
+    struct ziti_router_event {
+        public int type;
+        public int status;
+        public string name;
+        public string version;
+    };
+    struct ziti_service_event {
+        public int type;
+        public IntPtr removed;
+        public IntPtr changed;
+        public IntPtr added;
+    };
 }

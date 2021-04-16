@@ -15,7 +15,7 @@ int z4d_ziti_close(ziti_connection con) {
 }
 
 int z4d_uv_run(void* loop) {
-    printf("I AM RUNNING THE LOOP %p\n", loop);
+    ZITI_LOG(TRACE, "running loop with address: %p", loop);
     return uv_run(loop, UV_RUN_DEFAULT);
 }
 
@@ -39,32 +39,14 @@ void* z4d_registerUVTimer(uv_loop_t * loop, uv_timer_cb timer_cb, uint64_t delay
     return uvt;
 }
 
-/*void ziti_init_with_opts(ziti_options* opts, uv_loop_t* loop) {
-    ziti_init_opts(opts, loop);
-}*/
-
-void passAndPrint(void* anything){
-    printf("I AM PRINTING THE VALUE HERE: %p\n", anything);
-    printf("I AM PRINTING THE VALUE HERE: %p\n", anything);
-    printf("I AM PRINTING THE VALUE HERE: %p\n", anything);
-}
-
 void* newLoop() {
     return uv_loop_new();
 }
 
-//typedef void (*uv_timer_cb)(uv_timer_t* handle);
-void cb(uv_timer_t* handle){
-    printf("yepyep\n");
+int ziti_event_type_from_pointer(const ziti_event_t *event) {
+    return event->type;
 }
-uv_loop_t *loop;
-uv_timer_t gc_req;
-uv_timer_t fake_job_req;
-uv_timer_t timer_req;
-void DoSillyLoop(uv_loop_t * loop){
 
-    uv_timer_init(loop, &timer_req);
-    uv_timer_start(&timer_req, cb, 500, 2000);
-    printf("I started the timer... for loop %p\n", loop);
-
+ziti_service* ziti_service_array_get(ziti_service_array arr, int idx) {
+    return arr ? arr[idx] : NULL;
 }

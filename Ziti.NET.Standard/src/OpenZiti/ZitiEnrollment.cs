@@ -77,8 +77,8 @@ namespace OpenZiti
             byte[] bytes = new byte[jsonMaxSize];
 
             int len;
-            Native.API.json_from_ziti_config(ziti_config, bytes, jsonMaxSize, out len);
-
+            //xxx Native.API.json_from_ziti_config(ziti_config, bytes, jsonMaxSize, out len);
+            len = 0;
             EnrollmentResult result = new EnrollmentResult()
             {
                 Json = Encoding.UTF8.GetString(bytes, 0, len),
