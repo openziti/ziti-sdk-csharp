@@ -32,7 +32,7 @@ namespace ConsoleTestApp {
                 EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent | ZitiEventFlags.ZitiRouterEvent,
                 RefreshInterval = 5,
                 MetricType = RateType.INSTANT,
-                IdentityFile = @"c:\temp\id.json",
+                IdentityFile = @"c:\temp\pn.json",
                 ApplicationContext = ctx,
                 ConfigurationTypes = new string[] { "all" },
             };
@@ -49,22 +49,48 @@ namespace ConsoleTestApp {
         }
 
         private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
-            foreach (IntPtr p in e.Removed()) {
-                if (p != IntPtr.Zero) {
-                    Logger.Error("REMOVED SERVICE:");
-                    ziti_service svc = Marshal.PtrToStructure<ziti_service>(p);
+            foreach (ZitiService svc in e.Removed()) {
+                Logger.Error("REMOVED SERVICE: {0}", svc.Name);
+            }
+            foreach (ZitiService svc in e.Changed()) {
+                Logger.Error("CHANGED SERVICE: {0}", svc.Name);
+            }
+            foreach (ZitiService svc in e.Added()) {
+                Logger.Error("ADDED SERVICE: {0}", svc.Name);
+                if(svc.Name == "eth0mfa") {
+                    svc.Dial(onConnected, onData);
                 }
             }
-            foreach (IntPtr p in e.Changed()) {
-                if (p != IntPtr.Zero) {
-                    Logger.Error("UPDATED SERVICE:");
-                    ziti_service svc = Marshal.PtrToStructure<ziti_service>(p);
-                }
+        }
+
+        private static void onConnected(ZitiConnection connection, ZitiStatus status) {
+            Logger.Error("hurray. we are connected...");
+            if (status.Ok()) {
+                string payload = @"GET / HTTP/1.0
+Host: eth0.me
+User-Agent: curl/7.55.1
+Accept: */*
+
+";
+                connection.Write(System.Text.Encoding.UTF8.GetBytes(payload), onDataWritten, "no context needed");
+                Logger.Error("hurray. we wrote some data to ziti... maybe...");
+            } else {
+                Logger.Error("UGH! something has gone horribly wrong.... {0}", status.GetDescription());
             }
-            foreach (IntPtr p in e.Added()) {
-                if (p != IntPtr.Zero) {
-                    ziti_service svc = Marshal.PtrToStructure<ziti_service>(p);
-                    Logger.Error("ADDED SERVICE: {0}", svc.name);
+        }
+
+        private static void onDataWritten(ZitiConnection connection, ZitiStatus status, object context) {
+            Logger.Error("onDataWritten called but who cares?");
+        }
+
+        private static void onData(ZitiConnection connection, ZitiStatus status, byte[] data) {
+            if (status.Ok()) {
+                Logger.Error("bytes have been received: " + System.Text.Encoding.UTF8.GetString(data));
+            } else {
+                if (status == ZitiStatus.EOF) {
+                    Logger.Error("We are done here! woo hoo");
+                } else {
+                    Logger.Error("something went terriblywrong");
                 }
             }
         }

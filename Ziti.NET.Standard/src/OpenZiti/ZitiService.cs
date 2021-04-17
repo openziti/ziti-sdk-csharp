@@ -27,10 +27,19 @@ namespace OpenZiti
     /// </summary>
     public class ZitiService
     {
+        private string name = null;
+
         /// <summary>
         /// The Name of the <see cref="ZitiService"/>
         /// </summary>
-        public string Name { get; private set; }
+        public string Name {
+            get {
+                if (name == null) {
+                    name = nativeService.name;
+                }
+                return name;
+            }
+        }
 
         internal readonly byte[] NO_DATA = new byte[0];
 
@@ -46,7 +55,6 @@ namespace OpenZiti
         {
             zitiContext = context;
             nativeService = Marshal.PtrToStructure<ziti_service>(ziti_service);
-            Name = nativeService.name;
         }
 
         /// <summary>
@@ -66,7 +74,7 @@ namespace OpenZiti
             this.onData = onData;
             ZitiConnection conn = new ZitiConnection(this, zitiContext, "this is context in my connection");
             this.conn = conn;
-            //xxx Native.API.ziti_dial(conn.nativeConnection, Name, conn_cb, data_cb);
+            Native.API.ziti_dial(conn.nativeConnection, Name, conn_cb, data_cb);
         }
 
         /// <summary>
@@ -88,7 +96,7 @@ namespace OpenZiti
 
             ZitiConnection conn = new ZitiConnection(this, zitiContext, "this is context in my connection");
             this.conn = conn;
-            //xxx Native.API.ziti_listen(conn.nativeConnection, Name, native_listen_cb, native_on_client_cb);
+            Native.API.ziti_listen(conn.nativeConnection, Name, native_listen_cb, native_on_client_cb);
         }
 
         private void conn_cb(IntPtr ziti_connection, int status)

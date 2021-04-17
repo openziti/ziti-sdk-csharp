@@ -144,6 +144,7 @@ namespace OpenZiti
                         removed = ziti_service_event.removed,
                         changed = ziti_service_event.changed,
                         added = ziti_service_event.added,
+                        ziti_ctx = ziti_context,
                     };
                     InitOpts.ZitiServiceEvent(serviceEvent);
                     break;
@@ -175,6 +176,7 @@ namespace OpenZiti
         internal IntPtr removed;
         internal IntPtr changed;
         internal IntPtr added;
+        internal IntPtr ziti_ctx;
 
         private IEnumerable<IntPtr> array_iterator(IntPtr arr) {
             int index = 0;
@@ -188,21 +190,24 @@ namespace OpenZiti
             }
         }
 
-        public IEnumerable<IntPtr> Removed() {
+        public IEnumerable<ZitiService> Removed() {
             foreach(IntPtr p in array_iterator(removed)) {
-                yield return p;
+                ZitiService svc = new ZitiService(new ZitiContext(ziti_ctx), p);
+                yield return svc;
             }
         }
 
-        public IEnumerable<IntPtr> Changed() {
+        public IEnumerable<ZitiService> Changed() {
             foreach (IntPtr p in array_iterator(changed)) {
-                yield return p;
+                ZitiService svc = new ZitiService(new ZitiContext(ziti_ctx), p);
+                yield return svc;
             }
         }
 
-        public IEnumerable<IntPtr> Added() {
+        public IEnumerable<ZitiService> Added() {
             foreach (IntPtr p in array_iterator(added)) {
-                yield return p;
+                ZitiService svc = new ZitiService(new ZitiContext(ziti_ctx), p);
+                yield return svc;
             }
         }
     }
