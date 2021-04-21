@@ -19,74 +19,31 @@ using System.Text;
 
 using OpenZiti.Native;
 
-namespace OpenZiti
-{
-    public class ZitiEnrollment
-    {
+namespace OpenZiti {
+    public class ZitiEnrollment {
         [UnmanagedFunctionPointer(Native.API.CALL_CONVENTION)]
         public delegate void AfterEnrollment(EnrollmentResult result, object context);
 
-        private class EnrollmentContext
-        {
+        private class EnrollmentContext {
             internal AfterEnrollment cb;
             internal object context;
         }
 
-        public struct EnrollmentResult
-        {
-            public string Json;
-        }
+        public class EnrollmentResult {
+            internal IntPtr nativeConfig;
+            public object Context;
+            public ZitiStatus Status;
+            public string Message { get; internal set; }
+            public string Json {
+                get {
+                    return System.Text.Json.JsonSerializer.Serialize(ZitiIdentity);
+                }
+            }
+            public ZitiIdentityFormat ZitiIdentity { get; set; }
 
-        public struct Options
-        {
-            public string Jwt { get; set; }
-            public string EnrollKey { get; set; }
-            public string EnrollCert { get; set; }
-        }
-
-        static IntPtr loop = Native.API.z4d_default_loop();
-
-        public static void Enroll(Options opts, AfterEnrollment afterEnrollment, object context)
-        {
-            ziti_enroll_options native_opts = new ziti_enroll_options()
-            {
-                jwt = opts.Jwt,
-                enroll_cert = opts.EnrollCert,
-                enroll_key = opts.EnrollKey,
-            };
-
-            EnrollmentContext ctx = new EnrollmentContext()
-            {
-                cb = afterEnrollment,
-                context = context,
-            };
-
-            
-            IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(native_opts));
-            Marshal.StructureToPtr(native_opts, pnt, false);
-            Native.API.ziti_enroll(pnt, loop, ecb, GCHandle.Alloc(ctx));
-        }
-
-        static ziti_enroll_cb ecb = native_on_ziti_enroll;
-
-        static internal void native_on_ziti_enroll(IntPtr ziti_config, int status, string errorMessage, GCHandle context)
-        {
-            ZitiUtil.CheckStatus(status);
-
-            int jsonMaxSize = 2 << 16; //64k
-            byte[] bytes = new byte[jsonMaxSize];
-
-            int len;
-            Native.API.json_from_ziti_config(ziti_config, bytes, jsonMaxSize, out len);
-            len = 0;
-            EnrollmentResult result = new EnrollmentResult()
-            {
-                Json = Encoding.UTF8.GetString(bytes, 0, len),
-            };
-
-            EnrollmentContext ctx = (EnrollmentContext)context.Target;
-            ctx.cb(result, ctx.context);
-            context.SafeFreeGCHandle();
+            public EnrollmentResult(IntPtr nativeConfig) {
+                this.nativeConfig = nativeConfig;
+            }
         }
     }
 }

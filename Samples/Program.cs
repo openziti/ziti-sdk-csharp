@@ -2,57 +2,59 @@
 
 using OpenZiti;
 using System.Runtime.InteropServices;
+using NLog;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace OpenZiti.Samples
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            try
-            {
-                args = new string[] { @"c:\temp\id.json", "weather", "ssh-service:2345" };
+namespace OpenZiti.Samples {
+    class Program {
+        static async Task Main(string[] args) {
+            try {
+                Logging.SimpleConsoleLogging(LogLevel.Trace);
+                //API.NativeLogger = API.DefaultNativeLogFunction;
 
-                CheckUsage(args);
-
-                // set the log level of the native sdk
-                Environment.SetEnvironmentVariable("ZITI_LOG", "3");
-
-                switch (args[1].ToLower())
-                {
+                Console.Clear();
+               
+                args = new string[] { "weather", @"c:\temp\pn.json", "ssh-service:2345" };
+                string identityFile = args[1];
+                switch (args[0].ToLower()) {
+                    case "eth0":
+                        Eth0.Run(identityFile);
+                        break;
                     case "weather":
-                        Weather.Run(args);
+                        Weather.Run(identityFile);
                         break;
                     case "enroll":
-                        Enrollment.Run(args);
+                        Enrollment.Run(@"c:\temp\enrollment.jwt");
                         break;
                     case "hosted":
-                        HostedService.Run(args);
+                        await HostedService.RunAsync(identityFile);
                         break;
-                    case "proxy":
-                        TcpProxy.Run(args);
+                    default:
+                        Console.WriteLine($"Unexpected sample supplied {args[0]}. Running weather sample");
+                        Weather.Run(identityFile);
                         break;
                 }
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("Sample execution completed successfully");
                 Console.WriteLine("==============================================================");
-            } 
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 Console.WriteLine("==============================================================");
-                Console.WriteLine("Sample failed to execute");
+                Console.WriteLine("Sample failed to execute: " + e.Message);
                 Console.WriteLine("==============================================================");
             }
         }
+    }
 
-        public static void CheckUsage(string[] args)
-        {
-            if (args.Length < 2)
-            {
-                string appname = System.AppDomain.CurrentDomain.FriendlyName;
-                Console.WriteLine("Usage:");
-                Console.WriteLine($"\t{appname} <path to config file> <sample to run: weather|enroll|hosted|proxy>");
-                throw new ArgumentException("too few");
+    public static class CommonMethods {
+        public static void CheckStatus(ZitiStatus status) {
+            if (status.Ok()) {
+                //good. carry on.
+            } else {
+                //something went wrong. inspect the erorr here...
+                Console.WriteLine("An error occurred.");
+                Console.WriteLine("    ZitiStatus : " + status);
+                Console.WriteLine("               : " + status.GetDescription());
             }
         }
     }

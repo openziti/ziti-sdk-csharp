@@ -44,7 +44,7 @@ namespace OpenZiti
         internal byte[] NO_DATA = new byte[0];
         internal IntPtr nativeConnection = IntPtr.Zero;
 
-        private ZitiService service = null;
+        public ZitiService Service { get; internal set; }
         private ZitiContext zitiContext = null;
         private object _connectionContext;
         private GCHandle nativeConnContext = ZitiUtil.NO_CONTEXT;
@@ -61,11 +61,11 @@ namespace OpenZiti
         /// <param name="connectionContext">Additional context that needs to be stored along with the <see cref="ZitiConnection"/></param>
         public ZitiConnection(ZitiService service, ZitiContext context, object connectionContext)
         {
-            this.service = service;
+            this.Service = service;
             ConnectionContext = connectionContext;
 
             //make initialze a connection in native code
-            Native.API.ziti_conn_init(context.nativeZitiContext, out nativeConnection, nativeConnContext);
+            Native.API.ziti_conn_init(context.nativeZitiContext, out nativeConnection, GCHandle.ToIntPtr(nativeConnContext));
             zitiContext = context;
         }
 
@@ -83,7 +83,7 @@ namespace OpenZiti
             de.conn = this;
             de.onConnected = onConnected;
             de.dataReceived = dataReceived;
-            de.dial(service.Name);
+            de.dial(Service.Name);
         }
 
         public int Write(byte[] data, OnZitiDataWritten afterDataWritten, object context)
@@ -94,7 +94,7 @@ namespace OpenZiti
         public int Write(byte[] data, int len, OnZitiDataWritten afterDataWritten, object context)
         {
             aafterData = afterDataWritten;
-            return Native.API.ziti_write(nativeConnection, data, len, afterData, GCHandle.Alloc(context));
+            return Native.API.ziti_write(nativeConnection, data, len, afterData, GCHandle.ToIntPtr(GCHandle.Alloc(context)));
             return 0;
         }
 

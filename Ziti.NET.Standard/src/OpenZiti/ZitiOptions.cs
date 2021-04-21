@@ -23,7 +23,7 @@ namespace OpenZiti
     /// <summary>
     /// <see cref="ZitiOptions"/> is used to initialize a Ziti identity.
     /// </summary>
-    public class ZitiOptions
+    internal class ZitiOptions
     {
         ~ZitiOptions()
         {

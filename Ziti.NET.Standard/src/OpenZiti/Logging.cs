@@ -19,6 +19,7 @@ namespace OpenZiti {
 
             // Apply config           
             LogManager.Configuration = config;
+            LogManager.ReconfigExistingLoggers();
         }
     }
 }

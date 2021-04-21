@@ -41,8 +41,12 @@ namespace OpenZiti
             }
         }
 
+
+        public ZitiIdentity Identity { get; internal set; }
+
         internal readonly byte[] NO_DATA = new byte[0];
 
+        internal IntPtr nativeServicePointer;
         private ziti_service nativeService;
         private ZitiContext zitiContext;
         private ZitiConnection conn;
@@ -51,9 +55,11 @@ namespace OpenZiti
         private OnZitiListening listenCallback;
         private OnZitiClientConnected onClientConnected;
 
-        internal ZitiService(ZitiContext context, IntPtr ziti_service)
+        internal ZitiService(ZitiIdentity id, ZitiContext context, IntPtr ziti_service)
         {
+            this.Identity = id;
             zitiContext = context;
+            this.nativeServicePointer = ziti_service;
             nativeService = Marshal.PtrToStructure<ziti_service>(ziti_service);
         }
 
@@ -133,6 +139,10 @@ namespace OpenZiti
             ZitiConnection client = new ZitiConnection(this, zitiContext, "this is context in my connection");
             client.nativeConnection = ziti_connection_client;
             onClientConnected(svr, client, (ZitiStatus)status);
+        }
+
+        public string GetConfiguration(string configName) {
+            return API.GetConfiguration(this, configName);
         }
     }
 }

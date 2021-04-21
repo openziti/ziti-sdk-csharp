@@ -18,18 +18,18 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
+
+using OpenZiti;
 
 namespace OpenZiti.Samples {
-    public class Weather {
+    public class Eth0 {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
 
         public static void Run(string identityFile) {
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
                 EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent,
                 IdentityFile = identityFile,
-                ApplicationContext = "weather-svc",
-                ConfigurationTypes = new string[] { "weather-config-type" },
+                ApplicationContext = "eth0mfa",
             };
             opts.OnZitiContextEvent += Opts_OnZitiContextEvent;
             opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
@@ -58,24 +58,18 @@ namespace OpenZiti.Samples {
                 Console.WriteLine("ERROR: Could not find the service we want?");
             }
         }
-
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
             ZitiUtil.CheckStatus(status);
-            
-            string cfg = connection.Service.GetConfiguration("weather-config-type");
-            string where = null;
-            if (cfg == null) {
-                where = "London";
-                Console.WriteLine("The service does not have a configuration of type 'weather-config-type' - using default: " + where);
-            } else {
-                where = JsonDocument.Parse(cfg).RootElement.GetProperty("where").ToString();
-            }
-            byte[] bytes = Encoding.UTF8.GetBytes($"GET /{where} HTTP/1.0\r\n"
-                                                + "Accept: *-/*\r\n"
-                                                + "Connection: close\r\n"
-                                                + "User-Agent: curl/7.59.0\r\n"
-                                                + "Host: wttr.in\r\n"
-                                                + "\r\n");
+
+            Console.WriteLine("sending HTTP request: " + connection.ConnectionContext);
+
+            string payload = @"GET / HTTP/1.0
+Host: eth0.me
+User-Agent: curl/7.55.1
+Accept: */*
+
+";
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(payload);
 
             connection.Write(bytes, afterDataWritten, "write context");
         }

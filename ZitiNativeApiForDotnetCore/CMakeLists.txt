@@ -30,8 +30,14 @@ add_subdirectory(cmake_deps)
 add_subdirectory(library)
 
 #generate the .cs file that represents the c sdk errors using the preprocessor
+if ("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
+    set(ZITI_INCLUDES ${CMAKE_HOME_DIRECTORY}/build/x86/_deps/ziti-sdk-c-src/includes)
+else()
+    set(ZITI_INCLUDES ${CMAKE_HOME_DIRECTORY}/build/x64/_deps/ziti-sdk-c-src/includes)
+endif()
+message("USING INCLUDES FROM: ${ZITI_INCLUDES}")
+
 set(OUTPUT_FILE ${CMAKE_HOME_DIRECTORY}/../Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs)
-set(ZITI_INCLUDES ${CMAKE_HOME_DIRECTORY}/build/x64/_deps/ziti-sdk-c-src/includes)
 set(ZITI_ERR_FILE ${CMAKE_HOME_DIRECTORY}/library/sharp-errors.c)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     execute_process(

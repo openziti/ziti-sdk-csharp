@@ -3,37 +3,28 @@ using System.IO;
 
 using OpenZiti;
 
-namespace OpenZiti.Samples
-{
-    class Enrollment
-    {
-        public static void Run(string[] args)
-        {
-            CheckUsage(args);
-            ZitiEnrollment.Options opts = new ZitiEnrollment.Options()
-            {
-                Jwt = args[2],
-            };
-
-            ZitiEnrollment.Enroll(opts, afterEnrollment, args[3]);
+namespace OpenZiti.Samples {
+    class Enrollment {
+        public static void Run(string path) {
+            string outputFile = path.Replace(".jwt", ".json");
+            API.Enroll(path, afterEnroll, outputFile);
             API.Run();
         }
 
-        private static void afterEnrollment(ZitiEnrollment.EnrollmentResult result, object context)
-        {
-            string fileName = context.ToString();
-            File.WriteAllText(fileName, result.Json);
-            Console.WriteLine($"Enrollment successful. File written to {fileName}");
-        }
-
-        public static void CheckUsage(string[] args)
-        {
-            if (args.Length < 4)
-            {
-                string appname = System.AppDomain.CurrentDomain.FriendlyName;
-                Console.WriteLine("Usage:");
-                Console.WriteLine($"\t{appname} {args[0]} {args[1]} <path-to-jwt-file> <output-path>");
-                throw new ArgumentException("too few arguments");
+        private static void afterEnroll(ZitiEnrollment.EnrollmentResult result) {
+            Console.WriteLine("ZITI STATUS : " + result.Status);
+            Console.WriteLine("    MESSAGE : " + result.Message);
+            if (result.Status == ZitiStatus.OK) {
+                Console.WriteLine("    ID.Cert : {0}[...]", result.ZitiIdentity.IdMaterial.Certificate.Substring(0, 25));
+                Console.WriteLine("     ID.Key : {0}[...]", result.ZitiIdentity.IdMaterial.Key.Substring(0, 25));
+                Console.WriteLine("      ID.CA : {0}[...]", result.ZitiIdentity.IdMaterial.CA.Substring(0, 25));
+                //write identity to file...
+                System.IO.File.WriteAllText((string)result.Context, result.Json);
+                Console.WriteLine("written to  : {0}", result.Context);
+            } else {
+                Console.WriteLine("    ID.Cert : empty");
+                Console.WriteLine("     ID.Key : empty");
+                Console.WriteLine("      ID.CA : empty");
             }
         }
     }

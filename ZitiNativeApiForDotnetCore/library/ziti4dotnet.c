@@ -50,3 +50,20 @@ int ziti_event_type_from_pointer(const ziti_event_t *event) {
 ziti_service* ziti_service_array_get(ziti_service_array arr, int idx) {
     return arr ? arr[idx] : NULL;
 }
+
+char** make_char_array(int size) {
+    return calloc(sizeof(char*), size + 1);
+}
+
+void set_char_at(char **arr, char *val, int idx) {
+    char* dupe = strdup(val);
+    arr[idx] = dupe;
+}
+
+void free_char_array(char **a, int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        free(a[i]);
+    }
+    free(a);
+}

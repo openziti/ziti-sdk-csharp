@@ -50,12 +50,18 @@ namespace OpenZiti {
     };
 
     public class API {
+
+        public static readonly string[] AllConfigs = new string[] { "all" };
+
         public static class Enrollment {
-            public delegate void AfterEnroll(Result result);
+            public delegate void AfterEnroll(ZitiEnrollment.EnrollmentResult result);
 
             internal class AfterEnrollWrapper {
-                public AfterEnroll afterEnroll;
-                public StructWrapper wrapper;
+                public string Source;
+                public AfterEnroll AfterEnroll;
+                public object Context;
+
+                internal StructWrapper wrapper;
                 public AfterEnrollWrapper() { }
             }
 
@@ -64,25 +70,21 @@ namespace OpenZiti {
                     Enrollment.AfterEnrollWrapper w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
                     w.wrapper.Dispose();
 
-                    Result r = new Result() {
+                    ZitiEnrollment.EnrollmentResult r = new ZitiEnrollment.EnrollmentResult(ziti_config) {
                         Status = (ZitiStatus)status,
                         Message = msg,
+                        Context = w.Context,
                     };
 
                     if (r.Status.Ok()) {
-                        ZitiIdentityFormat fromZiti = Marshal.PtrToStructure<ZitiIdentityFormat>(ziti_config);
-                        r.IdInfo = fromZiti;
+                        ZitiIdentityFormatNative fromZiti = Marshal.PtrToStructure<ZitiIdentityFormatNative>(ziti_config);
+                        r.ZitiIdentity = new ZitiIdentityFormat(fromZiti);
                     }
 
-                    w.afterEnroll(r);
+                    w.AfterEnroll(r);
                 } else {
                     Console.WriteLine("well what the heck?");
                 }
-            }
-            public struct Result {
-                public ZitiIdentityFormat IdInfo;
-                public ZitiStatus Status;
-                public string Message;
             }
         }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -94,10 +96,11 @@ namespace OpenZiti {
             }
         }
 
+        public static Native.log_writer NativeLogger = NoopNativeLogFunction;
 
-        static Native.log_writer logger = logFunction;
+        public static void NoopNativeLogFunction(int level, string loc, string msg, uint msglen) { }
 
-        static internal void logFunction(int level, string loc, string msg, uint msglen) {
+        public static void DefaultNativeLogFunction(int level, string loc, string msg, uint msglen) {
 
             switch (level) {
                 case 0:
@@ -105,40 +108,33 @@ namespace OpenZiti {
                 case 1:
                     Logger.Error("SDKe: {0}\t{1}", loc, msg);
                     break;
-
                 case 2:
                     Logger.Warn("SDKw: {0}\t{1}", loc, msg);
                     break;
-
                 case 3:
                     Logger.Info("SDKi: {0}\t{1}", loc, msg);
                     break;
-
                 case 4:
                     Logger.Debug("SDKd: {0}\t{1}", loc, msg);
                     break;
-
                 case 5:
                     //VERBOSE:5
                     Logger.Trace("SDKv: {0}\t{1}", loc, msg);
                     break;
-
                 case 6:
                     //TRACE:6
                     Logger.Trace("SDKt: {0}\t{1}", loc, msg);
                     break;
-
                 default:
                     Logger.Warn("SDK_: level [%d] NOT recognized: {1}", level, msg);
                     break;
-
             }
         }
         static Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
 
-        public static void Enroll(string identityFile, Enrollment.AfterEnroll afterEnroll) {
+        public static void Enroll(string identityFile, Enrollment.AfterEnroll afterEnroll, object ctx) {
             var loop = API.DefaultLoop;
-            Native.API.ziti_log_init(loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate<Native.log_writer>(logger));
+            Native.API.ziti_log_init(loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(NativeLogger));
 
 
             Native.ziti_enroll_options opts = new Native.ziti_enroll_options() {
@@ -146,23 +142,25 @@ namespace OpenZiti {
             };
 
             Enrollment.AfterEnrollWrapper w = new Enrollment.AfterEnrollWrapper() {
-                afterEnroll = afterEnroll,
+                AfterEnroll = afterEnroll,
                 wrapper = new StructWrapper(opts),
+                Context = ctx,
             };
 
-            //GCHandle enroll_context = GCHandle.Alloc(afterEnroll);
-            //IntPtr pnt = Marshal.AllocHGlobal(Marshal.SizeOf(opts));
-            //Marshal.StructureToPtr(opts, pnt, false);
             Native.API.ziti_enroll(w.wrapper.Ptr, loop.nativeUvLoop, enroll_cb, GCHandle.Alloc(w));
         }
 
+        public static UVLoop NewLoop() {
+            return new UVLoop(Native.API.newLoop());
+        }
+
+        public static string GetConfiguration(ZitiService svc, string configName) {
+            IntPtr nativeConfig = Native.API.ziti_service_get_raw_config(svc.nativeServicePointer, configName);
+            return Marshal.PtrToStringUTF8(nativeConfig);
+        }
 
         public static void Run() {
             Native.API.z4d_uv_run(DefaultLoop.nativeUvLoop);
-        }
-
-        public static IntPtr NewLoop() {
-            return Native.API.newLoop();
         }
     }
 
@@ -194,20 +192,16 @@ namespace OpenZiti {
         public static implicit operator IntPtr(StructWrapper w) {
             return w.Ptr;
         }
+
     }
 
 
-
-    public struct ZitiIdentityFormat {
-        public string ControllerUrl;
-        public IdentityMaterial IdMaterial;
-    }
-
+    /*
     public struct IdentityMaterial {
         public string Certificate;
         public string Key;
         public string CA;
-    }
+    }*/
     public struct ziti_version {
 #pragma warning disable 0649
         internal string version;

@@ -29,6 +29,10 @@ Z4D_API void* newLoop();
 Z4D_API int ziti_event_type_from_pointer(const ziti_event_t *event);
 Z4D_API ziti_service* ziti_service_array_get(ziti_service_array arr, int idx);
 
+Z4D_API char** make_char_array(int size);
+Z4D_API void set_char_at(char **a, char *s, int n);
+Z4D_API void free_char_array(char **a, int size);
+
 #ifdef __cplusplus
 }
 #endif

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ziti.NET.Standard" Version="0.7.105.42788" />
+    <PackageReference Include="Ziti.NET.Standard" Version="0.7.111.4633" />
   </ItemGroup>
 
 </Project>
