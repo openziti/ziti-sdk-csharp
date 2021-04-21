@@ -67,3 +67,36 @@ void free_char_array(char **a, int size) {
     }
     free(a);
 }
+
+int char_pointer_len(char *a) {
+    if (a) {
+        printf("LENGTH OF: %s is %d\n", a, strlen(a));
+        return (int)strlen(a);
+    } else {
+        printf(" THE PROVIDED POINTER IS NULL \n");
+        return 0;
+    }
+}
+
+int size_of(void* something) {
+    if(!something){
+        return 0;
+    }
+    int s = (int)sizeof(something);
+    printf("size of this thing is: %d\n", s);
+}
+
+char* ziti_context_event_err(const ziti_event_t *e) {
+    if (e && e->event.ctx.err) {
+        return e->event.ctx.err;
+    } else {
+        return NULL;
+    }
+}
+int ziti_context_event_status(const ziti_event_t *e) {
+    if (e) {
+        return e->event.ctx.err;
+    } else {
+        return 0;
+    }
+}

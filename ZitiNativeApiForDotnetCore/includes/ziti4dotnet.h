@@ -32,6 +32,10 @@ Z4D_API ziti_service* ziti_service_array_get(ziti_service_array arr, int idx);
 Z4D_API char** make_char_array(int size);
 Z4D_API void set_char_at(char **a, char *s, int n);
 Z4D_API void free_char_array(char **a, int size);
+Z4D_API int char_pointer_len(char *a);
+Z4D_API int size_of(void* something);
+Z4D_API char* ziti_context_event_err(const ziti_event_t *e);
+Z4D_API int ziti_context_event_status(const ziti_event_t *e);
 
 #ifdef __cplusplus
 }

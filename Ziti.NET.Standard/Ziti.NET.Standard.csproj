@@ -22,16 +22,6 @@
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace>OpenZiti</RootNamespace>
-
-    
-</PropertyGroup>
-   
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
-      <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-   
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
-      <PlatformTarget>x86</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>

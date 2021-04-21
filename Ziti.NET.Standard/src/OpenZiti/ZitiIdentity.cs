@@ -154,15 +154,17 @@ namespace OpenZiti
             switch (type) {
                 case ZitiEventFlags.ZitiContextEvent:
                     NativeContext = ziti_context;
+
                     Native.ziti_context_event ziti_context_event = Marshal.PtrToStructure<Native.ziti_context_event>(ziti_event);
                     var vptr = Native.API.ziti_get_controller_version(ziti_context);
                     ziti_version v = Marshal.PtrToStructure<ziti_version>(vptr);
                     IntPtr ptr = Native.API.ziti_get_controller(ziti_context);
-                    string name = Marshal.PtrToStringAnsi(ptr);
+                    string name = Marshal.PtrToStringUTF8(ptr);
+
                     ZitiContextEvent evt = new ZitiContextEvent() {
                         Name = name,
-                        Status = (ZitiStatus)ziti_context_event.ctrl_status,
-                        StatusError = ziti_context_event.err,
+                        Status = (ZitiStatus)Native.API.ziti_context_event_status(ziti_event), //(ZitiStatus)ziti_context_event.ctrl_status,
+                        StatusError = Native.API.ziti_context_event_err(ziti_event), //"not now", //plen > 0 ? Marshal.PtrToStringUTF8(ziti_context_event.err) : "",
                         Version = v,
                         Identity = this,
                     };

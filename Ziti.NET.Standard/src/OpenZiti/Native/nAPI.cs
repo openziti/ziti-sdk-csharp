@@ -193,6 +193,25 @@ namespace OpenZiti.Native {
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_service_get_raw_config", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr ziti_service_get_raw_config(IntPtr svc, string config_name);
 
+        //defined in C: int char_pointer_len(char *a);
+        [DllImport(Z4D_DLL_PATH, CallingConvention = CALL_CONVENTION)]
+        public static extern int char_pointer_len(IntPtr nullTerminatedString);
+
+        //defined in C: char* gimme_string();
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "gimme_string", CallingConvention = CALL_CONVENTION)]
+        public static extern IntPtr gimme_string_intptr();
+
+        //defined in C: int size_of();
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "size_of", CallingConvention = CALL_CONVENTION)]
+        public static extern int size_of(IntPtr something);
+
+        //defined in C: char* ziti_context_event_err(void *e)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_context_event_err", CallingConvention = CALL_CONVENTION)]
+        public static extern string ziti_context_event_err(IntPtr ziti_event);
+
+        //defined in C: int ziti_context_event_status(void *e)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_context_event_status", CallingConvention = CALL_CONVENTION)]
+        public static extern int ziti_context_event_status(IntPtr ziti_event);
 
 
 
@@ -200,6 +219,7 @@ namespace OpenZiti.Native {
 
 
 
+        
 
 
 
@@ -338,17 +358,26 @@ namespace OpenZiti.Native {
 
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     struct ziti_context_event {
         public int type;
         public int ctrl_status;
-        public string err;
+        public IntPtr do_not_use_err;
     };
+    [StructLayout(LayoutKind.Explicit)]
+    struct ziti_context_events {
+        [FieldOffset(0)] public int type;
+        [FieldOffset(8)] public int ctrl_status;
+        [FieldOffset(16)] public string do_not_use_err;
+    };
+    [StructLayout(LayoutKind.Sequential)]
     struct ziti_router_event {
         public int type;
         public int status;
         public string name;
         public string version;
     };
+    [StructLayout(LayoutKind.Sequential)]
     struct ziti_service_event {
         public int type;
         public IntPtr removed;
