@@ -163,8 +163,8 @@ namespace OpenZiti
 
                     ZitiContextEvent evt = new ZitiContextEvent() {
                         Name = name,
-                        Status = (ZitiStatus)Native.API.ziti_context_event_status(ziti_event), //(ZitiStatus)ziti_context_event.ctrl_status,
-                        StatusError = Native.API.ziti_context_event_err(ziti_event), //"not now", //plen > 0 ? Marshal.PtrToStringUTF8(ziti_context_event.err) : "",
+                        Status = (ZitiStatus)ziti_context_event.ctrl_status,
+                        StatusError = ziti_context_event.err,
                         Version = v,
                         Identity = this,
                     };

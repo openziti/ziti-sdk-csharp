@@ -205,14 +205,6 @@ namespace OpenZiti.Native {
         [DllImport(Z4D_DLL_PATH, EntryPoint = "size_of", CallingConvention = CALL_CONVENTION)]
         public static extern int size_of(IntPtr something);
 
-        //defined in C: char* ziti_context_event_err(void *e)
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_context_event_err", CallingConvention = CALL_CONVENTION)]
-        public static extern string ziti_context_event_err(IntPtr ziti_event);
-
-        //defined in C: int ziti_context_event_status(void *e)
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_context_event_status", CallingConvention = CALL_CONVENTION)]
-        public static extern int ziti_context_event_status(IntPtr ziti_event);
-
 
         /*
         //defined in C: extern void ziti_dump(ziti_context ztx);
@@ -285,7 +277,7 @@ namespace OpenZiti.Native {
     struct ziti_context_event {
         public int type;
         public int ctrl_status;
-        public IntPtr do_not_use_err;
+        public string err;
     };
     [StructLayout(LayoutKind.Sequential)]
     struct ziti_router_event {
