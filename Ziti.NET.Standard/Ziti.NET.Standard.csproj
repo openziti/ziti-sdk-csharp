@@ -29,6 +29,10 @@
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
       <WarningLevel>4</WarningLevel>
     </PropertyGroup>
+   
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
+      <PlatformTarget>x86</PlatformTarget>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="4.7.9" />
@@ -38,7 +42,9 @@
 
     <ItemGroup>
         <!--Condition="'$(IsPublicBuild)' == 'True'"-->
-
+        <Content Include="./../ZitiNativeApiForDotnetCore/build/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86A/native/ziti4dotnet.dll">
+            <PackagePath>runtimes/win-x86A/native</PackagePath>
+        </Content>
         <Content Include="./../ZitiNativeApiForDotnetCore/build/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win-x86/native</PackagePath>
         </Content>

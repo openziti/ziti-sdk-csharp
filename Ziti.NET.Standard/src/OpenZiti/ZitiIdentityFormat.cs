@@ -39,8 +39,10 @@ namespace OpenZiti {
     }
 
     internal struct ZitiIdentityFormatNative {
-        public string ControllerUrl { get; set; }
-        public IdMaterialNative IdMaterial;
+        internal string ControllerUrl { get; set; }
+#pragma warning disable 0649 //static analysis can't find that this is assigned to during serialization
+        internal IdMaterialNative IdMaterial;
+#pragma warning restore 0649
     }
 
     internal struct IdMaterialNative {

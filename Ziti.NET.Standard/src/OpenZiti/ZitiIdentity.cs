@@ -81,14 +81,13 @@ namespace OpenZiti
             }
         }
 
-        public ZitiIdentity(ZitiIdentity.InitOptions opts)
+        public ZitiIdentity(InitOptions opts)
         {
             this.InitOpts = opts;
-        }
-
-        public void Start() {
-            ZitiOptions InitOptions = new ZitiOptions();
-            InitOptions.ConfigFile = ConfigFilePath;
+            if(opts.IdentityFile != null) {
+                string json = File.ReadAllText(opts.IdentityFile);
+                nid = JsonSerializer.Deserialize<Native.IdentityFile>(json);
+            }
         }
 
         public ZitiService GetService(string serviceName) {
@@ -129,7 +128,6 @@ namespace OpenZiti
             Native.ziti_options ziti_opts = new Native.ziti_options {
                 //app_ctx = GCHandle.Alloc(InitOpts.ApplicationContext, GCHandleType.Pinned),
                 config = InitOpts.IdentityFile,
-                //config_types = Native.API.z4d_all_config_types(),
                 config_types = cfgs,
                 refresh_interval = refreshInterval,
                 metrics_type = InitOpts.MetricType,

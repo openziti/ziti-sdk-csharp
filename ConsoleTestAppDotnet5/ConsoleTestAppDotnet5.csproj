@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,6 +8,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Samples\Util\ConsoleHelper.cs" Link="ConsoleHelper.cs" />
+    <Compile Include="..\Samples\Weather.cs" Link="Weather.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.9" />

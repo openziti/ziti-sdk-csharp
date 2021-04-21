@@ -24,11 +24,6 @@ namespace OpenZiti {
         [UnmanagedFunctionPointer(Native.API.CALL_CONVENTION)]
         public delegate void AfterEnrollment(EnrollmentResult result, object context);
 
-        private class EnrollmentContext {
-            internal AfterEnrollment cb;
-            internal object context;
-        }
-
         public class EnrollmentResult {
             internal IntPtr nativeConfig;
             public object Context;

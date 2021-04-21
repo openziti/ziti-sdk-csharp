@@ -57,7 +57,6 @@ namespace OpenZiti {
             public delegate void AfterEnroll(ZitiEnrollment.EnrollmentResult result);
 
             internal class AfterEnrollWrapper {
-                public string Source;
                 public AfterEnroll AfterEnroll;
                 public object Context;
 

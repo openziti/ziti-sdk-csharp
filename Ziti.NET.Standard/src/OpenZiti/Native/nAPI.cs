@@ -73,8 +73,8 @@ namespace OpenZiti.Native {
     public class API {
         public const CallingConvention CALL_CONVENTION = CallingConvention.Cdecl;
 
-        public const string Z4D_DLL_PATH = @"C:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Debug\ziti4dotnet.dll";
-        //        public const string ZITI_DLL_PATH = root + @"ziti.dll";
+        public const string Z4D_DLL_PATH = @"ziti4dotnet";
+        //public const string Z4D_DLL_PATH = @"c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Debug\ziti4dotnet.dll";
 
         [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_default_loop", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr z4d_default_loop();
@@ -286,16 +286,14 @@ namespace OpenZiti.Native {
         */
     }
 
-    public struct ziti_identity {
 #pragma warning disable 0649
+    public struct ziti_identity {
         public string id;
         public string name;
         public IntPtr tags;
-#pragma warning restore 0649
     }
 
     public struct ziti_options {
-#pragma warning disable 0649
         [MarshalAs(UnmanagedType.LPUTF8Str)]
         public string config;
 
@@ -326,17 +324,14 @@ namespace OpenZiti.Native {
         public uint events;
 
         public ziti_event_cb event_cb;
-#pragma warning restore 0649
     };
 
     public struct ziti_service {
-#pragma warning disable 0649
         public string id;
         public string name;
         public IntPtr permissions;
         public int perm_flags;
         public IntPtr config;
-#pragma warning restore 0649
     }
 
     public struct tls_context {
@@ -360,4 +355,5 @@ namespace OpenZiti.Native {
         public IntPtr changed;
         public IntPtr added;
     };
+#pragma warning restore 0649
 }

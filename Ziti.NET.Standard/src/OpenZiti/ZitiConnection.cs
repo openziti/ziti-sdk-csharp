@@ -95,7 +95,6 @@ namespace OpenZiti
         {
             aafterData = afterDataWritten;
             return Native.API.ziti_write(nativeConnection, data, len, afterData, GCHandle.ToIntPtr(GCHandle.Alloc(context)));
-            return 0;
         }
 
         public int Accept(OnClientAccept onAccept, OnZitiClientData onClientData)
@@ -103,7 +102,6 @@ namespace OpenZiti
             this.onAccept = onAccept;
             this.onClientData = onClientData;
             return Native.API.ziti_accept(nativeConnection, native_on_accept, native_on_client_data);
-            return 0;
         }
 
         public void Close()
