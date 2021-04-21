@@ -4,3 +4,4 @@ obj
 NuGet
 .idea
 nuget-local
+dotnet-install.sh
