@@ -32,9 +32,6 @@
 
     <ItemGroup>
         <!--Condition="'$(IsPublicBuild)' == 'True'"-->
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86A/native/ziti4dotnet.dll">
-            <PackagePath>runtimes/win-x86A/native</PackagePath>
-        </Content>
         <Content Include="./../ZitiNativeApiForDotnetCore/build/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win-x86/native</PackagePath>
         </Content>
@@ -43,6 +40,9 @@
         </Content>
         <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win/native</PackagePath>
+        </Content>
+        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/linux-x64/native/libziti4dotnet.so">
+            <PackagePath>runtimes/linux-x64/native</PackagePath>
         </Content>
     </ItemGroup>
 
@@ -55,6 +55,6 @@
 
     <Target Name="LocalPush" AfterTargets="GenerateNuspec">
         <Message Text="Push NuGet Package to NuGet Feed $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" Importance="high" />
-        <Exec Command="nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source c:\work\nuget-local"></Exec>
+        <Exec Command="nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source ./nuget-local"></Exec>
     </Target>
 </Project>

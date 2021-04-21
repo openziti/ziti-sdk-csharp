@@ -3,3 +3,4 @@ bin
 obj
 NuGet
 .idea
+nuget-local

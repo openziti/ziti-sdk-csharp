@@ -52,3 +52,4 @@ else()
             OUTPUT_FILE ${OUTPUT_FILE}
     )
 endif()
+message(INFO "sharp-errors output to: ${OUTPUT_FILE}")
