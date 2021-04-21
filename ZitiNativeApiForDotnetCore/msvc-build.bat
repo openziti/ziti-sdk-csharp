@@ -17,7 +17,7 @@ pushd .
 set CSDK_HOME=%~dp0
 cd /d %CSDK_HOME%
 
-set cmake=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe
+REM set cmake=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe
 set BUILDFOLDER=%CSDK_HOME%build-win
 
 mkdir %BUILDFOLDER% 2> NUL
