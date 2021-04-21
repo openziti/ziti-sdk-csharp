@@ -214,105 +214,26 @@ namespace OpenZiti.Native {
         public static extern int ziti_context_event_status(IntPtr ziti_event);
 
 
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //public const string Z4D_DLL_PATH = @"ziti4dotnet";
         /*
-         copy /y C:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\_deps\ziti-sdk-c-build\library\Debug\ziti.dll C:\git\github\openziti\ziti-sdk-csharp\Ziti.NET.Standard.Tests\bin\Debug\net5.0\ziti.dll
-         * */
-        //public const string Z4D_DLL_PATH = @"c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Release\ziti4dotnet.dll";
-        //public const string ZITI_DLL_PATH = @"c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Release\ziti4dotnet.dll";
-        /*
-
-
-
         //defined in C: extern void ziti_dump(ziti_context ztx);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_dump")]
         public static extern int ziti_dump(IntPtr native_context);
 
-        */
-        /*
-        */
-        /*
-
-
-
         //defined in C: extern void *ziti_conn_data(ziti_connection conn);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_data")]
         public static extern IntPtr ziti_conn_data(IntPtr conn);
-
-
         */
     }
 
 #pragma warning disable 0649
+    [StructLayout(LayoutKind.Sequential)]
     public struct ziti_identity {
         public string id;
         public string name;
         public IntPtr tags;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct ziti_options {
         [MarshalAs(UnmanagedType.LPUTF8Str)]
         public string config;
@@ -346,6 +267,7 @@ namespace OpenZiti.Native {
         public ziti_event_cb event_cb;
     };
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct ziti_service {
         public string id;
         public string name;
@@ -354,6 +276,7 @@ namespace OpenZiti.Native {
         public IntPtr config;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct tls_context {
 
     }
@@ -363,12 +286,6 @@ namespace OpenZiti.Native {
         public int type;
         public int ctrl_status;
         public IntPtr do_not_use_err;
-    };
-    [StructLayout(LayoutKind.Explicit)]
-    struct ziti_context_events {
-        [FieldOffset(0)] public int type;
-        [FieldOffset(8)] public int ctrl_status;
-        [FieldOffset(16)] public string do_not_use_err;
     };
     [StructLayout(LayoutKind.Sequential)]
     struct ziti_router_event {
