@@ -1,0 +1,9 @@
+{
+    "ztAPI": "https://this-is-my-controller.netfoundry.io",
+    "id": {
+        "key": "pem:-----BEGIN RSA PRIVATE KEY-----\nkey would be here\n-----END RSA PRIVATE KEY-----\n",
+        "cert": "pem:-----BEGIN CERTIFICATE-----\ncertificate would be here\n-----END CERTIFICATE-----\n",
+        "ca": "pem:-----BEGIN CERTIFICATE-----\nca cert would be here\n-----END CERTIFICATE-----\n"
+    },
+    "configTypes": null
+}
