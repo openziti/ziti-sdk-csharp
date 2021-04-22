@@ -29,6 +29,10 @@ jobs:
         run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x86 --config Release
       - name: compile x64
         run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x64 --config Release
+      - name: check ZitiStatus.cs
+        run: dir ${{ github.workspace }}/Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      - name: check ZitiStatus.cs
+        run: type ${{ github.workspace }}/Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
       - name: Create NuGet package
         run: dotnet build --configuration Release ${{ github.workspace }}/Ziti.NuGet.sln
       
