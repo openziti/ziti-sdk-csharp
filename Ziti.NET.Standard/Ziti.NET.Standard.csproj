@@ -32,18 +32,18 @@
 
     <ItemGroup>
         <!--Condition="'$(IsPublicBuild)' == 'True'"-->
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
+        <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win-x86/native</PackagePath>
         </Content>
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win-x64/native/ziti4dotnet.dll">
+        <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win-x64/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win-x64/native</PackagePath>
         </Content>
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win/native/ziti4dotnet.dll">
+        <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win/native</PackagePath>
         </Content>
-        <Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/linux-x64/native/libziti4dotnet.so">
+        <!--Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/linux-x64/native/libziti4dotnet.so">
             <PackagePath>runtimes/linux-x64/native</PackagePath>
-        </Content>
+        </Content-->
     </ItemGroup>
 
     <ItemGroup>
