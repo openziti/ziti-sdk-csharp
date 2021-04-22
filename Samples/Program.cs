@@ -11,6 +11,8 @@ namespace OpenZiti.Samples {
         static async Task Main(string[] args) {
             try {
                 Logging.SimpleConsoleLogging(LogLevel.Trace);
+                
+                //uncomment this line to see the logs from the c-sdk
                 //API.NativeLogger = API.DefaultNativeLogFunction;
 
                 Console.Clear();
