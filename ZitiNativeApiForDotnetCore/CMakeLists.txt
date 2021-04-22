@@ -40,7 +40,7 @@ message("USING INCLUDES FROM: ${ZITI_INCLUDES}")
 set(OUTPUT_FILE ${CMAKE_HOME_DIRECTORY}/../Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs)
 set(ZITI_ERR_FILE ${CMAKE_HOME_DIRECTORY}/library/sharp-errors.c)
 
-if("${GENERATE_ZITI_STATUS}" STREQUAL "YES"})
+if("${GENERATE_ZITI_STATUS}" STREQUAL "YES")
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     execute_process(
             COMMAND cl.exe /C /EP /I ${ZITI_INCLUDES} ${ZITI_ERR_FILE}
