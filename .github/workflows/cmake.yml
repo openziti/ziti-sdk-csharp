@@ -33,8 +33,9 @@ jobs:
         run: Get-Content .\Ziti.NET.Standard\src\OpenZiti\ZitiStatus.cs
       - name: Create NuGet package
         run: dotnet build --configuration Release ${{ github.workspace }}/Ziti.NuGet.sln
-      
-      - name: Publish Ziti.NET.Standard
+
+      - if: github.event_name == 'push'
+        name: Publish Ziti.NET.Standard
         uses: brandedoutcast/publish-nuget@v2.5.2
         with:
           PROJECT_FILE_PATH: Ziti.NET.Standard/Ziti.NET.Standard.csproj
