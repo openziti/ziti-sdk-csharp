@@ -1,0 +1,60 @@
+name: Build the native libraries
+
+on:
+  push:
+    branches: 
+      - main
+      - 'release-*'
+      - 'beta-release-*'
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build-csdk-win:
+    runs-on: windows-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Generate Native Libraries
+        run: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/msvc-build.bat
+      - name: compile x86
+        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x86 --config Release
+      - name: compile x64
+        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x64 --config Release
+      - name: check ZitiStatus.cs
+        run: Get-Content .\Ziti.NET.Standard\src\OpenZiti\ZitiStatus.cs
+      - name: Create NuGet package
+        run: dotnet build --configuration Release ${{ github.workspace }}/Ziti.NuGet.sln
+
+      - if: github.event_name == 'pull_request'
+        name: Publish Ziti.NET.Standard
+        uses: brandedoutcast/publish-nuget@v2.5.2
+        with:
+          PROJECT_FILE_PATH: Ziti.NET.Standard/Ziti.NET.Standard.csproj
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: Upload service zip onto job
+        uses: actions/upload-artifact@v2
+        with:
+          path: "${{ github.workspace }}/Ziti.NET.Standard/bin/Release/Ziti.NET.Standard.*.nupkg"
+#      - name: make build-win dir
+#        run: cmake -E make_directory ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win
+#      - name: make build-win dir x86
+#        run: cmake -E make_directory ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x86
+#      - name: make build-win dir x64
+#        run: cmake -E make_directory ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x64
+#      - name: configure cmake x86
+#        run: cmake -S ${{ github.workspace }}/ZitiNativeApiForDotnetCore -B ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x86
+#      - name: build
+#        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win --config Release
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: ziti4dotnet-win.dll
+#          path: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/Release/ziti4dotnet.dll
+#

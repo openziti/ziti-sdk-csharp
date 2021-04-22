@@ -1,0 +1,6 @@
+build
+.idea
+
+#clion likes this folder name
+cmake-build-debug
+build-*

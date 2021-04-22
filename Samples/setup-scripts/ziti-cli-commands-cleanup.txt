@@ -1,0 +1,11 @@
+﻿ziti edge controller delete identity "${idname}"
+
+
+ziti edge delete service-edge-router-policy "weather-svc-er-policy"
+ziti edge delete config "weather-config"
+ziti edge delete config-type "weather-config-type"
+ziti edge delete service weather-svc
+
+
+
+

@@ -1,0 +1,11 @@
+﻿#replace ZITI_HOME and idname
+ziti edge controller create identity device "${idname}" -o "${ZITI_HOME}/${idname}.jwt"
+
+
+ziti edge create config-type "weather-config-type" '{"$schema": "http://json-schema.org/draft-07/schema","$id": "http://example.com/example.json","type": "object","default": {},"properties": {"where": {"$id": "#/properties/where","type": "string","default": ""}},"additionalProperties": true}'
+ziti edge create config "weather-config" "weather-config-type" '{"where":"bangalore"}'
+
+ziti edge create service "weather-svc" -c "weather-config" -a "csharp_example"
+ziti edge create service-edge-router-policy "weather-svc-er-policy" -s "#csharp_example" -e "#all"
+ziti edge create terminator "weather-svc" "PublicHostedRouter" "tcp:wttr.in:80"
+

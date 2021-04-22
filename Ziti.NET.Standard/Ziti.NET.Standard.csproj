@@ -1,49 +1,60 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Target Name="DateTest" BeforeTargets="LocalPush">
+        <!--Error Text="ok error $(DayOfYear)  :  $(MonthDay)  :  $(Version)" /-->
+    </Target>
 
-  <PropertyGroup>
-      <!--TargetFramework>netstandard2.0</TargetFramework-->
-      <TargetFrameworks>netstandard2.0;net472;netcoreapp2.0</TargetFrameworks>
-      <!--TargetFrameworks>net461;netstandard2.0</TargetFrameworks-->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.0.20</Version>
-    <Authors>NetFoundry</Authors>
-    <Company>NetFoundry</Company>
-    <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
-    <Copyright>© 2019 NetFoundry, Inc. All rights reserved.</Copyright>
-    <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://nf-dev.github.io/ziti-doc/ziti</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/nf-dev/ziti-sdk-csharp</RepositoryUrl>
-    <PackageIconUrl>https://nf-dev.github.io/ziti-doc/images/nflightbglogo_40.png</PackageIconUrl>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.1</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-  <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.3" />
-  </ItemGroup>
+        <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
+        <SecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</SecondsOfDay>
+        <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_UtcNow().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</UtcSecondsOfDay>
+        <major>0</major>
+        <minor>7</minor>
+        <Version>$(major).$(minor).$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
+        <Authors>NetFoundry</Authors>
+        <Company>NetFoundry</Company>
+        <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
+        <Copyright>© 2019 NetFoundry, Inc. All rights reserved.</Copyright>
+        <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
+        <RootNamespace>OpenZiti</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-     <!--Condition="'$(IsPublicBuild)' == 'True'"-->
-     
-     <Content Include="./../ziti-sdk-c/x86/ziti_dll.dll" Link="runtimes/win-x86/native/ziti_dll.dll">
-       <PackagePath>runtimes/win-x86/native</PackagePath>
-     </Content>
-     <Content Include="./../ziti-sdk-c/x64/ziti_dll.dll" Link="runtimes/win-x64/native/ziti_dll.dll">
-         <PackagePath>runtimes/win-x64/native</PackagePath>
-     </Content>
-     <Content Include="./../ziti-sdk-c/x64/ziti_dll.dll" Link="runtimes/win/native/ziti_dll.dll">
-         <PackagePath>runtimes/win/native</PackagePath>
-     </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="NLog" Version="4.7.9" />
+        <PackageReference Include="System.Memory" Version="4.5.4" />
+        <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="2019_NF TCL EULA.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <!--Condition="'$(IsPublicBuild)' == 'True'"-->
+        <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
+            <PackagePath>runtimes/win-x86/native</PackagePath>
+        </Content>
+        <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win-x64/native/ziti4dotnet.dll">
+            <PackagePath>runtimes/win-x64/native</PackagePath>
+        </Content>
+        <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win/native/ziti4dotnet.dll">
+            <PackagePath>runtimes/win/native</PackagePath>
+        </Content>
+        <!--Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/linux-x64/native/libziti4dotnet.so">
+            <PackagePath>runtimes/linux-x64/native</PackagePath>
+        </Content-->
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="src\NetFoundry\" />
-  </ItemGroup>
-    
+    <ItemGroup>
+        <Resource Include="2019_NF TCL EULA.txt">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </Resource>
+    </ItemGroup>
+
+    <Target Name="LocalPush" AfterTargets="GenerateNuspec">
+        <Message Text="Push NuGet Package to NuGet Feed $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" Importance="high" />
+        <Exec Command="nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source ./nuget-local"></Exec>
+    </Target>
 </Project>

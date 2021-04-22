@@ -5,6 +5,21 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ziti.NET.Standard", "Ziti.NET.Standard\Ziti.NET.Standard.csproj", "{64BEABCF-FEE4-4901-B74D-87D60AAC4EB8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTestAppDotnet5", "ConsoleTestAppDotnet5\ConsoleTestAppDotnet5.csproj", "{A708ABEB-3393-4E31-9883-D7E7BAE322A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16F52D05-10CE-47CC-9B52-1F77CAADD252}"
+	ProjectSection(SolutionItems) = preProject
+		ZitiNativeApiForDotnetCore\msvc-build.bat = ZitiNativeApiForDotnetCore\msvc-build.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{FB27A74E-C1A6-4392-857B-3290DA4EFBF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{3EC7F622-B330-483C-83D5-4CA5C2FE30CB}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\cmake.yml = .github\workflows\cmake.yml
+		.github\workflows\mattermost-ziti-webhook.yml = .github\workflows\mattermost-ziti-webhook.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +30,17 @@ Global
 		{64BEABCF-FEE4-4901-B74D-87D60AAC4EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64BEABCF-FEE4-4901-B74D-87D60AAC4EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64BEABCF-FEE4-4901-B74D-87D60AAC4EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A708ABEB-3393-4E31-9883-D7E7BAE322A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A708ABEB-3393-4E31-9883-D7E7BAE322A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A708ABEB-3393-4E31-9883-D7E7BAE322A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A708ABEB-3393-4E31-9883-D7E7BAE322A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FB27A74E-C1A6-4392-857B-3290DA4EFBF8} = {16F52D05-10CE-47CC-9B52-1F77CAADD252}
+		{3EC7F622-B330-483C-83D5-4CA5C2FE30CB} = {FB27A74E-C1A6-4392-857B-3290DA4EFBF8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DEDFFD92-5CF0-4C96-8866-958E1AEBA0CB}
