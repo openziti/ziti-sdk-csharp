@@ -8,16 +8,39 @@ The Ziti C# SDK is based on the [C SDK](https://github.com/nf-dev/ziti-sdk-c) an
 
 ## Add Links to the Native Libraries
 
-This project expects both an x86 and x64 library to be built and to exist at the root of this project in the following folders:
+This project uses a native library for most of the work communicating to ziti. When you are consuming the nuget pagage - this is all packaged up
+for you. However if you are trying to do development of the c# sdk itself you'll need to build these native libraries yourself. This can be done
+easily if you have experience with cmake. The ZitiNativeApiForDotnetCore folder contains a CMakeLists.txt file which can be used to build these
+native libraries as well as a bat file that makes it easier to build in the expected mannor. 
 
-* ziti-sdk-c/x86/ziti_dll.dll
-* ziti-sdk-c/x64/ziti_dll.dll
+To prepare for building the nuget package - cd to ZitiNativeApiForDotnetCore and run `msvc-build.bat` from a Visual Studio 2019 command prompt.
+After it completes you should see output similar to:
 
-If you follow the build instructions for the [C SDK](https://github.com/nf-dev/ziti-sdk-c) you can then create 
-links to the built artifacts using `mklink`.
+```
+Build from cmake using:
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x86 --config Debug
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x86 --config Release
 
-* mklink /j ziti-sdk-c\x86 c:\git\github\ziti-sdk-c\build\x86\windows\dotnet_dll\Release
-* mklink /j ziti-sdk-c\x64 c:\git\github\ziti-sdk-c\build\x64\windows\dotnet_dll\Release
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x64 --config Debug
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x64 --config Release
+```
+
+You'll likely want to just build the Release libraries but you can use Debug if you like but you'll have to update any references to the .dlls.
+
+Once built - the project will expect these libraries to be at:
+
+* ZitiNativeApiForDotnetCore\build-win\x86\library\Release\ziti4dotnet.dll
+* ZitiNativeApiForDotnetCore\build-win\x64\library\Release\ziti4dotnet.dll
+
+If the C SDK changes and you need to export additional functions with ziti4dotnet.dll you will need to rerun defgen after building the C SDK and the
+you'll want to rebuild the ziti4dotnet.dll libs for x86 and x64. You "should" only have to run defgen one time to generate the proper files for the
+dll to be built correctly. The ZitiNativeApiForDotnetCore\library\CMakeLists.txt file will refer to ziti.def and is what allows the static functions
+to be exported by the resultant dll.
+
+```
+cd ZitiNativeApiForDotnetCore
+defgen 32 build-win\x86\_deps\ziti-sdk-c-build\library\Release\ziti.dll
+```
 
 ## Build the Ziti.NuGet.sln Project
 

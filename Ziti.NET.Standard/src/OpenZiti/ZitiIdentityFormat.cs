@@ -14,10 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Text.Json.Serialization;
+
 namespace OpenZiti {
 
     public class ZitiIdentityFormat {
+        [JsonPropertyName("ztAPI")]
         public string ControllerUrl { get; set; }
+        [JsonPropertyName("id")]
         public IdMaterial IdMaterial { get; set; }
         public ZitiIdentityFormat() {
 
@@ -33,8 +37,11 @@ namespace OpenZiti {
     }
 
     public class IdMaterial {
+        [JsonPropertyName("cert")]
         public string Certificate { get; set; }
+        [JsonPropertyName("key")]
         public string Key { get; set; }
+        [JsonPropertyName("ca")]
         public string CA { get; set; }
     }
 
