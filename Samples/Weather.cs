@@ -29,7 +29,7 @@ namespace OpenZiti.Samples {
                 EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent,
                 IdentityFile = identityFile,
                 ApplicationContext = "weather-svc",
-                ConfigurationTypes = new string[] { "weather-config-type" },
+                ConfigurationTypes = new[] { "weather-config-type" },
             };
             opts.OnZitiContextEvent += Opts_OnZitiContextEvent;
             opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
@@ -51,12 +51,13 @@ namespace OpenZiti.Samples {
         }
 
         private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
-            var service = e.Added().First(s => s.Name == (string)e.Context);
-            if (service != null) {
+	        string expected = (string)e.Context;
+            try {
+	            var service = e.Added().First(s => s.Name == expected);
                 service.Dial(onConnected, onData);
-            } else {
-                Console.WriteLine("ERROR: Could not find the service we want?");
-            }
+            } catch(Exception ex) {
+		        Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
+	        }
         }
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {

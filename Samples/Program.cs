@@ -16,8 +16,12 @@ namespace OpenZiti.Samples {
                 //API.NativeLogger = API.DefaultNativeLogFunction;
 
                 Console.Clear();
-               
-                args = new string[] { "weather", @"c:\temp\pn.json", "ssh-service:2345" };
+
+                if (args == null || args.Length < 2) {
+	                Console.WriteLine("This app requires two parameters to be supplied. {exampleToRun=eth0|weather|enroll|hosted} {path-to-identity-file}");
+	                return;
+                }
+
                 string identityFile = args[1];
                 switch (args[0].ToLower()) {
                     case "eth0":
@@ -27,7 +31,7 @@ namespace OpenZiti.Samples {
                         Weather.Run(identityFile);
                         break;
                     case "enroll":
-                        Enrollment.Run(@"c:\temp\enrollment.jwt");
+                        Enrollment.Run(@"c:\temp\id.jwt");
                         break;
                     case "hosted":
                         await HostedService.RunAsync(identityFile);

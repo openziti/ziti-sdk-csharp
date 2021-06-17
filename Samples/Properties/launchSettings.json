@@ -2,7 +2,9 @@
   "profiles": {
     "Console": {
       "commandName": "Project",
-      "nativeDebugging": false
+      "commandLineArgs": "weather c:\\temp\\id.json",
+      "sqlDebugging": false,
+      "nativeDebugging": true
     }
   }
 }
