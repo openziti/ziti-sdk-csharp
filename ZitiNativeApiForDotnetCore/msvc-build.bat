@@ -1,5 +1,4 @@
 @echo off
-SET ZITI_SDK_C_BRANCH=0.22.4
 
 REM a stupid env var JUST to allow a space to be set into an environment variable using substring...
 set ZITI_SPACES=:   :
