@@ -157,7 +157,6 @@ namespace OpenZiti {
 			
 			new Thread(() => Native.API.z4d_uv_run(Loop.nativeUvLoop)).Start();
 			await runlock.WaitAsync().ConfigureAwait(false);
-			Console.WriteLine("here");
 		}
 
 		public void Configure(int refreshInterval) {

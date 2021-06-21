@@ -29,6 +29,7 @@
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiService.cs" Link="src\OpenZiti\ZitiService.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStatus.cs" Link="src\OpenZiti\ZitiStatus.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStatusExtensions.cs" Link="src\OpenZiti\ZitiStatusExtensions.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStream.cs" Link="src\OpenZiti\ZitiStream.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiUtil.cs" Link="src\OpenZiti\ZitiUtil.cs" />
   </ItemGroup>
 
