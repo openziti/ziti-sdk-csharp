@@ -17,8 +17,10 @@ limitations under the License.
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
-
+using System.Threading;
+using System.Threading.Tasks;
 using OpenZiti;
 
 namespace OpenZiti.Samples {
@@ -26,6 +28,10 @@ namespace OpenZiti.Samples {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
 
         public static void Run(string identityFile) {
+            var dnsHandler = new DnsHandler(new CustomDnsResolver());
+            var client = new HttpClient(dnsHandler);
+            var html = client.GetStringAsync("http://eth0mfa").Result;
+
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
                 EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent,
                 IdentityFile = identityFile,
@@ -96,4 +102,31 @@ Accept: */*
             }
         }
     }
+
+    public class DnsHandler : HttpClientHandler {
+        private readonly CustomDnsResolver _dnsResolver;
+
+        public DnsHandler(CustomDnsResolver dnsResolver) {
+            _dnsResolver = dnsResolver;
+        }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
+            var host = request.RequestUri.Host;
+            var ip = _dnsResolver.Resolve(host);
+
+            var builder = new UriBuilder(request.RequestUri);
+            builder.Host = ip;
+
+            request.RequestUri = builder.Uri;
+
+            return base.SendAsync(request, cancellationToken);
+        }
+    }
+
+    public class CustomDnsResolver {
+        public string Resolve(string host) {
+            return "127.0.0.1";
+        }
+    }
+
 }

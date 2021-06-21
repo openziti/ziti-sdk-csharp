@@ -82,7 +82,7 @@ namespace OpenZiti {
 
                     w.AfterEnroll(r);
                 } else {
-                    Console.WriteLine("well what the heck?");
+                    Console.WriteLine("unexpected situation");
                 }
             }
         }

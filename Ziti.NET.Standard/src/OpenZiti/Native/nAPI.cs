@@ -69,6 +69,8 @@ namespace OpenZiti.Native {
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event);
     //typedef void (*ziti_close_cb)(ziti_connection conn);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_close_cb(IntPtr conn);
+    //typedef void (*uv_close_cb)(uv_handle_t* handle);
+    [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void OnUVTimer(IntPtr handle);
 
     public class API {
         public const CallingConvention CALL_CONVENTION = CallingConvention.Cdecl;
@@ -215,6 +217,13 @@ namespace OpenZiti.Native {
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_data")]
         public static extern IntPtr ziti_conn_data(IntPtr conn);
         */
+        //defined in ziti4dotnet.h: void* z4d_registerUVTimer(uv_loop_t * loop, uv_timer_cb timer_cb, uint64_t delay, uint64_t iterations) {
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_registerUVTimer", CallingConvention = CALL_CONVENTION)]
+        public static extern IntPtr z4d_registerUVTimer(IntPtr loop, OnUVTimer timer_cb, long delay, long iterations);
+
+        //defined in ziti4dotnet.h: void* z4d_stop_uv_timer(uv_timer_t* t);
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_stop_uv_timer", CallingConvention = CALL_CONVENTION)]
+        public static extern IntPtr z4d_stop_uv_timer(IntPtr timer);
     }
 
 #pragma warning disable 0649

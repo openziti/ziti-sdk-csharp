@@ -39,6 +39,10 @@ void* z4d_registerUVTimer(uv_loop_t * loop, uv_timer_cb timer_cb, uint64_t delay
     return uvt;
 }
 
+void* z4d_stop_uv_timer(uv_timer_t* t) {
+    uv_timer_stop(t);
+}
+
 void* newLoop() {
     return uv_loop_new();
 }

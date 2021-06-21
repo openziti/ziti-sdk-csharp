@@ -15,18 +15,18 @@ limitations under the License.
 */
 
 using System;
-
+using System.Threading.Tasks;
 using OpenZiti;
 using NLog;
 
 namespace ConsoleTestApp {
     class Program {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        static string identityFile = @"c:\temp\pn.json";
-        static void Main(string[] args) {
+        static string identityFile = @"c:\temp\id.json";
+        static async Task Main(string[] args) {
             Logging.SimpleConsoleLogging(LogLevel.Trace);
             Console.Clear();
-            OpenZiti.Samples.Weather.Run(identityFile);
+            await OpenZiti.Samples.WeatherStream.Run(identityFile);
         }
     }
 }
