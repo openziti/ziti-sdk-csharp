@@ -25,9 +25,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog" Version="4.7.9" />
+        <PackageReference Include="NLog" Version="4.7.10" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
-        <PackageReference Include="System.Text.Json" Version="5.0.2" />
+        <PackageReference Include="System.Text.Json" Version="4.6.0" />
     </ItemGroup>
 
     <ItemGroup>
