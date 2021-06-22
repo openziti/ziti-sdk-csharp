@@ -22,6 +22,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
+      - if: github.event_name == 'push'
+        run: echo "GIT_BRANCH=$($env:GITHUB_REF.replace('refs/heads/', ''))" >> $env:GITHUB_ENV
+      - if: github.event_name == 'pull_request'
+        run: echo "GIT_BRANCH=$env:GITHUB_HEAD_REF" >> $env:GITHUB_ENV
       - name: Generate Native Libraries
         run: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/msvc-build.bat
       - name: compile x86
@@ -31,7 +35,7 @@ jobs:
       - name: Create NuGet package
         run: dotnet build --configuration Release ${{ github.workspace }}/Ziti.NuGet.sln
 
-      - if: github.event_name == 'pull_request'
+      - if: ${{ $env:GITHUB_ENV == "main" }} 
         name: Publish Ziti.NET.Standard
         uses: brandedoutcast/publish-nuget@v2.5.2
         with:
