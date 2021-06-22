@@ -96,6 +96,7 @@ namespace OpenZiti
             de.onConnected = onConnected;
             de.dataReceived = dataReceived;
             de.dial(Service.Name);
+            isDialed = true;
         }
 
         public int Write(byte[] data, OnZitiDataWritten afterDataWritten, object context)

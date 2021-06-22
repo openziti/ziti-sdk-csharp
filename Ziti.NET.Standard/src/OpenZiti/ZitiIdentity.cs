@@ -28,13 +28,13 @@ namespace OpenZiti {
 	public class ZitiIdentity {
 		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-		private SemaphoreSlim runlock = new(0);
-		private SemaphoreSlim streamLock = new(0);
+		private SemaphoreSlim runlock = new SemaphoreSlim(0);
+		private SemaphoreSlim streamLock = new SemaphoreSlim(0);
 		private bool _isRunning;
-		private object _isRunningLock = new();
+		private object _isRunningLock = new object();
 		private Exception startException;
 		private bool isInitialized;
-		private Dictionary<string, ZitiService> services = new();
+		private Dictionary<string, ZitiService> services = new Dictionary<string, ZitiService>();
 
 		public bool IsRunning {
 			get {
@@ -50,7 +50,7 @@ namespace OpenZiti {
 		}
 
 		private UVLoop _loop = API.DefaultLoop; //use the default loop unless changed
-		private object _loopLock = new();
+		private object _loopLock = new object();
 
 		public UVLoop Loop {
 			get {

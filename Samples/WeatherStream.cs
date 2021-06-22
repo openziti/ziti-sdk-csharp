@@ -53,21 +53,20 @@ namespace OpenZiti.Samples {
 	                                                           + "Host: wttr.in\r\n"
 	                                                           + "\r\n");
 
-	        string path = @"c:/path/to/enrolled.id.json";
 
 	        //makes the output pretty - and not jumbly
 	        Console.OutputEncoding = Encoding.UTF8;
-            
-			using (var zitiStream = new ZitiStream(zid1.NewConnection("weather-svc")))
-			using (MemoryStream ms = new()) {
+			
+			using (var zitiStream = new ZitiStream(zid1.NewConnection("weather-svc"))) {
 				//write the request
 				await zitiStream.WriteAsync(wttrRequestAsBytes, 0, wttrRequestAsBytes.Length);
-                //pump the response to the console's standard out
-				await zitiStream.PumpAsync(Console.OpenStandardOutput());
+
+				//pump the response to the console's standard out
+				Task output = zitiStream.PumpAsync(Console.OpenStandardOutput());
 			}
 
 			zid1.Stop();
 			zid1.Shutdown();
 		}
-    }
+	}
 }

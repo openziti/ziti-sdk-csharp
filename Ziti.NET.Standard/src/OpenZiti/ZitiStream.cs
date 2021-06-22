@@ -233,7 +233,7 @@ namespace OpenZiti {
         /// <param name="input">The input stream</param>
         /// <param name="destination">The destination stream</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task"/> which is awaitable</returns>
-        public static async Task PumpAsync(string side, Stream input, Stream destination) {
+        public static async Task PumpAsync(Stream input, Stream destination) {
             int count = DefaultStreamPumpBufferSize;
             byte[] buffer = new byte[count];
             int numRead = await input.ReadAsync(buffer, 0, count).ConfigureAwait(false);
@@ -249,7 +249,7 @@ namespace OpenZiti {
         /// <param name="destination"></param>
         /// <returns></returns>
         public async Task PumpAsync(Stream destination) {
-            await Task.WhenAny(PumpAsync("ASIDE", this, destination), PumpAsync("BSIDE", destination, this));
+            await Task.WhenAny(PumpAsync(this, destination), PumpAsync(destination, this));
         }
     }
 }
