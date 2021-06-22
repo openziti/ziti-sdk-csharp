@@ -41,6 +41,10 @@ namespace OpenZiti
             }
         }
 
+        public string Id {
+	        get { return nativeService.id; }
+        }
+
 
         public ZitiIdentity Identity { get; internal set; }
 

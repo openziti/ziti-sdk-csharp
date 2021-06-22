@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+using System;
 using System.Runtime.InteropServices;
 
 namespace OpenZiti
@@ -20,6 +22,7 @@ namespace OpenZiti
     public static class ZitiUtil
     {
         public readonly static GCHandle NO_CONTEXT = GCHandle.Alloc(new object());
+        public readonly static IntPtr NO_CONTEXT_PTR = GCHandle.ToIntPtr(NO_CONTEXT);
 
         public static void CheckStatus(ZitiContext zitiContext, ZitiStatus status, object initContext)
         {

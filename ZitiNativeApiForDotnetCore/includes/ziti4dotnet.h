@@ -24,6 +24,7 @@ Z4D_API extern int z4d_uv_run(void* loop);
 Z4D_API extern const char** z4d_all_config_types();
 Z4D_API extern uv_loop_t* z4d_default_loop();
 Z4D_API void* z4d_registerUVTimer(uv_loop_t* loop, uv_timer_cb timer_cb, uint64_t iterations, uint64_t delay);
+Z4D_API void* z4d_stop_uv_timer(uv_timer_t* t);
 Z4D_API void passAndPrint(void* anything);
 Z4D_API void* newLoop();
 Z4D_API int ziti_event_type_from_pointer(const ziti_event_t *event);

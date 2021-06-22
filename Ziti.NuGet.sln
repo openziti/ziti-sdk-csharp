@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ziti.NET.Standard", "Ziti.NET.Standard\Ziti.NET.Standard.csproj", "{64BEABCF-FEE4-4901-B74D-87D60AAC4EB8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTestAppDotnet5", "ConsoleTestAppDotnet5\ConsoleTestAppDotnet5.csproj", "{A708ABEB-3393-4E31-9883-D7E7BAE322A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\TestProject.csproj", "{A708ABEB-3393-4E31-9883-D7E7BAE322A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16F52D05-10CE-47CC-9B52-1F77CAADD252}"
 	ProjectSection(SolutionItems) = preProject

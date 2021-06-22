@@ -82,7 +82,7 @@ namespace OpenZiti {
 
                     w.AfterEnroll(r);
                 } else {
-                    Console.WriteLine("well what the heck?");
+                    Console.WriteLine("unexpected situation");
                 }
             }
         }
@@ -167,11 +167,9 @@ namespace OpenZiti {
         public IntPtr Ptr { get; private set; }
 
         public StructWrapper(object obj) {
-            if (Ptr != null) {
+            if (Ptr != IntPtr.Zero) {
                 Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
                 Marshal.StructureToPtr(obj, Ptr, false);
-            } else {
-                Ptr = IntPtr.Zero;
             }
         }
 

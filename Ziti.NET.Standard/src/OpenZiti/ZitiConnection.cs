@@ -15,15 +15,19 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using System.Threading;
+using NLog;
 
 namespace OpenZiti
 {
     /// <summary>
     /// Represents the connection to the Ziti Network.
     /// </summary>
-    public class ZitiConnection
-    {
+    public class ZitiConnection {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Any additional context that needs to be stored along with the <see cref="ZitiConnection"/>. Must be
         /// supplied when the <see cref="ZitiConnection"/> is created.
@@ -43,6 +47,9 @@ namespace OpenZiti
 
         internal byte[] NO_DATA = new byte[0];
         internal IntPtr nativeConnection = IntPtr.Zero;
+        internal bool readyForWriting;
+        internal bool readyForReading;
+        internal BlockingCollection<byte[]> responses = new BlockingCollection<byte[]>(16);
 
         public ZitiService Service { get; internal set; }
         private ZitiContext zitiContext = null;
@@ -51,6 +58,11 @@ namespace OpenZiti
         private OnZitiDataWritten aafterData;
         private OnClientAccept onAccept;
         private OnZitiClientData onClientData;
+        private bool isStream;
+        private bool isDialed;
+		private ZitiStatus connectionReadyStatus;
+		private Native.ziti_conn_cb ozc;
+		private Native.ziti_data_cb ozdr;
 
         /// <summary>
         /// The only constructor for <see cref="ZitiConnection"/>. A valid <see cref="ZitiService"/> and
@@ -84,6 +96,7 @@ namespace OpenZiti
             de.onConnected = onConnected;
             de.dataReceived = dataReceived;
             de.dial(Service.Name);
+            isDialed = true;
         }
 
         public int Write(byte[] data, OnZitiDataWritten afterDataWritten, object context)
@@ -177,6 +190,55 @@ namespace OpenZiti
                 }
                 return len;
             }
+        }
+
+        public void MarkAsStream() {
+	        isStream = true;
+	        if (isDialed) {
+		        throw new InvalidOperationException("Cannot AsStream on a connection that is already Dialed.");
+	        }
+
+	        //assign delegate to a local variable so that it is not elligable for GC
+	        ozc = (IntPtr nf_connection, int status) => {
+		        lock (this) {
+			        if (status < 0) {
+				        Logger.Debug("connection not ready for writing: " + status);
+				        this.connectionReadyStatus = (ZitiStatus)status;
+			        } else {
+				        Logger.Debug("marking stream ready for writing");
+			        }
+
+			        Monitor.Pulse(this);
+			        this.readyForWriting = true;
+		        }
+	        };
+
+	        //assign delegate to a local variable so that it is not elligable for GC
+	        ozdr = (IntPtr nf_connection, IntPtr rawData, int len) => {
+		        if (len > 0) {
+                    //need to copy the memory from c - into managed code and then write into the pipeline buffer
+                    //it would be much better to just read from 
+                    byte[] data = new byte[len];
+			        Logger.Debug("got bytes from ziti: " + len + " responses size: " + responses.Count);
+			        Marshal.Copy(rawData, data, 0, len);
+			        this.responses.Add(data);
+
+			        return len;
+                } else {
+			        this.responses.CompleteAdding();
+
+			        return 0;
+                }
+	        };
+	        //Ziti.Dial(nf_connection, serviceName, ozc, ozdr);
+	        Native.API.ziti_dial(nativeConnection, Service.Name, ozc, ozdr);
+        }
+
+        public bool CheckConnection() {
+	        if (this.connectionReadyStatus != ZitiStatus.OK) {
+		        throw new ZitiException("Connection is not in a usable state: " + connectionReadyStatus.GetDescription());
+	        }
+	        return true;
         }
     }
 }

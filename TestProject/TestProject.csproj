@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Samples\Util\ConsoleHelper.cs" Link="ConsoleHelper.cs" />
+    <Compile Include="..\Samples\Weather.cs" Link="Weather.cs" />
+    <Compile Include="..\Samples\WeatherStream.cs" Link="WeatherStream.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\API.cs" Link="src\OpenZiti\API.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ExtensionMethods.cs" Link="src\OpenZiti\ExtensionMethods.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Logging.cs" Link="src\OpenZiti\Logging.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Native\IdentityFile.cs" Link="src\OpenZiti\native\IdentityFile.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Native\nAPI.cs" Link="src\OpenZiti\native\nAPI.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Native\NativeHelperFunctions.cs" Link="src\OpenZiti\native\NativeHelperFunctions.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\UVLoop.cs" Link="src\OpenZiti\UVLoop.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiConnection.cs" Link="src\OpenZiti\ZitiConnection.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiContext.cs" Link="src\OpenZiti\ZitiContext.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiEnrollment.cs" Link="src\OpenZiti\ZitiEnrollment.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiException.cs" Link="src\OpenZiti\ZitiException.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiIdentity.cs" Link="src\OpenZiti\ZitiIdentity.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiIdentityFormat.cs" Link="src\OpenZiti\ZitiIdentityFormat.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiService.cs" Link="src\OpenZiti\ZitiService.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStatus.cs" Link="src\OpenZiti\ZitiStatus.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStatusExtensions.cs" Link="src\OpenZiti\ZitiStatusExtensions.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStream.cs" Link="src\OpenZiti\ZitiStream.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiUtil.cs" Link="src\OpenZiti\ZitiUtil.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="RestSharp" Version="106.11.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\OpenZiti\native\" />
+  </ItemGroup>
+
+
+</Project>
