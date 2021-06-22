@@ -35,7 +35,7 @@ jobs:
       - name: Create NuGet package
         run: dotnet build --configuration Release ${{ github.workspace }}/Ziti.NuGet.sln
 
-      - if: ${{ env.GIT_BRANCH == "main" }} 
+      - if: ${{ env.GIT_BRANCH == 'main' }} 
         name: Publish Ziti.NET.Standard
         uses: brandedoutcast/publish-nuget@v2.5.2
         with:
