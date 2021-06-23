@@ -1,35 +1,35 @@
 @echo off
-pushd .
-set CSDK_HOME=%~dp0
-cd /d %CSDK_HOME%
 
-set cmake=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe
-set BUILDFOLDER=%CSDK_HOME%build
+set NATIVE_LIB_HOME=%~dp0
+set BUILDFOLDER=%NATIVE_LIB_HOME%build-win
+if [%1]==[] goto usage
+if /i "%1"=="Release" goto ok
+if /i %1=="Debug" goto ok
+goto usage
+
+:ok
+echo we got :%RELEASE_OR_DEBUG%:
+
+set RELEASE_OR_DEBUG=%1
+
+call %NATIVE_LIB_HOME%msvc-build.bat
 
 ECHO Building via cmake using:
-ECHO     %cmake% --build %BUILDFOLDER%\x86 --config Debug
-"%cmake%" --build %BUILDFOLDER%\x86 --config Debug
-REM > "%BUILDFOLDER%\x86.Debug.txt"
-ECHO     build result saved to: %BUILDFOLDER%\x86.Debug.txt
+ECHO     cmake --build %BUILDFOLDER%\x86 --config %RELEASE_OR_DEBUG%
+cmake --build %BUILDFOLDER%\x86 --config %RELEASE_OR_DEBUG% > "%BUILDFOLDER%\x86.%RELEASE_OR_DEBUG%.txt"
+ECHO     build result saved to: %BUILDFOLDER%\x86.%RELEASE_OR_DEBUG%.txt
 ECHO.
 
-ECHO     %cmake% --build %BUILDFOLDER%\x86 --config Release
-"%cmake%" --build %BUILDFOLDER%\x86 --config Release
-REM > "%BUILDFOLDER%\x86.Release.txt"
-ECHO     build result saved to: %BUILDFOLDER%\x86.Release.txt
+ECHO     cmake --build %BUILDFOLDER%\x64 --config %RELEASE_OR_DEBUG%
+cmake --build %BUILDFOLDER%\x64 --config %RELEASE_OR_DEBUG% > "%BUILDFOLDER%\x64.%RELEASE_OR_DEBUG%.txt"
+ECHO     build result saved to: %BUILDFOLDER%\x64.%RELEASE_OR_DEBUG%.txt
 ECHO.
+goto end
 
-ECHO     %cmake% --build %BUILDFOLDER%\x64 --config Debug
-"%cmake%" --build %BUILDFOLDER%\x64 --config Debug
-REM > "%BUILDFOLDER%\x64.Debug.txt"
-ECHO     build result saved to: %BUILDFOLDER%\x64.Debug.txt
-ECHO.
-
-ECHO     %cmake% --build %BUILDFOLDER%\x64 --config Release
-"%cmake%" --build %BUILDFOLDER%\x64 --config Release
-REM > "%BUILDFOLDER%\x64.Release.txt"
-ECHO     build result saved to: %BUILDFOLDER%\x64.Release.txt
-ECHO.
-
-popd
-
+:usage
+echo.
+echo   USAGE:
+echo       compile-all.bat ^[Release^|Debug^]
+echo.
+:end
+echo done
