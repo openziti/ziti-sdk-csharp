@@ -5,6 +5,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
