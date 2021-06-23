@@ -5,6 +5,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
@@ -22,6 +23,7 @@
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace>OpenZiti</RootNamespace>
+        <Platforms>AnyCPU;x86;x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
