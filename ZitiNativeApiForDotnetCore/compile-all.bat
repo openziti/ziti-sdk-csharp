@@ -4,7 +4,7 @@ set NATIVE_LIB_HOME=%~dp0
 set BUILDFOLDER=%NATIVE_LIB_HOME%build-win
 if [%1]==[] goto usage
 if /i "%1"=="Release" goto ok
-if /i %1=="Debug" goto ok
+if /i "%1"=="Debug" goto ok
 goto usage
 
 :ok
