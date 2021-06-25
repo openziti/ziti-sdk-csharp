@@ -193,14 +193,14 @@ namespace OpenZiti {
 			}
 		}
 
-		private void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event) {
-			int type = Native.NativeHelperFunctions.ziti_event_type_from_pointer(ziti_event);
+		private void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event_t) {
+			int type = Native.NativeHelperFunctions.ziti_event_type_from_pointer(ziti_event_t);
 			switch (type) {
 				case ZitiEventFlags.ZitiContextEvent:
 					NativeContext = ziti_context;
 					WrappedContext = new ZitiContext(ziti_context);
-
-					Native.ziti_context_event ziti_context_event = Marshal.PtrToStructure<Native.ziti_context_event>(ziti_event);
+					
+					Native.ziti_context_event ziti_context_event = Marshal.PtrToStructure<Native.ziti_context_event>(ziti_event_t);
 					var vptr = Native.API.ziti_get_controller_version(ziti_context);
 					ziti_version v = Marshal.PtrToStructure<ziti_version>(vptr);
 					IntPtr ptr = Native.API.ziti_get_controller(ziti_context);
@@ -222,7 +222,7 @@ namespace OpenZiti {
 
 					break;
 				case ZitiEventFlags.ZitiRouterEvent:
-					Native.ziti_router_event ziti_router_event = Marshal.PtrToStructure<Native.ziti_router_event>(ziti_event);
+					Native.ziti_router_event ziti_router_event = Marshal.PtrToStructure<Native.ziti_router_event>(ziti_event_t);
 
 					ZitiRouterEvent routerEvent = new ZitiRouterEvent() {
 						Name = ziti_router_event.name,
@@ -232,7 +232,7 @@ namespace OpenZiti {
 					InitOpts.ZitiRouterEvent(routerEvent);
 					break;
 				case ZitiEventFlags.ZitiServiceEvent:
-					Native.ziti_service_event ziti_service_event = Marshal.PtrToStructure<Native.ziti_service_event>(ziti_event);
+					Native.ziti_service_event ziti_service_event = Marshal.PtrToStructure<Native.ziti_service_event>(ziti_event_t);
 
 					ZitiServiceEvent serviceEvent = new ZitiServiceEvent() {
 						nativeRemovedList = ziti_service_event.removed,

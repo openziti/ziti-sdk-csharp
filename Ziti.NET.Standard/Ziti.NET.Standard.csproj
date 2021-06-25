@@ -59,4 +59,7 @@
         <Message Text="Push NuGet Package to NuGet Feed $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" Importance="high" />
         <Exec Command="nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source ./nuget-local"></Exec>
     </Target>
+    <PropertyGroup Condition="'$(Platform)' == 'x64'">
+        <DefineConstants>TRACE;ZITI_X64</DefineConstants>
+    </PropertyGroup>
 </Project>
