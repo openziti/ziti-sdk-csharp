@@ -79,9 +79,11 @@ char* ziti_context_event_err(const ziti_event_t *e) {
         return NULL;
     }
 }
-int ziti_context_event_status(const ziti_event_t *e) {
+int ziti_context_event_status(const ziti_event_t* e) {
     if (e) {
         return e->event.ctx.err;
-    } else {
+    }
+    else {
         return 0;
     }
+}
