@@ -12,6 +12,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>TRACE;ZITI_X64</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -20,6 +21,7 @@
   <Target Name="x86" BeforeTargets="Build">
       <Message Importance="High" Text="COPYING $(SolutionDir)\ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll to $(OutDir)" />
       <Copy SourceFiles="$(SolutionDir)ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll" DestinationFolder="$(OutDir)" />
+      <Copy SourceFiles="$(SolutionDir)ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.pdb" DestinationFolder="$(OutDir)" />
   </Target>
   <ItemGroup>
     <Compile Include="..\Samples\Util\ConsoleHelper.cs" Link="ConsoleHelper.cs" />

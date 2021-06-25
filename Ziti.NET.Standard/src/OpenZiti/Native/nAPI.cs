@@ -195,18 +195,10 @@ namespace OpenZiti.Native {
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_service_get_raw_config", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr ziti_service_get_raw_config(IntPtr svc, string config_name);
 
-        //defined in C: int char_pointer_len(char *a);
-        [DllImport(Z4D_DLL_PATH, CallingConvention = CALL_CONVENTION)]
-        public static extern int char_pointer_len(IntPtr nullTerminatedString);
-
         //defined in C: char* gimme_string();
         [DllImport(Z4D_DLL_PATH, EntryPoint = "gimme_string", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr gimme_string_intptr();
-
-        //defined in C: int size_of();
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "size_of", CallingConvention = CALL_CONVENTION)]
-        public static extern int size_of(IntPtr something);
-
+        
 
         /*
         //defined in C: extern void ziti_dump(ziti_context ztx);
@@ -224,6 +216,8 @@ namespace OpenZiti.Native {
         //defined in ziti4dotnet.h: void* z4d_stop_uv_timer(uv_timer_t* t);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_stop_uv_timer", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr z4d_stop_uv_timer(IntPtr timer);
+
+
     }
 
 #pragma warning disable 0649
@@ -282,25 +276,74 @@ namespace OpenZiti.Native {
 
     }
 
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Explicit)]
     struct ziti_context_event {
+	    [FieldOffset(0)]
         public int type;
+#if ZITI_X64
+        [FieldOffset(8)]
+#else
+	    [FieldOffset(4)]
+#endif
         public int ctrl_status;
+#if ZITI_X64
+        [FieldOffset(16)]
+#else
+	    [FieldOffset(8)]
+#endif
+        [MarshalAs(UnmanagedType.LPUTF8Str)]
         public string err;
     };
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Explicit)]
     struct ziti_router_event {
+	    [FieldOffset(0)]
         public int type;
+#if ZITI_X64 
+        [FieldOffset(8)]
+#else
+	    [FieldOffset(4)]
+#endif
         public int status;
+#if ZITI_X64
+        [FieldOffset(16)]
+#else
+	    [FieldOffset(8)]
+#endif
+        [MarshalAs(UnmanagedType.LPUTF8Str)]
         public string name;
+#if ZITI_X64
+        [FieldOffset(24)]
+#else
+	    [FieldOffset(12)]
+#endif
+        [MarshalAs(UnmanagedType.LPUTF8Str)]
         public string version;
     };
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Explicit)]
     struct ziti_service_event {
+	    [FieldOffset(0)]
         public int type;
+#if ZITI_X64
+        [FieldOffset(8)]
+#else
+	    [FieldOffset(4)]
+#endif
         public IntPtr removed;
+#if ZITI_X64
+        [FieldOffset(16)]
+#else
+	    [FieldOffset(8)]
+#endif
         public IntPtr changed;
+#if ZITI_X64
+        [FieldOffset(24)]
+#else
+	    [FieldOffset(12)]
+#endif
         public IntPtr added;
     };
+
+
+
 #pragma warning restore 0649
 }

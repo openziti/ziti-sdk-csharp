@@ -8,22 +8,21 @@ if /i "%1"=="Debug" goto ok
 goto usage
 
 :ok
-echo we got :%RELEASE_OR_DEBUG%:
-
 set RELEASE_OR_DEBUG=%1
+REM echo RELEASE_OR_DEBUG=%RELEASE_OR_DEBUG%
 
 call %NATIVE_LIB_HOME%msvc-build.bat
 
-ECHO Building via cmake using:
-ECHO     cmake --build %BUILDFOLDER%\x86 --config %RELEASE_OR_DEBUG%
+echo Building via cmake using:
+echo     cmake --build %BUILDFOLDER%\x86 --config %RELEASE_OR_DEBUG%
 cmake --build %BUILDFOLDER%\x86 --config %RELEASE_OR_DEBUG% > "%BUILDFOLDER%\x86.%RELEASE_OR_DEBUG%.txt"
-ECHO     build result saved to: %BUILDFOLDER%\x86.%RELEASE_OR_DEBUG%.txt
-ECHO.
+echo     build result saved to: %BUILDFOLDER%\x86.%RELEASE_OR_DEBUG%.txt
+echo.
 
-ECHO     cmake --build %BUILDFOLDER%\x64 --config %RELEASE_OR_DEBUG%
+echo     cmake --build %BUILDFOLDER%\x64 --config %RELEASE_OR_DEBUG%
 cmake --build %BUILDFOLDER%\x64 --config %RELEASE_OR_DEBUG% > "%BUILDFOLDER%\x64.%RELEASE_OR_DEBUG%.txt"
-ECHO     build result saved to: %BUILDFOLDER%\x64.%RELEASE_OR_DEBUG%.txt
-ECHO.
+echo     build result saved to: %BUILDFOLDER%\x64.%RELEASE_OR_DEBUG%.txt
+echo.
 goto end
 
 :usage
