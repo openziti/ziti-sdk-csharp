@@ -40,7 +40,3 @@ jobs:
         with:
           PROJECT_FILE_PATH: Ziti.NET.Standard/Ziti.NET.Standard.csproj
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-      - name: Upload service zip onto job
-        uses: actions/upload-artifact@v2
-        with:
-          path: "${{ github.workspace }}/Ziti.NET.Standard/bin/Release/Ziti.NET.Standard.*.nupkg"
