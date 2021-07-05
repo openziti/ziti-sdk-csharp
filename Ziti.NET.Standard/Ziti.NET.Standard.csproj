@@ -21,6 +21,7 @@
         <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>
+        <PackageIconUrl>https://openziti.github.io/favicon.ico</PackageIconUrl>
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace>OpenZiti</RootNamespace>
         <Platforms>AnyCPU;x86;x64</Platforms>
@@ -30,10 +31,10 @@
         <PackageReference Include="NLog" Version="4.7.10" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <PackageReference Include="System.Text.Json" Version="4.6.0" />
+        <PackageReference Include="Ziti.NET.Standard.native" Version="0.24.3" />
     </ItemGroup>
 
-    <ItemGroup>
-        <!--Condition="'$(IsPublicBuild)' == 'True'"-->
+    <!--<ItemGroup>
         <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x86/library/Release/ziti4dotnet.dll" Link="runtimes/win-x86/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win-x86/native</PackagePath>
         </Content>
@@ -43,10 +44,10 @@
         <Content Include="./../ZitiNativeApiForDotnetCore/build-win/x64/library/Release/ziti4dotnet.dll" Link="runtimes/win/native/ziti4dotnet.dll">
             <PackagePath>runtimes/win/native</PackagePath>
         </Content>
-        <!--Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/linux-x64/native/libziti4dotnet.so">
+        < ! - -Content Include="./../ZitiNativeApiForDotnetCore/build/x64/library/Release/ziti4dotnet.dll" Link="runtimes/linux-x64/native/libziti4dotnet.so">
             <PackagePath>runtimes/linux-x64/native</PackagePath>
-        </Content-->
-    </ItemGroup>
+        </Content - - >
+    </ItemGroup>-->
 
     <ItemGroup>
         <Resource Include="2019_NF TCL EULA.txt">

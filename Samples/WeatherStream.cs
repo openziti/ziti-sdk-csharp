@@ -62,7 +62,7 @@ namespace OpenZiti.Samples {
 				await zitiStream.WriteAsync(wttrRequestAsBytes, 0, wttrRequestAsBytes.Length);
 
 				//pump the response to the console's standard out
-				Task output = zitiStream.PumpAsync(Console.OpenStandardOutput());
+				await zitiStream.PumpAsync(Console.OpenStandardOutput());
 			}
 
 			zid1.Stop();
