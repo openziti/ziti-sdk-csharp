@@ -30,4 +30,3 @@ jobs:
         run: nuget pack native-package.nuspec -Version ${{ version }}
       - name: Publish Ziti.NET.Standard.native
         run: nuget push Ziti.NET.Standard.native.${{ version }}.nupkg -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}} -Source https://api.nuget.org/v3/index.json
-        uses: brandedoutcast/publish-nuget@v2.5.2
