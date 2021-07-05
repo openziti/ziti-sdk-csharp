@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build-csharp-sdk.yml = .github\workflows\build-csharp-sdk.yml
 		.github\workflows\mattermost-ziti-webhook.yml = .github\workflows\mattermost-ziti-webhook.yml
+		.github\workflows\native-nuget-publish.yml = .github\workflows\native-nuget-publish.yml
 	EndProjectSection
 EndProject
 Global
