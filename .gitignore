@@ -5,3 +5,4 @@ NuGet
 .idea
 nuget-local
 dotnet-install.sh
+*.nupkg

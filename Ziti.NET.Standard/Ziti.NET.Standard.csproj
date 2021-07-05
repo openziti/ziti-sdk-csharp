@@ -30,6 +30,7 @@
         <PackageReference Include="NLog" Version="4.7.10" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <PackageReference Include="System.Text.Json" Version="4.6.0" />
+        <PackageReference Include="Ziti.NET.Standard.native" Version="0.0.1" />
     </ItemGroup>
 
     <!--<ItemGroup>
