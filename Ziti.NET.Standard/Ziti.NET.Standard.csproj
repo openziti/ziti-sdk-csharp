@@ -21,6 +21,7 @@
         <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>
+        <PackageIconUrl>https://openziti.github.io/favicon.ico</PackageIconUrl>
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace>OpenZiti</RootNamespace>
         <Platforms>AnyCPU;x86;x64</Platforms>
