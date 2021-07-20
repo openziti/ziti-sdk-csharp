@@ -17,7 +17,7 @@
         <Authors>NetFoundry</Authors>
         <Company>NetFoundry</Company>
         <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
-        <Copyright>© 2019 NetFoundry, Inc. All rights reserved.</Copyright>
+        <Copyright>© NetFoundry Inc. All rights reserved.</Copyright>
         <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>

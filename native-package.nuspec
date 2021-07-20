@@ -11,7 +11,7 @@
     <iconUrl>https://openziti.github.io/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</description>
-    <copyright>Copyright NetFoundry, Inc.</copyright>
+    <copyright>Copyright NetFoundry Inc.</copyright>
     <tags>native dll</tags>
     <summary>This nuget package contains native libraries compiled for the targetted platforms. Initially this includes window x86 and x64. Eventually it may include libraries for MacOS/iOS/linux</summary>
   </metadata>
