@@ -1,4 +1,4 @@
-name: Build the native libraries
+name: Build and publish the nuget project
 
 on:
   push:
@@ -26,14 +26,8 @@ jobs:
         run: echo "GIT_BRANCH=$($env:GITHUB_REF.replace('refs/heads/', ''))" >> $env:GITHUB_ENV
       - if: github.event_name == 'pull_request'
         run: echo "GIT_BRANCH=$env:GITHUB_HEAD_REF" >> $env:GITHUB_ENV
-      - name: Generate Native Libraries
-        run: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/msvc-build.bat
-      - name: compile x86
-        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x86 --config Release
-      - name: compile x64
-        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x64 --config Release
       - name: Create NuGet package
-        run: dotnet build --configuration Release ${{ github.workspace }}/Ziti.NuGet.sln
+        run: ${{ github.workspace }}/create-nuget-package.bat
       - if: ${{ env.GIT_BRANCH == 'main' }} 
         name: Publish Ziti.NET.Standard
         uses: brandedoutcast/publish-nuget@v2.5.2

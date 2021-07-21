@@ -291,8 +291,7 @@ namespace OpenZiti.Native {
 #else
 	    [FieldOffset(8)]
 #endif
-        [MarshalAs(UnmanagedType.LPUTF8Str)]
-        public string err;
+        public IntPtr err;
     };
     [StructLayout(LayoutKind.Explicit)]
     struct ziti_router_event {
@@ -305,19 +304,17 @@ namespace OpenZiti.Native {
 #endif
         public int status;
 #if ZITI_X64
-        [FieldOffset(16)]
+	    [FieldOffset(16)]
 #else
 	    [FieldOffset(8)]
 #endif
-        [MarshalAs(UnmanagedType.LPUTF8Str)]
-        public string name;
+	    public IntPtr name;
 #if ZITI_X64
         [FieldOffset(24)]
 #else
 	    [FieldOffset(12)]
 #endif
-        [MarshalAs(UnmanagedType.LPUTF8Str)]
-        public string version;
+        public IntPtr version;
     };
     [StructLayout(LayoutKind.Explicit)]
     struct ziti_service_event {
@@ -342,8 +339,6 @@ namespace OpenZiti.Native {
 #endif
         public IntPtr added;
     };
-
-
 
 #pragma warning restore 0649
 }

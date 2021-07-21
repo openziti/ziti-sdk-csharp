@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <package>
-  <metadata>
-    <id>Ziti.NET.Standard.native</id>
-    <version>0.0.1</version>
-    <title>Native Ziti Libraries for use with .NET</title>
-    <authors>openziti.org</authors>
-    <owners>Clint Dovholuk</owners>
-    <license type="expression">Apache-2.0</license>
-    <projectUrl>https://openziti.github.io/openziti/ziti-sdk-csharp</projectUrl>
-    <iconUrl>https://openziti.github.io/favicon.ico</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</description>
-    <copyright>Copyright NetFoundry Inc.</copyright>
-    <tags>native dll</tags>
-    <summary>This nuget package contains native libraries compiled for the targetted platforms. Initially this includes window x86 and x64. Eventually it may include libraries for MacOS/iOS/linux</summary>
-  </metadata>
-  <files>
-    <file src="ZitiNativeApiForDotnetCore\build-win\x86\library\Debug\ziti4dotnet.dll" target="runtimes/win-x86/native" />
-    <file src="ZitiNativeApiForDotnetCore\build-win\x64\library\Debug\ziti4dotnet.dll" target="runtimes/win-x64/native" />
-  </files>
+    <metadata>
+        <id>Ziti.NET.Standard.native</id>
+        <version>0.0.1</version>
+        <title>Native Ziti Libraries for use with .NET</title>
+        <authors>openziti.org</authors>
+        <owners>Clint Dovholuk</owners>
+        <license type="expression">Apache-2.0</license>
+        <projectUrl>https://openziti.github.io/openziti/ziti-sdk-csharp</projectUrl>
+        <iconUrl>https://openziti.github.io/favicon.ico</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <summary>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</summary>
+        <copyright>Copyright NetFoundry, Inc. All rights reserved.</copyright>
+        <tags>native dll</tags>
+        <description>This nuget package contains native libraries compiled for the targeted platforms. Initially this includes window x86 and x64. Eventually it may include libraries for MacOS/iOS/linux</description>
+    </metadata>
+    <files>
+        <file src="ZitiNativeApiForDotnetCore\build-win\x86\library\Debug\ziti4dotnet.dll" target="runtimes/win-x86/native" />
+        <file src="ZitiNativeApiForDotnetCore\build-win\x64\library\Debug\ziti4dotnet.dll" target="runtimes/win-x64/native" />
+    </files>
 </package>

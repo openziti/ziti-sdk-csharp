@@ -209,7 +209,7 @@ namespace OpenZiti {
 					ZitiContextEvent evt = new ZitiContextEvent() {
 						Name = name,
 						Status = (ZitiStatus) ziti_context_event.ctrl_status,
-						StatusError = ziti_context_event.err,
+						StatusError = Marshal.PtrToStringUTF8(ziti_context_event.err),
 						Version = v,
 						Identity = this,
 					};
@@ -225,9 +225,9 @@ namespace OpenZiti {
 					Native.ziti_router_event ziti_router_event = Marshal.PtrToStructure<Native.ziti_router_event>(ziti_event_t);
 
 					ZitiRouterEvent routerEvent = new ZitiRouterEvent() {
-						Name = ziti_router_event.name,
+						Name = Marshal.PtrToStringUTF8(ziti_router_event.name),
 						Type = (RouterEventType) ziti_router_event.status,
-						Version = ziti_router_event.version,
+						Version = Marshal.PtrToStringUTF8(ziti_router_event.version),
 					};
 					InitOpts.ZitiRouterEvent(routerEvent);
 					break;
