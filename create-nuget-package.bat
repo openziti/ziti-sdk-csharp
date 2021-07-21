@@ -13,6 +13,6 @@ REM for the corflags tip
 echo "copying x86 dll and removing removing the 32Bit-flag to be AnyCPU compatible"
 cp Ziti.NET.Standard\bin\x86\Release\netstandard2.1\Ziti.NET.Standard.dll Ziti.NET.Standard\bin\Release\netstandard2.1\Ziti.NET.Standard.dll
 cp Ziti.NET.Standard\bin\x86\Release\netstandard2.1\Ziti.NET.Standard.pdb Ziti.NET.Standard\bin\Release\netstandard2.1\Ziti.NET.Standard.pdb
-corflags.exe /32bitreq- Ziti.NET.Standard\bin\Release\netstandard2.1\Ziti.NET.Standard.dll
+corflags /32bitreq- Ziti.NET.Standard\bin\Release\netstandard2.1\Ziti.NET.Standard.dll
 
 dotnet build Ziti.NuGet.sln /t:PackNuspec
