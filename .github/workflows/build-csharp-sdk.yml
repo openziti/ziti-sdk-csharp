@@ -26,12 +26,8 @@ jobs:
         run: echo "GIT_BRANCH=$($env:GITHUB_REF.replace('refs/heads/', ''))" >> $env:GITHUB_ENV
       - if: github.event_name == 'pull_request'
         run: echo "GIT_BRANCH=$env:GITHUB_HEAD_REF" >> $env:GITHUB_ENV
-      - name: Build x86
-        run: dotnet build --configuration Release /p:Platform=x86 ${{ github.workspace }}/Ziti.NuGet.sln
-      - name: Build x64
-        run: dotnet build --configuration Release /p:Platform=x64 ${{ github.workspace }}/Ziti.NuGet.sln
       - name: Create NuGet package
-        run: create-nuget-package.bat
+        run: ${{ github.workspace }}/create-nuget-package.bat
       - if: ${{ env.GIT_BRANCH == 'main' }} 
         name: Publish Ziti.NET.Standard
         uses: brandedoutcast/publish-nuget@v2.5.2
