@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package>
+    <metadata>
+        <id>Ziti.NET.Standard</id>
+        <version>0.0.1</version>
+        <title>Native Ziti Libraries for use with .NET</title>
+        <authors>openziti.org</authors>
+        <owners>Clint Dovholuk</owners>
+        <license type="expression">Apache-2.0</license>
+        <projectUrl>https://openziti.github.io/openziti/ziti-sdk-csharp</projectUrl>
+        <iconUrl>https://openziti.github.io/favicon.ico</iconUrl>
+        <icon>images\ziti.png</icon>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <!--<summary1>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</summary1>-->
+        <summary>A .NET standard library which wraps the C SDK and is consumable from .NET</summary>
+        <copyright>Copyright NetFoundry Inc. All rights reserved.</copyright>
+        <tags>.net standard dll</tags>
+        <description>This is the .NET library used to create applications which leverage the fully zero-trust ziti overlay network</description>
+        <dependencies>
+            <group targetFramework=".NETStandard2.1">
+                <dependency id="NLog" version="4.7.10" exclude="Build,Analyzers" />
+                <dependency id="System.Memory" version="4.5.4" exclude="Build,Analyzers" />
+                <dependency id="System.Text.Json" version="4.6.0" exclude="Build,Analyzers" />
+                <dependency id="Ziti.NET.Standard.native" version="0.24.3" exclude="Build,Analyzers" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\ziti.png" target="images\"/>
+        <file src="bin\x86\Release\netstandard2.1\Ziti.NET.Standard.dll" target="runtimes/win-x86/lib/netstandard2.1" />
+        <file src="bin\x64\Release\netstandard2.1\Ziti.NET.Standard.dll" target="runtimes/win-x64/lib/netstandard2.1" />
+        <file src="bin\Release\netstandard2.1\Ziti.NET.Standard.dll" target="lib/netstandard2.1" />
+    </files>
+</package>

@@ -26,12 +26,10 @@ jobs:
         run: echo "GIT_BRANCH=$($env:GITHUB_REF.replace('refs/heads/', ''))" >> $env:GITHUB_ENV
       - if: github.event_name == 'pull_request'
         run: echo "GIT_BRANCH=$env:GITHUB_HEAD_REF" >> $env:GITHUB_ENV
-      - name: Generate Native Libraries
-        run: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/msvc-build.bat
-      - name: compile x86
-        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x86 --config Release
-      - name: compile x64
-        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x64 --config Release
+      - name: Build x86
+        run: dotnet build --configuration Release /p:Platform=x86 ${{ github.workspace }}/Ziti.NuGet.sln
+      - name: Build x64
+        run: dotnet build --configuration Release /p:Platform=x64 ${{ github.workspace }}/Ziti.NuGet.sln
       - name: Create NuGet package
         run: dotnet build --configuration Release ${{ github.workspace }}/Ziti.NuGet.sln
       - if: ${{ env.GIT_BRANCH == 'main' }} 

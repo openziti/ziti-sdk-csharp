@@ -10,10 +10,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16F52D05-10CE-47CC-9B52-1F77CAADD252}"
 	ProjectSection(SolutionItems) = preProject
 		ZitiNativeApiForDotnetCore\compile-all.bat = ZitiNativeApiForDotnetCore\compile-all.bat
+		create-nuget-package.bat = create-nuget-package.bat
 		ZitiNativeApiForDotnetCore\defgen.bat = ZitiNativeApiForDotnetCore\defgen.bat
 		ZitiNativeApiForDotnetCore\msvc-build.bat = ZitiNativeApiForDotnetCore\msvc-build.bat
 		native-package.nuspec = native-package.nuspec
 		README.md = README.md
+		ziti.png = ziti.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{FB27A74E-C1A6-4392-857B-3290DA4EFBF8}"
