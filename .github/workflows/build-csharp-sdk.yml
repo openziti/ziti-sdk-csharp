@@ -1,4 +1,4 @@
-name: Build the native libraries
+name: Build and publish the nuget project
 
 on:
   push:
