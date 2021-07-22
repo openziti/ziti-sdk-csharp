@@ -6,8 +6,6 @@
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
-
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
         <SecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</SecondsOfDay>
         <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_UtcNow().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</UtcSecondsOfDay>
@@ -25,9 +23,7 @@
         <RootNamespace>OpenZiti</RootNamespace>
         <Platforms>AnyCPU;x86;x64</Platforms>
         <PackageIcon>ziti.png</PackageIcon>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
-
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="4.7.10" />
