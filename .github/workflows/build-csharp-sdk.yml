@@ -30,7 +30,5 @@ jobs:
         run: ${{ github.workspace }}/create-nuget-package.bat
       - if: ${{ env.GIT_BRANCH == 'main' }} 
         name: Publish Ziti.NET.Standard
-        uses: brandedoutcast/publish-nuget@v2.5.2
-        with:
-          PROJECT_FILE_PATH: Ziti.NET.Standard/Ziti.NET.Standard.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+        run: dotnet nuget push AppLogger.1.0.0.nupkg --api-key ${{secrets.NUGET_API_KEY}}
+
