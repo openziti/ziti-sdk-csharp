@@ -5,9 +5,10 @@ on:
     inputs:
       version:
         description: Version of CSDK/Nuget Package
-        default: 0.24.3
+        default: 0.25.4
         required: true
-
+env:
+  ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
 jobs:
   build-csdk-win:
     runs-on: windows-latest
