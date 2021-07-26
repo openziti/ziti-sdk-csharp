@@ -27,6 +27,6 @@ jobs:
       - name: compile x64
         run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x64 --config Release
       - name: Pack Ziti.NET.Standard.native
-        run: nuget pack native-package.nuspec -Version ${{ version }}
+        run: nuget pack native-package.nuspec -Version ${{ env.INPUT_version }}
       - name: Publish Ziti.NET.Standard.native
-        run: nuget push Ziti.NET.Standard.native.${{ version }}.nupkg -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}} -Source https://api.nuget.org/v3/index.json
+        run: nuget push Ziti.NET.Standard.native.${{ env.INPUT_version }}.nupkg -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}} -Source https://api.nuget.org/v3/index.json
