@@ -29,7 +29,7 @@
         <PackageReference Include="NLog" Version="4.7.10" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <PackageReference Include="System.Text.Json" Version="4.6.0" />
-        <PackageReference Include="Ziti.NET.Standard.native" Version="0.24.3" />
+        <PackageReference Include="Ziti.NET.Standard.native" Version="0.25.4" />
     </ItemGroup>
 
     <ItemGroup>
@@ -37,13 +37,13 @@
             <Pack>True</Pack>
             <PackagePath></PackagePath>
         </Resource>
-        <Resource Include="ziti.png" >
+        <Resource Include="ziti.png">
             <Pack>True</Pack>
             <PackagePath></PackagePath>
         </Resource>
     </ItemGroup>
 
-    <Target Name="NugetPackAndPush">
+    <Target Name="NugetPackAndPushOld" DependsOnTargets="build">
     <!--Target Name="NugetPackAndPush" AfterTargets="Pack"-->
         <Message Text="Push NuGet Package to NuGet Feed $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" Importance="high" />
         <Exec Command="nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source ./nuget-local"></Exec>
@@ -54,7 +54,7 @@
         <Exec Command="nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source ./nuget-local"></Exec>
         -->
     </Target>
-    <Target Name="PackNuspec">
+    <Target Name="NugetPackAndPush" DependsOnTargets="build">
         <Message Text="RUNNING: nuget pack Ziti.NET.Standard.nuspec -Version $(PackageVersion)" Importance="high" />
         <Exec Command="nuget pack Ziti.NET.Standard.nuspec -Version $(PackageVersion)"></Exec>
         
