@@ -15,4 +15,4 @@ cp Ziti.NET.Standard\bin\x86\Release\netstandard2.1\Ziti.NET.Standard.dll Ziti.N
 cp Ziti.NET.Standard\bin\x86\Release\netstandard2.1\Ziti.NET.Standard.pdb Ziti.NET.Standard\bin\Release\netstandard2.1\Ziti.NET.Standard.pdb
 corflags /32bitreq- Ziti.NET.Standard\bin\Release\netstandard2.1\Ziti.NET.Standard.dll
 
-dotnet build Ziti.NuGet.sln
+dotnet pack Ziti.NuGet.sln
