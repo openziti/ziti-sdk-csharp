@@ -10,7 +10,7 @@
         <SecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</SecondsOfDay>
         <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_UtcNow().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</UtcSecondsOfDay>
         <major>0</major>
-        <minor>7</minor>
+        <minor>8</minor>
         <Version>$(major).$(minor).$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
         <Authors>NetFoundry</Authors>
         <Company>NetFoundry</Company>
@@ -29,7 +29,7 @@
         <PackageReference Include="NLog" Version="4.7.10" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <PackageReference Include="System.Text.Json" Version="4.6.0" />
-        <PackageReference Include="Ziti.NET.Standard.native" Version="0.25.4" />
+        <PackageReference Include="Ziti.NET.Standard.native" Version="0.26.29" />
     </ItemGroup>
 
     <ItemGroup>

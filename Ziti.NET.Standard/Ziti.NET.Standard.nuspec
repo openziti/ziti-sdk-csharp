@@ -21,7 +21,7 @@
                 <dependency id="NLog" version="4.7.10" exclude="Build,Analyzers" />
                 <dependency id="System.Memory" version="4.5.4" exclude="Build,Analyzers" />
                 <dependency id="System.Text.Json" version="4.6.0" exclude="Build,Analyzers" />
-                <dependency id="Ziti.NET.Standard.native" version="0.24.3" exclude="Build,Analyzers" />
+                <dependency id="Ziti.NET.Standard.native" version="0.26.9" exclude="Build,Analyzers" />
             </group>
         </dependencies>
     </metadata>
