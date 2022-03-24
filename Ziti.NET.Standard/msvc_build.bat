@@ -53,11 +53,9 @@ SET NUGET_PATH=%Ziti_Net_HOME%..\NuGet
 
 mkdir %NUGET_PATH%
 
-set /p BUILD_VERSION=<%Ziti_Net_HOME%..\version
+ECHO dotnet pack %Ziti_Net_HOME%..\Ziti.NuGet.sln --configuration Release --output %Ziti_Net_HOME%
 
-ECHO nuget pack Ziti.NET.Standard.nuspec -Version %BUILD_VERSION%
-
-nuget pack Ziti.NET.Standard.nuspec -Version %BUILD_VERSION%
+dotnet pack %Ziti_Net_HOME%..\Ziti.NuGet.sln --configuration Release --output %Ziti_Net_HOME%
 
 SET ACTUAL_ERR=%ERRORLEVEL%
 if %ACTUAL_ERR% NEQ 0 (
@@ -67,17 +65,19 @@ if %ACTUAL_ERR% NEQ 0 (
     goto FAIL
 ) else (
     echo.
-    echo result of nuget pack: %ACTUAL_ERR%
+    echo result of dotnet pack: %ACTUAL_ERR%
 )
 
-ECHO nuget push -source %NUGET_PATH% %Ziti_Net_HOME%..\Ziti.NET.Standard.%BUILD_VERSION%.nupkg
+FOR /F "delims= " %%i IN ('ls -rt Ziti.NET.Standard.*.nupkg ^| tail -n 1') DO set NUPKG_FILE=%%i
 
-nuget push -source %NUGET_PATH% %Ziti_Net_HOME%..\Ziti.NET.Standard.%BUILD_VERSION%.nupkg
+ECHO nuget push -source %NUGET_PATH% %Ziti_Net_HOME%%NUPKG_FILE%
+
+nuget push -source %NUGET_PATH% %Ziti_Net_HOME%%NUPKG_FILE%
 
 SET ACTUAL_ERR=%ERRORLEVEL%
 if %ACTUAL_ERR% NEQ 0 (
     echo.
-    echo nuget push for %BUILD_VERSION% failed
+    echo nuget push for %NUPKG_FILE% failed
     echo.
     goto FAIL
 ) else (
@@ -98,5 +98,5 @@ ECHO.
 ECHO.
 ECHO =====================================================
 ECHO	BUILD COMPLETE	:
-ECHO 	VERSION 		: %BUILD_VERSION%
+ECHO 	Package file 	: %NUPKG_FILE%
 ECHO =====================================================
