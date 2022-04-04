@@ -238,8 +238,12 @@ namespace OpenZiti.Native {
 
         public IntPtr tls;
 
-        //public IntPtr config_types; 
+        public bool disabled;
+
+        //public IntPtr config_types;
         public IntPtr /*public char**/ config_types;
+
+        public Int32 api_page_size;
 
         public Int32 refresh_interval; //the duration in seconds between checking for updates from the controller
         public RateType metrics_type; //an enum describing the metrics to collect
@@ -251,9 +255,6 @@ namespace OpenZiti.Native {
         public ziti_pq_os_cb pq_os_cb;
         public ziti_pq_process_cb pq_process_cb;
         public ziti_pq_domain_cb pq_domain_cb;
-
-        //mfa cbs
-        public ziti_aq_mfa_cb aq_mfa_cb;
 
         public GCHandle app_ctx;
 
