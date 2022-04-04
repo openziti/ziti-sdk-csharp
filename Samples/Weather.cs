@@ -26,13 +26,15 @@ namespace OpenZiti.Samples {
 
         public static void Run(string identityFile) {
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
-                EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent,
+                EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent | ZitiEventFlags.ZitiMfaAuthEvent | ZitiEventFlags.ZitiAPIEvent,
                 IdentityFile = identityFile,
                 ApplicationContext = "weather-svc",
                 ConfigurationTypes = new[] { "weather-config-type" },
             };
             opts.OnZitiContextEvent += Opts_OnZitiContextEvent;
             opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
+            opts.OnZitiMFAEvent += Opts_OnZitiMFAEvent;
+            opts.OnZitiAPIEvent += Opts_OnZitiAPIEvent;
 
             ZitiIdentity zid = new ZitiIdentity(opts);
             zid.Run();
@@ -41,6 +43,7 @@ namespace OpenZiti.Samples {
 
         private static void Opts_OnZitiContextEvent(object sender, ZitiContextEvent e) {
             if (e.Status.Ok()) {
+                Console.WriteLine("Identity connected event received for the identity {0}", e?.Name);
                 //good. carry on.
             } else {
                 //something went wrong. inspect the erorr here...
@@ -58,6 +61,16 @@ namespace OpenZiti.Samples {
             } catch(Exception ex) {
 		        Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
 	        }
+        }
+
+        private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e)
+        {
+            Console.WriteLine("MFA Auth requested for identity {0}", e.id?.IdentityNameFromController);
+        }
+
+        private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e)
+		{
+            Console.WriteLine("API event received for identity {0}", e.id?.IdentityNameFromController);
         }
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {

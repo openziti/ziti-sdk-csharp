@@ -178,7 +178,8 @@ namespace OpenZiti {
 			InitOpts.OnZitiContextEvent += SaveNativeContext;
 			StructWrapper ziti_opts_ptr = new StructWrapper(ziti_opts);
 
-			Native.API.ziti_init_opts(ziti_opts_ptr.Ptr, Loop.nativeUvLoop);
+			int result = Native.API.ziti_init_opts(ziti_opts_ptr.Ptr, Loop.nativeUvLoop);
+			Logger.Info("Result of ziti initialization : " + result);
 		}
 
 		public void Shutdown() {
@@ -204,10 +205,20 @@ namespace OpenZiti {
 					var vptr = Native.API.ziti_get_controller_version(ziti_context);
 					ziti_version v = Marshal.PtrToStructure<ziti_version>(vptr);
 					IntPtr ptr = Native.API.ziti_get_controller(ziti_context);
-					string name = Marshal.PtrToStringUTF8(ptr);
+					string ztapi = Marshal.PtrToStringUTF8(ptr);
+					var idPtr = Native.API.ziti_get_identity(ziti_context);
+					string name = null;
+					if (idPtr != IntPtr.Zero)
+					{
+						ziti_identity zid = Marshal.PtrToStructure<ziti_identity>(idPtr);
+						name = zid.name;
+						this.IdentityNameFromController = zid.name;
+					}
+
 
 					ZitiContextEvent evt = new ZitiContextEvent() {
 						Name = name,
+						ZTAPI = ztapi,
 						Status = (ZitiStatus) ziti_context_event.ctrl_status,
 						StatusError = Marshal.PtrToStringUTF8(ziti_context_event.err),
 						Version = v,
@@ -260,13 +271,21 @@ namespace OpenZiti {
 					InitOpts.ZitiServiceEvent(serviceEvent);
 
 					break;
+				case ZitiEventFlags.ZitiMfaAuthEvent:
+					Native.ziti_mfa_event ziti_mfa_event = Marshal.PtrToStructure<Native.ziti_mfa_event>(ziti_event_t);
+					break;
+				case ZitiEventFlags.ZitiAPIEvent:
+					Native.ziti_api_event ziti_api_event = Marshal.PtrToStructure<Native.ziti_api_event>(ziti_event_t);
+
+					Logger.Info("Ziti identifier received API event with controller address {0}", ziti_api_event.new_ctrl_address);
+					break;
 				default:
 					Logger.Warn("UNEXPECTED ZitiEventFlags [{0}]! Please report.", type);
 					break;
 			}
 		}
 
-		private void SaveNativeContext(object sender, ZitiContextEvent e) {
+		internal void SaveNativeContext(object sender, ZitiContextEvent e) {
 			Logger.Error("it's ");
 			//this.NativeContext = e.na
 		}
@@ -283,6 +302,8 @@ namespace OpenZiti {
 			public event EventHandler<ZitiContextEvent> OnZitiContextEvent;
 			public event EventHandler<ZitiRouterEvent> OnZitiRouterEvent;
 			public event EventHandler<ZitiServiceEvent> OnZitiServiceEvent;
+			public event EventHandler<ZitiMFAEvent> OnZitiMFAEvent;
+			public event EventHandler<ZitiAPIEvent> OnZitiAPIEvent;
 
 			internal void ZitiContextEvent(ZitiContextEvent evt) {
 				OnZitiContextEvent?.Invoke(this, evt);
@@ -295,10 +316,20 @@ namespace OpenZiti {
 			internal void ZitiServiceEvent(ZitiServiceEvent evt) {
 				OnZitiServiceEvent?.Invoke(this, evt);
 			}
+
+			internal void ZitiMFAEvent(ZitiMFAEvent evt)
+			{
+				OnZitiMFAEvent?.Invoke(this, evt);
+			}
+
+			internal void ZitiAPIEvent(ZitiAPIEvent evt)
+			{
+				OnZitiAPIEvent?.Invoke(this, evt);
+			}
 		}
 
-		private void native_ziti_pq_mac_cb(IntPtr ziti_context, string id, Native.ziti_pr_mac_cb response_cb) {
-
+		public void native_ziti_pq_mac_cb(IntPtr ziti_context, string id, Native.ziti_pr_mac_cb response_cb) {
+			Logger.Debug("posture query cb...");
 		}
 
 		private void native_ziti_pr_mac_cb(IntPtr ziti_context, string id, string[] mac_addresses, int num_mac) {
@@ -364,6 +395,7 @@ namespace OpenZiti {
 		public ZitiStatus Status;
 		public string StatusError;
 		public string Name;
+		public string ZTAPI;
 		public ziti_version Version;
 		public ZitiIdentity Identity;
 	}
@@ -418,9 +450,21 @@ namespace OpenZiti {
 		}
 	}
 
+	public class ZitiMFAEvent
+	{
+		internal ZitiIdentity id;
+	}
+
+	public class ZitiAPIEvent
+	{
+		internal ZitiIdentity id;
+	}
+
 	public static class ZitiEventFlags {
 		public const int ZitiContextEvent = 1;
 		public const int ZitiRouterEvent = 1 << 1;
 		public const int ZitiServiceEvent = 1 << 2;
+		public const int ZitiMfaAuthEvent = 1 << 3;
+		public const int ZitiAPIEvent = 1 << 4;
 	}
 }

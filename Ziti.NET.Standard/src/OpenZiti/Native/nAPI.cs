@@ -341,5 +341,26 @@ namespace OpenZiti.Native {
         public IntPtr added;
     };
 
+    [StructLayout(LayoutKind.Explicit)]
+    struct ziti_mfa_event
+    {
+        [FieldOffset(0)]
+        public int type;
+    };
+
+
+    [StructLayout(LayoutKind.Explicit)]
+    struct ziti_api_event
+    {
+        [FieldOffset(0)]
+        public int type;
+#if ZITI_X64
+        [FieldOffset(8)]
+#else
+        [FieldOffset(4)]
+#endif
+        public IntPtr new_ctrl_address;
+    };
+
 #pragma warning restore 0649
 }

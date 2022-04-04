@@ -239,4 +239,13 @@ namespace OpenZiti {
     public struct ziti_process {
         public string path;
     }
+
+    public struct ziti_identity
+    {
+#pragma warning disable 0649
+        internal string id;
+        internal string name;
+        internal string app_data;
+#pragma warning restore 0649
+    }
 }
