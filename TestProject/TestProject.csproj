@@ -18,6 +18,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+
   <Target Name="x86" BeforeTargets="Build">
       <Message Importance="High" Text="COPYING $(SolutionDir)\ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll to $(OutDir)" />
       <Copy SourceFiles="$(SolutionDir)ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll" DestinationFolder="$(OutDir)" />
@@ -45,6 +46,8 @@
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStatusExtensions.cs" Link="src\OpenZiti\ZitiStatusExtensions.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStream.cs" Link="src\OpenZiti\ZitiStream.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiUtil.cs" Link="src\OpenZiti\ZitiUtil.cs" />
+	<Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiMFAService.cs" Link="src\OpenZiti\ZitiMFAService.cs" />
+	<Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiTunnelService.cs" Link="src\OpenZiti\ZitiTunnelService.cs" />
   </ItemGroup>
 
   <ItemGroup>

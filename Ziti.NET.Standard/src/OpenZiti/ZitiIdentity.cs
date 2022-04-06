@@ -304,6 +304,7 @@ namespace OpenZiti {
 			public event EventHandler<ZitiServiceEvent> OnZitiServiceEvent;
 			public event EventHandler<ZitiMFAEvent> OnZitiMFAEvent;
 			public event EventHandler<ZitiAPIEvent> OnZitiAPIEvent;
+			public event EventHandler<ZitiMFAStatusEvent> OnZitiMFAStatusEvent;
 
 			internal void ZitiContextEvent(ZitiContextEvent evt) {
 				OnZitiContextEvent?.Invoke(this, evt);
@@ -325,6 +326,24 @@ namespace OpenZiti {
 			internal void ZitiAPIEvent(ZitiAPIEvent evt)
 			{
 				OnZitiAPIEvent?.Invoke(this, evt);
+			}
+
+			internal void ZitiMFAStatusEvent(ZitiMFAStatusEvent evt)
+			{
+				OnZitiMFAStatusEvent?.Invoke(this, evt);
+			}
+		}
+		public struct TunnelCB
+		{
+			public ZitiIdentity ZID;
+			public event EventHandler<object> OnZitiResponse;
+
+			internal void ZitiResponse(object evt)
+			{
+				if (evt is ZitiMFAStatusEvent)
+				{
+					ZID.InitOpts.ZitiMFAStatusEvent((ZitiMFAStatusEvent)evt);
+				}
 			}
 		}
 
@@ -458,6 +477,15 @@ namespace OpenZiti {
 	public class ZitiAPIEvent
 	{
 		internal ZitiIdentity id;
+	}
+
+	public class ZitiMFAStatusEvent
+	{
+		internal ZitiIdentity id;
+		internal ZitiStatus status;
+		internal MFAOperationType operationType;
+		internal string provisioningUrl;
+		internal string[] recoveryCodes;
 	}
 
 	public static class ZitiEventFlags {

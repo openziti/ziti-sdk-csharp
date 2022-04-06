@@ -19,12 +19,59 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Collections.Generic;
 
 namespace OpenZiti.Samples {
+
     public class Weather {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
+        static ZitiTunnelService.Options tunOptions = new ZitiTunnelService.Options();
+        static Dictionary<string, ZitiService> services = new Dictionary<string, ZitiService>();
+
+        internal static void OnZitiTunnelNextAction(object sender, ZitiTunnelService.NextAction action)
+		{
+            switch (action.command)
+			{
+				case 0:
+                    Environment.Exit(0);
+                    break;
+                case 1:
+                    Console.WriteLine("Enable MFA for the identity");
+                    Environment.Exit(0);
+                    break;
+                case 2:
+                    Console.WriteLine("Verify MFA for the identity");
+                    Environment.Exit(0);
+                    break;
+                case 3:
+                    Console.WriteLine("Remove MFA for the identity");
+                    Environment.Exit(0);
+                    break;
+                case 4:
+                    Console.WriteLine("Remove MFA for the identity");
+                    Environment.Exit(0);
+                    break;
+                case 5:
+                    Console.WriteLine("Dial First service");
+                    if (services.Count > 0)
+					{
+                        ZitiService svc = services.First().Value;
+                        svc.Dial(onConnected, onData);
+                    } else
+					{
+                        Console.WriteLine("No service found, exiting");
+                        Environment.Exit(0);
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Wrong command received, exiting");
+                    break;
+			}
+		}
 
         public static void Run(string identityFile) {
+            tunOptions.OnNextAction += OnZitiTunnelNextAction;
+
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
                 EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent | ZitiEventFlags.ZitiMfaAuthEvent | ZitiEventFlags.ZitiAPIEvent,
                 IdentityFile = identityFile,
@@ -35,6 +82,7 @@ namespace OpenZiti.Samples {
             opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
             opts.OnZitiMFAEvent += Opts_OnZitiMFAEvent;
             opts.OnZitiAPIEvent += Opts_OnZitiAPIEvent;
+            opts.OnZitiMFAStatusEvent += Opts_OnZitiMFAStatusEvent;
 
             ZitiIdentity zid = new ZitiIdentity(opts);
             zid.Run();
@@ -56,7 +104,34 @@ namespace OpenZiti.Samples {
         private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
 	        string expected = (string)e.Context;
             try {
-	            var service = e.Added().First(s => s.Name == expected);
+                Console.WriteLine("Removed Services ({0}): ", e.Removed().Count());
+                foreach (ZitiService svc in e.Removed())
+                {
+                    if (services.ContainsKey(svc.Name))
+					{
+                        services.Remove(svc.Name);
+
+                    }
+                    Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
+                }
+                Console.WriteLine("Modified Services ({0}): ", e.Changed().Count());
+                foreach (ZitiService svc in e.Changed())
+                {
+                    if (services.ContainsKey(svc.Name))
+                    {
+                        services.Remove(svc.Name);
+                        services.Add(svc.Name, svc);
+                    }
+                    Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
+                }
+                Console.WriteLine("Available Services ({0}): ", e.Added().Count());
+                foreach (ZitiService svc in e.Added())
+                {
+                    services.Add(svc.Name, svc);
+                    Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
+                }
+                var service = e.Added().First(s => s.Name == expected);
+                
                 service.Dial(onConnected, onData);
             } catch(Exception ex) {
 		        Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
@@ -66,11 +141,20 @@ namespace OpenZiti.Samples {
         private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e)
         {
             Console.WriteLine("MFA Auth requested for identity {0}", e.id?.IdentityNameFromController);
+            Console.WriteLine("Enter the mfa auth codo: ");
+            string mfacode = Console.ReadLine();
+            Console.WriteLine("Authcode for id {0} is {1}", e.id?.IdentityNameFromController, mfacode);
+            // mfaService.submit_mfa()
         }
 
         private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e)
 		{
             Console.WriteLine("API event received for identity {0}", e.id?.IdentityNameFromController);
+        }
+
+        private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e)
+		{
+            Console.WriteLine("MFA status event received for identity {0}", e.id?.IdentityNameFromController);
         }
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
@@ -106,7 +190,7 @@ namespace OpenZiti.Samples {
                     ConsoleHelper.OutputResponseToConsole(ms.ToArray());
                     Console.WriteLine("request completed: " + status.GetDescription());
                     connection.Close();
-                    Environment.Exit(0);
+                    tunOptions.InvokeNextTunnelCommand();                  
                 } else {
                     Console.WriteLine("unexpected error: " + status.GetDescription());
                 }

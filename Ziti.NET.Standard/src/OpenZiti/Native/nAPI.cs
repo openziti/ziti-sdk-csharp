@@ -25,6 +25,13 @@ namespace OpenZiti.Native {
         public string enroll_cert;
     };
 
+    public struct ziti_mfa_enrollment
+	{
+        public bool is_verified;
+        public string[] recovery_codes; // convert IntPtr to string array
+        public string provisioning_url;
+    }
+
     //typedef void (*log_writer)(int level, const char *loc, const char *msg, size_t msglen);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void log_writer(int level, string loc, string msg, uint msglen);
     //typedef void (*ziti_service_cb)(ziti_context ztx, ziti_service*, int status, void* data);
@@ -59,12 +66,10 @@ namespace OpenZiti.Native {
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_pr_domain_cb(IntPtr ziti_context, string id, string domain);
     //typedef void (*ziti_pq_domain_cb)(ziti_context ztx, char *id, ziti_pr_domain_cb response_cb);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_pq_domain_cb(IntPtr ziti_context, string id, ziti_pr_domain_cb response_cb);
-    //typedef void (*ziti_ar_mfa_status_cb)(ziti_context ztx, void* mfa_ctx, int status, void* ctx);
-    [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_ar_mfa_status_cb(IntPtr ziti_context, IntPtr mfa_ctx, int status, IntPtr ctx);
-    //typedef void (*ziti_ar_mfa_cb)(ziti_context ztx, void* mfa_ctx, char* code, ziti_ar_mfa_status_cb ar_mfa_status_cb, void* ctx);
-    [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_ar_mfa_cb(IntPtr ziti_context, IntPtr mfa_ctx, string code, ziti_ar_mfa_status_cb ar_mfa_status_cb, IntPtr ctx);
-    //typedef void (*ziti_aq_mfa_cb)(ziti_context ztx, void* mfa_ctx, ziti_auth_query_mfa *aq_mfa, ziti_ar_mfa_cb response_cb);
-    [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_aq_mfa_cb(IntPtr ziti_context, IntPtr mfa_ctx, IntPtr aq_mfa, ziti_ar_mfa_cb response_cb);
+    // typedef void (*ziti_mfa_cb)(ziti_context ztx, int status, void *ctx);
+    [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void on_mfa_cb(IntPtr ziti_context, int status, IntPtr ctx);
+    // typedef void (*ziti_mfa_enroll_cb)(ziti_context ztx, int status, ziti_mfa_enrollment *mfa_enrollment, void *ctx);
+    [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void on_enable_mfa(IntPtr ziti_context, int status, IntPtr /* ziti_mfa_enrollment*/ enrollment, IntPtr ctx);
     //typedef void (*ziti_event_cb)(ziti_context ztx, const ziti_event_t *event);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event);
     //typedef void (*ziti_close_cb)(ziti_connection conn);
@@ -194,6 +199,22 @@ namespace OpenZiti.Native {
         //defined in C: ziti_service_get_raw_config(ziti_service* service, const char* cfg_type);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_service_get_raw_config", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr ziti_service_get_raw_config(IntPtr svc, string config_name);
+
+        //defind in C: extern void ziti_mfa_auth(ziti_context ztx, const char *code, ziti_mfa_cb auth_cb, void *ctx)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_auth", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_mfa_auth(IntPtr ziti_context, string code, on_mfa_cb status_cb, IntPtr status_ctx);
+
+        //defind in C: extern void ziti_mfa_enroll(ziti_context ztx, ziti_mfa_enroll_cb enroll_cb, void *ctx);
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_enroll", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_mfa_enroll(IntPtr ziti_context, on_enable_mfa enroll_cb, IntPtr ctx);
+
+        //defind in C: extern void ziti_mfa_verify(ziti_context ztx, char *code, ziti_mfa_cb verify_cb, void *ctx)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_verify", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_mfa_verify(IntPtr ziti_context, string code, on_mfa_cb verify_cb, IntPtr ctx);
+
+        //defind in C: extern void ziti_mfa_remove(ziti_context ztx, char *code, ziti_mfa_cb verify_cb, void *ctx)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_remove", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_mfa_remove(IntPtr ziti_context, string code, on_mfa_cb remove_cb, IntPtr ctx);
 
         //defined in C: char* gimme_string();
         [DllImport(Z4D_DLL_PATH, EntryPoint = "gimme_string", CallingConvention = CALL_CONVENTION)]
