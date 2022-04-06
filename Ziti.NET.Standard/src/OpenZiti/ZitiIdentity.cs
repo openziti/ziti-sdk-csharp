@@ -273,10 +273,23 @@ namespace OpenZiti {
 					break;
 				case ZitiEventFlags.ZitiMfaAuthEvent:
 					Native.ziti_mfa_event ziti_mfa_event = Marshal.PtrToStructure<Native.ziti_mfa_event>(ziti_event_t);
+
+					ZitiMFAEvent zitiMFAEvent = new ZitiMFAEvent()
+					{
+						id = this
+					};
+
+					InitOpts.ZitiMFAEvent(zitiMFAEvent);
 					break;
 				case ZitiEventFlags.ZitiAPIEvent:
 					Native.ziti_api_event ziti_api_event = Marshal.PtrToStructure<Native.ziti_api_event>(ziti_event_t);
 
+					ZitiAPIEvent zitiAPIEvent = new ZitiAPIEvent()
+					{
+						id = this
+					};
+
+					InitOpts.ZitiAPIEvent(zitiAPIEvent);
 					Logger.Info("Ziti identifier received API event with controller address {0}", ziti_api_event.new_ctrl_address);
 					break;
 				default:
@@ -335,14 +348,13 @@ namespace OpenZiti {
 		}
 		public struct TunnelCB
 		{
-			public ZitiIdentity ZID;
-			public event EventHandler<object> OnZitiResponse;
+			public ZitiIdentity.InitOptions zidOpts;
 
 			internal void ZitiResponse(object evt)
 			{
 				if (evt is ZitiMFAStatusEvent)
 				{
-					ZID.InitOpts.ZitiMFAStatusEvent((ZitiMFAStatusEvent)evt);
+					zidOpts.ZitiMFAStatusEvent((ZitiMFAStatusEvent)evt);
 				}
 			}
 		}

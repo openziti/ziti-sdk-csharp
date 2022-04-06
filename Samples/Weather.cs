@@ -25,10 +25,10 @@ namespace OpenZiti.Samples {
 
     public class Weather {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
-        static ZitiTunnelService.Options tunOptions = new ZitiTunnelService.Options();
-        static Dictionary<string, ZitiService> services = new Dictionary<string, ZitiService>();
+        static ZitiTunnelCommand.Options tunOptions = new ZitiTunnelCommand.Options();
+        static ZitiInstance zitiInstance = new ZitiInstance();
 
-        internal static void OnZitiTunnelNextAction(object sender, ZitiTunnelService.NextAction action)
+        internal static void OnZitiTunnelNextAction(object sender, ZitiTunnelCommand.NextAction action)
 		{
             switch (action.command)
 			{
@@ -53,9 +53,9 @@ namespace OpenZiti.Samples {
                     break;
                 case 5:
                     Console.WriteLine("Dial First service");
-                    if (services.Count > 0)
+                    if (zitiInstance.Services.Count > 0)
 					{
-                        ZitiService svc = services.First().Value;
+                        ZitiService svc = zitiInstance.Services.First().Value;
                         svc.Dial(onConnected, onData);
                     } else
 					{
@@ -69,8 +69,15 @@ namespace OpenZiti.Samples {
 			}
 		}
 
+        internal static void OnTunnelResult(object sender, ZitiTunnelCommand.TunnelResult result)
+		{
+
+		}
+
         public static void Run(string identityFile) {
             tunOptions.OnNextAction += OnZitiTunnelNextAction;
+            tunOptions.OnTunnelResult += OnTunnelResult;
+            zitiInstance.Initialize();
 
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
                 EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent | ZitiEventFlags.ZitiMfaAuthEvent | ZitiEventFlags.ZitiAPIEvent,
@@ -91,6 +98,7 @@ namespace OpenZiti.Samples {
 
         private static void Opts_OnZitiContextEvent(object sender, ZitiContextEvent e) {
             if (e.Status.Ok()) {
+                zitiInstance.Zid = e.Identity;
                 Console.WriteLine("Identity connected event received for the identity {0}", e?.Name);
                 //good. carry on.
             } else {
@@ -107,9 +115,9 @@ namespace OpenZiti.Samples {
                 Console.WriteLine("Removed Services ({0}): ", e.Removed().Count());
                 foreach (ZitiService svc in e.Removed())
                 {
-                    if (services.ContainsKey(svc.Name))
+                    if (zitiInstance.Services.ContainsKey(svc.Name))
 					{
-                        services.Remove(svc.Name);
+                        zitiInstance.Services.Remove(svc.Name);
 
                     }
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
@@ -117,17 +125,17 @@ namespace OpenZiti.Samples {
                 Console.WriteLine("Modified Services ({0}): ", e.Changed().Count());
                 foreach (ZitiService svc in e.Changed())
                 {
-                    if (services.ContainsKey(svc.Name))
+                    if (zitiInstance.Services.ContainsKey(svc.Name))
                     {
-                        services.Remove(svc.Name);
-                        services.Add(svc.Name, svc);
+                        zitiInstance.Services.Remove(svc.Name);
+                        zitiInstance.Services.Add(svc.Name, svc);
                     }
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
                 Console.WriteLine("Available Services ({0}): ", e.Added().Count());
                 foreach (ZitiService svc in e.Added())
                 {
-                    services.Add(svc.Name, svc);
+                    zitiInstance.Services.Add(svc.Name, svc);
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
                 var service = e.Added().First(s => s.Name == expected);
@@ -144,7 +152,13 @@ namespace OpenZiti.Samples {
             Console.WriteLine("Enter the mfa auth codo: ");
             string mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", e.id?.IdentityNameFromController, mfacode);
-            // mfaService.submit_mfa()
+            ZitiTunnelCommand.TunnelResult res = new ZitiTunnelCommand.TunnelResult();
+            res.id = e.id?.IdentityNameFromController;
+            res.operationType = MFAOperationType.MFA_AUTH_STATUS;
+            ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
+            tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
+            StructWrapper tunCB = new StructWrapper(tunnelCB);
+            ZitiMFAService.submit_mfa(zitiInstance.Zid.WrappedContext, mfacode, tunCB.Ptr);
         }
 
         private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e)
