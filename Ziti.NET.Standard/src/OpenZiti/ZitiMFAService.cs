@@ -22,14 +22,18 @@ namespace OpenZiti
 
 		private static void on_submit_mfa(IntPtr ziti_context, int status, IntPtr ctx)
 		{
-			ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			//ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			ZitiIdentity.TunnelCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.TunnelCB.ZitiResponseDelegate>(ctx);
+
 			ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent()
 			{
 				status	= (ZitiStatus)status,
 				//id		= ZID,
 				operationType = MFAOperationType.MFA_AUTH_STATUS				
 			};
-			cb.ZitiResponse(evt);
+			cb?.Invoke(evt);
+
+			//cb.ZitiResponse(evt);
 			//ZID.InitOpts.ZitiMFAStatusEvent(evt);
 		}
 
@@ -41,7 +45,8 @@ namespace OpenZiti
 		private static void on_enable_mfa(IntPtr ziti_context, int status, IntPtr /* ziti_mfa_enrollment*/ enrollment, IntPtr ctx)
 		{
 			OpenZiti.Native.ziti_mfa_enrollment ziti_mfa_enrollment = Marshal.PtrToStructure<OpenZiti.Native.ziti_mfa_enrollment>(enrollment);
-			ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			// ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			ZitiIdentity.TunnelCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.TunnelCB.ZitiResponseDelegate>(ctx);
 
 			ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent()
 			{
@@ -49,9 +54,10 @@ namespace OpenZiti
 				//id = ZID,
 				operationType = MFAOperationType.ENROLLMENT_CHALLENGE,
 				provisioningUrl = ziti_mfa_enrollment.provisioning_url,
-				recoveryCodes = ziti_mfa_enrollment.recovery_codes // convert IntPtr to string array
+				// recoveryCodes = ziti_mfa_enrollment.recovery_codes,
 			};
-			cb.ZitiResponse(evt);
+			cb?.Invoke(evt);
+			// cb.ZitiResponse(evt);
 			//ZID.InitOpts.ZitiMFAStatusEvent(evt);
 			// get TunnelCB from IntPtr ctx
 		}
@@ -63,7 +69,8 @@ namespace OpenZiti
 
 		private static void on_verify_mfa(IntPtr ziti_context, int status, IntPtr ctx)
 		{
-			ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			//ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			ZitiIdentity.TunnelCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.TunnelCB.ZitiResponseDelegate>(ctx);
 
 			ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent()
 			{
@@ -71,7 +78,7 @@ namespace OpenZiti
 				//id = ZID,
 				operationType = MFAOperationType.ENROLLMENT_VERIFICATION
 			};
-			cb.ZitiResponse(evt);
+			cb?.Invoke(evt);
 			//ZID.InitOpts.ZitiMFAStatusEvent(evt);
 		}
 
@@ -82,7 +89,8 @@ namespace OpenZiti
 
 		private static void on_remove_mfa(IntPtr ziti_context, int status, IntPtr ctx)
 		{
-			ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			// ZitiIdentity.TunnelCB cb = Marshal.PtrToStructure<ZitiIdentity.TunnelCB>(ctx);
+			ZitiIdentity.TunnelCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.TunnelCB.ZitiResponseDelegate>(ctx);
 
 			ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent()
 			{
@@ -90,7 +98,8 @@ namespace OpenZiti
 				//id = ZID,
 				operationType = MFAOperationType.ENROLLMENT_REMOVE
 			};
-			cb.ZitiResponse(evt);
+			cb?.Invoke(evt);
+			// cb.ZitiResponse(evt);
 			//ZID.InitOpts.ZitiMFAStatusEvent(evt);
 		}
 

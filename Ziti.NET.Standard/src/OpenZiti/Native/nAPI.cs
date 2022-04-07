@@ -25,10 +25,14 @@ namespace OpenZiti.Native {
         public string enroll_cert;
     };
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct ziti_mfa_enrollment
 	{
+        [MarshalAs(UnmanagedType.Bool)]
         public bool is_verified;
-        public string[] recovery_codes; // convert IntPtr to string array
+        //[MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPWStr, SizeConst = 20)]
+        public IntPtr recovery_codes; // convert IntPtr to string array
+        [MarshalAs(UnmanagedType.LPStr)]
         public string provisioning_url;
     }
 

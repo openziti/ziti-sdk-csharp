@@ -349,6 +349,7 @@ namespace OpenZiti {
 		public struct TunnelCB
 		{
 			public ZitiIdentity.InitOptions zidOpts;
+			public delegate void ZitiResponseDelegate(object evt);
 
 			internal void ZitiResponse(object evt)
 			{

@@ -19,38 +19,68 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace OpenZiti.Samples {
 
     public class Weather {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
         static ZitiTunnelCommand.Options tunOptions = new ZitiTunnelCommand.Options();
+
         static ZitiInstance zitiInstance = new ZitiInstance();
 
         internal static void OnZitiTunnelNextAction(object sender, ZitiTunnelCommand.NextAction action)
 		{
+            string mfacode;
+
             switch (action.command)
 			{
-				case 0:
-                    Environment.Exit(0);
-                    break;
                 case 1:
-                    Console.WriteLine("Enable MFA for the identity");
-                    Environment.Exit(0);
-                    break;
+					{
+                        Console.WriteLine("Enable MFA for the identity"); // list the identities and allow user to choose
+                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
+                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
+                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
+                        //StructWrapper tunCB = new StructWrapper(tunnelCB);
+                        ZitiMFAService.ziti_mfa_enroll(zitiInstance.Zid.WrappedContext, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        break;
+                    }
                 case 2:
-                    Console.WriteLine("Verify MFA for the identity");
-                    Environment.Exit(0);
-                    break;
+					{
+                        Console.WriteLine("Verify MFA for the identity");
+                        Console.WriteLine("Enter the mfa auth codo: ");
+                        mfacode = Console.ReadLine();
+                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
+                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
+                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
+                        //StructWrapper tunCB = new StructWrapper(tunnelCB);
+                        ZitiMFAService.verify_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        break;
+                    }
                 case 3:
-                    Console.WriteLine("Remove MFA for the identity");
-                    Environment.Exit(0);
-                    break;
+                    {
+                        Console.WriteLine("Remove MFA for the identity");
+                        Console.WriteLine("Enter the mfa auth codo: ");
+                        mfacode = Console.ReadLine();
+                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
+                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
+                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
+                        //StructWrapper tunCB = new StructWrapper(tunnelCB);
+                        ZitiMFAService.remove_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        break;
+                    }
                 case 4:
-                    Console.WriteLine("Remove MFA for the identity");
-                    Environment.Exit(0);
-                    break;
+					{
+                        Console.WriteLine("Submit MFA for the identity");
+                        Console.WriteLine("Enter the mfa auth codo: ");
+                        mfacode = Console.ReadLine();
+                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
+                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
+                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
+                        // StructWrapper tunCB = new StructWrapper(tunnelCB);
+                        ZitiMFAService.submit_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        break;
+                    }
                 case 5:
                     Console.WriteLine("Dial First service");
                     if (zitiInstance.Services.Count > 0)
@@ -63,6 +93,9 @@ namespace OpenZiti.Samples {
                         Environment.Exit(0);
                     }
                     break;
+                case 0:
+                    Environment.Exit(0);
+                    break;
                 default:
                     Console.WriteLine("Wrong command received, exiting");
                     break;
@@ -71,8 +104,16 @@ namespace OpenZiti.Samples {
 
         internal static void OnTunnelResult(object sender, ZitiTunnelCommand.TunnelResult result)
 		{
-
-		}
+            ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
+            if (zitiInstance.Zid.InitOpts.IdentityFile.Equals(result.id))
+			{
+                tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
+                tunnelCB.ZitiResponse(result.result);
+            } else
+			{
+                Console.WriteLine("Unknown identity - {0}", result.id);
+            }
+        }
 
         public static void Run(string identityFile) {
             tunOptions.OnNextAction += OnZitiTunnelNextAction;
@@ -152,9 +193,6 @@ namespace OpenZiti.Samples {
             Console.WriteLine("Enter the mfa auth codo: ");
             string mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", e.id?.IdentityNameFromController, mfacode);
-            ZitiTunnelCommand.TunnelResult res = new ZitiTunnelCommand.TunnelResult();
-            res.id = e.id?.IdentityNameFromController;
-            res.operationType = MFAOperationType.MFA_AUTH_STATUS;
             ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
             tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
             StructWrapper tunCB = new StructWrapper(tunnelCB);
@@ -168,7 +206,13 @@ namespace OpenZiti.Samples {
 
         private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e)
 		{
-            Console.WriteLine("MFA status event received for identity {0}", e.id?.IdentityNameFromController);
+            if(e.status.Ok())
+			{
+                Console.WriteLine("MFA status event received for identity {0}, mfa operation was successful", e.id?.IdentityNameFromController);
+            } else
+			{
+                Console.WriteLine("MFA status event received for identity {0}, mfa operation failed", e.id?.IdentityNameFromController);
+            }
         }
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
