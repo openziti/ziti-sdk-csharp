@@ -191,8 +191,8 @@ namespace OpenZiti.Samples {
             Console.WriteLine("Authcode for id {0} is {1}", e.id?.IdentityNameFromController, mfacode);
             ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
             tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
-            StructWrapper tunCB = new StructWrapper(tunnelCB);
-            ZitiMFAService.submit_mfa(zitiInstance.Zid.WrappedContext, mfacode, tunCB.Ptr);
+            ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
+            ZitiMFAService.submit_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
         }
 
         private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e)
@@ -202,9 +202,14 @@ namespace OpenZiti.Samples {
 
         private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e)
 		{
-            if(e.status.Ok())
+            ZitiIdentity.InitOptions senderInstance;
+            if (sender is ZitiIdentity.InitOptions)
 			{
-                Console.WriteLine("MFA status event received for identity {0}, mfa operation was successful", e.id?.IdentityNameFromController);
+                senderInstance = (ZitiIdentity.InitOptions)sender;
+                Console.WriteLine("MFA status event received for identity {0}", senderInstance.IdentityFile);
+            }
+            if (e.status.Ok())
+			{
                 Console.WriteLine("Status Event {0}, {1}, {2}", e.isVerified, e.operationType, e.provisioningUrl);
                 for (int i = 0; i < e.recoveryCodes.Length; i++)
 				{
@@ -212,7 +217,7 @@ namespace OpenZiti.Samples {
                 }
             } else
 			{
-                Console.WriteLine("MFA status event received for identity {0}, mfa operation failed", e.id?.IdentityNameFromController);
+                Console.WriteLine("MFA operation {0} failed due to {1}", e.operationType, e.status);
             }
             tunOptions.InvokeNextTunnelCommand();
         }
