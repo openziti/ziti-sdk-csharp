@@ -176,8 +176,9 @@ namespace OpenZiti.Samples {
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
                 var service = e.Added().First(s => s.Name == expected);
-                
-                service.Dial(onConnected, onData);
+
+                // service.Dial(onConnected, onData); // enable MFA and then dial
+                tunOptions.InvokeNextTunnelCommand();
             } catch(Exception ex) {
 		        Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
 	        }
@@ -210,11 +211,16 @@ namespace OpenZiti.Samples {
             }
             if (e.status.Ok())
 			{
-                Console.WriteLine("Status Event {0}, {1}, {2}", e.isVerified, e.operationType, e.provisioningUrl);
-                for (int i = 0; i < e.recoveryCodes.Length; i++)
+                Console.WriteLine("Status Event {0} - verified {1}, operation type {2}", e.status, e.isVerified, e.operationType);
+                if (e.recoveryCodes != null)
 				{
-                    Console.WriteLine("Recovery Code {0}", e.recoveryCodes[i]);
+                    Console.WriteLine("Provisioning URL : {0}", e.provisioningUrl);
+                    for (int i = 0; i < e.recoveryCodes.Length; i++)
+                    {
+                        Console.WriteLine("Recovery Code {0}", e.recoveryCodes[i]);
+                    }
                 }
+                
             } else
 			{
                 Console.WriteLine("MFA operation {0} failed due to {1}", e.operationType, e.status);
