@@ -496,6 +496,7 @@ namespace OpenZiti {
 	{
 		internal ZitiIdentity id;
 		internal ZitiStatus status;
+		internal bool isVerified;
 		internal MFAOperationType operationType;
 		internal string provisioningUrl;
 		internal string[] recoveryCodes;

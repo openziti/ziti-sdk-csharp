@@ -41,7 +41,6 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        //StructWrapper tunCB = new StructWrapper(tunnelCB);
                         ZitiMFAService.ziti_mfa_enroll(zitiInstance.Zid.WrappedContext, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
@@ -53,7 +52,6 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        //StructWrapper tunCB = new StructWrapper(tunnelCB);
                         ZitiMFAService.verify_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
@@ -65,7 +63,6 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        //StructWrapper tunCB = new StructWrapper(tunnelCB);
                         ZitiMFAService.remove_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
@@ -77,7 +74,6 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        // StructWrapper tunCB = new StructWrapper(tunnelCB);
                         ZitiMFAService.submit_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
@@ -209,10 +205,16 @@ namespace OpenZiti.Samples {
             if(e.status.Ok())
 			{
                 Console.WriteLine("MFA status event received for identity {0}, mfa operation was successful", e.id?.IdentityNameFromController);
+                Console.WriteLine("Status Event {0}, {1}, {2}", e.isVerified, e.operationType, e.provisioningUrl);
+                for (int i = 0; i < e.recoveryCodes.Length; i++)
+				{
+                    Console.WriteLine("Recovery Code {0}", e.recoveryCodes[i]);
+                }
             } else
 			{
                 Console.WriteLine("MFA status event received for identity {0}, mfa operation failed", e.id?.IdentityNameFromController);
             }
+            tunOptions.InvokeNextTunnelCommand();
         }
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
