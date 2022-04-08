@@ -129,13 +129,13 @@ namespace OpenZiti.Samples {
             opts.OnZitiMFAStatusEvent += Opts_OnZitiMFAStatusEvent;
 
             ZitiIdentity zid = new ZitiIdentity(opts);
+            zitiInstance.Zid = zid;
             zid.Run();
             Console.WriteLine("=================LOOP IS COMPLETE=================");
         }
 
         private static void Opts_OnZitiContextEvent(object sender, ZitiContextEvent e) {
             if (e.Status.Ok()) {
-                zitiInstance.Zid = e.Identity;
                 Console.WriteLine("Identity connected event received for the identity {0}", e?.Name);
                 //good. carry on.
             } else {
@@ -177,11 +177,13 @@ namespace OpenZiti.Samples {
                 }
                 var service = e.Added().First(s => s.Name == expected);
 
-                // service.Dial(onConnected, onData); // enable MFA and then dial
+                // if posture check fails, dial will fail, query posture check
+                // service.Dial(onConnected, onData); 
                 tunOptions.InvokeNextTunnelCommand();
             } catch(Exception ex) {
 		        Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
-	        }
+                tunOptions.InvokeNextTunnelCommand(); // show option to retry
+            }
         }
 
         private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e)
@@ -219,13 +221,14 @@ namespace OpenZiti.Samples {
                     {
                         Console.WriteLine("Recovery Code {0}", e.recoveryCodes[i]);
                     }
+                    tunOptions.InvokeNextTunnelCommand(); // after enabling mfa, show option to verify
                 }
-                
+
             } else
 			{
                 Console.WriteLine("MFA operation {0} failed due to {1}", e.operationType, e.status);
+                tunOptions.InvokeNextTunnelCommand(); // if mfa auth failed, show option to retry
             }
-            tunOptions.InvokeNextTunnelCommand();
         }
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {

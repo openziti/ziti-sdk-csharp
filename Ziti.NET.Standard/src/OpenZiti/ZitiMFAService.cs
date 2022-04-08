@@ -50,16 +50,20 @@ namespace OpenZiti
 				provisioningUrl = ziti_mfa_enrollment.provisioning_url,
 			};
 
-			// Could not fetch the size of the array from the intptr
-			IntPtr[] recoveryCodePointers = new IntPtr[20];
-			Marshal.Copy(ziti_mfa_enrollment.recovery_codes, recoveryCodePointers, 0, 20);
-			evt.recoveryCodes = new string[20];
-
-			for (int i = 0; i < 20; i++)
+			if (ziti_mfa_enrollment.recovery_codes != IntPtr.Zero)
 			{
-				string value = Marshal.PtrToStringAnsi(recoveryCodePointers[i]);
-				evt.recoveryCodes[i] = value;
+				// Could not fetch the size of the array from the intptr
+				IntPtr[] recoveryCodePointers = new IntPtr[20];
+				Marshal.Copy(ziti_mfa_enrollment.recovery_codes, recoveryCodePointers, 0, 20);
+				evt.recoveryCodes = new string[20];
+
+				for (int i = 0; i < 20; i++)
+				{
+					string value = Marshal.PtrToStringAnsi(recoveryCodePointers[i]);
+					evt.recoveryCodes[i] = value;
+				}
 			}
+			
 			cb?.Invoke(evt);
 
 		}
