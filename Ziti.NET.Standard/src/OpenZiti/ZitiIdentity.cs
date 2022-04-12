@@ -351,7 +351,7 @@ namespace OpenZiti {
 			public ZitiIdentity.InitOptions zidOpts;
 			public delegate void ZitiResponseDelegate(object evt);
 
-			internal void ZitiResponse(object evt)
+			public void ZitiResponse(object evt)
 			{
 				if (evt is ZitiMFAStatusEvent)
 				{
@@ -484,22 +484,22 @@ namespace OpenZiti {
 
 	public class ZitiMFAEvent
 	{
-		internal ZitiIdentity id;
+		public ZitiIdentity id;
 	}
 
 	public class ZitiAPIEvent
 	{
-		internal ZitiIdentity id;
+		public ZitiIdentity id;
 	}
 
 	public class ZitiMFAStatusEvent
 	{
-		internal ZitiIdentity id;
-		internal ZitiStatus status;
-		internal bool isVerified;
-		internal MFAOperationType operationType;
-		internal string provisioningUrl;
-		internal string[] recoveryCodes;
+		public ZitiIdentity id;
+		public ZitiStatus status;
+		public bool isVerified;
+		public MFAOperationType operationType;
+		public string provisioningUrl;
+		public string[] recoveryCodes;
 	}
 
 	public static class ZitiEventFlags {

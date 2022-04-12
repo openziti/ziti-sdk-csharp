@@ -32,9 +32,9 @@ namespace OpenZiti
 			cb?.Invoke(evt);
 		}
 
-		public static void submit_mfa(ZitiContext context, string code, IntPtr status_ctx)
+		public static void submit_mfa(ZitiIdentity zid, string code, IntPtr status_ctx)
 		{
-			OpenZiti.Native.API.ziti_mfa_auth(context.nativeZitiContext, code, on_submit_mfa, status_ctx);
+			OpenZiti.Native.API.ziti_mfa_auth(zid.WrappedContext.nativeZitiContext, code, on_submit_mfa, status_ctx);
 		}
 
 		private static void on_enable_mfa(IntPtr ziti_context, int status, IntPtr /*ziti_mfa_enrollment*/ enrollment, IntPtr ctx)
@@ -68,9 +68,9 @@ namespace OpenZiti
 
 		}
 
-		public static void ziti_mfa_enroll(ZitiContext context, IntPtr status_ctx)
+		public static void ziti_mfa_enroll(ZitiIdentity zid, IntPtr status_ctx)
 		{
-			OpenZiti.Native.API.ziti_mfa_enroll(context.nativeZitiContext, on_enable_mfa, status_ctx);
+			OpenZiti.Native.API.ziti_mfa_enroll(zid.WrappedContext.nativeZitiContext, on_enable_mfa, status_ctx);
 		}
 
 		private static void on_verify_mfa(IntPtr ziti_context, int status, IntPtr ctx)
@@ -85,9 +85,9 @@ namespace OpenZiti
 			cb?.Invoke(evt);
 		}
 
-		public static void verify_mfa(ZitiContext context, string code, IntPtr status_ctx)
+		public static void verify_mfa(ZitiIdentity zid, string code, IntPtr status_ctx)
 		{
-			OpenZiti.Native.API.ziti_mfa_verify(context.nativeZitiContext, code, on_verify_mfa, status_ctx);
+			OpenZiti.Native.API.ziti_mfa_verify(zid.WrappedContext.nativeZitiContext, code, on_verify_mfa, status_ctx);
 		}
 
 		private static void on_remove_mfa(IntPtr ziti_context, int status, IntPtr ctx)
@@ -102,9 +102,9 @@ namespace OpenZiti
 			cb?.Invoke(evt);
 		}
 
-		public static void remove_mfa(ZitiContext context, string code, IntPtr status_ctx)
+		public static void remove_mfa(ZitiIdentity zid, string code, IntPtr status_ctx)
 		{
-			OpenZiti.Native.API.ziti_mfa_remove(context.nativeZitiContext, code, on_remove_mfa, status_ctx);
+			OpenZiti.Native.API.ziti_mfa_remove(zid.WrappedContext.nativeZitiContext, code, on_remove_mfa, status_ctx);
 		}
 	}
 }
