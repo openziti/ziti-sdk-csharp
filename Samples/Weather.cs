@@ -37,7 +37,7 @@ namespace OpenZiti.Samples {
 			{
                 case 1:
 					{
-                        Console.WriteLine("Enable MFA for the identity"); // list the identities and allow user to choose
+                        Console.WriteLine("Enable MFA for the identity: " + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile)); // list the identities and allow user to choose
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
@@ -46,7 +46,7 @@ namespace OpenZiti.Samples {
                     }
                 case 2:
 					{
-                        Console.WriteLine("Verify MFA for the identity");
+                        Console.WriteLine("Verify MFA for the identity" + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
@@ -57,7 +57,7 @@ namespace OpenZiti.Samples {
                     }
                 case 3:
                     {
-                        Console.WriteLine("Remove MFA for the identity");
+                        Console.WriteLine("Remove MFA for the identity" + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
@@ -68,7 +68,7 @@ namespace OpenZiti.Samples {
                     }
                 case 4:
 					{
-                        Console.WriteLine("Submit MFA for the identity");
+                        Console.WriteLine("Submit MFA for the identity " + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
@@ -78,7 +78,15 @@ namespace OpenZiti.Samples {
                         break;
                     }
                 case 5:
-                    Console.WriteLine("Dial First service");
+                    if (zitiInstance.Zid?.IdentityNameFromController != null)
+					{
+                        Console.WriteLine("Dial First service in " + zitiInstance.Zid?.IdentityNameFromController);
+                    } else
+					{
+                        Console.WriteLine("Context is not loaded for identity {0}, exiting", zitiInstance.Zid?.InitOpts.IdentityFile);
+                        Environment.Exit(0);
+                        break;
+                    }
                     if (zitiInstance.Services.Count > 0)
 					{
                         ZitiService svc = zitiInstance.Services.First().Value;
@@ -188,7 +196,7 @@ namespace OpenZiti.Samples {
 
         private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e)
         {
-            Console.WriteLine("MFA Auth requested for identity {0}", e.id?.IdentityNameFromController);
+            Console.WriteLine("MFA Auth requested for identity {0}", (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
             Console.WriteLine("Enter the mfa auth codo: ");
             string mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", e.id?.IdentityNameFromController, mfacode);

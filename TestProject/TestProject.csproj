@@ -20,9 +20,9 @@
   </PropertyGroup>
 
   <Target Name="x86" BeforeTargets="Build">
-      <Message Importance="High" Text="COPYING $(SolutionDir)\ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll to $(OutDir)" />
-      <Copy SourceFiles="$(SolutionDir)ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll" DestinationFolder="$(OutDir)" />
-      <Copy SourceFiles="$(SolutionDir)ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.pdb" DestinationFolder="$(OutDir)" />
+      <Message Importance="High" Text="COPYING $(SolutionDir)\..\ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll to $(OutDir)" />
+      <Copy SourceFiles="$(SolutionDir)\..\ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.dll" DestinationFolder="$(OutDir)" />
+      <Copy SourceFiles="$(SolutionDir)\..\ZitiNativeApiForDotnetCore\build-win\$(Platform)\library\$(Configuration)\ziti4dotnet.pdb" DestinationFolder="$(OutDir)" />
   </Target>
   <ItemGroup>
     <Compile Include="..\Samples\Util\ConsoleHelper.cs" Link="ConsoleHelper.cs" />
