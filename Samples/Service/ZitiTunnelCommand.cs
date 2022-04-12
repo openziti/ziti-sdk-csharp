@@ -23,17 +23,12 @@ namespace OpenZiti
 		public struct Options
 		{
 			internal event EventHandler<NextAction> OnNextAction;
-			internal event EventHandler<TunnelResult> OnTunnelResult;
 			internal void NextAction(NextAction command)
 			{
 				OnNextAction?.Invoke(this, command);
 
 			}
 
-			internal void TunnelResult(TunnelResult result)
-			{
-				OnTunnelResult?.Invoke(this, result);
-			}
 			public void InvokeNextTunnelCommand()
 			{
 				NextAction action = new ZitiTunnelCommand.NextAction()

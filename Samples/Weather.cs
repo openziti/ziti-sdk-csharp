@@ -41,7 +41,7 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.ziti_mfa_enroll(zitiInstance.Zid.WrappedContext, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        ZitiMFAService.ziti_mfa_enroll(zitiInstance.Zid, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
                 case 2:
@@ -52,7 +52,7 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.verify_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        ZitiMFAService.verify_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
                 case 3:
@@ -63,7 +63,7 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.remove_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        ZitiMFAService.remove_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
                 case 4:
@@ -74,7 +74,7 @@ namespace OpenZiti.Samples {
                         ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
                         tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
                         ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.submit_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        ZitiMFAService.submit_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
                         break;
                     }
                 case 5:
@@ -106,22 +106,8 @@ namespace OpenZiti.Samples {
 			}
 		}
 
-        internal static void OnTunnelResult(object sender, ZitiTunnelCommand.TunnelResult result)
-		{
-            ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
-            if (zitiInstance.Zid.InitOpts.IdentityFile.Equals(result.id))
-			{
-                tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
-                tunnelCB.ZitiResponse(result.result);
-            } else
-			{
-                Console.WriteLine("Unknown identity - {0}", result.id);
-            }
-        }
-
         public static void Run(string identityFile) {
             tunOptions.OnNextAction += OnZitiTunnelNextAction;
-            tunOptions.OnTunnelResult += OnTunnelResult;
             zitiInstance.Initialize();
 
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
@@ -203,7 +189,7 @@ namespace OpenZiti.Samples {
             ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
             tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
             ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-            ZitiMFAService.submit_mfa(zitiInstance.Zid.WrappedContext, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+            ZitiMFAService.submit_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
         }
 
         private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e)
