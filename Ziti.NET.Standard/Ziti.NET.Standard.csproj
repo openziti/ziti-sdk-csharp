@@ -65,4 +65,8 @@
     <PropertyGroup Condition="'$(Platform)' == 'x64'">
         <DefineConstants>TRACE;ZITI_X64</DefineConstants>
     </PropertyGroup>
+	
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+        <DefineConstants>TRACE;ZITI_X86</DefineConstants>
+	</PropertyGroup>
 </Project>
