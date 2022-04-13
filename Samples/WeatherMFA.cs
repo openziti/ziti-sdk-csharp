@@ -87,9 +87,10 @@ namespace OpenZiti.Samples {
         public static void Run(string identityFile) {
             Options.OnNextAction += OnZitiTunnelNextAction;
             zitiInstance.Initialize();
+            Object eventFlags = ZitiEventFlags.All;
 
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
-                EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent | ZitiEventFlags.ZitiMfaAuthEvent | ZitiEventFlags.ZitiAPIEvent,
+                EventFlags = (uint)(int)eventFlags,
                 IdentityFile = identityFile,
                 ApplicationContext = "weather-svc",
                 ConfigurationTypes = new[] { "weather-config-type" },
