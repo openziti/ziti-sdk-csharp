@@ -34,41 +34,29 @@ namespace OpenZiti.Samples {
 
             switch (action.command) {
                 case 1: {
-                        Console.WriteLine("Enable MFA for the identity: " + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile)); // list the identities and allow user to choose
-                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
-                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
-                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.ziti_mfa_enroll(zitiInstance.Zid, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        Console.WriteLine("Enable MFA for the identity: " + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
+                        API.EnrollMFA(zitiInstance.Zid);
                         break;
                     }
                 case 2: {
                         Console.WriteLine("Verify MFA for the identity" + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
-                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
-                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
-                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.verify_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        API.VerifyMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 3: {
                         Console.WriteLine("Remove MFA for the identity" + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
-                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
-                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
-                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.remove_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        API.RemoveMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 4: {
                         Console.WriteLine("Submit MFA for the identity " + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
-                        ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
-                        tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
-                        ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-                        ZitiMFAService.submit_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+                        API.SubmitMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 5:
@@ -168,10 +156,7 @@ namespace OpenZiti.Samples {
             Console.WriteLine("Enter the mfa auth codo: ");
             string mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", e.id?.IdentityNameFromController, mfacode);
-            ZitiIdentity.TunnelCB tunnelCB = new ZitiIdentity.TunnelCB();
-            tunnelCB.zidOpts = zitiInstance.Zid.InitOpts;
-            ZitiIdentity.TunnelCB.ZitiResponseDelegate cbDelegate = tunnelCB.ZitiResponse;
-            ZitiMFAService.submit_mfa(zitiInstance.Zid, mfacode, Marshal.GetFunctionPointerForDelegate(cbDelegate));
+            API.SubmitMFA(zitiInstance.Zid, mfacode);
         }
 
         private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e) {

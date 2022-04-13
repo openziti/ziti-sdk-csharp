@@ -30,7 +30,6 @@ namespace OpenZiti.Native {
 	{
         [MarshalAs(UnmanagedType.Bool)]
         public bool is_verified;
-        //[MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPWStr, SizeConst = 20)]
         public IntPtr recovery_codes; // convert IntPtr to string array
         [MarshalAs(UnmanagedType.LPStr)]
         public string provisioning_url;

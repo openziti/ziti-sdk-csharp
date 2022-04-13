@@ -179,7 +179,9 @@ namespace OpenZiti {
 			StructWrapper ziti_opts_ptr = new StructWrapper(ziti_opts);
 
 			int result = Native.API.ziti_init_opts(ziti_opts_ptr.Ptr, Loop.nativeUvLoop);
-			Logger.Info("Result of ziti initialization : " + result);
+			if (result != 0) {
+				throw new ZitiException("Could not initialize the connection using the given ziti options.");
+			}
 		}
 
 		public void Shutdown() {
@@ -346,7 +348,7 @@ namespace OpenZiti {
 				OnZitiMFAStatusEvent?.Invoke(this, evt);
 			}
 		}
-		public struct TunnelCB
+		public struct MFAStatusCB
 		{
 			public ZitiIdentity.InitOptions zidOpts;
 			public delegate void ZitiResponseDelegate(object evt);
