@@ -38,10 +38,6 @@ namespace OpenZiti
         {
             var type = enumVal.GetType();
             var memberInfo = type.GetMember(enumVal.ToString());
-            if (memberInfo == null || memberInfo.Length == 0)
-			{
-                return NO_DESC;
-            }
             var atts = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
             if (atts.Length < 1)
             {
