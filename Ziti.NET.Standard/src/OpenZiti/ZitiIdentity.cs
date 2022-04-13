@@ -298,7 +298,7 @@ namespace OpenZiti {
 			}
 		}
 
-		internal void SaveNativeContext(object sender, ZitiContextEvent e) {
+		private void SaveNativeContext(object sender, ZitiContextEvent e) {
 			Logger.Error("it's ");
 			//this.NativeContext = e.na
 		}
@@ -503,6 +503,7 @@ namespace OpenZiti {
 	}
 
 	public static class ZitiEventFlags {
+		public const int All = -1;
 		public const int ZitiContextEvent = 1;
 		public const int ZitiRouterEvent = 1 << 1;
 		public const int ZitiServiceEvent = 1 << 2;
