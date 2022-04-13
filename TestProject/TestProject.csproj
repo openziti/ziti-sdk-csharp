@@ -28,9 +28,9 @@
     <Compile Include="..\Samples\Util\ConsoleHelper.cs" Link="ConsoleHelper.cs" />
     <Compile Include="..\Samples\Weather.cs" Link="Weather.cs" />
     <Compile Include="..\Samples\WeatherStream.cs" Link="WeatherStream.cs" />
-	<Compile Include="..\Samples\WeatherMFA.cs" Link="WeatherMFA.cs" />
-	<Compile Include="..\Samples\Service\ZitiInstance.cs" Link="ZitiInstance.cs" />
-	<Compile Include="..\Samples\Service\ZitiTunnelCommand.cs" Link="ZitiTunnelCommand.cs" />
+    <Compile Include="..\Samples\WeatherMFA.cs" Link="WeatherMFA.cs" />
+    <Compile Include="..\Samples\MFAUtils\ZitiInstance.cs" Link="ZitiInstance.cs" />
+    <Compile Include="..\Samples\MFAUtils\ZitiCommand.cs" Link="ZitiCommand.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\API.cs" Link="src\OpenZiti\API.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ExtensionMethods.cs" Link="src\OpenZiti\ExtensionMethods.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Logging.cs" Link="src\OpenZiti\Logging.cs" />
@@ -49,7 +49,7 @@
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStatusExtensions.cs" Link="src\OpenZiti\ZitiStatusExtensions.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStream.cs" Link="src\OpenZiti\ZitiStream.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiUtil.cs" Link="src\OpenZiti\ZitiUtil.cs" />
-	<Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiMFAService.cs" Link="src\OpenZiti\ZitiMFAService.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiMFAService.cs" Link="src\OpenZiti\ZitiMFAService.cs" />
   </ItemGroup>
 
   <ItemGroup>

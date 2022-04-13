@@ -25,11 +25,11 @@ namespace OpenZiti.Samples {
 
     public class WeatherMFA {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
-        static ZitiTunnelCommand.Options tunOptions = new ZitiTunnelCommand.Options();
+        static ZitiCommand.Options Options = new ZitiCommand.Options();
 
         static ZitiInstance zitiInstance = new ZitiInstance();
 
-        internal static void OnZitiTunnelNextAction(object sender, ZitiTunnelCommand.NextAction action) {
+        internal static void OnZitiTunnelNextAction(object sender, ZitiCommand.NextAction action) {
             string mfacode;
 
             switch (action.command) {
@@ -97,7 +97,7 @@ namespace OpenZiti.Samples {
         }
 
         public static void Run(string identityFile) {
-            tunOptions.OnNextAction += OnZitiTunnelNextAction;
+            Options.OnNextAction += OnZitiTunnelNextAction;
             zitiInstance.Initialize();
 
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
@@ -156,12 +156,10 @@ namespace OpenZiti.Samples {
                 }
                 var service = e.Added().First(s => s.Name == expected);
 
-                // if posture check fails, dial will fail, query posture check
-                // service.Dial(onConnected, onData); 
-                tunOptions.InvokeNextTunnelCommand();
+                Options.InvokeNextCommand();
             } catch (Exception ex) {
                 Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
-                tunOptions.InvokeNextTunnelCommand(); // show option to retry
+                Options.InvokeNextCommand(); // show option to retry
             }
         }
 
@@ -193,12 +191,12 @@ namespace OpenZiti.Samples {
                     for (int i = 0; i < e.recoveryCodes.Length; i++) {
                         Console.WriteLine("Recovery Code {0}", e.recoveryCodes[i]);
                     }
-                    tunOptions.InvokeNextTunnelCommand(); // after enabling mfa, show option to verify
+                    Options.InvokeNextCommand(); // after enabling mfa, show option to verify
                 }
 
             } else {
                 Console.WriteLine("MFA operation {0} failed due to {1}", e.operationType, e.status);
-                tunOptions.InvokeNextTunnelCommand(); // if mfa auth failed, show option to retry
+                Options.InvokeNextCommand(); // if mfa auth failed, show option to retry
             }
         }
 
@@ -235,7 +233,7 @@ namespace OpenZiti.Samples {
                     ConsoleHelper.OutputResponseToConsole(ms.ToArray());
                     Console.WriteLine("request completed: " + status.GetDescription());
                     connection.Close();
-                    tunOptions.InvokeNextTunnelCommand();
+                    Options.InvokeNextCommand();
                 } else {
                     Console.WriteLine("unexpected error: " + status.GetDescription());
                 }
