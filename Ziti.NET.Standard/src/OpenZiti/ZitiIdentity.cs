@@ -35,6 +35,7 @@ namespace OpenZiti {
 		private Exception startException;
 		private bool isInitialized;
 		private Dictionary<string, ZitiService> services = new Dictionary<string, ZitiService>();
+		private object _configFileLock = new object();
 
 		public bool IsRunning {
 			get {
@@ -284,9 +285,21 @@ namespace OpenZiti {
 				case ZitiEventFlags.ZitiAPIEvent:
 					Native.ziti_api_event ziti_api_event = Marshal.PtrToStructure<Native.ziti_api_event>(ziti_event_t);
 
+					if (ziti_api_event.new_ctrl_address == IntPtr.Zero)
+					{
+						Logger.Info("Ziti identifier received incorrect API event with null controller address");
+						break;
+					}
+
+					Task.Run(() =>
+					{
+						string idFile = this.InitOpts.IdentityFile;
+					});
+
 					ZitiAPIEvent zitiAPIEvent = new ZitiAPIEvent()
 					{
-						id = this
+						id = this,
+						new_ctrl_address = Marshal.PtrToStringAuto(ziti_api_event.new_ctrl_address),
 					};
 
 					InitOpts.ZitiAPIEvent(zitiAPIEvent);
@@ -421,6 +434,20 @@ namespace OpenZiti {
 		public async Task WaitForServices() {
 			await streamLock.WaitAsync().ConfigureAwait(false);
 		}
+
+		public void UpdateControllerUrlInConfigFile(string controller_url)
+		{
+			lock(_configFileLock)
+			{
+				string bkpConfigFileName = this.InitOpts.IdentityFile + ".bak";
+				File.Move(this.InitOpts.IdentityFile, bkpConfigFileName);
+				Logger.Debug("Created backup config file {0}", bkpConfigFileName);
+				nid.ztAPI = controller_url;
+				String json = JsonSerializer.Serialize<Native.IdentityFile>(nid);
+				File.WriteAllText(this.InitOpts.IdentityFile, json);
+				Logger.Debug("Created new config file {0}", this.InitOpts.IdentityFile);
+			}
+		}
 	}
 
 	public class ZitiContextEvent {
@@ -490,6 +517,7 @@ namespace OpenZiti {
 	public class ZitiAPIEvent
 	{
 		public ZitiIdentity id;
+		public string new_ctrl_address;
 	}
 
 	public class ZitiMFAStatusEvent

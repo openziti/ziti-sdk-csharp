@@ -194,7 +194,7 @@ namespace OpenZiti.Samples {
 
         private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e)
 		{
-            Console.WriteLine("API event received for identity {0}", e.id?.IdentityNameFromController);
+            Console.WriteLine("API event received for identity {0}, new ctrl address - {1}", e.id?.IdentityNameFromController, e.new_ctrl_address);
         }
 
         private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e)
