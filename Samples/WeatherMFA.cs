@@ -157,10 +157,11 @@ namespace OpenZiti.Samples {
         }
 
         private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e) {
-            Console.WriteLine("MFA Auth requested for identity {0}", (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
+            string nameOfId = (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile);
+            Console.WriteLine("MFA Auth requested for identity {0}", nameOfId);
             Console.WriteLine("Enter the mfa auth codo: ");
             string mfacode = Console.ReadLine();
-            Console.WriteLine("Authcode for id {0} is {1}", e.id?.IdentityNameFromController, mfacode);
+            Console.WriteLine("Authcode for id {0} is {1}", nameOfId, mfacode);
             API.SubmitMFA(zitiInstance.Zid, mfacode);
         }
 

@@ -163,19 +163,19 @@ namespace OpenZiti {
         }
 
         public static void SubmitMFA(ZitiIdentity zid, string code) {
-            OpenZiti.Native.API.ziti_mfa_auth(zid.WrappedContext.nativeZitiContext, code, MFA.AfterSubmit, MFA.GetMFAStatusDelegate(zid));
+            OpenZiti.Native.API.ziti_mfa_auth(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFASubmit, MFA.GetMFAStatusDelegate(zid));
         }
 
         public static void EnrollMFA(ZitiIdentity zid) {
-            OpenZiti.Native.API.ziti_mfa_enroll(zid.WrappedContext.nativeZitiContext, MFA.AfterEnroll, MFA.GetMFAStatusDelegate(zid));
+            OpenZiti.Native.API.ziti_mfa_enroll(zid.WrappedContext.nativeZitiContext, MFA.AfterMFAEnroll, MFA.GetMFAStatusDelegate(zid));
         }
 
         public static void VerifyMFA(ZitiIdentity zid, string code) {
-            OpenZiti.Native.API.ziti_mfa_verify(zid.WrappedContext.nativeZitiContext, code, MFA.AfterVerify, MFA.GetMFAStatusDelegate(zid));
+            OpenZiti.Native.API.ziti_mfa_verify(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFAVerify, MFA.GetMFAStatusDelegate(zid));
         }
 
         public static void RemoveMFA(ZitiIdentity zid, string code) {
-            OpenZiti.Native.API.ziti_mfa_remove(zid.WrappedContext.nativeZitiContext, code, MFA.AfterRemove, MFA.GetMFAStatusDelegate(zid));
+            OpenZiti.Native.API.ziti_mfa_remove(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFARemove, MFA.GetMFAStatusDelegate(zid));
         }
     }
 
@@ -201,7 +201,7 @@ namespace OpenZiti {
             return Marshal.GetFunctionPointerForDelegate(cbDelegate);
         }
 
-        internal static void AfterSubmit(IntPtr ziti_context, int status, IntPtr ctx) {
+        internal static void AfterMFASubmit(IntPtr ziti_context, int status, IntPtr ctx) {
             ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
             ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
@@ -211,7 +211,7 @@ namespace OpenZiti {
             cb?.Invoke(evt);
         }
 
-        internal static void AfterEnroll(IntPtr ziti_context, int status, IntPtr /*ziti_mfa_enrollment*/ enrollment, IntPtr ctx) {
+        internal static void AfterMFAEnroll(IntPtr ziti_context, int status, IntPtr /*ziti_mfa_enrollment*/ enrollment, IntPtr ctx) {
             OpenZiti.Native.ziti_mfa_enrollment ziti_mfa_enrollment = Marshal.PtrToStructure<OpenZiti.Native.ziti_mfa_enrollment>(enrollment);
             ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
@@ -238,7 +238,7 @@ namespace OpenZiti {
 
         }
 
-        internal static void AfterVerify(IntPtr ziti_context, int status, IntPtr ctx) {
+        internal static void AfterMFAVerify(IntPtr ziti_context, int status, IntPtr ctx) {
             ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
             ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
@@ -247,7 +247,7 @@ namespace OpenZiti {
             };
             cb?.Invoke(evt);
         }
-        internal static void AfterRemove(IntPtr ziti_context, int status, IntPtr ctx) {
+        internal static void AfterMFARemove(IntPtr ziti_context, int status, IntPtr ctx) {
             ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
             ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
