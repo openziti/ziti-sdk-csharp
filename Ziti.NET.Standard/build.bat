@@ -68,6 +68,7 @@ if %ACTUAL_ERR% NEQ 0 (
     echo result of dotnet pack: %ACTUAL_ERR%
 )
 
+REM 'tail' has to be on your path to execute the below command
 FOR /F "delims= " %%i IN ('ls -rt Ziti.NET.Standard.*.nupkg ^| tail -n 1') DO set NUPKG_FILE=%%i
 
 ECHO nuget push -source %NUGET_PATH% %Ziti_Net_HOME%%NUPKG_FILE%

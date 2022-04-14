@@ -180,7 +180,9 @@ namespace OpenZiti {
 			StructWrapper ziti_opts_ptr = new StructWrapper(ziti_opts);
 
 			int result = Native.API.ziti_init_opts(ziti_opts_ptr.Ptr, Loop.nativeUvLoop);
-			Logger.Info("Result of ziti initialization : " + result);
+			if (result != 0) {
+				throw new ZitiException("Could not initialize the connection using the given ziti options.");
+			}
 		}
 
 		public void Shutdown() {
@@ -311,7 +313,7 @@ namespace OpenZiti {
 			}
 		}
 
-		internal void SaveNativeContext(object sender, ZitiContextEvent e) {
+		private void SaveNativeContext(object sender, ZitiContextEvent e) {
 			Logger.Error("it's ");
 			//this.NativeContext = e.na
 		}
@@ -359,7 +361,7 @@ namespace OpenZiti {
 				OnZitiMFAStatusEvent?.Invoke(this, evt);
 			}
 		}
-		public struct TunnelCB
+		public struct MFAStatusCB
 		{
 			public ZitiIdentity.InitOptions zidOpts;
 			public delegate void ZitiResponseDelegate(object evt);
@@ -531,6 +533,7 @@ namespace OpenZiti {
 	}
 
 	public static class ZitiEventFlags {
+		public const int All = -1;
 		public const int ZitiContextEvent = 1;
 		public const int ZitiRouterEvent = 1 << 1;
 		public const int ZitiServiceEvent = 1 << 2;
