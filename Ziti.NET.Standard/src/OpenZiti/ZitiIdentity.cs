@@ -293,19 +293,18 @@ namespace OpenZiti {
 						break;
 					}
 
-					Task.Run(() =>
-					{
-						string idFile = this.InitOpts.IdentityFile;
-					});
-
 					ZitiAPIEvent zitiAPIEvent = new ZitiAPIEvent()
 					{
 						id = this,
-						new_ctrl_address = Marshal.PtrToStringAuto(ziti_api_event.new_ctrl_address),
+						newCtrlAddress = Marshal.PtrToStringUTF8(ziti_api_event.new_ctrl_address),
 					};
 
+					Task.Run(() => {
+						UpdateControllerUrlInConfigFile(zitiAPIEvent.newCtrlAddress);
+					});
+
 					InitOpts.ZitiAPIEvent(zitiAPIEvent);
-					Logger.Info("Ziti identifier received API event with controller address {0}", ziti_api_event.new_ctrl_address);
+					Logger.Info("Ziti identifier received API event with controller address {0}", zitiAPIEvent.newCtrlAddress);
 					break;
 				default:
 					Logger.Warn("UNEXPECTED ZitiEventFlags [{0}]! Please report.", type);
@@ -519,7 +518,7 @@ namespace OpenZiti {
 	public class ZitiAPIEvent
 	{
 		public ZitiIdentity id;
-		public string new_ctrl_address;
+		public string newCtrlAddress;
 	}
 
 	public class ZitiMFAStatusEvent
