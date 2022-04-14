@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace OpenZiti.Samples {
 
@@ -122,28 +123,31 @@ namespace OpenZiti.Samples {
         private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
             string expected = (string)e.Context;
             try {
-                Console.WriteLine("Removed Services ({0}): ", e.Removed().Count());
-                foreach (ZitiService svc in e.Removed()) {
+                IEnumerable<ZitiService> removedServices = e.Removed();
+                Console.WriteLine("Removed Services ({0}): ", removedServices.Count());
+                foreach (ZitiService svc in removedServices) {
                     if (zitiInstance.Services.ContainsKey(svc.Name)) {
                         zitiInstance.Services.Remove(svc.Name);
 
                     }
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
-                Console.WriteLine("Modified Services ({0}): ", e.Changed().Count());
-                foreach (ZitiService svc in e.Changed()) {
+                IEnumerable<ZitiService> modifiedServices = e.Changed();
+                Console.WriteLine("Modified Services ({0}): ", modifiedServices.Count());
+                foreach (ZitiService svc in modifiedServices) {
                     if (zitiInstance.Services.ContainsKey(svc.Name)) {
                         zitiInstance.Services.Remove(svc.Name);
                         zitiInstance.Services.Add(svc.Name, svc);
                     }
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
-                Console.WriteLine("Available Services ({0}): ", e.Added().Count());
-                foreach (ZitiService svc in e.Added()) {
+                IEnumerable<ZitiService> addedServices = e.Added();
+                Console.WriteLine("Available Services ({0}): ", addedServices.Count());
+                foreach (ZitiService svc in addedServices) {
                     zitiInstance.Services.Add(svc.Name, svc);
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
-                var service = e.Added().First(s => s.Name == expected);
+                var service = addedServices.First(s => s.Name == expected);
 
                 Options.InvokeNextCommand();
             } catch (Exception ex) {

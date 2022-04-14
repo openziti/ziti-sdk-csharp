@@ -310,24 +310,26 @@ namespace OpenZiti {
     public struct ziti_service {
         public string id;
         public string name;
-        public string permissions;
+        public IntPtr permissions;
         public bool encryption;
         public int perm_flags;
         public string config;
-        //public posture_query_set posture_query_set;
+        public IntPtr /** posture_query_set[] **/ posture_query_set;
+        public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
+        public string updated_at;
     }
 
     public struct posture_query_set {
         public string policy_id;
         public bool is_passing;
         public string policy_type;
-        public posture_query[] posture_queries;
+        public IntPtr /** posture_query[] **/ posture_queries;
     }
     public struct posture_query {
         public string id;
         public bool is_passing;
         public string query_type;
-        public ziti_process process;
+        public IntPtr /** ziti_process **/ process;
         public int timeout;
     }
 
@@ -339,5 +341,19 @@ namespace OpenZiti {
         internal string id;
         internal string name;
         internal string app_data;
+    }
+
+    public struct model_map_impl {
+        internal IntPtr /** model_map_entry[] **/ entries;
+        internal IntPtr table;
+        internal int buckets;
+        internal int size;
+    }
+
+    public struct model_map_entry {
+        internal IntPtr key;
+        internal int key_len;
+        internal uint key_hash;
+        internal IntPtr value;
     }
 }
