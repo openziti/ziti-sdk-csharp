@@ -248,11 +248,10 @@ namespace OpenZiti {
 				case ZitiEventFlags.ZitiServiceEvent:
 					Native.ziti_service_event ziti_service_event = Marshal.PtrToStructure<Native.ziti_service_event>(ziti_event_t);
 
-					ZitiServiceEvent serviceEvent = new ZitiServiceEvent() {
+					ZitiServiceEvent serviceEvent = new ZitiServiceEvent(ziti_context) {
 						nativeRemovedList = ziti_service_event.removed,
 						nativeChangedList = ziti_service_event.changed,
 						nativeAddedList = ziti_service_event.added,
-						ziti_ctx = ziti_context,
 						Context = this.ApplicationContext,
 						id = this,
 					};
@@ -467,11 +466,42 @@ namespace OpenZiti {
 	}
 
 	public class ZitiServiceEvent {
-		internal IntPtr nativeRemovedList;
-		internal IntPtr nativeChangedList;
-		internal IntPtr nativeAddedList;
-		internal IntPtr ziti_ctx;
+
+		public ZitiServiceEvent(IntPtr zitiCtx) {
+			this.ziti_ctx = zitiCtx;
+		}
+		internal IntPtr nativeRemovedList {
+			set {
+				removedList = new List<ZitiService>();
+				foreach (IntPtr p in array_iterator(value)) {
+					ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+					removedList.Add(svc);
+				}
+			}
+        }
+		internal IntPtr nativeChangedList {
+			set {
+				changedList = new List<ZitiService>();
+				foreach (IntPtr p in array_iterator(value)) {
+					ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+					changedList.Add(svc);
+				}
+			}
+        }
+		internal IntPtr nativeAddedList {
+			set {
+				addedList = new List<ZitiService>();
+				foreach (IntPtr p in array_iterator(value)) {
+					ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+					addedList.Add(svc);
+				}
+			}
+		}
+		internal IntPtr ziti_ctx { get; }
 		internal ZitiIdentity id;
+		internal List<ZitiService> removedList;
+		internal List<ZitiService> changedList;
+		internal List<ZitiService> addedList;
 
 		public object Context { get; internal set; }
 
@@ -489,22 +519,19 @@ namespace OpenZiti {
 		}
 
 		public IEnumerable<ZitiService> Removed() {
-			foreach (IntPtr p in array_iterator(nativeRemovedList)) {
-				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+			foreach (ZitiService svc in removedList) {
 				yield return svc;
 			}
 		}
 
 		public IEnumerable<ZitiService> Changed() {
-			foreach (IntPtr p in array_iterator(nativeChangedList)) {
-				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+			foreach (ZitiService svc in changedList) {
 				yield return svc;
 			}
 		}
 
 		public IEnumerable<ZitiService> Added() {
-			foreach (IntPtr p in array_iterator(nativeAddedList)) {
-				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+			foreach (ZitiService svc in addedList) {
 				yield return svc;
 			}
 		}

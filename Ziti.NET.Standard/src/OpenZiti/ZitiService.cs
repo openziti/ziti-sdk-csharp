@@ -161,7 +161,7 @@ namespace OpenZiti
                 model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
                 int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
                 int sizeOfPostuerQueryMap = impl.size;
-                Console.WriteLine("Posture Query map size : " + sizeOfPostuerQueryMap);
+                Console.WriteLine("Posture Query map size of service {0} - ({1}): {2}", nativeService.name, nativeService.id, sizeOfPostuerQueryMap);
                 IntPtr entriesArr = impl.entries; // loop through entries
                 IntPtr currentEntryArrLoc;
                 for (int i = 0; i < sizeOfPostuerQueryMap; i++) {
