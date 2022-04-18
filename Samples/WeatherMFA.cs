@@ -146,6 +146,10 @@ namespace OpenZiti.Samples {
                 foreach (ZitiService svc in addedServices) {
                     zitiInstance.Services.Add(svc.Name, svc);
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
+                    foreach (var entry in svc.PostureQueryMap) {
+                        PostureQuerySet pqs = entry.Value;
+                        Console.WriteLine("Policy Id {0} of the service - {1} is passing : {2}", pqs.PolicyId, svc.Name, pqs.IsPassing);
+                    }
                 }
                 var service = addedServices.First(s => s.Name == expected);
 

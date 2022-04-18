@@ -161,7 +161,6 @@ namespace OpenZiti
                 model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
                 int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
                 int sizeOfPostuerQueryMap = impl.size;
-                Console.WriteLine("Posture Query map size of service {0} - ({1}): {2}", nativeService.name, nativeService.id, sizeOfPostuerQueryMap);
                 IntPtr entriesArr = impl.entries; // loop through entries
                 IntPtr currentEntryArrLoc;
                 for (int i = 0; i < sizeOfPostuerQueryMap; i++) {
@@ -177,9 +176,7 @@ namespace OpenZiti
 
                     model_map_entry entry = Marshal.PtrToStructure<model_map_entry>(currentEntryArrLoc);
                     string policyId = Marshal.PtrToStringUTF8(entry.key);
-                    Console.WriteLine("Posture Query Policy Id : " + policyId);
                     posture_query_set pqs = Marshal.PtrToStructure<posture_query_set>(entry.value);
-                    Console.WriteLine("PQS policy id : " + pqs.policy_id);
                     IntPtr pqArr = pqs.posture_queries;
                     IntPtr currentPQArrLoc = pqArr;
                     PostureQuerySet pqSet = new PostureQuerySet();
@@ -192,7 +189,6 @@ namespace OpenZiti
                         posture_query pq = Marshal.PtrToStructure<posture_query>(currentPQArrLoc);
                         PostureQuery postureQuery = new PostureQuery();
 
-                        Console.WriteLine("pq query type : " + pq.query_type);
                         postureQuery.QueryType = pq.query_type;
                         postureQuery.Id = pq.id;
                         postureQuery.IsPassing = pq.is_passing; 
@@ -201,7 +197,6 @@ namespace OpenZiti
                             ziti_process process = Marshal.PtrToStructure<ziti_process>(pq.process);
                             ziti_process.Path = process.path;
                             postureQuery.Process = ziti_process;
-                            Console.WriteLine("process path : " + process.path);
                         }
                         postureQueriesList.Add(postureQuery);
                         pqArr = IntPtr.Add(pqArr, sizeOfPointer);
