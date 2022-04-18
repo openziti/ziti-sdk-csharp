@@ -471,31 +471,13 @@ namespace OpenZiti {
 			this.ziti_ctx = zitiCtx;
 		}
 		internal IntPtr nativeRemovedList {
-			set {
-				removedList = new List<ZitiService>();
-				foreach (IntPtr p in array_iterator(value)) {
-					ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
-					removedList.Add(svc);
-				}
-			}
+			set => removedList = createZitiServiceList(value);	
         }
 		internal IntPtr nativeChangedList {
-			set {
-				changedList = new List<ZitiService>();
-				foreach (IntPtr p in array_iterator(value)) {
-					ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
-					changedList.Add(svc);
-				}
-			}
+			set => changedList = createZitiServiceList(value);
         }
 		internal IntPtr nativeAddedList {
-			set {
-				addedList = new List<ZitiService>();
-				foreach (IntPtr p in array_iterator(value)) {
-					ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
-					addedList.Add(svc);
-				}
-			}
+			set => addedList = createZitiServiceList(value);
 		}
 		internal IntPtr ziti_ctx { get; }
 		internal ZitiIdentity id;
@@ -516,6 +498,15 @@ namespace OpenZiti {
 
 				yield return zitiService;
 			}
+		}
+
+		private List<ZitiService> createZitiServiceList(IntPtr p) {
+			List<ZitiService> servicesList = new List<ZitiService>();
+			foreach (IntPtr p in array_iterator(p)) {
+				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+				servicesList.Add(svc);
+			}
+			return servicesList;
 		}
 
 		public IEnumerable<ZitiService> Removed() {
