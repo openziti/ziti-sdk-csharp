@@ -156,30 +156,59 @@ namespace OpenZiti
 
         private Dictionary<string, PostureQuerySet> getPostureQueryMap(ziti_service nativeService) {
 
-            Dictionary<string, PostureQuerySet> postureQMap = null;
+            Dictionary<string, PostureQuerySet> postureQMap = new Dictionary<string, PostureQuerySet>();
             if (nativeService.posture_query_map != IntPtr.Zero) {
                 model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
-                Console.WriteLine("model map size" + impl.size);
-                for (int i = 0; i < impl.size; i++) {
-                    IntPtr entries = impl.entries; // loop through entries
-                    model_map_entry entry = Marshal.PtrToStructure<model_map_entry>(entries);
-                    string policyId = Marshal.PtrToStringUTF8(entry.key);
-                    Console.WriteLine("model map key" + policyId);
-                    posture_query_set pqs = Marshal.PtrToStructure<posture_query_set>(entry.value);
-                    Console.WriteLine("pqs policy id" + pqs.policy_id);
-                    IntPtr pqArr = pqs.posture_queries;
-                    int arrayElementSize = Marshal.SizeOf(typeof(IntPtr));
-                    IntPtr currentArrLoc = pqArr;
-                    while ((currentArrLoc = Marshal.ReadIntPtr(pqArr)) != IntPtr.Zero) {
-                        posture_query pq = Marshal.PtrToStructure<posture_query>(currentArrLoc);
-
-                        Console.WriteLine("pq query type " + pq.query_type);
-                        if (pq.process != IntPtr.Zero) {
-                            ziti_process processs = Marshal.PtrToStructure<ziti_process>(pq.process);
-                            Console.WriteLine("process path " + processs.path);
+                int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+                int sizeOfPostuerQueryMap = impl.size;
+                Console.WriteLine("Posture Query map size : " + sizeOfPostuerQueryMap);
+                IntPtr entriesArr = impl.entries; // loop through entries
+                IntPtr currentEntryArrLoc;
+                for (int i = 0; i < sizeOfPostuerQueryMap; i++) {
+                    if (sizeOfPostuerQueryMap > 1) {
+                        entriesArr = IntPtr.Add(entriesArr, sizeOfPointer);
+                        currentEntryArrLoc = Marshal.ReadIntPtr(entriesArr);
+                        if (currentEntryArrLoc == IntPtr.Zero) {
+                            break;
                         }
-                        pqArr = IntPtr.Add(pqArr, arrayElementSize);
+                    } else {
+                        currentEntryArrLoc = entriesArr;
                     }
+
+                    model_map_entry entry = Marshal.PtrToStructure<model_map_entry>(currentEntryArrLoc);
+                    string policyId = Marshal.PtrToStringUTF8(entry.key);
+                    Console.WriteLine("Posture Query Policy Id : " + policyId);
+                    posture_query_set pqs = Marshal.PtrToStructure<posture_query_set>(entry.value);
+                    Console.WriteLine("PQS policy id : " + pqs.policy_id);
+                    IntPtr pqArr = pqs.posture_queries;
+                    IntPtr currentPQArrLoc = pqArr;
+                    PostureQuerySet pqSet = new PostureQuerySet();
+                    pqSet.PolicyId = pqs.policy_id;
+                    pqSet.IsPassing = pqs.is_passing;
+                    pqSet.PolicyType = pqs.policy_type;
+
+                    List<PostureQuery> postureQueriesList = new List<PostureQuery>();
+                    while ((currentPQArrLoc = Marshal.ReadIntPtr(pqArr)) != IntPtr.Zero) {
+                        posture_query pq = Marshal.PtrToStructure<posture_query>(currentPQArrLoc);
+                        PostureQuery postureQuery = new PostureQuery();
+
+                        Console.WriteLine("pq query type : " + pq.query_type);
+                        postureQuery.QueryType = pq.query_type;
+                        postureQuery.Id = pq.id;
+                        postureQuery.IsPassing = pq.is_passing; 
+                        if (pq.process != IntPtr.Zero) {
+                            ZitiProcess ziti_process = new ZitiProcess();
+                            ziti_process process = Marshal.PtrToStructure<ziti_process>(pq.process);
+                            ziti_process.Path = process.path;
+                            postureQuery.Process = ziti_process;
+                            Console.WriteLine("process path : " + process.path);
+                        }
+                        postureQueriesList.Add(postureQuery);
+                        pqArr = IntPtr.Add(pqArr, sizeOfPointer);
+                    }
+                    pqSet.PostureQueries = postureQueriesList.ToArray();
+                    postureQMap.Add(policyId, pqSet);
+
                 }
 
             }

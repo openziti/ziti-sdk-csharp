@@ -478,13 +478,13 @@ namespace OpenZiti {
 		private IEnumerable<IntPtr> array_iterator(IntPtr arr) {
 			int index = 0;
 			while (true) {
-				IntPtr removedService = Native.API.ziti_service_array_get(arr, index);
+				IntPtr zitiService = Native.API.ziti_service_array_get(arr, index);
 				index++;
-				if (removedService == IntPtr.Zero) {
+				if (zitiService == IntPtr.Zero) {
 					break;
 				}
 
-				yield return removedService;
+				yield return zitiService;
 			}
 		}
 
