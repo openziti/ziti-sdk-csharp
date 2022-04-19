@@ -73,6 +73,8 @@ namespace OpenZiti.Native {
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void on_mfa_cb(IntPtr ziti_context, int status, IntPtr ctx);
     // typedef void (*ziti_mfa_enroll_cb)(ziti_context ztx, int status, ziti_mfa_enrollment *mfa_enrollment, void *ctx);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void on_enable_mfa(IntPtr ziti_context, int status, IntPtr /* ziti_mfa_enrollment*/ enrollment, IntPtr ctx);
+    // typedef void (*ziti_mfa_recovery_codes_cb)(ziti_context ztx, int status, char **recovery_codes, void *ctx);
+    [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void on_mfa_recovery_codes(IntPtr ziti_context, int status, IntPtr /* string[] */ recovery_codes, IntPtr ctx);
     //typedef void (*ziti_event_cb)(ziti_context ztx, const ziti_event_t *event);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event);
     //typedef void (*ziti_close_cb)(ziti_connection conn);
@@ -218,6 +220,14 @@ namespace OpenZiti.Native {
         //defind in C: extern void ziti_mfa_remove(ziti_context ztx, char *code, ziti_mfa_cb verify_cb, void *ctx)
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_remove", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_mfa_remove(IntPtr ziti_context, string code, on_mfa_cb remove_cb, IntPtr ctx);
+
+        //defind in C: extern void ziti_mfa_get_recovery_codes(ziti_context ztx, char *code, ziti_mfa_recovery_codes_cb get_cb, void *ctx)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_get_recovery_codes", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_mfa_get_recovery_codes(IntPtr ziti_context, string code, on_mfa_recovery_codes get_recovery_codes_cb, IntPtr ctx);
+
+        //defind in C: extern void ziti_mfa_new_recovery_codes(ziti_context ztx, char *code, ziti_mfa_recovery_codes_cb new_cb, void *ctx)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_new_recovery_codes", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_mfa_new_recovery_codes(IntPtr ziti_context, string code, on_mfa_recovery_codes new_recovery_codes_cb, IntPtr ctx);
 
         //defined in C: char* gimme_string();
         [DllImport(Z4D_DLL_PATH, EntryPoint = "gimme_string", CallingConvention = CALL_CONVENTION)]

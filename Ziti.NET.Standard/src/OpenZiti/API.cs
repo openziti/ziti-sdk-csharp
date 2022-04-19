@@ -178,13 +178,21 @@ namespace OpenZiti {
         public static void RemoveMFA(ZitiIdentity zid, string code) {
             OpenZiti.Native.API.ziti_mfa_remove(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFARemove, MFA.GetMFAStatusDelegate(zid));
         }
+        public static void GetMFARecoveryCodes(ZitiIdentity zid, string code) {
+            OpenZiti.Native.API.ziti_mfa_get_recovery_codes(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(zid));
+        }
+
+        public static void GenerateMFARecoveryCodes(ZitiIdentity zid, string code) {
+            OpenZiti.Native.API.ziti_mfa_new_recovery_codes(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(zid));
+        }
     }
 
     public enum MFAOperationType {
         MFA_AUTH_STATUS,
         ENROLLMENT_VERIFICATION,
         ENROLLMENT_REMOVE,
-        ENROLLMENT_CHALLENGE
+        ENROLLMENT_CHALLENGE,
+        RECOVERY_CODES,
     }
 
     public struct MFAEnrollment {
@@ -247,6 +255,18 @@ namespace OpenZiti {
                 status = (ZitiStatus)status,
                 operationType = MFAOperationType.ENROLLMENT_REMOVE
             };
+            cb?.Invoke(evt);
+        }
+        internal static void AfterMFARecoveryCodes(IntPtr ziti_context, int status, IntPtr recoveryCodes, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.RECOVERY_CODES
+            };
+            if (recoveryCodes != IntPtr.Zero) {
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(recoveryCodes).ToArray();
+            }
             cb?.Invoke(evt);
         }
     }

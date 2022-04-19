@@ -32,35 +32,50 @@ namespace OpenZiti.Samples {
 
         internal static void OnZitiTunnelNextAction(object sender, ZitiCommand.NextAction action) {
             string mfacode;
+            string idName = (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile);
 
             switch (action.command) {
                 case 1: {
-                        Console.WriteLine("Enable MFA for the identity: " + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
+                        Console.WriteLine("Enable MFA for the identity: " + idName);
                         API.EnrollMFA(zitiInstance.Zid);
                         break;
                     }
                 case 2: {
-                        Console.WriteLine("Verify MFA for the identity" + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
+                        Console.WriteLine("Verify MFA for the identity" + idName);
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
                         API.VerifyMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 3: {
-                        Console.WriteLine("Remove MFA for the identity" + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
+                        Console.WriteLine("Remove MFA for the identity" + idName);
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
                         API.RemoveMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 4: {
-                        Console.WriteLine("Submit MFA for the identity " + (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile));
+                        Console.WriteLine("Submit MFA for the identity " + idName);
                         Console.WriteLine("Enter the mfa auth codo: ");
                         mfacode = Console.ReadLine();
                         API.SubmitMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
-                case 5:
+                case 5: {
+                        Console.WriteLine("Get MFA recovery codes for the identity " + idName);
+                        Console.WriteLine("Enter the mfa auth codo: ");
+                        mfacode = Console.ReadLine();
+                        API.GetMFARecoveryCodes(zitiInstance.Zid, mfacode);
+                        break;
+                    }
+                case 6: {
+                        Console.WriteLine("Generate MFA recovery codes for the identity " + idName);
+                        Console.WriteLine("Enter the mfa auth codo: ");
+                        mfacode = Console.ReadLine();
+                        API.GenerateMFARecoveryCodes(zitiInstance.Zid, mfacode);
+                        break;
+                    }
+                case 7:
                     if (zitiInstance.Zid?.IdentityNameFromController != null) {
                         Console.WriteLine("Dial First service in " + zitiInstance.Zid?.IdentityNameFromController);
                     } else {
