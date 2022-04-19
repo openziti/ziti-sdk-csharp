@@ -500,9 +500,9 @@ namespace OpenZiti {
 			}
 		}
 
-		private List<ZitiService> createZitiServiceList(IntPtr p) {
+		private List<ZitiService> createZitiServiceList(IntPtr nativeServiceArray) {
 			List<ZitiService> servicesList = new List<ZitiService>();
-			foreach (IntPtr p in array_iterator(p)) {
+			foreach (IntPtr p in array_iterator(nativeServiceArray)) {
 				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
 				servicesList.Add(svc);
 			}
