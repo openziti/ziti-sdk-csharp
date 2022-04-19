@@ -224,15 +224,7 @@ namespace OpenZiti {
             };
 
             if (ziti_mfa_enrollment.recovery_codes != IntPtr.Zero) {
-                // Could not fetch the size of the array from the intptr
-                IntPtr[] recoveryCodePointers = new IntPtr[20];
-                Marshal.Copy(ziti_mfa_enrollment.recovery_codes, recoveryCodePointers, 0, 20);
-                evt.recoveryCodes = new string[20];
-
-                for (int i = 0; i < 20; i++) {
-                    string value = Marshal.PtrToStringAnsi(recoveryCodePointers[i]);
-                    evt.recoveryCodes[i] = value;
-                }
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(ziti_mfa_enrollment.recovery_codes).ToArray();
             }
 
             cb?.Invoke(evt);
@@ -290,10 +282,17 @@ namespace OpenZiti {
         public static List<T> convertPointerToList(IntPtr arrayPointer) {
             IntPtr currentArrLoc;
             List<T> result = new List<T>();
-
             int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
             while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero) {
-                T objectT = Marshal.PtrToStructure<T>(currentArrLoc);
+                T objectT;
+                if (typeof(T) == typeof(String)) {
+                    objectT = (T)(object)Marshal.PtrToStringUTF8(currentArrLoc);
+                } else if (typeof(T).IsValueType && !typeof(T).IsPrimitive) {
+                    objectT = Marshal.PtrToStructure<T>(currentArrLoc);
+                } else {
+                    break;
+                }            
                 result.Add(objectT);
                 arrayPointer = IntPtr.Add(arrayPointer, sizeOfPointer);
             }
