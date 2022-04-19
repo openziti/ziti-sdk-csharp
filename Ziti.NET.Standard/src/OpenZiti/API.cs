@@ -291,7 +291,8 @@ namespace OpenZiti {
                 } else if (typeof(T).IsValueType && !typeof(T).IsPrimitive) {
                     objectT = Marshal.PtrToStructure<T>(currentArrLoc);
                 } else {
-                    break;
+                    // marshal operations for other types can be added here
+                    throw new ZitiException("Marshalling is not yet supported for " + typeof(T));
                 }            
                 result.Add(objectT);
                 arrayPointer = IntPtr.Add(arrayPointer, sizeOfPointer);
