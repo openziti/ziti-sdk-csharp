@@ -42,35 +42,35 @@ namespace OpenZiti.Samples {
                     }
                 case 2: {
                         Console.WriteLine("Verify MFA for the identity" + idName);
-                        Console.WriteLine("Enter the mfa auth codo: ");
+                        Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         API.VerifyMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 3: {
                         Console.WriteLine("Remove MFA for the identity" + idName);
-                        Console.WriteLine("Enter the mfa auth codo: ");
+                        Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         API.RemoveMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 4: {
                         Console.WriteLine("Submit MFA for the identity " + idName);
-                        Console.WriteLine("Enter the mfa auth codo: ");
+                        Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         API.SubmitMFA(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 5: {
                         Console.WriteLine("Get MFA recovery codes for the identity " + idName);
-                        Console.WriteLine("Enter the mfa auth codo: ");
+                        Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         API.GetMFARecoveryCodes(zitiInstance.Zid, mfacode);
                         break;
                     }
                 case 6: {
                         Console.WriteLine("Generate MFA recovery codes for the identity " + idName);
-                        Console.WriteLine("Enter the mfa auth codo: ");
+                        Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         API.GenerateMFARecoveryCodes(zitiInstance.Zid, mfacode);
                         break;
