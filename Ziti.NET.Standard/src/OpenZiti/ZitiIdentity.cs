@@ -448,6 +448,24 @@ namespace OpenZiti {
 				Logger.Debug("Created new config file {0}", this.InitOpts.IdentityFile);
 			}
 		}
+
+		public TransferMetrics GetTransferRates() {
+			PrimitiveWrapper<double> upIntPtrWrapper = new PrimitiveWrapper<double>();
+			PrimitiveWrapper<double> downIntPtrWrapper = new PrimitiveWrapper<double>();
+			OpenZiti.Native.API.ziti_get_transfer_rates(this.WrappedContext.nativeZitiContext, upIntPtrWrapper.Ptr, downIntPtrWrapper.Ptr);
+			double[] upMetrics = new double[1];
+			Marshal.Copy(upIntPtrWrapper.Ptr, upMetrics, 0, 1);
+			double[] downMetrics = new double[1];
+			Marshal.Copy(downIntPtrWrapper.Ptr, downMetrics, 0, 1);
+			TransferMetrics tm = new TransferMetrics();
+			tm.Up = upMetrics[0];
+			tm.Down = downMetrics[0];
+			return tm;
+		}
+	}
+	public struct TransferMetrics {
+		public double Up;
+		public double Down;
 	}
 
 	public class ZitiContextEvent {

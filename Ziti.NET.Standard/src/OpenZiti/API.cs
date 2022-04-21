@@ -305,6 +305,31 @@ namespace OpenZiti {
         }
 
     }
+    class PrimitiveWrapper<T> : IDisposable {
+        public IntPtr Ptr { get; private set; }
+
+        public PrimitiveWrapper() {
+            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+        }
+
+        ~PrimitiveWrapper() {
+            if (Ptr != IntPtr.Zero) {
+                Marshal.FreeHGlobal(Ptr);
+                Ptr = IntPtr.Zero;
+            }
+        }
+
+        public void Dispose() {
+            Marshal.FreeHGlobal(Ptr);
+            Ptr = IntPtr.Zero;
+            GC.SuppressFinalize(this);
+        }
+
+        public static implicit operator IntPtr(PrimitiveWrapper<T> w) {
+            return w.Ptr;
+        }
+
+    }
 
     class MarshalUtils<T> {
         public static List<T> convertPointerToList(IntPtr arrayPointer) {
@@ -399,4 +424,5 @@ namespace OpenZiti {
         internal uint key_hash;
         internal IntPtr value;
     }
+
 }
