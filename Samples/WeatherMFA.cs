@@ -167,7 +167,6 @@ namespace OpenZiti.Samples {
                         Console.WriteLine("Policy Id {0} of the service - {1} is passing : {2}", pqs.PolicyId, svc.Name, pqs.IsPassing);
                     }
                 }
-                var service = addedServices.First(s => s.Name == expected);
 
                 Options.InvokeNextCommand(supportedCommands);
             } catch (Exception ex) {
