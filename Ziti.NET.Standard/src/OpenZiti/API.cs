@@ -185,6 +185,14 @@ namespace OpenZiti {
         public static void GenerateMFARecoveryCodes(ZitiIdentity zid, string code) {
             OpenZiti.Native.API.ziti_mfa_new_recovery_codes(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(zid));
         }
+
+        public static void ZitiSetEnabled(ZitiIdentity zid, bool enabled) {
+            OpenZiti.Native.API.ziti_set_enabled(zid.WrappedContext.nativeZitiContext, enabled);
+        }
+
+        public static bool ZitiIsEnabled(ZitiIdentity zid) {
+            return OpenZiti.Native.API.ziti_is_enabled(zid.WrappedContext.nativeZitiContext);
+        }
     }
 
     public enum MFAOperationType {

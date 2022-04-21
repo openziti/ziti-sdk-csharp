@@ -205,29 +205,37 @@ namespace OpenZiti.Native {
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_service_get_raw_config", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr ziti_service_get_raw_config(IntPtr svc, string config_name);
 
-        //defind in C: extern void ziti_mfa_auth(ziti_context ztx, const char *code, ziti_mfa_cb auth_cb, void *ctx)
+        //defined in C: extern void ziti_mfa_auth(ziti_context ztx, const char *code, ziti_mfa_cb auth_cb, void *ctx)
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_auth", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_mfa_auth(IntPtr ziti_context, string code, on_mfa_cb status_cb, IntPtr status_ctx);
 
-        //defind in C: extern void ziti_mfa_enroll(ziti_context ztx, ziti_mfa_enroll_cb enroll_cb, void *ctx);
+        //defined in C: extern void ziti_mfa_enroll(ziti_context ztx, ziti_mfa_enroll_cb enroll_cb, void *ctx);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_enroll", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_mfa_enroll(IntPtr ziti_context, on_enable_mfa enroll_cb, IntPtr ctx);
 
-        //defind in C: extern void ziti_mfa_verify(ziti_context ztx, char *code, ziti_mfa_cb verify_cb, void *ctx)
+        //defined in C: extern void ziti_mfa_verify(ziti_context ztx, char *code, ziti_mfa_cb verify_cb, void *ctx)
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_verify", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_mfa_verify(IntPtr ziti_context, string code, on_mfa_cb verify_cb, IntPtr ctx);
 
-        //defind in C: extern void ziti_mfa_remove(ziti_context ztx, char *code, ziti_mfa_cb verify_cb, void *ctx)
+        //defined in C: extern void ziti_mfa_remove(ziti_context ztx, char *code, ziti_mfa_cb verify_cb, void *ctx)
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_remove", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_mfa_remove(IntPtr ziti_context, string code, on_mfa_cb remove_cb, IntPtr ctx);
 
-        //defind in C: extern void ziti_mfa_get_recovery_codes(ziti_context ztx, char *code, ziti_mfa_recovery_codes_cb get_cb, void *ctx)
+        //defined in C: extern void ziti_mfa_get_recovery_codes(ziti_context ztx, char *code, ziti_mfa_recovery_codes_cb get_cb, void *ctx)
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_get_recovery_codes", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_mfa_get_recovery_codes(IntPtr ziti_context, string code, on_mfa_recovery_codes get_recovery_codes_cb, IntPtr ctx);
 
-        //defind in C: extern void ziti_mfa_new_recovery_codes(ziti_context ztx, char *code, ziti_mfa_recovery_codes_cb new_cb, void *ctx)
+        //defined in C: extern void ziti_mfa_new_recovery_codes(ziti_context ztx, char *code, ziti_mfa_recovery_codes_cb new_cb, void *ctx)
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_mfa_new_recovery_codes", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_mfa_new_recovery_codes(IntPtr ziti_context, string code, on_mfa_recovery_codes new_recovery_codes_cb, IntPtr ctx);
+
+        // defined in C: extern void ziti_set_enabled(ziti_context ztx, bool enabled)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_set_enabled", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_set_enabled(IntPtr ziti_context, bool enabled);
+
+        //defined in C: extern bool ziti_is_enabled(ziti_context ztx)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_is_enabled", CallingConvention = CALL_CONVENTION)]
+        public static extern bool ziti_is_enabled(IntPtr ziti_context);
 
         //defined in C: char* gimme_string();
         [DllImport(Z4D_DLL_PATH, EntryPoint = "gimme_string", CallingConvention = CALL_CONVENTION)]
