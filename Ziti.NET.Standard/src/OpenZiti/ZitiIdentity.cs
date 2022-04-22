@@ -435,10 +435,8 @@ namespace OpenZiti {
 			await streamLock.WaitAsync().ConfigureAwait(false);
 		}
 
-		public void UpdateControllerUrlInConfigFile(string controller_url)
-		{
-			lock(_configFileLock)
-			{
+		public void UpdateControllerUrlInConfigFile(string controller_url) {
+			lock (_configFileLock) {
 				string bkpConfigFileName = this.InitOpts.IdentityFile + ".bak";
 				File.Move(this.InitOpts.IdentityFile, bkpConfigFileName);
 				Logger.Debug("Created backup config file {0}", bkpConfigFileName);
@@ -447,6 +445,37 @@ namespace OpenZiti {
 				File.WriteAllText(this.InitOpts.IdentityFile, json);
 				Logger.Debug("Created new config file {0}", this.InitOpts.IdentityFile);
 			}
+		}
+
+		public void SetEnabled(bool enabled) {
+			OpenZiti.Native.API.ziti_set_enabled(this.WrappedContext.nativeZitiContext, enabled);
+		}
+
+		public bool IsEnabled() {
+			return OpenZiti.Native.API.ziti_is_enabled(this.WrappedContext.nativeZitiContext);
+		}
+		public void SubmitMFA(string code) {
+			OpenZiti.Native.API.ziti_mfa_auth(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFASubmit, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void EnrollMFA() {
+			OpenZiti.Native.API.ziti_mfa_enroll(this.WrappedContext.nativeZitiContext, MFA.AfterMFAEnroll, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void VerifyMFA(string code) {
+			OpenZiti.Native.API.ziti_mfa_verify(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFAVerify, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void RemoveMFA(string code) {
+			OpenZiti.Native.API.ziti_mfa_remove(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARemove, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void GetMFARecoveryCodes(string code) {
+			OpenZiti.Native.API.ziti_mfa_get_recovery_codes(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void GenerateMFARecoveryCodes(string code) {
+			OpenZiti.Native.API.ziti_mfa_new_recovery_codes(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(this));
 		}
 
 		public TransferMetrics GetTransferRates() {

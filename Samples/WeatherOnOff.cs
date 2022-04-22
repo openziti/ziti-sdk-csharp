@@ -54,19 +54,19 @@ namespace OpenZiti.Samples {
                     break;
                 case 8: {
                         Console.WriteLine("Enable identity: " + idName);
-                        API.ZitiSetEnabled(zitiInstance.Zid, true);
+                        zitiInstance.Zid.SetEnabled(true);
                         Console.WriteLine("Identity {0} is enabled", idName);
                         break;
                     }
                 case 9: {
                         Console.WriteLine("Disable identity" + idName);
-                        API.ZitiSetEnabled(zitiInstance.Zid, false);
+                        zitiInstance.Zid.SetEnabled(false);
                         Console.WriteLine("Identity {0} is disabled", idName);
                         break;
                     }
                 case 10: {
                         Console.WriteLine("Check identity enabled status" + idName);
-                        bool idStatus = API.ZitiIsEnabled(zitiInstance.Zid);
+                        bool idStatus = zitiInstance.Zid.IsEnabled();
                         Console.WriteLine("Status of Identity : {0}", idStatus);
                         Options.InvokeNextCommand(supportedCommands);
                         break;
