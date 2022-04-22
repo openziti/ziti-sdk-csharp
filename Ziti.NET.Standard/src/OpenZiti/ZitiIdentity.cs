@@ -423,6 +423,22 @@ namespace OpenZiti {
 		public async Task WaitForServices() {
 			await streamLock.WaitAsync().ConfigureAwait(false);
 		}
+
+		public void SubmitMFA(string code) {
+			OpenZiti.Native.API.ziti_mfa_auth(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFASubmit, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void EnrollMFA() {
+			OpenZiti.Native.API.ziti_mfa_enroll(this.WrappedContext.nativeZitiContext, MFA.AfterMFAEnroll, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void VerifyMFA(string code) {
+			OpenZiti.Native.API.ziti_mfa_verify(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFAVerify, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void RemoveMFA(string code) {
+			OpenZiti.Native.API.ziti_mfa_remove(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARemove, MFA.GetMFAStatusDelegate(this));
+		}
 	}
 
 	public class ZitiContextEvent {

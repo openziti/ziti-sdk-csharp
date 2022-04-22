@@ -11,8 +11,9 @@ namespace OpenZiti {
         public ZitiIdentity Zid;
         public Dictionary<string, ZitiService> Services;
 
-        public void Initialize() {
-            Services = new Dictionary<string, ZitiService>();
+        public void Initialize(ZitiIdentity zid) {
+            this.Zid = zid;
+            this.Services = new Dictionary<string, ZitiService>();
         }
     }
 
