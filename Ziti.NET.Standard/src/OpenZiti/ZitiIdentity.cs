@@ -448,6 +448,14 @@ namespace OpenZiti {
 				Logger.Debug("Created new config file {0}", this.InitOpts.IdentityFile);
 			}
 		}
+
+		public void SetEnabled(bool enabled) {
+			OpenZiti.Native.API.ziti_set_enabled(this.WrappedContext.nativeZitiContext, enabled);
+		}
+
+		public bool IsEnabled() {
+			return OpenZiti.Native.API.ziti_is_enabled(this.WrappedContext.nativeZitiContext);
+		}
 	}
 
 	public class ZitiContextEvent {
