@@ -75,7 +75,7 @@ namespace OpenZiti.Samples {
                         Console.WriteLine("Submit MFA for the identity " + idName);
                         Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
-                        API.SubmitMFA(zitiInstance.Zid, mfacode);
+                        zitiInstance.Zid.SubmitMFA(mfacode);
                         break;
                     }
                 case 0:
@@ -89,7 +89,6 @@ namespace OpenZiti.Samples {
 
         public static void Run(string identityFile) {
             Options.OnNextAction += OnZitiTunnelNextAction;
-            zitiInstance.Initialize();
             Object eventFlags = ZitiEventFlags.All;
 
             ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
@@ -104,7 +103,7 @@ namespace OpenZiti.Samples {
             opts.OnZitiMFAStatusEvent += Opts_OnZitiMFAStatusEvent;
 
             ZitiIdentity zid = new ZitiIdentity(opts);
-            zitiInstance.Zid = zid;
+            zitiInstance.Initialize(zid);
             zid.Run();
             Console.WriteLine("=================LOOP IS COMPLETE=================");
         }
@@ -160,12 +159,12 @@ namespace OpenZiti.Samples {
         }
 
         private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e) {
-            string nameOfId = (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile);
+            string nameOfId = (e.id.IdentityNameFromController != null ? e.id.IdentityNameFromController : e.id.InitOpts.IdentityFile);
             Console.WriteLine("MFA Auth requested for identity {0}", nameOfId);
             Console.WriteLine("Enter the mfa auth codo: ");
             string mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", nameOfId, mfacode);
-            API.SubmitMFA(zitiInstance.Zid, mfacode);
+            e.id.SubmitMFA(mfacode);
         }
 
         private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e) {
