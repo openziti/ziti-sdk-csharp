@@ -163,21 +163,6 @@ namespace OpenZiti {
             Native.API.z4d_uv_run(DefaultLoop.nativeUvLoop);
         }
 
-        public static void SubmitMFA(ZitiIdentity zid, string code) {
-            OpenZiti.Native.API.ziti_mfa_auth(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFASubmit, MFA.GetMFAStatusDelegate(zid));
-        }
-
-        public static void EnrollMFA(ZitiIdentity zid) {
-            OpenZiti.Native.API.ziti_mfa_enroll(zid.WrappedContext.nativeZitiContext, MFA.AfterMFAEnroll, MFA.GetMFAStatusDelegate(zid));
-        }
-
-        public static void VerifyMFA(ZitiIdentity zid, string code) {
-            OpenZiti.Native.API.ziti_mfa_verify(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFAVerify, MFA.GetMFAStatusDelegate(zid));
-        }
-
-        public static void RemoveMFA(ZitiIdentity zid, string code) {
-            OpenZiti.Native.API.ziti_mfa_remove(zid.WrappedContext.nativeZitiContext, code, MFA.AfterMFARemove, MFA.GetMFAStatusDelegate(zid));
-        }
     }
 
     public enum MFAOperationType {
