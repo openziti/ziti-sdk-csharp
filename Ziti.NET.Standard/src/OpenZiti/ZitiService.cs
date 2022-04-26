@@ -62,6 +62,8 @@ namespace OpenZiti
         private OnZitiDataReceived onData;
         private OnZitiListening listenCallback;
         private OnZitiClientConnected onClientConnected;
+        private Native.ziti_data_cb dataCB = null;
+        private Native.ziti_conn_cb connCB = null;
 
         internal ZitiService(ZitiIdentity id, ZitiContext context, IntPtr ziti_service)
         {
@@ -70,6 +72,15 @@ namespace OpenZiti
             this.nativeServicePointer = ziti_service;
             nativeService = Marshal.PtrToStructure<ziti_service>(ziti_service);
             this.PostureQueryMap = getPostureQueryMap(nativeService);
+        }
+
+        ~ZitiService() {
+            if (dataCB != null) {
+                GC.KeepAlive(dataCB);
+            }
+            if (connCB != null) {
+                GC.KeepAlive(connCB);
+            }
         }
 
         /// <summary>
@@ -89,7 +100,9 @@ namespace OpenZiti
             this.onData = onData;
             ZitiConnection conn = new ZitiConnection(this, zitiContext, "this is context in my connection");
             this.conn = conn;
-            Native.API.ziti_dial(conn.nativeConnection, Name, conn_cb, data_cb);
+            dataCB = data_cb;
+            connCB = conn_cb;
+            Native.API.ziti_dial(conn.nativeConnection, Name, connCB, dataCB);
         }
 
         /// <summary>

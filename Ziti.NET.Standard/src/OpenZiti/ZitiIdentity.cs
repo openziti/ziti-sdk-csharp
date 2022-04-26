@@ -150,7 +150,7 @@ namespace OpenZiti {
 		}
 
 		public async Task RunAsync(int refreshInterval) {
-			Configure(refreshInterval); //use default refresh interval if not supplied
+			Native.ziti_options ziti_opts = Configure(refreshInterval); //use default refresh interval if not supplied
 
 			if (this.IsRunning) {
 				throw new System.InvalidOperationException("The identity is already running");
@@ -158,9 +158,10 @@ namespace OpenZiti {
 			
 			new Thread(() => Native.API.z4d_uv_run(Loop.nativeUvLoop)).Start();
 			await runlock.WaitAsync().ConfigureAwait(false);
+			GC.KeepAlive(ziti_opts);
 		}
 
-		public void Configure(int refreshInterval) {
+		public Native.ziti_options Configure(int refreshInterval) {
 			Native.API.ziti_log_init(Loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(API.NativeLogger));
 			IntPtr cfgs = Native.NativeHelperFunctions.ToPtr(InitOpts.ConfigurationTypes);
 
@@ -183,6 +184,7 @@ namespace OpenZiti {
 			if (result != 0) {
 				throw new ZitiException("Could not initialize the connection using the given ziti options.");
 			}
+			return ziti_opts;
 		}
 
 		public void Shutdown() {
@@ -217,7 +219,6 @@ namespace OpenZiti {
 						name = zid.name;
 						this.IdentityNameFromController = zid.name;
 					}
-
 
 					ZitiContextEvent evt = new ZitiContextEvent() {
 						Name = name,
