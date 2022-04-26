@@ -72,15 +72,9 @@ namespace OpenZiti
             this.nativeServicePointer = ziti_service;
             nativeService = Marshal.PtrToStructure<ziti_service>(ziti_service);
             this.PostureQueryMap = getPostureQueryMap(nativeService);
-        }
-
-        ~ZitiService() {
-            if (dataCB != null) {
-                GC.KeepAlive(dataCB);
-            }
-            if (connCB != null) {
-                GC.KeepAlive(connCB);
-            }
+            // NOTE: Keep delegates references so they will not be garbage collected, before ziti service is shutdown
+            dataCB = data_cb;
+            connCB = conn_cb;
         }
 
         /// <summary>
@@ -100,8 +94,6 @@ namespace OpenZiti
             this.onData = onData;
             ZitiConnection conn = new ZitiConnection(this, zitiContext, "this is context in my connection");
             this.conn = conn;
-            dataCB = data_cb;
-            connCB = conn_cb;
             Native.API.ziti_dial(conn.nativeConnection, Name, connCB, dataCB);
         }
 
