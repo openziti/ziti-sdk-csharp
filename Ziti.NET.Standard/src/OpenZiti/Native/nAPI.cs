@@ -88,7 +88,6 @@ namespace OpenZiti.Native {
         public const string Z4D_DLL_PATH = @"ziti4dotnet";
         //public const string Z4D_DLL_PATH = @"c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\x86\library\Debug\ziti4dotnet.dll";
 
-
         [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_default_loop", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr z4d_default_loop();
 
