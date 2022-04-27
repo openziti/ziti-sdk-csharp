@@ -68,7 +68,8 @@ namespace OpenZiti.Samples {
                     }
                 case 13: {
                         Console.WriteLine("Ziti Dump To File for identity {0}", idName);
-                        string fileName = "C:\\Users\\marydcouto\\NF\\work\\dump\\" + idName + ".ziti"; 
+                        // folder should be created before running the program
+                        string fileName = "C:\\tmp\\" + idName + ".ziti"; 
                         zitiInstance.Zid.ZitiDumpToFile(fileName);
                         Options.InvokeNextCommand(supportedCommands);
                         break;
