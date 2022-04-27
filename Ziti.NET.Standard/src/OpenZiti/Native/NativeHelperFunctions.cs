@@ -36,6 +36,11 @@ namespace OpenZiti.Native {
         [DllImport(API.Z4D_DLL_PATH, CallingConvention = API.CALL_CONVENTION)]
         internal static extern void test_ziti_opts(IntPtr opts);
 
+        [DllImport(API.Z4D_DLL_PATH, CallingConvention = API.CALL_CONVENTION)]
+        internal static extern void z4d_ziti_dump_log(IntPtr ziti_context);
+        [DllImport(API.Z4D_DLL_PATH, CallingConvention = API.CALL_CONVENTION)]
+        internal static extern void z4d_ziti_dump_file(IntPtr ziti_context, string outputFile);
+
         internal static IntPtr ToPtr(string[] array) {
             if (array == null || array.Length == 0) {
                 return IntPtr.Zero;

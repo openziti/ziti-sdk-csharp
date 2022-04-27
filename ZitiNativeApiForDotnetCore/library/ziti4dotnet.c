@@ -9,6 +9,8 @@
 #define strdup _strdup
 #endif
 
+#define MAXBUFFERLEN 4096
+
 int z4d_ziti_close(ziti_connection con) {
     return 0;
     //return ziti_close(&con);
@@ -86,4 +88,67 @@ int ziti_context_event_status(const ziti_event_t* e) {
     else {
         return 0;
     }
+}
+
+typedef int (*printer)(void* arg, const char* fmt, ...);
+
+static int ziti_dump_to_log_op(void* stringsBuilder, const char* fmt, ...) {
+    static char line[4096];
+
+    va_list vargs;
+    va_start(vargs, fmt);
+    vsnprintf(line, sizeof(line), fmt, vargs);
+    va_end(vargs);
+
+    if (strlen(stringsBuilder) + strlen(line) > MAXBUFFERLEN) {
+        return -1;
+    }
+    // write/append to the buffer
+    strncat(stringsBuilder, line, sizeof(line));
+    return 0;
+}
+
+static int ziti_dump_to_file_op(void* fp, const char* fmt, ...) {
+    static char line[4096];
+
+    va_list vargs;
+    va_start(vargs, fmt);
+    // write/append to file
+    vfprintf(fp, fmt, vargs);
+    va_end(vargs);
+
+    return 0;
+}
+
+void z4d_ziti_dump_log(ziti_context ztx) {
+    char* buffer;
+    buffer = malloc(MAXBUFFERLEN * sizeof(char));
+    buffer[0] = 0;
+    ziti_dump(ztx, (printer)ziti_dump_to_log_op, buffer);
+    ZITI_LOG(INFO, "ziti dump to log %s", buffer);
+    free(buffer);
+}
+
+void z4d_ziti_dump_file(ziti_context ztx, const char* outputFile) {
+    FILE* fp;
+    fp = fopen(outputFile, "w+");
+    if (fp == NULL)
+    {
+        ZITI_LOG(ERROR, "ziti dump to file failed. Unable to Read / Write / Create File");
+        return;
+    }
+    uv_timeval64_t dump_time;
+    uv_gettimeofday(&dump_time);
+
+    char time_str[32];
+    struct tm* start_tm = gmtime(&dump_time.tv_sec);
+    strftime(time_str, sizeof(time_str), "%a %b %d %Y, %X %p", start_tm);
+
+    fprintf(fp, "Ziti Dump starting: %s\n", time_str);
+
+    //actually invoke ziti_dump here
+    ziti_dump(ztx, (printer)ziti_dump_to_file_op, fp);
+
+    fflush(fp);
+    fclose(fp);
 }

@@ -250,9 +250,6 @@ namespace OpenZiti.Native {
         public static extern IntPtr gimme_string_intptr();
 
         /*
-        //defined in C: extern void ziti_dump(ziti_context ztx);
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_dump")]
-        public static extern int ziti_dump(IntPtr native_context);
 
         //defined in C: extern void *ziti_conn_data(ziti_connection conn);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_data")]

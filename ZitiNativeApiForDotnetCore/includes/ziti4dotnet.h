@@ -34,6 +34,8 @@ Z4D_API char** make_char_array(int size);
 Z4D_API void set_char_at(char **a, char *s, int n);
 Z4D_API void free_char_array(char **a, int size);
 
+Z4D_API void z4d_ziti_dump_log(ziti_context ztx);
+Z4D_API void z4d_ziti_dump_file(ziti_context ztx, const char* outputFile);
 
 #ifdef __cplusplus
 }

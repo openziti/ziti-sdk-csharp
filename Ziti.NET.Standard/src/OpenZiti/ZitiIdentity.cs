@@ -495,6 +495,13 @@ namespace OpenZiti {
 		public void EndpointStateChange(bool woken, bool unlocked) {
 			OpenZiti.Native.API.ziti_endpoint_state_change(this.WrappedContext.nativeZitiContext, woken, unlocked);
 		}
+
+		public void ZitiDumpToLog() {
+			OpenZiti.Native.NativeHelperFunctions.z4d_ziti_dump_log(this.WrappedContext.nativeZitiContext);
+		}
+		public void ZitiDumpToFile(string fileName) {
+			OpenZiti.Native.NativeHelperFunctions.z4d_ziti_dump_file(this.WrappedContext.nativeZitiContext, fileName);
+		}
 	}
 	public struct TransferMetrics {
 		public double Up;
