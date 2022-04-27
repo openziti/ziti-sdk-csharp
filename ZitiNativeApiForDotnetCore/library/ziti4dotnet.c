@@ -125,7 +125,7 @@ void z4d_ziti_dump_log(ziti_context ztx) {
     buffer = malloc(MAXBUFFERLEN * sizeof(char));
     buffer[0] = 0;
     ziti_dump(ztx, (printer)ziti_dump_to_log_op, buffer);
-    ZITI_LOG(INFO, "ziti dump to log %s", buffer);
+    printf("ziti dump to log %s", buffer);
     free(buffer);
 }
 
@@ -134,7 +134,7 @@ void z4d_ziti_dump_file(ziti_context ztx, const char* outputFile) {
     fp = fopen(outputFile, "w+");
     if (fp == NULL)
     {
-        ZITI_LOG(ERROR, "ziti dump to file failed. Unable to Read / Write / Create File");
+        printf("ziti dump to file failed. Unable to Read / Write / Create File");
         return;
     }
     uv_timeval64_t dump_time;

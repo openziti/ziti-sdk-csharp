@@ -63,12 +63,14 @@ namespace OpenZiti.Samples {
                 case 12: {
                         Console.WriteLine("Ziti Dump To Log for identity {0}", idName);
                         zitiInstance.Zid.ZitiDumpToLog();
+                        Options.InvokeNextCommand(supportedCommands);
                         break;
                     }
                 case 13: {
                         Console.WriteLine("Ziti Dump To File for identity {0}", idName);
                         string fileName = "C:\\Users\\marydcouto\\NF\\work\\dump\\" + idName + ".ziti"; 
                         zitiInstance.Zid.ZitiDumpToFile(fileName);
+                        Options.InvokeNextCommand(supportedCommands);
                         break;
                     }
                 case 0:
