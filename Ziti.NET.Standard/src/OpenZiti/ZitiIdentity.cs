@@ -150,7 +150,7 @@ namespace OpenZiti {
 		}
 
 		public async Task RunAsync(int refreshInterval) {
-			Native.ziti_options ziti_opts = Configure(refreshInterval); //use default refresh interval if not supplied
+			ZitiOptions zitiOptions = Configure(refreshInterval); //use default refresh interval if not supplied
 
 			if (this.IsRunning) {
 				throw new System.InvalidOperationException("The identity is already running");
@@ -158,10 +158,10 @@ namespace OpenZiti {
 			
 			new Thread(() => Native.API.z4d_uv_run(Loop.nativeUvLoop)).Start();
 			await runlock.WaitAsync().ConfigureAwait(false);
-			GC.KeepAlive(ziti_opts);
+			GC.KeepAlive(zitiOptions);
 		}
 
-		public Native.ziti_options Configure(int refreshInterval) {
+		public ZitiOptions Configure(int refreshInterval) {
 			Native.API.ziti_log_init(Loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(API.NativeLogger));
 			IntPtr cfgs = Native.NativeHelperFunctions.ToPtr(InitOpts.ConfigurationTypes);
 
@@ -184,7 +184,9 @@ namespace OpenZiti {
 			if (result != 0) {
 				throw new ZitiException("Could not initialize the connection using the given ziti options.");
 			}
-			return ziti_opts;
+			return new ZitiOptions() {
+				NativeZitiOptions = ziti_opts
+			};
 		}
 
 		public void Shutdown() {
@@ -615,4 +617,8 @@ namespace OpenZiti {
 		public const int ZitiMfaAuthEvent = 1 << 3;
 		public const int ZitiAPIEvent = 1 << 4;
 	}
+
+	public struct ZitiOptions {
+		internal Native.ziti_options NativeZitiOptions;
+    }
 }
