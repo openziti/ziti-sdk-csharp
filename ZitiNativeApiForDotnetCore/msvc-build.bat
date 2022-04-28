@@ -44,7 +44,8 @@ ECHO.
 ECHO Or open %BUILDFOLDER%\ziti-sdk.sln
 
 REM install nuget
-REM SET NUGET_PATH=%CSDK_HOME%..\NUGET
+REM SET NUGET_PATH=%CSDK_HOME%..\NuGet
+REM mkdir %NUGET_PATH%
 REM nuget pack %CSDK_HOME%..\native-package.nuspec -Version 0.26.29 -OutputDirectory %CSDK_HOME%
 REM nuget push -source %NUGET_PATH% %CSDK_HOME%Ziti.NET.Standard.native.0.26.29.nupkg
 
