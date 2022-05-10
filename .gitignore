@@ -6,3 +6,5 @@ NuGet
 nuget-local
 dotnet-install.sh
 *.nupkg
+ZitiNativeApiForDotnetCore/library/ziti-exports.txt
+ZitiNativeApiForDotnetCore/library/ziti.dll

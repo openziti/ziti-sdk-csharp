@@ -1,5 +1,9 @@
 requires cmake to build the native libary...
 
+mkdir build
+cd build
+cmake ..
+cmake --build .
 
 the .def file is not part of the build... update it with:
 cd ZitiNativeApiForDotnetCore

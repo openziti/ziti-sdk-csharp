@@ -17,7 +17,7 @@ int z4d_ziti_close(ziti_connection con) {
 }
 
 int z4d_uv_run(void* loop) {
-    ZITI_LOG(TRACE, "running loop with address: %p", loop);
+    ZITI_LOG(DEBUG, "running loop with address: %p", loop);
     return uv_run(loop, UV_RUN_DEFAULT);
 }
 

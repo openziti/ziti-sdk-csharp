@@ -16,12 +16,12 @@ namespace OpenZiti.Samples {
                 //API.NativeLogger = API.DefaultNativeLogFunction;
 
                 Console.Clear();
-
+                args = new[] {"enroll", @"c:\temp\id.jwt" };
                 if (args == null || args.Length < 2) {
 	                Console.WriteLine("This app requires two parameters to be supplied. {exampleToRun=eth0|weather|enroll|hosted} {path-to-identity-file}");
 	                return;
                 }
-
+                
                 string identityFile = args[1];
                 switch (args[0].ToLower()) {
                     case "eth0":
