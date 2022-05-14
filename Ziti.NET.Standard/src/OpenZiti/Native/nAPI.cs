@@ -305,6 +305,21 @@ namespace OpenZiti.Native {
 
         #endregion
 
+        internal static IntPtr ToPtr(string[] array)
+        {
+	        if (array == null || array.Length == 0)
+	        {
+		        return IntPtr.Zero;
+	        }
+	        IntPtr arr = API.z4d_make_char_array(array.Length);
+	        int idx = 0;
+	        foreach (string s in array)
+	        {
+		        API.z4d_set_char_at(arr, s, idx++);
+	        }
+
+	        return arr;
+        }
     }
 
 #pragma warning disable 0649

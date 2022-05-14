@@ -1,96 +1,79 @@
 # ziti-sdk-csharp
 
-An C#-based SDK to access Ziti 
+An dotnet SDK written using C# to provide dotnet the ability to use Ziti natively
 
 ## Overview of the Code
+
+### Native NuGet Package
 
 The Ziti .NET SDK is written in C# and around the [C SDK](https://github.com/openziti/ziti-sdk-c). The .NET SDK requires a "native" nuget package
 to be built and published. Publishing the native package is handled by GitHub actions. If you are interested in learning how the native library is
 built, see the [github action file](.github/workflows/native-nuget-publish.yml). Publishing the package is somewhat complex.  The package is
 built using a [cmake](https://cmake.org/) project found at the root of this project in a folder named ZitiNativeApiForDotnetCore. You can look
-through that project for more detailed infromation.
+through that project and [read the readme](./ZitiNativeApiForDotnetCore/README.md) for more detailed information. Building a cross-platform dotnet
+library is somewhat complicated and painful.
 
-The ZitiNativeApiForDotnetCore project will 
+### NuGet Package for the dotnet SDK
 
-and requires a native library for your target platform of choice.
-Building this library for all platforms is complex. There is a [cmake](https://cmake.org/) project at the root of the checkout named:
-ZitiNativeApiForDotnetCore. This project must be built in o
+The project also provides [a solution file](./Ziti.NuGet.sln) which is designed to create the actual dependency you would add to your dotnet
+project. This package will provide idiomatic dotnet functions for use in your own project. Functions are expected to be async-first. If you
+discover a function that is not async-enabled please file an issue and we'll address.
 
-## Add Links to the Native Libraries
+### Samples
 
-This project uses a native library for most of the work communicating to ziti. When you are consuming the nuget pagage - this is all packaged up
-for you. However if you are trying to do development of the c# sdk itself you'll need to build these native libraries yourself. This can be done
-easily if you have experience with cmake. The ZitiNativeApiForDotnetCore folder contains a CMakeLists.txt file which can be used to build these
-native libraries as well as a bat file that makes it easier to build in the expected mannor. 
+The project provides [a solution file](./Ziti.Samples.sln) which contains a suite of samples which you can inspect and draw inspiration
+from.
 
-To prepare for building the nuget package - cd to ZitiNativeApiForDotnetCore and run `msvc-build.bat` from a Visual Studio 2019 command prompt.
-After it completes you should see output similar to:
+## For Project Developers
 
+If you're cloning this package with the intention to make a fix or to update the C SDK used, here's a quick punchlist of things you will
+want to review and understand before really digging in. This will take you through just the bullet points of what you need to do to make
+sure you can develop/test/debug. 
+
+Things you should do/understand:
+
+* Build the native project for x64
+* **If** you're using Windows, also build the native project for x86
+* Package the native dlls into a nuget package. This boils down to putting the dll for YOUR operating system into the proper location,
+  edit [the nuspec](./native-package.nuspec) and hack out the lines you don't want (or better copy that nuspec to a different one you
+  don't end up committing). then package it, and publish it to a **local** NuGet repo path and use it locally.
+  * Once you're ready and you think the native project is "correct" - you should push just the relevant changes and let 
+    [the GitHub Action](https://github.com/openziti/ziti-sdk-csharp/actions/workflows/native-nuget-publish.yml) publish the latest 
+    native nuget package. 
+  * Pull and use the latest native nuget package
+* Assuming you have 'the latest' nuget package - adapt the C# SDk code and write **IDIOMATIC** C# for the API.
+* Once the **IDIOMATIC** C# API exists, publish the Ziti.NET.Standard version to your **LOCAL** NuGet repo.
+  * Run `dotnet build` to build and publish the project. Make sure you supply the variable named "LOCAL_NUGET_ROOT". It is used to contro
+    where on your disk your **LOCAL** nuget repo is. This build will **ALSO** build both x86 and x64 for you.
+    ```
+    dotnet build Ziti.NET.Standard\Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release;LOCAL_NUGET_ROOT=c:/temp/
+    ```
+* Open Ziti.Samples.sln and update the Ziti.NET.Standard version to use your latest version from local
+* Develop one or more samples which illustrate the usage of the SDK. 
+* Once happy with the samples, push back to GitHub, merge to a release branch/tag/main and let GitHub publish the package to NuGet central
+* Once verified and published on NuGet, update the Ziti.Samples.sln with the **ACTUAL** deployed value for Ziti.NET.Standard
+* Test on Windows x86, x64, linux, MacOS - or hopefully we write (wrote?) automated tests to do this
+
+### Build and Package the NuGet Native Project
+
+See [the readme](./ZitiNativeApiForDotnetCore/README.md) for details on how to build the native NuGet package. You need to be able
+to deploy a local version of the native NuGet package if you want to verify your code will work before trying to push fixes.
+
+### Package the dotnet Project
+
+The [project](./Ziti.NET.Standard/) has a target within it which should make it trivial for you to build the dotnet NuGet package. To do so
+simply issue
 ```
-Build from cmake using:
-    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x86 --config Debug
-    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x86 --config Release
-
-    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x64 --config Debug
-    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x64 --config Release
+    dotnet build Ziti.NET.Standard\Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release;LOCAL_NUGET_ROOT=c:/temp/
 ```
 
-You'll likely want to just build the Release libraries but you can use Debug if you like but you'll have to update any references to the .dlls.
+This will subsequently issue `dotnet build` commands to build the project as x86, x64, as well as "Any CPU". It will then issue `nuget push`
+and will push your freshly built .nupkg into the location specified by the properly `LOCAL_NUGET_ROOT=`.
 
-Once built - the project will expect these libraries to be at:
+### TestProject
 
-* ZitiNativeApiForDotnetCore\build-win\x86\library\Release\ziti4dotnet.dll
-* ZitiNativeApiForDotnetCore\build-win\x64\library\Release\ziti4dotnet.dll
-
-If the C SDK changes and you need to export additional functions with ziti4dotnet.dll you will need to rerun defgen after building the C SDK and the
-you'll want to rebuild the ziti4dotnet.dll libs for x86 and x64. You "should" only have to run defgen one time to generate the proper files for the
-dll to be built correctly. The ZitiNativeApiForDotnetCore\library\CMakeLists.txt file will refer to ziti.def and is what allows the static functions
-to be exported by the resultant dll.
-
-```
-cd ZitiNativeApiForDotnetCore
-defgen 32 build-win\x86\_deps\ziti-sdk-c-build\library\Release\ziti.dll
-```
-
-## Build the Ziti.NuGet.sln Project
-
-Open Ziti.NuGet.sln or use msbuild (`msbuild Ziti.NuGet.sln`) to build the project. The output from within visual studio looks like this:
-
-    1>------ Build started: Project: Ziti.NET.Standard, Configuration: Release Any CPU ------
-    1>Ziti.NET.Standard -> C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\netcoreapp2.0\Ziti.NET.Standard.dll
-    1>Ziti.NET.Standard -> C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\net472\Ziti.NET.Standard.dll
-    1>Ziti.NET.Standard -> C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\netstandard2.0\Ziti.NET.Standard.dll
-    1>Successfully created package 'C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\Ziti.NET.Standard.0.0.19.nupkg'.
-    ========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
-
-## Build the NuGet Package
-
-Consuming native artifacts from C# is sometimes tedious. As you may have noted above the Ziti.NET.Standard project will build a nupkg when it builds.
-If you add that package to a local NuGet repository it makes consuming the C# SDK much easier as the native libraries will be added to the proejct
-correctly and should "just work"
-
-Here's how you would make your own local NuGet repository on your developer machine:
-
-* open a command prompt
-* set some environment variables:
-** SET NUGET_PATH=C:\git\github\ziti-sdk-csharp\NuGet
-** SET VERSION=0.5.16  REM Or whatever the version is built - see the version of the Ziti.NET.Standard project
-* Make a local nuget repo: `mkdir %NUGET_PATH%`
-* Push the package into the local repo: `nuget push -source %NUGET_PATH% Ziti.NET.Standard\bin\Release\Ziti.NET.Standard.%VERSION%.nupkg`
-
-You should see output like:
-
-    Pushing Ziti.NET.Standard.0.0.19.nupkg to 'C:\git\github\ziti-sdk-csharp\NuGet'...
-    Your package was pushed.
-
-## Using the C# SDK
-
-You can choose to use the latest version of the C# SDK which NetFoundry has published on nuget.org or you can 
-work with the C# SDK you built and deployed to your own NuGet local repository. Open the example 
-solution: Ziti.Core.Example.sln. In there is one project - Ziti.Core.Console. 
-
-This is a sample application that allows you to make an http request to a website (http://wttr.in) to return 
-a weather forcast.  After getting the project to build you'll want to run it. If you have access to a Ziti network
-this will be easy. If you are not familiar with Ziti and need to create this service. Check out the docs 
-over at https://nf-dev.github.io/ziti-doc/samples/index.html?tabs=csharp
+Another project is included in the [Ziti.NuGet.sln](./Ziti.NuGet.sln) is [TestProject](./TestProject). This project **should** contain
+**linked** .cs files from the [Ziti.NET.Standard](./Ziti.NET.Standard) project. Any new .cs files should be part of the project that 
+produces the nuget package and only **linked** in TestProject.  TestProject is then able to be a playground to verify your changes
+are functioning as expected.
 

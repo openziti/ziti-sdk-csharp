@@ -35,7 +35,6 @@
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Logging.cs" Link="src\OpenZiti\Logging.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Native\IdentityFile.cs" Link="src\OpenZiti\native\IdentityFile.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Native\nAPI.cs" Link="src\OpenZiti\native\nAPI.cs" />
-    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\Native\NativeHelperFunctions.cs" Link="src\OpenZiti\native\NativeHelperFunctions.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\UVLoop.cs" Link="src\OpenZiti\UVLoop.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiConnection.cs" Link="src\OpenZiti\ZitiConnection.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiContext.cs" Link="src\OpenZiti\ZitiContext.cs" />
@@ -53,7 +52,7 @@
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="RestSharp" Version="107.3.0" />
-    <PackageReference Include="Ziti.NET.Standard.native" Version="0.28.2.72" />
+    <PackageReference Include="Ziti.NET.Standard.native" Version="0.28.1.76" />
   </ItemGroup>
 
   <ItemGroup>

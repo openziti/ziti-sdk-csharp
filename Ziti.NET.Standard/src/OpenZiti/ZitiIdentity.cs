@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using OpenZiti.Native;
+using NAPI=OpenZiti.Native.API;
 
 namespace OpenZiti {
 	public class ZitiIdentity {
@@ -163,7 +164,7 @@ namespace OpenZiti {
 
 		public ZitiOptions Configure(int refreshInterval) {
 			Native.API.ziti_log_init(Loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(API.NativeLogger));
-			IntPtr cfgs = Native.NativeHelperFunctions.ToPtr(InitOpts.ConfigurationTypes);
+			IntPtr cfgs = NAPI.ToPtr(InitOpts.ConfigurationTypes);
 
 			Native.ziti_options ziti_opts = new Native.ziti_options {
 				//app_ctx = GCHandle.Alloc(InitOpts.ApplicationContext, GCHandleType.Pinned),
@@ -190,8 +191,8 @@ namespace OpenZiti {
 		}
 
 		public void Shutdown() {
-			this.Stop();
 			runlock.Release();
+			this.Stop();
 			try {
 				Native.API.ziti_shutdown(this.NativeContext);
 
@@ -501,10 +502,10 @@ namespace OpenZiti {
 		}
 
 		public void ZitiDumpToLog() {
-			OpenZiti.Native.NativeHelperFunctions.z4d_ziti_dump_log(this.WrappedContext.nativeZitiContext);
+			NAPI.z4d_ziti_dump_log(this.WrappedContext.nativeZitiContext);
 		}
 		public void ZitiDumpToFile(string fileName) {
-			OpenZiti.Native.NativeHelperFunctions.z4d_ziti_dump_file(this.WrappedContext.nativeZitiContext, fileName);
+			NAPI.z4d_ziti_dump_file(this.WrappedContext.nativeZitiContext, fileName);
 		}
 	}
 	public struct TransferMetrics {
