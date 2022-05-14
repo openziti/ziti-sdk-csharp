@@ -18,11 +18,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+
+using OpenZiti.Native;
 
 namespace OpenZiti {
 	public class ZitiIdentity {
@@ -619,6 +619,6 @@ namespace OpenZiti {
 	}
 
 	public struct ZitiOptions {
-		internal Native.ziti_options NativeZitiOptions;
+		internal ziti_options NativeZitiOptions;
     }
 }

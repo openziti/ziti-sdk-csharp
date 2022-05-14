@@ -5,7 +5,7 @@
         <version>0.0.1</version>
         <title>Native Ziti Libraries for use with .NET</title>
         <authors>openziti.org</authors>
-        <owners>Clint Dovholuk</owners>
+        <owners>OpenZiti Maintainers</owners>
         <license type="expression">Apache-2.0</license>
         <projectUrl>https://openziti.github.io/openziti/ziti-sdk-csharp</projectUrl>
         <iconUrl>https://openziti.github.io/favicon.ico</iconUrl>
@@ -28,7 +28,9 @@
     <files>
         <file src="ziti.png" target="images\"/>
         <file src="bin\x86\Release\netstandard2.1\Ziti.NET.Standard.dll" target="runtimes/win-x86/lib/netstandard2.1" />
+        <file src="bin\x86\Release\netstandard2.1\Ziti.NET.Standard.pdb" target="runtimes/win-x86/lib/netstandard2.1" />
         <file src="bin\x64\Release\netstandard2.1\Ziti.NET.Standard.dll" target="runtimes/win-x64/lib/netstandard2.1" />
+        <file src="bin\x64\Release\netstandard2.1\Ziti.NET.Standard.pdb" target="runtimes/win-x64/lib/netstandard2.1" />
         <file src="bin\Release\netstandard2.1\Ziti.NET.Standard.dll" target="lib/netstandard2.1" />
     </files>
 </package>

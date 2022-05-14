@@ -62,8 +62,8 @@ namespace OpenZiti
         private OnZitiDataReceived onData;
         private OnZitiListening listenCallback;
         private OnZitiClientConnected onClientConnected;
-        private Native.ziti_data_cb dataCB = null;
-        private Native.ziti_conn_cb connCB = null;
+        private ziti_data_cb dataCB = null;
+        private ziti_conn_cb connCB = null;
 
         internal ZitiService(ZitiIdentity id, ZitiContext context, IntPtr ziti_service)
         {
@@ -159,14 +159,15 @@ namespace OpenZiti
             return API.GetConfiguration(this, configName);
         }
 
+
         private Dictionary<string, PostureQuerySet> getPostureQueryMap(ziti_service nativeService) {
 
             Dictionary<string, PostureQuerySet> postureQMap = new Dictionary<string, PostureQuerySet>();
             if (nativeService.posture_query_map != IntPtr.Zero) {
-                model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
+	            model_impl_s impl = Marshal.PtrToStructure<model_impl_s>(nativeService.posture_query_map);
 
                 List<model_map_entry> nativeModelMapList;
-                if (impl.size > 1) {
+                if (impl.size.val > 1) {
                     nativeModelMapList = MarshalUtils<model_map_entry>.convertPointerToList(impl.entries);
                 } else {
                     nativeModelMapList = new List<model_map_entry>() { Marshal.PtrToStructure<model_map_entry>(impl.entries) };
