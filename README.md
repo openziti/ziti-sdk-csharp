@@ -2,9 +2,19 @@
 
 An C#-based SDK to access Ziti 
 
-## Build the Ziti C SDK
+## Overview of the Code
 
-The Ziti C# SDK is based on the [C SDK](https://github.com/nf-dev/ziti-sdk-c) and requires a native library for your target platform of choice.
+The Ziti .NET SDK is written in C# and around the [C SDK](https://github.com/openziti/ziti-sdk-c). The .NET SDK requires a "native" nuget package
+to be built and published. Publishing the native package is handled by GitHub actions. If you are interested in learning how the native library is
+built, see the [github action file](.github/workflows/native-nuget-publish.yml). Publishing the package is somewhat complex.  The package is
+built using a [cmake](https://cmake.org/) project found at the root of this project in a folder named ZitiNativeApiForDotnetCore. You can look
+through that project for more detailed infromation.
+
+The ZitiNativeApiForDotnetCore project will 
+
+and requires a native library for your target platform of choice.
+Building this library for all platforms is complex. There is a [cmake](https://cmake.org/) project at the root of the checkout named:
+ZitiNativeApiForDotnetCore. This project must be built in o
 
 ## Add Links to the Native Libraries
 
