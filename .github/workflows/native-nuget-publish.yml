@@ -5,14 +5,8 @@ on:
     branches:
       - enable-macos-linux
       - ziti_dump_native_api_clint 
-  workflow_dispatch:
-    inputs:
-      version:
-        description: Version of CSDK/Nuget Package
-        default: 0.28.2
-        required: true
 env:
-  ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
+  ZITI_SDK_C_BRANCH: 0.28.2
   BUILD_NUMBER: ${{ github.run_number }}
   BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
   TARGETDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build
