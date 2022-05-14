@@ -13,9 +13,9 @@ on:
 
 jobs:
   mattermost-ziti-webhook:
+    if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}"
     runs-on: macos-latest
     name: POST Webhook
-    if: !contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' && github.repository_owner == "openziti" }}
     steps:
     - uses: openziti/ziti-webhook-action@main
       with:
