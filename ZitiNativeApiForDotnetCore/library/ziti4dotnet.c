@@ -45,28 +45,28 @@ void* z4d_stop_uv_timer(uv_timer_t* t) {
     uv_timer_stop(t);
 }
 
-void* newLoop() {
+void* z4d_new_loop() {
     return uv_loop_new();
 }
 
-int ziti_event_type_from_pointer(const ziti_event_t *event) {
+int z4d_event_type_from_pointer(const ziti_event_t *event) {
     return event->type;
 }
 
-ziti_service* ziti_service_array_get(ziti_service_array arr, int idx) {
+ziti_service* z4d_service_array_get(ziti_service_array arr, int idx) {
     return arr ? arr[idx] : NULL;
 }
 
-char** make_char_array(int size) {
+char** z4d_make_char_array(int size) {
     return calloc(sizeof(char*), size + 1);
 }
 
-void set_char_at(char **arr, char *val, int idx) {
+void z4d_set_char_at(char **arr, char *val, int idx) {
     char* dupe = strdup(val);
     arr[idx] = dupe;
 }
 
-void free_char_array(char **a, int size) {
+void z4d_free_char_array(char **a, int size) {
     int i;
     for (i = 0; i < size; i++) {
         free(a[i]);

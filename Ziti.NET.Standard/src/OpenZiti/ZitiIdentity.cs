@@ -190,6 +190,7 @@ namespace OpenZiti {
 		}
 
 		public void Shutdown() {
+			this.Stop();
 			runlock.Release();
 			try {
 				Native.API.ziti_shutdown(this.NativeContext);
@@ -405,6 +406,7 @@ namespace OpenZiti {
 					start = DateTime.Now;
 					uvLoop = API.DefaultLoop;
 					long interval = 1000; //ms
+					//add a timer to the loop just so uv doesn't run and then exit
 					uvTimer = Native.API.z4d_registerUVTimer(uvLoop.nativeUvLoop, timer, interval, interval);
 					this.Run();
 				} catch (Exception e) {
@@ -426,7 +428,7 @@ namespace OpenZiti {
 			}
 		}
 
-		public void Stop() {
+		private void Stop() {
 			Native.API.z4d_stop_uv_timer(uvTimer);
 		}
 

@@ -9,7 +9,7 @@ set(BUILDING_ZITI_SHARED ON)
 
 if(NOT ZITI_SDK_C_BRANCH)
     #allow using a different branch of the CSDK easily
-    set(ZITI_SDK_C_BRANCH "0.26.29")
+    set(ZITI_SDK_C_BRANCH "0.28.2")
 endif()
 
 message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
