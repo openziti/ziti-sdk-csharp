@@ -18,7 +18,8 @@
         <Copyright>© NetFoundry Inc. All rights reserved.</Copyright>
         <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl>        <PackageIconUrl></PackageIconUrl>
+        <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl> 
+        <PackageIconUrl></PackageIconUrl>
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace>OpenZiti</RootNamespace>
         <Platforms>AnyCPU;x86;x64</Platforms>
@@ -26,9 +27,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog" Version="4.7.10" />
+        <PackageReference Include="NLog" Version="4.7.15" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
-        <PackageReference Include="System.Text.Json" Version="4.6.0" />
+        <PackageReference Include="System.Text.Json" Version="6.0.4" />
         <PackageReference Include="Ziti.NET.Standard.native" Version="1.2.3.65" />
     </ItemGroup>
 
@@ -55,7 +56,7 @@
     <Target Name="NugetPush" DependsOnTargets="CreateNugetPackage">
         <Message Text="RUNNING: nuget add $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source ./nuget-local" Importance="high" />
         <Message Text="Push NuGet Package to NuGet Feed $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" Importance="high" />
-        <Exec Command="nuget push $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source c:/temp/nuget"></Exec>
+        <Exec Command="nuget push $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -Source $(LOCAL_NUGET_ROOT)./nuget"></Exec>
     </Target>
     <Target Name="Buildx64">
         <Message Text="BUILDING x64: dotnet build $(MSBuildProjectFile) --configuration Release /p:Platform=x64" Importance="high" />
