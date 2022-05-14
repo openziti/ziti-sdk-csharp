@@ -164,7 +164,7 @@ namespace OpenZiti
 
             Dictionary<string, PostureQuerySet> postureQMap = new Dictionary<string, PostureQuerySet>();
             if (nativeService.posture_query_map != IntPtr.Zero) {
-	            model_impl_s impl = Marshal.PtrToStructure<model_impl_s>(nativeService.posture_query_map);
+	            model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
 
                 List<model_map_entry> nativeModelMapList;
                 if (impl.size.val > 1) {

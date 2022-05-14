@@ -311,11 +311,15 @@ namespace OpenZiti.Native {
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_service {
-        public string id;
-        public string name;
-        public IntPtr permissions;
-        public int perm_flags;
-        public IntPtr config;
+	    public string id;
+	    public string name;
+	    public IntPtr permissions;
+	    public bool encryption;
+	    public int perm_flags;
+	    public string config;
+	    public IntPtr /** posture_query_set[] **/ posture_query_set;
+	    public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
+	    public string updated_at;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -409,4 +413,50 @@ namespace OpenZiti.Native {
     };
 
 #pragma warning restore 0649
+
+	public struct size_t
+	{
+#if ZITI_X64
+		public long val;
+#else
+	    public int val;
+#endif
+	}
+
+	public struct posture_query_set
+	{
+		public string policy_id;
+		public bool is_passing;
+		public string policy_type;
+		public IntPtr /** posture_query[] **/ posture_queries;
+	}
+	public struct posture_query
+	{
+		public string id;
+		public bool is_passing;
+		public string query_type;
+		public IntPtr /** ziti_process **/ process;
+		public int timeout;
+	}
+
+	public struct ziti_process
+	{
+		public string path;
+	}
+
+	public struct model_map_impl
+	{
+		public IntPtr /** model_map_entry[] **/ entries;
+		public IntPtr table;
+		public int buckets;
+		public size_t size;
+	}
+
+	public struct model_map_entry
+	{
+		public IntPtr key;
+		public size_t key_len;
+		public uint key_hash;
+		public IntPtr value;
+	}
 }
