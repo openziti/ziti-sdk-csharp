@@ -203,7 +203,7 @@ namespace OpenZiti {
 		}
 
 		private void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event_t) {
-			int type = Native.NativeHelperFunctions.ziti_event_type_from_pointer(ziti_event_t);
+			int type = Native.API.z4d_event_type_from_pointer(ziti_event_t);
 			switch (type) {
 				case ZitiEventFlags.ZitiContextEvent:
 					NativeContext = ziti_context;
@@ -552,7 +552,7 @@ namespace OpenZiti {
 		private IEnumerable<IntPtr> array_iterator(IntPtr arr) {
 			int index = 0;
 			while (true) {
-				IntPtr zitiService = Native.API.ziti_service_array_get(arr, index);
+				IntPtr zitiService = Native.API.z4d_service_array_get(arr, index);
 				index++;
 				if (zitiService == IntPtr.Zero) {
 					break;

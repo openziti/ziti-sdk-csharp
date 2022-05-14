@@ -89,7 +89,7 @@ namespace OpenZiti {
         }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.newLoop() };
+        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.z4d_new_loop() };
         public static UVLoop DefaultLoop {
             get {
                 return defaultLoop;
@@ -151,7 +151,7 @@ namespace OpenZiti {
         }
 
         public static UVLoop NewLoop() {
-            return new UVLoop(Native.API.newLoop());
+            return new UVLoop(Native.API.z4d_new_loop());
         }
 
         public static string GetConfiguration(ZitiService svc, string configName) {

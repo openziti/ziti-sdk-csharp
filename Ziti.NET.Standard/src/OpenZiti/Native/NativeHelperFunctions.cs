@@ -23,10 +23,6 @@ namespace OpenZiti.Native {
     public static class NativeHelperFunctions {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        [DllImport(API.Z4D_DLL_PATH, EntryPoint = "ziti_event_type_from_pointer", CallingConvention = API.CALL_CONVENTION)]
-        internal static extern int ziti_event_type_from_pointer(IntPtr ziti_event_t);
-
-
         [DllImport(API.Z4D_DLL_PATH, CallingConvention = API.CALL_CONVENTION)]
         internal static extern IntPtr make_char_array(int size);
         [DllImport(API.Z4D_DLL_PATH, CallingConvention = API.CALL_CONVENTION)]
