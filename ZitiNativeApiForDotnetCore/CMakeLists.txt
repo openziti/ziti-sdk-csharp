@@ -12,6 +12,8 @@ if(NOT ZITI_SDK_C_BRANCH)
     set(ZITI_SDK_C_BRANCH "0.26.29")
 endif()
 
+message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
+
 file (STRINGS "../version" BUILD_NUMBER)
 
 project(ziti4dotnet VERSION ${BUILD_NUMBER} LANGUAGES C CXX)
