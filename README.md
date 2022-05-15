@@ -43,10 +43,11 @@ Things you should do/understand:
   * Pull and use the latest native nuget package
 * Assuming you have 'the latest' nuget package - adapt the C# SDk code and write **IDIOMATIC** C# for the API.
 * Once the **IDIOMATIC** C# API exists, publish the Ziti.NET.Standard version to your **LOCAL** NuGet repo.
-  * Run `dotnet build` to build and publish the project. Make sure you supply the variable named "LOCAL_NUGET_ROOT". It is used to contro
-    where on your disk your **LOCAL** nuget repo is. This build will **ALSO** build both x86 and x64 for you.
+  * Run `dotnet build` to build and publish the project. Make sure you supply the variable named "NUGET_SOURCE". It is used to control
+    where you push to. It can be either your **LOCAL** nuget repo or https://api.nuget.org/v3/index.json. This build will **ALSO** 
+    build both x86 and x64 for you.
     ```
-    dotnet build Ziti.NET.Standard\Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release;LOCAL_NUGET_ROOT=c:/temp/
+    dotnet build Ziti.NET.Standard\Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release;NUGET_SOURCE=c:/temp/nuget
     ```
 * Open Ziti.Samples.sln and update the Ziti.NET.Standard version to use your latest version from local
 * Develop one or more samples which illustrate the usage of the SDK. 
@@ -64,11 +65,11 @@ to deploy a local version of the native NuGet package if you want to verify your
 The [project](./Ziti.NET.Standard/) has a target within it which should make it trivial for you to build the dotnet NuGet package. To do so
 simply issue
 ```
-    dotnet build Ziti.NET.Standard\Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release;LOCAL_NUGET_ROOT=c:/temp/
+dotnet build Ziti.NET.Standard\Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release;NUGET_SOURCE=c:/temp/nuget
 ```
 
 This will subsequently issue `dotnet build` commands to build the project as x86, x64, as well as "Any CPU". It will then issue `nuget push`
-and will push your freshly built .nupkg into the location specified by the properly `LOCAL_NUGET_ROOT=`.
+and will push your freshly built .nupkg into the location specified by the properly `NUGET_SOURCE=`.
 
 ### TestProject
 
