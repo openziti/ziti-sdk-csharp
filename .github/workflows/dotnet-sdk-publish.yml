@@ -27,7 +27,7 @@ jobs:
       - if: github.event_name == 'pull_request'
         run: echo "GIT_BRANCH=$env:GITHUB_HEAD_REF" >> $env:GITHUB_ENV
       - name: Create NuGet package
-        run: dotnet build Ziti.NET.Standard/Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release /p:NUGET_SOURCE=https://api.nuget.org/v3/index.json
+        run: dotnet build Ziti.NET.Standard/Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release /p:NUGET_SOURCE=https://api.nuget.org/v3/index.json /p:APIKEY=${{secrets.NUGET_API_KEY}}
       - if: ${{ env.GIT_BRANCH == 'main' }} 
         name: Publish Ziti.NET.Standard
         run: dotnet nuget push Ziti.NET.Standard\Ziti.NET.Standard*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
