@@ -170,7 +170,11 @@ namespace OpenZiti {
 				//app_ctx = GCHandle.Alloc(InitOpts.ApplicationContext, GCHandleType.Pinned),
 				config = InitOpts.IdentityFile,
 				config_types = cfgs,
+#if ZITI_X64
+				refresh_interval = (ulong)refreshInterval,
+#else
 				refresh_interval = refreshInterval,
+#endif
 				metrics_type = InitOpts.MetricType,
 				pq_mac_cb = native_ziti_pq_mac_cb,
 				events = InitOpts.EventFlags,

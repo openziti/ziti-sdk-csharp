@@ -19,6 +19,11 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>MAC;LINUX</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\Samples\Util\ConsoleHelper.cs" Link="ConsoleHelper.cs" />
     <Compile Include="..\Samples\Weather.cs" Link="Weather.cs" />
