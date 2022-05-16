@@ -171,7 +171,7 @@ namespace OpenZiti {
 				config = InitOpts.IdentityFile,
 				config_types = cfgs,
 #if ZITI_X64
-				refresh_interval = (ulong)refreshInterval,
+				refresh_interval = (long)refreshInterval,
 #else
 				refresh_interval = refreshInterval,
 #endif

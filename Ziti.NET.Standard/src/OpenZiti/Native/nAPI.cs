@@ -348,7 +348,7 @@ namespace OpenZiti.Native {
         public Int32 api_page_size;
 
 #if ZITI_X64
-        public UInt64 refresh_interval; //the duration in seconds between checking for updates from the controller
+        public long refresh_interval; //the duration in seconds between checking for updates from the controller
 #else
         public Int32 refresh_interval; //the duration in seconds between checking for updates from the controller
 #endif
