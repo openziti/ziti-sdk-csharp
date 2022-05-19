@@ -60,6 +60,7 @@ namespace OpenZiti {
                 isSupported(supportedCmds, 11, "Invoke Endpoint satus change");
                 isSupported(supportedCmds, 12, "Ziti Dump To Log");
                 isSupported(supportedCmds, 13, "Ziti Dump To File");
+                isSupported(supportedCmds, 14, "Find version");
                 isSupported(supportedCmds, 0, "Exit from the application");
                 Console.WriteLine("Enter your choice and press enter: ");
                 string value = Console.ReadLine();

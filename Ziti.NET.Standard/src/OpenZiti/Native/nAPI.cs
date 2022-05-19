@@ -305,6 +305,14 @@ namespace OpenZiti.Native {
 
         #endregion
 
+        #region //functions from ziti/utils.h
+
+        //defined in C: ziti_get_build_version(int verbose);
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_build_version", CallingConvention = CALL_CONVENTION)]
+        public static extern IntPtr ziti_get_build_version(int verbose);
+
+        #endregion
+
         internal static IntPtr ToPtr(string[] array)
         {
 	        if (array == null || array.Length == 0)
