@@ -152,3 +152,11 @@ void z4d_ziti_dump_file(ziti_context ztx, const char* outputFile) {
     fflush(fp);
     fclose(fp);
 }
+
+
+void useUnusedFuncs() {
+    //TODO: temporary hack to get the linker to emit 'unused' symbols
+    ziti_enroll(NULL, NULL, NULL, NULL);
+    ziti_conn_bridge(NULL, NULL, NULL);
+    ziti_conn_bridge_fds(NULL, NULL, NULL, NULL, NULL);
+}
