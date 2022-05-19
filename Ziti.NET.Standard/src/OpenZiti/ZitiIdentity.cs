@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json.Linq;
 using OpenZiti.Native;
 using NAPI=OpenZiti.Native.API;
 
@@ -74,7 +74,20 @@ namespace OpenZiti {
 		public ZitiStatus InitStats { get; internal set; }
 		public string InitStatusError { get; internal set; }
 		public string IdentityNameFromController { get; internal set; }
-		public string ControllerVersion { get; internal set; }
+		public string ControllerVersion {
+			get
+			{
+				if (ControllerURL == null)
+                {
+					return null;
+                }
+				Func<Task<string>> versionTask = async () => {
+					return await GetControllerVersionAsync(ControllerURL);
+				};
+				versionTask().Wait();
+				return versionTask().Result;
+			}
+		}
 		public bool ControllerConnected { get; internal set; }
 		public object ApplicationContext { get; internal set; }
 		public InitOptions InitOpts { get; internal set; }
@@ -511,6 +524,16 @@ namespace OpenZiti {
 		public void ZitiDumpToFile(string fileName) {
 			NAPI.z4d_ziti_dump_file(this.WrappedContext.nativeZitiContext, fileName);
 		}
+
+		private async Task<string> GetControllerVersionAsync(string ztAPI)
+        {
+			string versionUrl = "version";
+			string versionReponse = await OpenZiti.WebClient.GetRequest(ztAPI, versionUrl);
+
+			JObject jo = JObject.Parse(versionReponse);
+			string versionJsonPath = "$.data.version";
+			return jo.SelectToken(versionJsonPath)?.ToString();
+		}
 	}
 	public struct TransferMetrics {
 		public double Up;
@@ -628,4 +651,5 @@ namespace OpenZiti {
 	public struct ZitiOptions {
 		internal ziti_options NativeZitiOptions;
     }
+
 }

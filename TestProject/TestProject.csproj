@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <Platforms>AnyCPU;x86;x64</Platforms>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -52,12 +52,14 @@
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStatusExtensions.cs" Link="src\OpenZiti\ZitiStatusExtensions.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiStream.cs" Link="src\OpenZiti\ZitiStream.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\ZitiUtil.cs" Link="src\OpenZiti\ZitiUtil.cs" />
+    <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\WebClient.cs" Link="src\OpenZiti\WebClient.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="RestSharp" Version="107.3.0" />
     <PackageReference Include="Ziti.NET.Standard.native" Version="0.28.1.76" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,4 +67,7 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <None Remove="Newtonsoft.Json" />
+  </ItemGroup>
 </Project>
