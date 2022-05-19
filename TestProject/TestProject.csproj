@@ -52,7 +52,7 @@
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="RestSharp" Version="107.3.0" />
-    <PackageReference Include="Ziti.NET.Standard.native" Version="0.28.1.76" />
+    <PackageReference Include="Ziti.NET.Standard.native" Version="0.28.1.91" />
   </ItemGroup>
 
   <ItemGroup>
