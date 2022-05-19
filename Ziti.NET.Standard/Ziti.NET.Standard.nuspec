@@ -20,7 +20,7 @@
                 <dependency id="NLog" version="4.7.15" exclude="Build,Analyzers" />
                 <dependency id="System.Memory" version="4.5.4" exclude="Build,Analyzers" />
                 <dependency id="System.Text.Json" version="6.0.4" exclude="Build,Analyzers" />
-                <dependency id="Ziti.NET.Standard.native" version="0.28.1.88" exclude="Build,Analyzers" />
+                <dependency id="Ziti.NET.Standard.native" version="0.28.1.91" exclude="Build,Analyzers" />
             </group>
         </dependencies>
     </metadata>
