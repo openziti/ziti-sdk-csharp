@@ -528,7 +528,7 @@ namespace OpenZiti {
 		private async Task<string> GetControllerVersionAsync(string ztAPI)
         {
 			string versionUrl = "version";
-			string versionReponse = await OpenZiti.WebClient.GetRequest(ztAPI, versionUrl);
+			string versionReponse = await OpenZiti.WebClient.HttpGet(ztAPI, versionUrl);
 
 			JObject jo = JObject.Parse(versionReponse);
 			string versionJsonPath = "$.data.version";
