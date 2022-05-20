@@ -75,20 +75,20 @@ namespace OpenZiti {
 		public string InitStatusError { get; internal set; }
 		public string IdentityNameFromController { get; internal set; }
 		public string ControllerVersion {
-            get
-            {
-                if (ControllerURL == null)
-                {
-                    return null;
-                }
-                Func<Task<string>> versionTask = async () =>
-                {
-                    return await GetControllerVersionAsync(ControllerURL);
-                };
-                versionTask().Wait();
-                return versionTask().Result;
-            }
-        }
+			get
+			{
+				if (ControllerURL == null)
+				{
+					return null;
+				}
+				Func<Task<string>> versionTask = async () =>
+				{
+					return await GetControllerVersionAsync(ControllerURL);
+				};
+				versionTask().Wait();
+				return versionTask().Result;
+			}
+		}
 		public bool ControllerConnected { get; internal set; }
 		public object ApplicationContext { get; internal set; }
 		public InitOptions InitOpts { get; internal set; }
@@ -527,7 +527,7 @@ namespace OpenZiti {
 		}
 
 		private async Task<string> GetControllerVersionAsync(string ztAPI)
-        {
+		{
 			string versionUrl = "version";
 			string versionReponse = await OpenZiti.WebClient.HttpGet(ztAPI, versionUrl);
 
