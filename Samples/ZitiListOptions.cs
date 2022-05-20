@@ -23,7 +23,7 @@ namespace OpenZiti.Samples
     {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
         static ZitiCommand.Options Options = new ZitiCommand.Options();
-        static int[] supportedCommands = new int[3] { 5, 14, 15 };
+        static int[] supportedCommands = new int[4] { 0, 5, 14, 15 };
 
         static ZitiInstance zitiInstance = new ZitiInstance();
 
