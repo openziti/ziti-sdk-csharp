@@ -523,6 +523,9 @@ namespace OpenZiti.Native {
 		public size_t key_len;
 		public uint key_hash;
 		public IntPtr value;
+		public IntPtr _next;
+		public IntPtr _tnext;
+		public IntPtr _map;
 	}
 
 	public struct ziti_dial_opts

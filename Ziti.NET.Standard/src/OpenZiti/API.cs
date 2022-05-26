@@ -322,6 +322,21 @@ namespace OpenZiti {
             }
             return result;
         }
+
+        public static List<OpenZiti.Native.model_map_entry> convertPointerMapToList(IntPtr arrayPointer)
+        {
+            IntPtr currentArrLoc;
+            List<OpenZiti.Native.model_map_entry> result = new List<OpenZiti.Native.model_map_entry>();
+            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = arrayPointer) != IntPtr.Zero)
+            {
+                OpenZiti.Native.model_map_entry objectT = Marshal.PtrToStructure<OpenZiti.Native.model_map_entry>(currentArrLoc);
+                result.Add(objectT);
+                arrayPointer = objectT._next;
+            }
+            return result;
+        }
     }
 
     /*
