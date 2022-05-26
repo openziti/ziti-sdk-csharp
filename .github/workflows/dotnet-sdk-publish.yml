@@ -6,7 +6,7 @@ on:
       - main
       - 'release-*'
       - 'beta-release-*'
-      - ziti_dump_native_api_clint
+      
   pull_request:
     branches: 
       - main
