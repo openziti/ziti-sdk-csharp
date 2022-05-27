@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Runtime.InteropServices;
+using OpenZiti.Native;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -88,7 +89,7 @@ namespace OpenZiti {
         }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.newLoop() };
+        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.z4d_new_loop() };
         public static UVLoop DefaultLoop {
             get {
                 return defaultLoop;
@@ -150,7 +151,7 @@ namespace OpenZiti {
         }
 
         public static UVLoop NewLoop() {
-            return new UVLoop(Native.API.newLoop());
+            return new UVLoop(Native.API.z4d_new_loop());
         }
 
         public static string GetConfiguration(ZitiService svc, string configName) {
@@ -168,7 +169,8 @@ namespace OpenZiti {
         MFA_AUTH_STATUS,
         ENROLLMENT_VERIFICATION,
         ENROLLMENT_REMOVE,
-        ENROLLMENT_CHALLENGE
+        ENROLLMENT_CHALLENGE,
+        RECOVERY_CODES,
     }
 
     public struct MFAEnrollment {
@@ -208,15 +210,7 @@ namespace OpenZiti {
             };
 
             if (ziti_mfa_enrollment.recovery_codes != IntPtr.Zero) {
-                // Could not fetch the size of the array from the intptr
-                IntPtr[] recoveryCodePointers = new IntPtr[20];
-                Marshal.Copy(ziti_mfa_enrollment.recovery_codes, recoveryCodePointers, 0, 20);
-                evt.recoveryCodes = new string[20];
-
-                for (int i = 0; i < 20; i++) {
-                    string value = Marshal.PtrToStringAnsi(recoveryCodePointers[i]);
-                    evt.recoveryCodes[i] = value;
-                }
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(ziti_mfa_enrollment.recovery_codes).ToArray();
             }
 
             cb?.Invoke(evt);
@@ -239,6 +233,18 @@ namespace OpenZiti {
                 status = (ZitiStatus)status,
                 operationType = MFAOperationType.ENROLLMENT_REMOVE
             };
+            cb?.Invoke(evt);
+        }
+        internal static void AfterMFARecoveryCodes(IntPtr ziti_context, int status, IntPtr recoveryCodes, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.RECOVERY_CODES
+            };
+            if (recoveryCodes != IntPtr.Zero) {
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(recoveryCodes).ToArray();
+            }
             cb?.Invoke(evt);
         }
     }
@@ -269,7 +275,31 @@ namespace OpenZiti {
         }
 
     }
+    class PrimitiveWrapper<T> : IDisposable {
+        public IntPtr Ptr { get; private set; }
 
+        public PrimitiveWrapper() {
+            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+        }
+
+        ~PrimitiveWrapper() {
+            if (Ptr != IntPtr.Zero) {
+                Marshal.FreeHGlobal(Ptr);
+                Ptr = IntPtr.Zero;
+            }
+        }
+
+        public void Dispose() {
+            Marshal.FreeHGlobal(Ptr);
+            Ptr = IntPtr.Zero;
+            GC.SuppressFinalize(this);
+        }
+
+        public static implicit operator IntPtr(PrimitiveWrapper<T> w) {
+            return w.Ptr;
+        }
+
+    }
 
     /*
     public struct IdentityMaterial {
@@ -290,39 +320,5 @@ namespace OpenZiti {
         EdgeRouterDisconnected,
         EdgeRouterRemoved,
         EdgeRouterUnavailable,
-    }
-
-    public struct ziti_service {
-        public string id;
-        public string name;
-        public string permissions;
-        public bool encryption;
-        public int perm_flags;
-        public string config;
-        //public posture_query_set posture_query_set;
-    }
-
-    public struct posture_query_set {
-        public string policy_id;
-        public bool is_passing;
-        public string policy_type;
-        public posture_query[] posture_queries;
-    }
-    public struct posture_query {
-        public string id;
-        public bool is_passing;
-        public string query_type;
-        public ziti_process process;
-        public int timeout;
-    }
-
-    public struct ziti_process {
-        public string path;
-    }
-
-    public struct ziti_identity {
-        internal string id;
-        internal string name;
-        internal string app_data;
     }
 }

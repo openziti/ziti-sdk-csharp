@@ -48,7 +48,9 @@ namespace OpenZiti
         internal byte[] NO_DATA = new byte[0];
         internal IntPtr nativeConnection = IntPtr.Zero;
         internal bool readyForWriting;
+#pragma warning disable 0649
         internal bool readyForReading;
+#pragma warning restore 0649
         internal BlockingCollection<byte[]> responses = new BlockingCollection<byte[]>(16);
 
         public ZitiService Service { get; internal set; }
@@ -58,7 +60,9 @@ namespace OpenZiti
         private OnZitiDataWritten aafterData;
         private OnClientAccept onAccept;
         private OnZitiClientData onClientData;
+#pragma warning disable 0414
         private bool isStream;
+#pragma warning restore 0414
         private bool isDialed;
 		private ZitiStatus connectionReadyStatus;
 		private Native.ziti_conn_cb ozc;
