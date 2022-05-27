@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\OpenZiti\native\" />
+    <Folder Include="..\Ziti.NET.Standard\src\OpenZiti\native\" />
   </ItemGroup>
 
 </Project>
