@@ -81,12 +81,7 @@ namespace OpenZiti {
 				{
 					return null;
 				}
-				Func<Task<string>> versionTask = async () =>
-				{
-					return await GetControllerVersionAsync(ControllerURL);
-				};
-				versionTask().Wait();
-				return versionTask().Result;
+				return GetControllerVersion(ControllerURL);
 			}
 		}
 		public bool ControllerConnected { get; internal set; }
@@ -526,14 +521,11 @@ namespace OpenZiti {
 			NAPI.z4d_ziti_dump_file(this.WrappedContext.nativeZitiContext, fileName);
 		}
 
-		private async Task<string> GetControllerVersionAsync(string ztAPI)
+		private string GetControllerVersion(string ztAPI)
 		{
-			string versionUrl = "version";
-			string versionReponse = await OpenZiti.WebClient.HttpGet(ztAPI, versionUrl);
-
-			JObject jo = JObject.Parse(versionReponse);
-			string versionJsonPath = "$.data.version";
-			return jo.SelectToken(versionJsonPath)?.ToString();
+			IntPtr version = OpenZiti.Native.API.ziti_get_controller_version(this.WrappedContext.nativeZitiContext);
+			ziti_version ver = Marshal.PtrToStructure<ziti_version>(version);
+			return ver.version;
 		}
 	}
 	public struct TransferMetrics {
