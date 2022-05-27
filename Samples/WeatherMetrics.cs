@@ -21,13 +21,15 @@ using System.Text;
 using System.Text.Json;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace OpenZiti.Samples {
 
-    public class WeatherMFA {
+    public class WeatherMetrics {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
         static ZitiCommand.Options Options = new ZitiCommand.Options();
-        static int[] supportedCommands = new int[8] {0,1,2,3,4,5,6,7};
+        static int[] supportedCommands = new int[3] { 0, 1, 5 };
 
         static ZitiInstance zitiInstance = new ZitiInstance();
 
@@ -45,51 +47,31 @@ namespace OpenZiti.Samples {
                         break;
                     }
                     if (zitiInstance.Services.Count > 0) {
-                        ZitiService svc = zitiInstance.Services.First().Value;
-                        svc.Dial(onConnected, onData);
+                        Dictionary<string, ZitiService> servicesMap = zitiInstance.Services;
+                        foreach((string key, ZitiService svc) in servicesMap) {
+                            Console.WriteLine("Dialing {0}", svc.Name);
+                            svc.Dial(onConnected, onData);
+                        }
+
+                        Task.Run(() => {
+                            var autoEvent = new AutoResetEvent(false);
+                            var tmChecker = new TransferMetricsChecker(zitiInstance.Zid, 10);
+                            Timer transferRatesTimer = new Timer(tmChecker.CheckStatus, autoEvent, 2000, 5000);
+                            autoEvent.WaitOne();
+                            transferRatesTimer.Dispose();
+                            Console.WriteLine("Destroying transfer metrics timer.");
+                        });
+
                     } else {
                         Console.WriteLine("No service found.");
                         Options.InvokeNextCommand(supportedCommands);
                     }
                     break;
-                case 2: {
-                        Console.WriteLine("Enable MFA for the identity: " + idName);
-                        zitiInstance.Zid.EnrollMFA();
-                        break;
-                    }
-                case 3: {
-                        Console.WriteLine("Verify MFA for the identity" + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.VerifyMFA(mfacode);
-                        break;
-                    }
-                case 4: {
-                        Console.WriteLine("Remove MFA for the identity" + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.RemoveMFA(mfacode);
-                        break;
-                    }
                 case 5: {
                         Console.WriteLine("Submit MFA for the identity " + idName);
                         Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         zitiInstance.Zid.SubmitMFA(mfacode);
-                        break;
-                    }
-                case 6: {
-                        Console.WriteLine("Get MFA recovery codes for the identity " + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.GetMFARecoveryCodes(mfacode);
-                        break;
-                    }
-                case 7: {
-                        Console.WriteLine("Generate MFA recovery codes for the identity " + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.GenerateMFARecoveryCodes(mfacode);
                         break;
                     }
                 case 0:
@@ -114,7 +96,6 @@ namespace OpenZiti.Samples {
             opts.OnZitiContextEvent += Opts_OnZitiContextEvent;
             opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
             opts.OnZitiMFAEvent += Opts_OnZitiMFAEvent;
-            opts.OnZitiAPIEvent += Opts_OnZitiAPIEvent;
             opts.OnZitiMFAStatusEvent += Opts_OnZitiMFAStatusEvent;
 
             ZitiIdentity zid = new ZitiIdentity(opts);
@@ -166,7 +147,6 @@ namespace OpenZiti.Samples {
                         Console.WriteLine("Policy Id {0} of the service - {1} is passing : {2}", pqs.PolicyId, svc.Name, pqs.IsPassing);
                     }
                 }
-
                 Options.InvokeNextCommand(supportedCommands);
             } catch (Exception ex) {
                 Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
@@ -181,10 +161,6 @@ namespace OpenZiti.Samples {
             string mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", nameOfId, mfacode);
             e.id.SubmitMFA(mfacode);
-        }
-
-        private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e) {
-            Console.WriteLine("API event received for identity {0}", e.id?.IdentityNameFromController);
         }
 
         private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e) {
@@ -242,11 +218,36 @@ namespace OpenZiti.Samples {
                     ConsoleHelper.OutputResponseToConsole(ms.ToArray());
                     Console.WriteLine("request completed: " + status.GetDescription());
                     connection.Close();
-                    Options.InvokeNextCommand(supportedCommands);
                 } else {
                     Console.WriteLine("unexpected error: " + status.GetDescription());
                 }
                 ConsoleHelper.OutputResponseToConsole(ms.ToArray());
+            }
+        }
+    }
+
+    class TransferMetricsChecker {
+        private int invokeCount;
+        private int maxCount;
+        private ZitiIdentity Zid;
+
+        public TransferMetricsChecker(ZitiIdentity zid, int count) {
+            invokeCount = 0;
+            maxCount = count;
+            Zid = zid;
+        }
+
+        // This method is called by the timer delegate.
+        public void CheckStatus(Object stateInfo) {
+            AutoResetEvent autoEvent = (AutoResetEvent)stateInfo;
+            ++invokeCount;
+            TransferMetrics tm = Zid.GetTransferRates();
+            Console.WriteLine("Transfer Metrics is up: {0}, down {1}", tm.Up, tm.Down);
+
+            if (invokeCount == maxCount) {
+                // Reset the counter and signal the waiting thread.
+                invokeCount = 0;
+                autoEvent.Set();
             }
         }
     }

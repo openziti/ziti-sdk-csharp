@@ -169,7 +169,8 @@ namespace OpenZiti {
         MFA_AUTH_STATUS,
         ENROLLMENT_VERIFICATION,
         ENROLLMENT_REMOVE,
-        ENROLLMENT_CHALLENGE
+        ENROLLMENT_CHALLENGE,
+        RECOVERY_CODES,
     }
 
     public struct MFAEnrollment {
@@ -234,6 +235,18 @@ namespace OpenZiti {
             };
             cb?.Invoke(evt);
         }
+        internal static void AfterMFARecoveryCodes(IntPtr ziti_context, int status, IntPtr recoveryCodes, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.RECOVERY_CODES
+            };
+            if (recoveryCodes != IntPtr.Zero) {
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(recoveryCodes).ToArray();
+            }
+            cb?.Invoke(evt);
+        }
     }
 
     class StructWrapper : IDisposable {
@@ -258,6 +271,31 @@ namespace OpenZiti {
         }
 
         public static implicit operator IntPtr(StructWrapper w) {
+            return w.Ptr;
+        }
+
+    }
+    class PrimitiveWrapper<T> : IDisposable {
+        public IntPtr Ptr { get; private set; }
+
+        public PrimitiveWrapper() {
+            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+        }
+
+        ~PrimitiveWrapper() {
+            if (Ptr != IntPtr.Zero) {
+                Marshal.FreeHGlobal(Ptr);
+                Ptr = IntPtr.Zero;
+            }
+        }
+
+        public void Dispose() {
+            Marshal.FreeHGlobal(Ptr);
+            Ptr = IntPtr.Zero;
+            GC.SuppressFinalize(this);
+        }
+
+        public static implicit operator IntPtr(PrimitiveWrapper<T> w) {
             return w.Ptr;
         }
 
@@ -356,4 +394,5 @@ namespace OpenZiti {
         internal uint key_hash;
         internal IntPtr value;
     }
+
 }

@@ -447,6 +447,13 @@ namespace OpenZiti {
 			}
 		}
 
+		public void SetEnabled(bool enabled) {
+			OpenZiti.Native.API.ziti_set_enabled(this.WrappedContext.nativeZitiContext, enabled);
+		}
+
+		public bool IsEnabled() {
+			return OpenZiti.Native.API.ziti_is_enabled(this.WrappedContext.nativeZitiContext);
+		}
 		public void SubmitMFA(string code) {
 			OpenZiti.Native.API.ziti_mfa_auth(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFASubmit, MFA.GetMFAStatusDelegate(this));
 		}
@@ -463,6 +470,34 @@ namespace OpenZiti {
 			OpenZiti.Native.API.ziti_mfa_remove(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARemove, MFA.GetMFAStatusDelegate(this));
 		}
 
+		public void GetMFARecoveryCodes(string code) {
+			OpenZiti.Native.API.ziti_mfa_get_recovery_codes(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void GenerateMFARecoveryCodes(string code) {
+			OpenZiti.Native.API.ziti_mfa_new_recovery_codes(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public TransferMetrics GetTransferRates() {
+			PrimitiveWrapper<double> upIntPtrWrapper = new PrimitiveWrapper<double>();
+			PrimitiveWrapper<double> downIntPtrWrapper = new PrimitiveWrapper<double>();
+			OpenZiti.Native.API.ziti_get_transfer_rates(this.WrappedContext.nativeZitiContext, upIntPtrWrapper.Ptr, downIntPtrWrapper.Ptr);
+			double[] upMetrics = new double[1];
+			Marshal.Copy(upIntPtrWrapper.Ptr, upMetrics, 0, 1);
+			double[] downMetrics = new double[1];
+			Marshal.Copy(downIntPtrWrapper.Ptr, downMetrics, 0, 1);
+			TransferMetrics tm = new TransferMetrics();
+			tm.Up = upMetrics[0];
+			tm.Down = downMetrics[0];
+			return tm;
+		}
+		public void EndpointStateChange(bool woken, bool unlocked) {
+			OpenZiti.Native.API.ziti_endpoint_state_change(this.WrappedContext.nativeZitiContext, woken, unlocked);
+		}
+	}
+	public struct TransferMetrics {
+		public double Up;
+		public double Down;
 	}
 
 	public class ZitiContextEvent {
