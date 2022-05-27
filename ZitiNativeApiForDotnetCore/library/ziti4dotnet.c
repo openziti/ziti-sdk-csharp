@@ -9,7 +9,7 @@
 #define strdup _strdup
 #endif
 
-#define MAXBUFFERLEN 4096
+#define MAXBUFFERLEN 4096 * 4096
 
 int z4d_ziti_close(ziti_connection con) {
     return 0;
@@ -93,23 +93,20 @@ int ziti_context_event_status(const ziti_event_t* e) {
 typedef int (*printer)(void* arg, const char* fmt, ...);
 
 static int ziti_dump_to_log_op(void* stringsBuilder, const char* fmt, ...) {
-    static char line[4096];
+    static char line[MAXBUFFERLEN];
 
     va_list vargs;
     va_start(vargs, fmt);
     vsnprintf(line, sizeof(line), fmt, vargs);
     va_end(vargs);
 
-    if (strlen(stringsBuilder) + strlen(line) > MAXBUFFERLEN) {
-        return -1;
-    }
     // write/append to the buffer
     strncat(stringsBuilder, line, sizeof(line));
     return 0;
 }
 
 static int ziti_dump_to_file_op(void* fp, const char* fmt, ...) {
-    static char line[4096];
+    static char line[MAXBUFFERLEN];
 
     va_list vargs;
     va_start(vargs, fmt);
@@ -121,8 +118,7 @@ static int ziti_dump_to_file_op(void* fp, const char* fmt, ...) {
 }
 
 void z4d_ziti_dump_log(ziti_context ztx) {
-    char* buffer;
-    buffer = malloc(MAXBUFFERLEN * sizeof(char));
+    char* buffer = malloc(MAXBUFFERLEN * sizeof(char));
     buffer[0] = 0;
     ziti_dump(ztx, (printer)ziti_dump_to_log_op, buffer);
     printf("ziti dump to log %s", buffer);
