@@ -24,10 +24,10 @@ using System.Collections.Generic;
 
 namespace OpenZiti.Samples {
 
-    public class WeatherMFA {
+    public class WeatherOnOff {
         static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
         static ZitiCommand.Options Options = new ZitiCommand.Options();
-        static int[] supportedCommands = new int[8] {0,1,2,3,4,5,6,7};
+        static int[] supportedCommands = new int[6] { 0, 1, 5, 8, 9, 10 };
 
         static ZitiInstance zitiInstance = new ZitiInstance();
 
@@ -52,23 +52,23 @@ namespace OpenZiti.Samples {
                         Options.InvokeNextCommand(supportedCommands);
                     }
                     break;
-                case 2: {
-                        Console.WriteLine("Enable MFA for the identity: " + idName);
-                        zitiInstance.Zid.EnrollMFA();
+                case 8: {
+                        Console.WriteLine("Enable identity: " + idName);
+                        zitiInstance.Zid.SetEnabled(true);
+                        Console.WriteLine("Identity {0} is enabled", idName);
                         break;
                     }
-                case 3: {
-                        Console.WriteLine("Verify MFA for the identity" + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.VerifyMFA(mfacode);
+                case 9: {
+                        Console.WriteLine("Disable identity" + idName);
+                        zitiInstance.Zid.SetEnabled(false);
+                        Console.WriteLine("Identity {0} is disabled", idName);
                         break;
                     }
-                case 4: {
-                        Console.WriteLine("Remove MFA for the identity" + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.RemoveMFA(mfacode);
+                case 10: {
+                        Console.WriteLine("Check identity enabled status" + idName);
+                        bool idStatus = zitiInstance.Zid.IsEnabled();
+                        Console.WriteLine("Status of Identity : {0}", idStatus);
+                        Options.InvokeNextCommand(supportedCommands);
                         break;
                     }
                 case 5: {
@@ -76,20 +76,6 @@ namespace OpenZiti.Samples {
                         Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         zitiInstance.Zid.SubmitMFA(mfacode);
-                        break;
-                    }
-                case 6: {
-                        Console.WriteLine("Get MFA recovery codes for the identity " + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.GetMFARecoveryCodes(mfacode);
-                        break;
-                    }
-                case 7: {
-                        Console.WriteLine("Generate MFA recovery codes for the identity " + idName);
-                        Console.WriteLine("Enter the mfa auth code: ");
-                        mfacode = Console.ReadLine();
-                        zitiInstance.Zid.GenerateMFARecoveryCodes(mfacode);
                         break;
                     }
                 case 0:
@@ -114,7 +100,6 @@ namespace OpenZiti.Samples {
             opts.OnZitiContextEvent += Opts_OnZitiContextEvent;
             opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
             opts.OnZitiMFAEvent += Opts_OnZitiMFAEvent;
-            opts.OnZitiAPIEvent += Opts_OnZitiAPIEvent;
             opts.OnZitiMFAStatusEvent += Opts_OnZitiMFAStatusEvent;
 
             ZitiIdentity zid = new ZitiIdentity(opts);
@@ -166,7 +151,6 @@ namespace OpenZiti.Samples {
                         Console.WriteLine("Policy Id {0} of the service - {1} is passing : {2}", pqs.PolicyId, svc.Name, pqs.IsPassing);
                     }
                 }
-
                 Options.InvokeNextCommand(supportedCommands);
             } catch (Exception ex) {
                 Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
@@ -181,10 +165,6 @@ namespace OpenZiti.Samples {
             string mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", nameOfId, mfacode);
             e.id.SubmitMFA(mfacode);
-        }
-
-        private static void Opts_OnZitiAPIEvent(Object sender, ZitiAPIEvent e) {
-            Console.WriteLine("API event received for identity {0}", e.id?.IdentityNameFromController);
         }
 
         private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e) {
