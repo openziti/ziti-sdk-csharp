@@ -16,9 +16,9 @@ limitations under the License.
 
 using System;
 using System.Runtime.InteropServices;
+using OpenZiti.Native;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace OpenZiti {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -89,7 +89,7 @@ namespace OpenZiti {
         }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.newLoop() };
+        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.z4d_new_loop() };
         public static UVLoop DefaultLoop {
             get {
                 return defaultLoop;
@@ -151,7 +151,7 @@ namespace OpenZiti {
         }
 
         public static UVLoop NewLoop() {
-            return new UVLoop(Native.API.newLoop());
+            return new UVLoop(Native.API.z4d_new_loop());
         }
 
         public static string GetConfiguration(ZitiService svc, string configName) {
@@ -301,29 +301,6 @@ namespace OpenZiti {
 
     }
 
-    class MarshalUtils<T> {
-        public static List<T> convertPointerToList(IntPtr arrayPointer) {
-            IntPtr currentArrLoc;
-            List<T> result = new List<T>();
-            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
-
-            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero) {
-                T objectT;
-                if (typeof(T) == typeof(String)) {
-                    objectT = (T)(object)Marshal.PtrToStringUTF8(currentArrLoc);
-                } else if (typeof(T).IsValueType && !typeof(T).IsPrimitive) {
-                    objectT = Marshal.PtrToStructure<T>(currentArrLoc);
-                } else {
-                    // marshal operations for other types can be added here
-                    throw new ZitiException("Marshalling is not yet supported for " + typeof(T));
-                }            
-                result.Add(objectT);
-                arrayPointer = IntPtr.Add(arrayPointer, sizeOfPointer);
-            }
-            return result;
-        }
-    }
-
     /*
     public struct IdentityMaterial {
         public string Certificate;
@@ -344,55 +321,4 @@ namespace OpenZiti {
         EdgeRouterRemoved,
         EdgeRouterUnavailable,
     }
-
-    public struct ziti_service {
-        public string id;
-        public string name;
-        public IntPtr permissions;
-        public bool encryption;
-        public int perm_flags;
-        public string config;
-        public IntPtr /** posture_query_set[] **/ posture_query_set;
-        public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
-        public string updated_at;
-    }
-
-    public struct posture_query_set {
-        public string policy_id;
-        public bool is_passing;
-        public string policy_type;
-        public IntPtr /** posture_query[] **/ posture_queries;
-    }
-    public struct posture_query {
-        public string id;
-        public bool is_passing;
-        public string query_type;
-        public IntPtr /** ziti_process **/ process;
-        public int timeout;
-    }
-
-    public struct ziti_process {
-        public string path;
-    }
-
-    public struct ziti_identity {
-        internal string id;
-        internal string name;
-        internal string app_data;
-    }
-
-    public struct model_map_impl {
-        internal IntPtr /** model_map_entry[] **/ entries;
-        internal IntPtr table;
-        internal int buckets;
-        internal int size;
-    }
-
-    public struct model_map_entry {
-        internal IntPtr key;
-        internal int key_len;
-        internal uint key_hash;
-        internal IntPtr value;
-    }
-
 }

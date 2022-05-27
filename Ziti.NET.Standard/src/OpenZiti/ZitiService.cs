@@ -62,6 +62,8 @@ namespace OpenZiti
         private OnZitiDataReceived onData;
         private OnZitiListening listenCallback;
         private OnZitiClientConnected onClientConnected;
+        private ziti_data_cb dataCB = null;
+        private ziti_conn_cb connCB = null;
 
         internal ZitiService(ZitiIdentity id, ZitiContext context, IntPtr ziti_service)
         {
@@ -70,6 +72,9 @@ namespace OpenZiti
             this.nativeServicePointer = ziti_service;
             nativeService = Marshal.PtrToStructure<ziti_service>(ziti_service);
             this.PostureQueryMap = getPostureQueryMap(nativeService);
+            // NOTE: Keep delegates references so they will not be garbage collected, before ziti service is shutdown
+            dataCB = data_cb;
+            connCB = conn_cb;
         }
 
         /// <summary>
@@ -89,7 +94,7 @@ namespace OpenZiti
             this.onData = onData;
             ZitiConnection conn = new ZitiConnection(this, zitiContext, "this is context in my connection");
             this.conn = conn;
-            Native.API.ziti_dial(conn.nativeConnection, Name, conn_cb, data_cb);
+            Native.API.ziti_dial(conn.nativeConnection, Name, connCB, dataCB);
         }
 
         /// <summary>
@@ -154,18 +159,14 @@ namespace OpenZiti
             return API.GetConfiguration(this, configName);
         }
 
+
         private Dictionary<string, PostureQuerySet> getPostureQueryMap(ziti_service nativeService) {
 
             Dictionary<string, PostureQuerySet> postureQMap = new Dictionary<string, PostureQuerySet>();
             if (nativeService.posture_query_map != IntPtr.Zero) {
-                model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
+	            model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
 
-                List<model_map_entry> nativeModelMapList;
-                if (impl.size > 1) {
-                    nativeModelMapList = MarshalUtils<model_map_entry>.convertPointerToList(impl.entries);
-                } else {
-                    nativeModelMapList = new List<model_map_entry>() { Marshal.PtrToStructure<model_map_entry>(impl.entries) };
-                }
+                List<model_map_entry> nativeModelMapList = MarshalUtils<model_map_entry>.convertPointerMapToList(impl.entries);
 
                 foreach (model_map_entry entry in nativeModelMapList) {
                     string policyId = Marshal.PtrToStringUTF8(entry.key);
