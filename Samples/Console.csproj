@@ -18,11 +18,6 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-    <PlatformTarget>x64</PlatformTarget>
-    <DefineConstants>MAC;LINUX</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Ziti.NET.Standard" Version="0.7.207.24328" />
   </ItemGroup>
