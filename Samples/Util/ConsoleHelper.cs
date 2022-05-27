@@ -12,7 +12,6 @@ namespace OpenZiti.Samples
         private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
         private const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
 
-#if !MACOS && !LINUX
         [DllImport("kernel32.dll")]
         private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
@@ -43,7 +42,6 @@ namespace OpenZiti.Samples
                 return;
             }
         }
-#endif
 
         /// <summary>
         /// For whatever reason - writing perfectly fine bytes out to the console using c# is overly difficult.
@@ -53,9 +51,10 @@ namespace OpenZiti.Samples
         /// <param name="utf8bytes"></param>
         public static void OutputResponseToConsole(byte[] utf8bytes)
         {
-#if !MACOS && !LINUX
-            AllowAsciEscapeCodes();
-#endif
+            if(!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && !RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                AllowAsciEscapeCodes();
+            }
 
             StringReader sr = new StringReader(Encoding.UTF8.GetString(utf8bytes));
 
