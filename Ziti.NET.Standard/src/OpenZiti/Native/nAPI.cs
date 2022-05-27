@@ -345,9 +345,13 @@ namespace OpenZiti.Native {
         //public IntPtr config_types;
         public IntPtr /*public char**/ config_types;
 
-        public Int32 api_page_size;
+        public uint api_page_size;
 
+#if ZITI_X64
+        public long refresh_interval; //the duration in seconds between checking for updates from the controller
+#else
         public Int32 refresh_interval; //the duration in seconds between checking for updates from the controller
+#endif
         public RateType metrics_type; //an enum describing the metrics to collect
 
         public Int32 router_keepalive;
@@ -404,7 +408,7 @@ namespace OpenZiti.Native {
     struct ziti_router_event {
 	    [FieldOffset(0)]
         public int type;
-#if ZITI_X64 
+#if ZITI_X64
         [FieldOffset(8)]
 #else
 	    [FieldOffset(4)]

@@ -9,8 +9,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>TRACE;ZITI_X64</DefineConstants>
   </PropertyGroup>
@@ -58,6 +58,5 @@
   <ItemGroup>
     <Folder Include="src\OpenZiti\native\" />
   </ItemGroup>
-
 
 </Project>

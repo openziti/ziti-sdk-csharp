@@ -51,7 +51,10 @@ namespace OpenZiti.Samples
         /// <param name="utf8bytes"></param>
         public static void OutputResponseToConsole(byte[] utf8bytes)
         {
-            AllowAsciEscapeCodes();
+            if(!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && !RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                AllowAsciEscapeCodes();
+            }
 
             StringReader sr = new StringReader(Encoding.UTF8.GetString(utf8bytes));
 
