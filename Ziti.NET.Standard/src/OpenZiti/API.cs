@@ -16,9 +16,9 @@ limitations under the License.
 
 using System;
 using System.Runtime.InteropServices;
+using OpenZiti.Native;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace OpenZiti {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -299,44 +299,6 @@ namespace OpenZiti {
             return w.Ptr;
         }
 
-    }
-
-    class MarshalUtils<T> {
-        public static List<T> convertPointerToList(IntPtr arrayPointer) {
-            IntPtr currentArrLoc;
-            List<T> result = new List<T>();
-            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
-
-            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero) {
-                T objectT;
-                if (typeof(T) == typeof(String)) {
-                    objectT = (T)(object)Marshal.PtrToStringUTF8(currentArrLoc);
-                } else if (typeof(T).IsValueType && !typeof(T).IsPrimitive) {
-                    objectT = Marshal.PtrToStructure<T>(currentArrLoc);
-                } else {
-                    // marshal operations for other types can be added here
-                    throw new ZitiException("Marshalling is not yet supported for " + typeof(T));
-                }            
-                result.Add(objectT);
-                arrayPointer = IntPtr.Add(arrayPointer, sizeOfPointer);
-            }
-            return result;
-        }
-
-        public static List<OpenZiti.Native.model_map_entry> convertPointerMapToList(IntPtr arrayPointer)
-        {
-            IntPtr currentArrLoc;
-            List<OpenZiti.Native.model_map_entry> result = new List<OpenZiti.Native.model_map_entry>();
-            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
-
-            while ((currentArrLoc = arrayPointer) != IntPtr.Zero)
-            {
-                OpenZiti.Native.model_map_entry objectT = Marshal.PtrToStructure<OpenZiti.Native.model_map_entry>(currentArrLoc);
-                result.Add(objectT);
-                arrayPointer = objectT._next;
-            }
-            return result;
-        }
     }
 
     /*

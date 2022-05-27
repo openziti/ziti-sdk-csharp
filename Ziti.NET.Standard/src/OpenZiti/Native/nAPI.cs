@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace OpenZiti.Native {
     [StructLayout(LayoutKind.Sequential)]
@@ -329,6 +330,53 @@ namespace OpenZiti.Native {
 	        return arr;
         }
     }
+
+    class MarshalUtils<T>
+    {
+        internal static List<T> convertPointerToList(IntPtr arrayPointer)
+        {
+            IntPtr currentArrLoc;
+            List<T> result = new List<T>();
+            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero)
+            {
+                T objectT;
+                if (typeof(T) == typeof(String))
+                {
+                    objectT = (T)(object)Marshal.PtrToStringUTF8(currentArrLoc);
+                }
+                else if (typeof(T).IsValueType && !typeof(T).IsPrimitive)
+                {
+                    objectT = Marshal.PtrToStructure<T>(currentArrLoc);
+                }
+                else
+                {
+                    // marshal operations for other types can be added here
+                    throw new ZitiException("Marshalling is not yet supported for " + typeof(T));
+                }
+                result.Add(objectT);
+                arrayPointer = IntPtr.Add(arrayPointer, sizeOfPointer);
+            }
+            return result;
+        }
+
+        internal static List<model_map_entry> convertPointerMapToList(IntPtr arrayPointer)
+        {
+            IntPtr currentArrLoc;
+            List<model_map_entry> result = new List<model_map_entry>();
+            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = arrayPointer) != IntPtr.Zero)
+            {
+                model_map_entry objectT = Marshal.PtrToStructure<model_map_entry>(currentArrLoc);
+                result.Add(objectT);
+                arrayPointer = objectT._next;
+            }
+            return result;
+        }
+    }
+
 
 #pragma warning disable 0649
     [StructLayout(LayoutKind.Sequential)]
