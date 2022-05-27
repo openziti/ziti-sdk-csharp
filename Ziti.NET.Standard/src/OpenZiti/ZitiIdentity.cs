@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json.Linq;
 using OpenZiti.Native;
 using NAPI=OpenZiti.Native.API;
 
@@ -74,7 +74,16 @@ namespace OpenZiti {
 		public ZitiStatus InitStats { get; internal set; }
 		public string InitStatusError { get; internal set; }
 		public string IdentityNameFromController { get; internal set; }
-		public string ControllerVersion { get; internal set; }
+		public string ControllerVersion {
+			get
+			{
+				if (ControllerURL == null)
+				{
+					return null;
+				}
+				return GetControllerVersion(ControllerURL);
+			}
+		}
 		public bool ControllerConnected { get; internal set; }
 		public object ApplicationContext { get; internal set; }
 		public InitOptions InitOpts { get; internal set; }
@@ -511,6 +520,13 @@ namespace OpenZiti {
 		public void ZitiDumpToFile(string fileName) {
 			NAPI.z4d_ziti_dump_file(this.WrappedContext.nativeZitiContext, fileName);
 		}
+
+		private string GetControllerVersion(string ztAPI)
+		{
+			IntPtr version = OpenZiti.Native.API.ziti_get_controller_version(this.WrappedContext.nativeZitiContext);
+			ziti_version ver = Marshal.PtrToStructure<ziti_version>(version);
+			return ver.version;
+		}
 	}
 	public struct TransferMetrics {
 		public double Up;
@@ -628,4 +644,5 @@ namespace OpenZiti {
 	public struct ZitiOptions {
 		internal ziti_options NativeZitiOptions;
     }
+
 }

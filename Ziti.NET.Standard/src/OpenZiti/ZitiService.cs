@@ -166,12 +166,7 @@ namespace OpenZiti
             if (nativeService.posture_query_map != IntPtr.Zero) {
 	            model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
 
-                List<model_map_entry> nativeModelMapList;
-                if (impl.size.val > 1) {
-                    nativeModelMapList = MarshalUtils<model_map_entry>.convertPointerToList(impl.entries);
-                } else {
-                    nativeModelMapList = new List<model_map_entry>() { Marshal.PtrToStructure<model_map_entry>(impl.entries) };
-                }
+                List<model_map_entry> nativeModelMapList = MarshalUtils<model_map_entry>.convertPointerMapToList(impl.entries);
 
                 foreach (model_map_entry entry in nativeModelMapList) {
                     string policyId = Marshal.PtrToStringUTF8(entry.key);
