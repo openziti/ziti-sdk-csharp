@@ -248,11 +248,10 @@ namespace OpenZiti {
 				case ZitiEventFlags.ZitiServiceEvent:
 					Native.ziti_service_event ziti_service_event = Marshal.PtrToStructure<Native.ziti_service_event>(ziti_event_t);
 
-					ZitiServiceEvent serviceEvent = new ZitiServiceEvent() {
+					ZitiServiceEvent serviceEvent = new ZitiServiceEvent(ziti_context) {
 						nativeRemovedList = ziti_service_event.removed,
 						nativeChangedList = ziti_service_event.changed,
 						nativeAddedList = ziti_service_event.added,
-						ziti_ctx = ziti_context,
 						Context = this.ApplicationContext,
 						id = this,
 					};
@@ -448,6 +447,13 @@ namespace OpenZiti {
 			}
 		}
 
+		public void SetEnabled(bool enabled) {
+			OpenZiti.Native.API.ziti_set_enabled(this.WrappedContext.nativeZitiContext, enabled);
+		}
+
+		public bool IsEnabled() {
+			return OpenZiti.Native.API.ziti_is_enabled(this.WrappedContext.nativeZitiContext);
+		}
 		public void SubmitMFA(string code) {
 			OpenZiti.Native.API.ziti_mfa_auth(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFASubmit, MFA.GetMFAStatusDelegate(this));
 		}
@@ -464,6 +470,34 @@ namespace OpenZiti {
 			OpenZiti.Native.API.ziti_mfa_remove(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARemove, MFA.GetMFAStatusDelegate(this));
 		}
 
+		public void GetMFARecoveryCodes(string code) {
+			OpenZiti.Native.API.ziti_mfa_get_recovery_codes(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public void GenerateMFARecoveryCodes(string code) {
+			OpenZiti.Native.API.ziti_mfa_new_recovery_codes(this.WrappedContext.nativeZitiContext, code, MFA.AfterMFARecoveryCodes, MFA.GetMFAStatusDelegate(this));
+		}
+
+		public TransferMetrics GetTransferRates() {
+			PrimitiveWrapper<double> upIntPtrWrapper = new PrimitiveWrapper<double>();
+			PrimitiveWrapper<double> downIntPtrWrapper = new PrimitiveWrapper<double>();
+			OpenZiti.Native.API.ziti_get_transfer_rates(this.WrappedContext.nativeZitiContext, upIntPtrWrapper.Ptr, downIntPtrWrapper.Ptr);
+			double[] upMetrics = new double[1];
+			Marshal.Copy(upIntPtrWrapper.Ptr, upMetrics, 0, 1);
+			double[] downMetrics = new double[1];
+			Marshal.Copy(downIntPtrWrapper.Ptr, downMetrics, 0, 1);
+			TransferMetrics tm = new TransferMetrics();
+			tm.Up = upMetrics[0];
+			tm.Down = downMetrics[0];
+			return tm;
+		}
+		public void EndpointStateChange(bool woken, bool unlocked) {
+			OpenZiti.Native.API.ziti_endpoint_state_change(this.WrappedContext.nativeZitiContext, woken, unlocked);
+		}
+	}
+	public struct TransferMetrics {
+		public double Up;
+		public double Down;
 	}
 
 	public class ZitiContextEvent {
@@ -482,44 +516,63 @@ namespace OpenZiti {
 	}
 
 	public class ZitiServiceEvent {
-		internal IntPtr nativeRemovedList;
-		internal IntPtr nativeChangedList;
-		internal IntPtr nativeAddedList;
-		internal IntPtr ziti_ctx;
+
+		public ZitiServiceEvent(IntPtr zitiCtx) {
+			this.ziti_ctx = zitiCtx;
+		}
+		internal IntPtr nativeRemovedList {
+			set => removedList = createZitiServiceList(value);	
+        }
+		internal IntPtr nativeChangedList {
+			set => changedList = createZitiServiceList(value);
+        }
+		internal IntPtr nativeAddedList {
+			set => addedList = createZitiServiceList(value);
+		}
+		internal IntPtr ziti_ctx { get; }
 		internal ZitiIdentity id;
+		internal List<ZitiService> removedList;
+		internal List<ZitiService> changedList;
+		internal List<ZitiService> addedList;
 
 		public object Context { get; internal set; }
 
 		private IEnumerable<IntPtr> array_iterator(IntPtr arr) {
 			int index = 0;
 			while (true) {
-				IntPtr removedService = Native.API.ziti_service_array_get(arr, index);
+				IntPtr zitiService = Native.API.ziti_service_array_get(arr, index);
 				index++;
-				if (removedService == IntPtr.Zero) {
+				if (zitiService == IntPtr.Zero) {
 					break;
 				}
 
-				yield return removedService;
+				yield return zitiService;
 			}
 		}
 
-		public IEnumerable<ZitiService> Removed() {
-			foreach (IntPtr p in array_iterator(nativeRemovedList)) {
+		private List<ZitiService> createZitiServiceList(IntPtr nativeServiceArray) {
+			List<ZitiService> servicesList = new List<ZitiService>();
+			foreach (IntPtr p in array_iterator(nativeServiceArray)) {
 				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+				servicesList.Add(svc);
+			}
+			return servicesList;
+		}
+
+		public IEnumerable<ZitiService> Removed() {
+			foreach (ZitiService svc in removedList) {
 				yield return svc;
 			}
 		}
 
 		public IEnumerable<ZitiService> Changed() {
-			foreach (IntPtr p in array_iterator(nativeChangedList)) {
-				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+			foreach (ZitiService svc in changedList) {
 				yield return svc;
 			}
 		}
 
 		public IEnumerable<ZitiService> Added() {
-			foreach (IntPtr p in array_iterator(nativeAddedList)) {
-				ZitiService svc = new ZitiService(id, new ZitiContext(ziti_ctx), p);
+			foreach (ZitiService svc in addedList) {
 				yield return svc;
 			}
 		}

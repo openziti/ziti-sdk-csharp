@@ -18,6 +18,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace OpenZiti {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -168,7 +169,8 @@ namespace OpenZiti {
         MFA_AUTH_STATUS,
         ENROLLMENT_VERIFICATION,
         ENROLLMENT_REMOVE,
-        ENROLLMENT_CHALLENGE
+        ENROLLMENT_CHALLENGE,
+        RECOVERY_CODES,
     }
 
     public struct MFAEnrollment {
@@ -208,15 +210,7 @@ namespace OpenZiti {
             };
 
             if (ziti_mfa_enrollment.recovery_codes != IntPtr.Zero) {
-                // Could not fetch the size of the array from the intptr
-                IntPtr[] recoveryCodePointers = new IntPtr[20];
-                Marshal.Copy(ziti_mfa_enrollment.recovery_codes, recoveryCodePointers, 0, 20);
-                evt.recoveryCodes = new string[20];
-
-                for (int i = 0; i < 20; i++) {
-                    string value = Marshal.PtrToStringAnsi(recoveryCodePointers[i]);
-                    evt.recoveryCodes[i] = value;
-                }
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(ziti_mfa_enrollment.recovery_codes).ToArray();
             }
 
             cb?.Invoke(evt);
@@ -239,6 +233,18 @@ namespace OpenZiti {
                 status = (ZitiStatus)status,
                 operationType = MFAOperationType.ENROLLMENT_REMOVE
             };
+            cb?.Invoke(evt);
+        }
+        internal static void AfterMFARecoveryCodes(IntPtr ziti_context, int status, IntPtr recoveryCodes, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.RECOVERY_CODES
+            };
+            if (recoveryCodes != IntPtr.Zero) {
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(recoveryCodes).ToArray();
+            }
             cb?.Invoke(evt);
         }
     }
@@ -269,7 +275,54 @@ namespace OpenZiti {
         }
 
     }
+    class PrimitiveWrapper<T> : IDisposable {
+        public IntPtr Ptr { get; private set; }
 
+        public PrimitiveWrapper() {
+            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+        }
+
+        ~PrimitiveWrapper() {
+            if (Ptr != IntPtr.Zero) {
+                Marshal.FreeHGlobal(Ptr);
+                Ptr = IntPtr.Zero;
+            }
+        }
+
+        public void Dispose() {
+            Marshal.FreeHGlobal(Ptr);
+            Ptr = IntPtr.Zero;
+            GC.SuppressFinalize(this);
+        }
+
+        public static implicit operator IntPtr(PrimitiveWrapper<T> w) {
+            return w.Ptr;
+        }
+
+    }
+
+    class MarshalUtils<T> {
+        public static List<T> convertPointerToList(IntPtr arrayPointer) {
+            IntPtr currentArrLoc;
+            List<T> result = new List<T>();
+            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero) {
+                T objectT;
+                if (typeof(T) == typeof(String)) {
+                    objectT = (T)(object)Marshal.PtrToStringUTF8(currentArrLoc);
+                } else if (typeof(T).IsValueType && !typeof(T).IsPrimitive) {
+                    objectT = Marshal.PtrToStructure<T>(currentArrLoc);
+                } else {
+                    // marshal operations for other types can be added here
+                    throw new ZitiException("Marshalling is not yet supported for " + typeof(T));
+                }            
+                result.Add(objectT);
+                arrayPointer = IntPtr.Add(arrayPointer, sizeOfPointer);
+            }
+            return result;
+        }
+    }
 
     /*
     public struct IdentityMaterial {
@@ -295,24 +348,26 @@ namespace OpenZiti {
     public struct ziti_service {
         public string id;
         public string name;
-        public string permissions;
+        public IntPtr permissions;
         public bool encryption;
         public int perm_flags;
         public string config;
-        //public posture_query_set posture_query_set;
+        public IntPtr /** posture_query_set[] **/ posture_query_set;
+        public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
+        public string updated_at;
     }
 
     public struct posture_query_set {
         public string policy_id;
         public bool is_passing;
         public string policy_type;
-        public posture_query[] posture_queries;
+        public IntPtr /** posture_query[] **/ posture_queries;
     }
     public struct posture_query {
         public string id;
         public bool is_passing;
         public string query_type;
-        public ziti_process process;
+        public IntPtr /** ziti_process **/ process;
         public int timeout;
     }
 
@@ -325,4 +380,19 @@ namespace OpenZiti {
         internal string name;
         internal string app_data;
     }
+
+    public struct model_map_impl {
+        internal IntPtr /** model_map_entry[] **/ entries;
+        internal IntPtr table;
+        internal int buckets;
+        internal int size;
+    }
+
+    public struct model_map_entry {
+        internal IntPtr key;
+        internal int key_len;
+        internal uint key_hash;
+        internal IntPtr value;
+    }
+
 }
