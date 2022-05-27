@@ -491,6 +491,9 @@ namespace OpenZiti {
 			tm.Down = downMetrics[0];
 			return tm;
 		}
+		public void EndpointStateChange(bool woken, bool unlocked) {
+			OpenZiti.Native.API.ziti_endpoint_state_change(this.WrappedContext.nativeZitiContext, woken, unlocked);
+		}
 	}
 	public struct TransferMetrics {
 		public double Up;
