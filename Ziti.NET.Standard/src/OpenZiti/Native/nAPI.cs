@@ -237,10 +237,17 @@ namespace OpenZiti.Native {
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_is_enabled", CallingConvention = CALL_CONVENTION)]
         public static extern bool ziti_is_enabled(IntPtr ziti_context);
 
+        //defined in C: extern void ziti_get_transfer_rates(ziti_context ztx, double *up, double *down)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_transfer_rates", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_get_transfer_rates(IntPtr ziti_context, IntPtr up, IntPtr down);
+
+        //defined in C: extern void ziti_endpoint_state_change(ziti_context ztx, bool woken, bool unlocked)
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_endpoint_state_change", CallingConvention = CALL_CONVENTION)]
+        public static extern void ziti_endpoint_state_change(IntPtr ziti_context, bool woken, bool unlocked);
+
         //defined in C: char* gimme_string();
         [DllImport(Z4D_DLL_PATH, EntryPoint = "gimme_string", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr gimme_string_intptr();
-        
 
         /*
         //defined in C: extern void ziti_dump(ziti_context ztx);

@@ -30,6 +30,8 @@
     <Compile Include="..\Samples\WeatherStream.cs" Link="WeatherStream.cs" />
     <Compile Include="..\Samples\WeatherMFA.cs" Link="WeatherMFA.cs" />
     <Compile Include="..\Samples\WeatherOnOff.cs" Link="WeatherOnOff.cs" />
+    <Compile Include="..\Samples\WeatherMetrics.cs" Link="WeatherMetrics.cs" />
+    <Compile Include="..\Samples\WeatherStateChange.cs" Link="WeatherStateChange.cs" />
     <Compile Include="..\Samples\Util\ZitiInstance.cs" Link="src\Util\ZitiInstance.cs" />
     <Compile Include="..\Samples\Util\ZitiCommand.cs" Link="src\Util\ZitiCommand.cs" />
     <Compile Include="..\Ziti.NET.Standard\src\OpenZiti\API.cs" Link="src\OpenZiti\API.cs" />

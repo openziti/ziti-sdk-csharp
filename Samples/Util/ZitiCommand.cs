@@ -56,7 +56,8 @@ namespace OpenZiti {
                 isSupported(supportedCmds, 7, "Generate MFA recovery codes for the identity");
                 isSupported(supportedCmds, 8, "Enable identity");
                 isSupported(supportedCmds, 9, "Disable identity");
-                isSupported(supportedCmds, 10, "Check identity enable status");
+                isSupported(supportedCmds, 10, "Check identity enabled status");
+                isSupported(supportedCmds, 11, "Invoke Endpoint status change");
                 isSupported(supportedCmds, 0, "Exit from the application");
                 Console.WriteLine("Enter your choice and press enter: ");
                 string value = Console.ReadLine();
