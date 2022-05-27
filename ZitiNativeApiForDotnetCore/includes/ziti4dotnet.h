@@ -19,20 +19,19 @@
 extern "C" {
 #endif
 
-Z4D_API extern int z4d_ziti_close(ziti_connection con);
-Z4D_API extern int z4d_uv_run(void* loop);
-Z4D_API extern const char** z4d_all_config_types();
-Z4D_API extern uv_loop_t* z4d_default_loop();
+Z4D_API int z4d_ziti_close(ziti_connection con);
+Z4D_API int z4d_uv_run(void* loop);
+Z4D_API void* z4d_new_loop();
+Z4D_API const char** z4d_all_config_types();
+Z4D_API uv_loop_t* z4d_default_loop();
 Z4D_API void* z4d_registerUVTimer(uv_loop_t* loop, uv_timer_cb timer_cb, uint64_t iterations, uint64_t delay);
 Z4D_API void* z4d_stop_uv_timer(uv_timer_t* t);
-Z4D_API void passAndPrint(void* anything);
-Z4D_API void* newLoop();
-Z4D_API int ziti_event_type_from_pointer(const ziti_event_t *event);
-Z4D_API ziti_service* ziti_service_array_get(ziti_service_array arr, int idx);
+Z4D_API int z4d_event_type_from_pointer(const ziti_event_t *event);
+Z4D_API ziti_service* z4d_service_array_get(ziti_service_array arr, int idx);
 
-Z4D_API char** make_char_array(int size);
-Z4D_API void set_char_at(char **a, char *s, int n);
-Z4D_API void free_char_array(char **a, int size);
+Z4D_API char** z4d_make_char_array(int size);
+Z4D_API void z4d_set_char_at(char **a, char *s, int n);
+Z4D_API void z4d_free_char_array(char **a, int size);
 
 Z4D_API void z4d_ziti_dump_log(ziti_context ztx);
 Z4D_API void z4d_ziti_dump_file(ziti_context ztx, const char* outputFile);
