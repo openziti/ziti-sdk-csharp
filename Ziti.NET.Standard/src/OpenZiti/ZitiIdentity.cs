@@ -18,11 +18,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using OpenZiti.Native;
+using NAPI=OpenZiti.Native.API;
 
 namespace OpenZiti {
 	public class ZitiIdentity {
@@ -73,7 +74,16 @@ namespace OpenZiti {
 		public ZitiStatus InitStats { get; internal set; }
 		public string InitStatusError { get; internal set; }
 		public string IdentityNameFromController { get; internal set; }
-		public string ControllerVersion { get; internal set; }
+		public string ControllerVersion {
+			get
+			{
+				if (ControllerURL == null)
+				{
+					return null;
+				}
+				return GetControllerVersion(ControllerURL);
+			}
+		}
 		public bool ControllerConnected { get; internal set; }
 		public object ApplicationContext { get; internal set; }
 		public InitOptions InitOpts { get; internal set; }
@@ -163,13 +173,17 @@ namespace OpenZiti {
 
 		public ZitiOptions Configure(int refreshInterval) {
 			Native.API.ziti_log_init(Loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(API.NativeLogger));
-			IntPtr cfgs = Native.NativeHelperFunctions.ToPtr(InitOpts.ConfigurationTypes);
+			IntPtr cfgs = NAPI.ToPtr(InitOpts.ConfigurationTypes);
 
 			Native.ziti_options ziti_opts = new Native.ziti_options {
 				//app_ctx = GCHandle.Alloc(InitOpts.ApplicationContext, GCHandleType.Pinned),
 				config = InitOpts.IdentityFile,
 				config_types = cfgs,
+#if ZITI_X64
+				refresh_interval = (long)refreshInterval,
+#else
 				refresh_interval = refreshInterval,
+#endif
 				metrics_type = InitOpts.MetricType,
 				pq_mac_cb = native_ziti_pq_mac_cb,
 				events = InitOpts.EventFlags,
@@ -191,6 +205,7 @@ namespace OpenZiti {
 
 		public void Shutdown() {
 			runlock.Release();
+			this.Stop();
 			try {
 				Native.API.ziti_shutdown(this.NativeContext);
 
@@ -202,7 +217,7 @@ namespace OpenZiti {
 		}
 
 		private void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event_t) {
-			int type = Native.NativeHelperFunctions.ziti_event_type_from_pointer(ziti_event_t);
+			int type = Native.API.z4d_event_type_from_pointer(ziti_event_t);
 			switch (type) {
 				case ZitiEventFlags.ZitiContextEvent:
 					NativeContext = ziti_context;
@@ -405,6 +420,7 @@ namespace OpenZiti {
 					start = DateTime.Now;
 					uvLoop = API.DefaultLoop;
 					long interval = 1000; //ms
+					//add a timer to the loop just so uv doesn't run and then exit
 					uvTimer = Native.API.z4d_registerUVTimer(uvLoop.nativeUvLoop, timer, interval, interval);
 					this.Run();
 				} catch (Exception e) {
@@ -426,7 +442,7 @@ namespace OpenZiti {
 			}
 		}
 
-		public void Stop() {
+		private void Stop() {
 			Native.API.z4d_stop_uv_timer(uvTimer);
 		}
 
@@ -497,6 +513,20 @@ namespace OpenZiti {
 		public void EndpointStateChange(bool woken, bool unlocked) {
 			OpenZiti.Native.API.ziti_endpoint_state_change(this.WrappedContext.nativeZitiContext, woken, unlocked);
 		}
+
+		public void ZitiDumpToLog() {
+			NAPI.z4d_ziti_dump_log(this.WrappedContext.nativeZitiContext);
+		}
+		public void ZitiDumpToFile(string fileName) {
+			NAPI.z4d_ziti_dump_file(this.WrappedContext.nativeZitiContext, fileName);
+		}
+
+		private string GetControllerVersion(string ztAPI)
+		{
+			IntPtr version = OpenZiti.Native.API.ziti_get_controller_version(this.WrappedContext.nativeZitiContext);
+			ziti_version ver = Marshal.PtrToStructure<ziti_version>(version);
+			return ver.version;
+		}
 	}
 	public struct TransferMetrics {
 		public double Up;
@@ -543,7 +573,7 @@ namespace OpenZiti {
 		private IEnumerable<IntPtr> array_iterator(IntPtr arr) {
 			int index = 0;
 			while (true) {
-				IntPtr zitiService = Native.API.ziti_service_array_get(arr, index);
+				IntPtr zitiService = Native.API.z4d_service_array_get(arr, index);
 				index++;
 				if (zitiService == IntPtr.Zero) {
 					break;
@@ -612,6 +642,7 @@ namespace OpenZiti {
 	}
 
 	public struct ZitiOptions {
-		internal Native.ziti_options NativeZitiOptions;
+		internal ziti_options NativeZitiOptions;
     }
+
 }
