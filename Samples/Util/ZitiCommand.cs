@@ -69,7 +69,7 @@ namespace OpenZiti {
                         throw new Exception("wrong option");
                     }
 
-                } catch (Exception e) {
+                } catch {
                     Console.WriteLine("You have entered a wrong value {0}, try again (Y/N) : ", value);
                     string retryVar = Console.ReadLine();
                     if (!("Y".Equals(retryVar) || "y".Equals(retryVar))) {

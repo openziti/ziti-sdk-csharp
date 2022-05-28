@@ -6,7 +6,7 @@ on:
       - enable-macos-linux
       - ziti_dump_native_api_clint 
 env:
-  ZITI_SDK_C_BRANCH: 0.28.1
+  ZITI_SDK_C_BRANCH: 0.28.4
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   BUILD_NUMBER: ${{ github.run_number }}
   BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore

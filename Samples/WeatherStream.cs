@@ -64,8 +64,7 @@ namespace OpenZiti.Samples {
 				//pump the response to the console's standard out
 				await zitiStream.PumpAsync(Console.OpenStandardOutput());
 			}
-
-			zid1.Stop();
+			
 			zid1.Shutdown();
 		}
 	}
