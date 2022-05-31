@@ -51,18 +51,18 @@ namespace OpenZiti.Samples {
         }
 
         private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
-	        string expected = (string)e.Context;
+            string expected = (string)e.Context;
             try {
-	            var service = e.Added().First(s => s.Name == expected);
+                var service = e.Added().First(s => s.Name == expected);
                 service.Dial(onConnected, onData);
-            } catch(Exception ex) {
-		        Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
-	        }
+            } catch (Exception ex) {
+                Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
+            }
         }
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
             ZitiUtil.CheckStatus(status);
-            
+
             string cfg = connection.Service.GetConfiguration("weather-config-type");
             string where = null;
             if (cfg == null) {

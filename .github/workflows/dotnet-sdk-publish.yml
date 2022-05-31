@@ -6,14 +6,14 @@ on:
       - main
       - 'release-*'
       - 'beta-release-*'
+      
   pull_request:
     branches: 
       - main
-
 jobs:
   build-csdk-win:
+    if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}"
     runs-on: windows-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
       - uses: actions/checkout@v2
         with:
@@ -27,7 +27,7 @@ jobs:
       - if: github.event_name == 'pull_request'
         run: echo "GIT_BRANCH=$env:GITHUB_HEAD_REF" >> $env:GITHUB_ENV
       - name: Create NuGet package
-        run: ${{ github.workspace }}/create-nuget-package.bat
+        run: dotnet build Ziti.NET.Standard/Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release /p:NUGET_SOURCE=https://api.nuget.org/v3/index.json /p:API_KEY=${{secrets.NUGET_API_KEY}}
       - if: ${{ env.GIT_BRANCH == 'main' }} 
         name: Publish Ziti.NET.Standard
         run: dotnet nuget push Ziti.NET.Standard\Ziti.NET.Standard*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
