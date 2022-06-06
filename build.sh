@@ -93,7 +93,7 @@ if [[ "$NATIVE_LIB_VERSION" != "" ]]; then
     echo " " 
     echo "Or open $NATIVE_CODE_BUILD_PATH/ziti-sdk.sln"
 
-    echo "install nuget before executing the beloe commands"
+    echo "install nuget before executing the below commands"
     nuget pack $SCRIPT_DIR/native-package-local.nuspec -Version $NATIVE_LIB_VERSION -OutputDirectory $SCRIPT_DIR
     nuget push -source $NUGET_PATH $SCRIPT_DIR/Ziti.NET.Standard.native.$NATIVE_LIB_VERSION.nupkg
 
@@ -103,6 +103,8 @@ if [[ "$NATIVE_LIB_VERSION" != "" ]]; then
     echo "copy ziti.def library"
     echo "cl /C /EP /I build-win/x86/_deps/ziti-sdk-c-src/includes /c library/sharp-errors.c > library/ZitiStatus.cs"
     echo "copy library/ZitiStatus.cs ../Ziti.NET.Standard/src/OpenZiti"
+
+    echo "manually update the Ziti.NET.Standard.native nuget package in to the Ziti.NET.standard csproj, before building Ziti.NET.standard library"
 
 fi
 
@@ -179,6 +181,7 @@ if [[ "$STANDARD_LIB" == "build" ]]; then
         echo " "
         echo "====================================================="
         echo "result of nuget push $NUPKG_FILE: $retval"
+        echo "manually update the Ziti.NET.Standard nuget package in to the Samples csproj, before building Samples application"
         echo "====================================================="
     fi
 fi
