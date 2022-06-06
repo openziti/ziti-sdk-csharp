@@ -75,7 +75,7 @@ if [[ "$NATIVE_LIB_VERSION" != "" ]]; then
 
     NATIVE_CODE_BUILD_PATH="$SCRIPT_DIR/ZitiNativeApiForDotnetCore/build-win"
 
-    if [[ "$CLEAN_BUILD" -eq "clean" ]]; then
+    if [[ "$CLEAN_BUILD" == "clean" ]]; then
         echo "clean up:  $NATIVE_CODE_BUILD_PATH"
         rm -rf $NATIVE_CODE_BUILD_PATH  
     fi
@@ -109,7 +109,7 @@ fi
 if [[ "$STANDARD_LIB" == "build" ]]; then
     echo "Building the solution for the Ziti.NET.standard library"
 
-    if [[ "$CLEAN_BUILD" -eq "clean" ]]; then
+    if [[ "$CLEAN_BUILD" == "clean" ]]; then
 
         echo "clean up:  $SCRIPT_DIR/Ziti.NET.standard/bin"
         rm -rf $SCRIPT_DIR/Ziti.NET.standard/bin
@@ -186,7 +186,7 @@ fi
 if [[ "$SAMPLE_PROGRAMS" == "build" ]]; then
     echo "Building Samples solution"
 
-    if [[ "$CLEAN_BUILD" -eq "clean" ]]; then
+    if [[ "$CLEAN_BUILD" == "clean" ]]; then
 
         echo "clean up:  $SCRIPT_DIR/Samples/bin"
         rm -rf $SCRIPT_DIR/Samples/bin
