@@ -11,7 +11,7 @@ env:
   ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
 jobs:
   build-csdk-win:
-    runs-on: windows-latest
+    runs-on: windows-2019
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
       - uses: actions/checkout@v2
