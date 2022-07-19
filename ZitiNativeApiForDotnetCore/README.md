@@ -5,6 +5,9 @@ the .def file is not part of the build... update it with:
 cd ZitiNativeApiForDotnetCore
 defgen 64 build/x64/_deps/ziti-sdk-c-build/library/Release/ziti.dll
 
+move ziti.def to the library folder:
+move /y ziti.def library
+
 remove the extra files:
 
 
