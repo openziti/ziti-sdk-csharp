@@ -1,11 +1,11 @@
-name: Build and publish ziti native libraries to nuget
+name: Publish Ziti.NET.Standard.native 
 
 on:
   workflow_dispatch:
     inputs:
       version:
         description: Version of CSDK/Nuget Package
-        default: 0.25.4
+        default: 0.29.1
         required: true
 env:
   ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
