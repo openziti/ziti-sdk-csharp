@@ -6,3 +6,4 @@ NuGet
 nuget-local
 dotnet-install.sh
 *.nupkg
+docfx-output
