@@ -1,0 +1,84 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [ "**.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "src": "../../ziti-sdk-csharp/Ziti.NET.Standard"
+        }
+      ],
+      "dest": "api/csharp",
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**/*.yml",
+          "api/**/*.md"
+        ]
+      },
+      {
+        "files": [
+          "ziti/**/*.md",
+          "ziti/**/toc.yml",
+          "ziti-cmd/quickstart/**/*.md",
+          "ziti-cmd/quickstart/**/toc.yml",
+          "ziti-android-app/**/*.md",
+          "glossary/**/*.md",
+          "glossary/**/toc.yml",
+          "learning/**/*.md",
+          "learning/**/toc.yml",
+          "articles/**/*.md",
+          "articles/**/toc.yml",
+          "blog/**/*.md",
+          "blog/**/toc.yml",
+          "toc.yml",
+          "*.md",
+          "*.md.contents"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "**/*.svg",
+          "**/*.png",
+          "**/*.gif",
+          "images/**",
+          "ziti/manage/*.yaml",
+          "index.html",
+          "index.css",
+          "policies/*.html",
+          "policies/*.pdf",
+          "api/clang/api/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**"
+        ]
+      }
+    ],
+    "dest": "docfx-output",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "templates/nf"
+    ],
+    "postProcessors": [],
+    "markdownEngineName": "dfm",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "disableGitFeatures": false,
+  }
+}
+
