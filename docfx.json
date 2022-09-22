@@ -3,12 +3,13 @@
     {
       "src": [
         {
-          "files": [ "**.csproj" ],
-          "exclude": [ "**/bin/**", "**/obj/**" ],
-          "src": "../../ziti-sdk-csharp/Ziti.NET.Standard"
+          "src": "./Ziti.NET.Standard",
+          "files": [
+            "*.csproj"
+          ]
         }
       ],
-      "dest": "api/csharp",
+      "dest": "api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -17,44 +18,23 @@
     "content": [
       {
         "files": [
-          "api/**/*.yml",
-          "api/**/*.md"
+          "api/**.yml",
+          "api/index.md"
         ]
       },
       {
         "files": [
-          "ziti/**/*.md",
-          "ziti/**/toc.yml",
-          "ziti-cmd/quickstart/**/*.md",
-          "ziti-cmd/quickstart/**/toc.yml",
-          "ziti-android-app/**/*.md",
-          "glossary/**/*.md",
-          "glossary/**/toc.yml",
-          "learning/**/*.md",
-          "learning/**/toc.yml",
-          "articles/**/*.md",
+          "articles/**.md",
           "articles/**/toc.yml",
-          "blog/**/*.md",
-          "blog/**/toc.yml",
           "toc.yml",
-          "*.md",
-          "*.md.contents"
+          "*.md"
         ]
       }
     ],
     "resource": [
       {
         "files": [
-          "**/*.svg",
-          "**/*.png",
-          "**/*.gif",
-          "images/**",
-          "ziti/manage/*.yaml",
-          "index.html",
-          "index.css",
-          "policies/*.html",
-          "policies/*.pdf",
-          "api/clang/api/**"
+          "images/**"
         ]
       }
     ],
@@ -64,21 +44,22 @@
           "apidoc/**.md"
         ],
         "exclude": [
-          "obj/**"
+          "obj/**",
+          "_site/**"
         ]
       }
     ],
-    "dest": "docfx-output",
+    "dest": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "templates/nf"
+      "default"
     ],
     "postProcessors": [],
-    "markdownEngineName": "dfm",
+    "markdownEngineName": "markdig",
     "noLangKeyword": false,
     "keepFileLink": false,
-    "disableGitFeatures": false,
+    "cleanupCacheHistory": false,
+    "disableGitFeatures": false
   }
 }
-
