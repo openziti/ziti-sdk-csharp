@@ -1,0 +1,967 @@
+{
+  "homepages": [],
+  "source_base_path": "c:/git/github/openziti/ziti-sdk-csharp/docfx",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.API.Enrollment.AfterEnroll.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.API.Enrollment.AfterEnroll.html",
+          "hash": "QLHz9lTwhEK6JxYrajClALily+Mrpf5xh9i0M9RWHaQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.API.Enrollment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.API.Enrollment.html",
+          "hash": "ceRuonM5VgEPLzSAxtlNrljJ2oP1Bxhy3lWx1XKPVCk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.API.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.API.html",
+          "hash": "/cltTiI3fbMxyf31ucIIaaS0XOoNBIPxwBJi2IHgsbc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.EnumHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.EnumHelper.html",
+          "hash": "9QABnGqHW1fUBTWns+Ie5BZPlVxjEoOegPemMnTA+3I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.GCHandleExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.GCHandleExtensions.html",
+          "hash": "293j2ct/LsaclS0grzAdwMYGSvJ4G0Em1QzKCHBNsxU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.IdMaterial.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.IdMaterial.html",
+          "hash": "/5AKsPMcE6H+SjPz5fY17LFSxbhSf4OVZyvnSxuH1TI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Logging.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Logging.html",
+          "hash": "knCspRZ8iThdeeKBjnq/fIWwSyjeyRGXxcYplpEeC6c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.API.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.API.html",
+          "hash": "n0c0xCvYiuRf04z2nFHHMWn1J++Av8pq1UsC6XxOBG0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.NativeHelperFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.NativeHelperFunctions.html",
+          "hash": "pv3wLlbNWD3tcvxPyppRq61HDJJfwcCi37PAiUy5+lg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.OnUVTimer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.OnUVTimer.html",
+          "hash": "APOTbHrQPSTBzwNxElVKytxLzlKw1NpnC8uGaed1/G8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.log_writer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.log_writer.html",
+          "hash": "HzxL6COSglhdHwZZSiXdssTUuoDXN4Cth7P9A3lv/24="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.tls_context.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.tls_context.html",
+          "hash": "GPOvxf3/eGoZ4xD/91aKiCkJn4SD/OJN76UCWFrqOHM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.html",
+          "hash": "K5NX1+hsKJUhwcu2v7vh58sDlk4npqPzTkcv6t7Hh1k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_aq_mfa_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_aq_mfa_cb.html",
+          "hash": "KU9QnnWaGN1LMEoFDxEVnv+dWwgWZijWqntrtMBH8fM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_ar_mfa_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_ar_mfa_cb.html",
+          "hash": "kkyk4nAGPE20QmemFQ3EVFUZsErN/7EdG16e9EeeFT4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_ar_mfa_status_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_ar_mfa_status_cb.html",
+          "hash": "sDqPYcSrVJyC2Rv1N92RuCLtWF7S4uKP+7fof4S8GjA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_client_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_client_cb.html",
+          "hash": "7EKM3lh89jTctzcFPTuf9L0mUsHzXAM+NkLApzXaWTY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_close_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_close_cb.html",
+          "hash": "Rz6q8wrWplkI6H1Uaf5MBxRkaQBdvQZz6X+FtqJiBv4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_conn_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_conn_cb.html",
+          "hash": "SaA24WyH8aJ9ciA7dxynV6O635nd1gWtqdttHAr2K6w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_data_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_data_cb.html",
+          "hash": "YTXuDynXJJ2M4tlFDZLDTHNH2PSbsM9LqCqYSWl3wWk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_enroll_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_enroll_cb.html",
+          "hash": "Yj2RfWm+UsZCR5bxUSdRYTqTT5mUrQw4PFaMUyz8RZo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_enroll_options.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_enroll_options.html",
+          "hash": "e5H+x3zUGWibBXQzjJdDq7j3XkZwTtIhbxQjvI8MZGQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_event_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_event_cb.html",
+          "hash": "+bbN13F2Mz/BgC8dVKTCcR4J3TldyqaeioSvsmkPSOg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_identity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_identity.html",
+          "hash": "abyrXPH27poVemh/eMxiw3eiCgwr+Mr0WapJOUVydbA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_listen_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_listen_cb.html",
+          "hash": "B2nKXCnc685lVP76DJEUYBopa99IR7FhEf03xOvrvgo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_options.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_options.html",
+          "hash": "NeYNJrnLfHNkw88frPfVideda+tpb4t08/iDrUm++vA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_domain_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_domain_cb.html",
+          "hash": "uCGW9thTuQxWRkRd2z+FHyUCyUJH/EQYS6/DBWJIELk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_mac_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_mac_cb.html",
+          "hash": "fAj/xZ+h8hXxobGGZsGBb2Dm5NWkB4O+ODkfvr/E2hE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_os_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_os_cb.html",
+          "hash": "NkxozzIgp9xHX8W8xgGCCEsUn43Xv+CTRKhnZQPK01k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_process_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pq_process_cb.html",
+          "hash": "HX5XuHZ9rTKgswhmWqpDzhvQzwdwUvl3CreXb36aQ80="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_domain_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_domain_cb.html",
+          "hash": "p9t4kFLXhOqX9Lf+T6J0JZ73kdZ4rzNZts1AwnKPEDo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_mac_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_mac_cb.html",
+          "hash": "03yw2C+2PBCZ/lD4cPrtOFHOkrnov6r7vKsCAza8nps="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_os_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_os_cb.html",
+          "hash": "9lox4I/dJuO6vhQENH04VkxqFT9ajGOuE7oaBO2be1c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_process_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_pr_process_cb.html",
+          "hash": "MXJ0cnCm2SB674OhozHzw5OPAc4Ykl/nRN++ADnfH+I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_service.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_service.html",
+          "hash": "udY2BscGhmJ6oD5vDtd+Ywnb1NdpUhVnctBQ1WsNMMA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_service_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_service_cb.html",
+          "hash": "f0dZBTKuB4N8Erom/jPswOAxzweg8S/7TTr2NyJeVec="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.Native.ziti_write_cb.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.Native.ziti_write_cb.html",
+          "hash": "3hJuuGv4hcxf7GKQXf1L8STU5y16k1fmkDrg+n5MtZ8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnClientAccept.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnClientAccept.html",
+          "hash": "gMCBjqXTNNOf+peK5HT0KvODVoL+6kFohKzGh83ubu0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnInit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnInit.html",
+          "hash": "dGXDScvc00egiy5d5drgYD7DOU0vRULHU5qIe0hbhcA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnServiceChange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnServiceChange.html",
+          "hash": "X/i4IzK8U7XAa5RKl+7je35KBNooV0BM2Hof3NDahlw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnZitiClientConnected.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnZitiClientConnected.html",
+          "hash": "5ef+ep2F++Dnc8BplZc4vfoA7XolKjgHRHrr/GrMsTA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnZitiClientData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnZitiClientData.html",
+          "hash": "GAHr6bSGcCdgAgwFRiKrX8825IZKrxDtlwVh1pyWbUk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnZitiConnected.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnZitiConnected.html",
+          "hash": "zfqed+RRz6C6zy9TkrOA/kKAnfs5SeSvLbCua7kq5Ac="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnZitiDataReceived.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnZitiDataReceived.html",
+          "hash": "4dvLtEb25QPJnLiZkD9zQJ/+hBd+0QsrQWbP6j+QWmg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnZitiDataWritten.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnZitiDataWritten.html",
+          "hash": "YEAW7SDdjMaaDgULFI45rfbyqza0hSVwhYwJH3bStRo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.OnZitiListening.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.OnZitiListening.html",
+          "hash": "q5wHbUM7S3mzLwr45Mt9PVxc5bbSvMaV0JeTF+pfCKg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.RateType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.RateType.html",
+          "hash": "qA7xiPUEI/2Cj102FF5nkLvJ6CwXTehGFbgtjdbOiuk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.RouterEventType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.RouterEventType.html",
+          "hash": "KA6n4rU0e0U6sk9VJzj9jeoYSPHkLMLkaxT5E1cia0Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.UVLoop.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.UVLoop.html",
+          "hash": "uw38g0IsZkHv0uABcLmbMS6mVcIOrFnM3OOUXtlR738="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiConnection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiConnection.html",
+          "hash": "XNfyppfvW8VQBZs7fqbULp8gqLgdjGT33Uzs9Ufno7E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiContext.html",
+          "hash": "XtfEI1X9GytkO3jTTdPl/jsV+oJ4rNrJHDopWvjkpcw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiContextEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiContextEvent.html",
+          "hash": "vJLIsnwSsY67tUUbgUbKh1bzW3n1OKnWW0igOt9wBvE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiEnrollment.AfterEnrollment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiEnrollment.AfterEnrollment.html",
+          "hash": "NFO+hp5UxjCYZcbUOXZ31Q6yzMfqTRjTPoM/l5r1CaU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiEnrollment.EnrollmentResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiEnrollment.EnrollmentResult.html",
+          "hash": "ZENL0hXZW3QGzpjyABo7kUVlMc/U/PG9LDdCMsBpEnI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiEnrollment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiEnrollment.html",
+          "hash": "XKnGhen9B4PR6MVWU4yoamWRZRKmw1aw+2x3x8MXRvE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiEventFlags.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiEventFlags.html",
+          "hash": "Y+qzrlf3maSMUH+YFUad3hc60yt/z3aMtNe/XQbOvQ0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiException.html",
+          "hash": "3eFmHYj5tnb5P7ISWfyUUFiqDV6+oeFz4YRaTdRv9b0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiIdentity.InitOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiIdentity.InitOptions.html",
+          "hash": "fHjMrXA++7JNNLh77IU5U0vKnbAMjOGDwH5cFM5NlrY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiIdentity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiIdentity.html",
+          "hash": "S4ueKBK0Ubj8ncGM9ua2zl57Q87Aaw89hrl4C8CUzJg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiIdentityFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiIdentityFormat.html",
+          "hash": "su4PUgSyR3cWeSX31cx6cew6LYf4ZgteZEqrJ7eHM4M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiRouterEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiRouterEvent.html",
+          "hash": "rUk2YNS6l+SRgsTJ7eRCPEnfRP/cPFQBxlQTOtL9OW0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiService.html",
+          "hash": "PtTENZg6Jedg5C2gVo1UZPpUO4Ty3Monp0rGfAX1JtA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiServiceEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiServiceEvent.html",
+          "hash": "ZT98YixXBiCNC90ymN396uSCklnfYDUa3mq5t2XMx9I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiStatus.html",
+          "hash": "w+Ar0OPM0vHzeaECdSYzL0rbClynlECXNgtdGl76210="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiStatusExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiStatusExtensions.html",
+          "hash": "0ypbcLJdGhnWglCa91nRs2wHzPx2u27cuLNwBcXhuvI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiStream.html",
+          "hash": "h29VX541KMbP5Uf7YmilZknUImPkZLaWNZLl58QqEno="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ZitiUtil.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ZitiUtil.html",
+          "hash": "3vk/XBQ6ouUZAzNQpHYczgnJxbcqotxEHwlKZAr9TjM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.posture_query.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.posture_query.html",
+          "hash": "8j9MO6goePYjBTYCtxr2P3xkF7VWvMm12rSsYCWgxsE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.posture_query_set.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.posture_query_set.html",
+          "hash": "68oMawhkLEyaaJ9pvDwOeXc+UwyTKvtWh7AGu5c5DBU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.html",
+          "hash": "aLczEgjIBYtvlYPry+8ZotDc3Gknx4oPo6Jhbpak60I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ziti_process.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ziti_process.html",
+          "hash": "M+DzsqyvMUGXmzlEp1p1YIcjzlPN8AwDDAau3/lDrUo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ziti_service.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ziti_service.html",
+          "hash": "J8S9fA9/TxRAKiTsdWVA81IOWQNcyGdBQKz8z2XczrA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/dotnet/OpenZiti.ziti_version.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/OpenZiti.ziti_version.html",
+          "hash": "7j6fJzIxYSIDQh+CmhIjaYUHkTabVxNZ5Km7o5KEVFg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/dotnet/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/toc.html",
+          "hash": "m0leEX+L6C/56S3ITQM9mm+Yr6zuxpVEMxrkz3L/Zp8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "pPQjWg4HhzI20y+k2UIHxojXa6ajyxafwetild18MkQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "jdrI2nRY7OOa0kWu/dIkteaU72ZDmVpnx44ZzdUeAPk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 1,
+          "skipped_file_count": 1
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ManagedReferenceDocumentProcessor disable incremental build because last build doesn't contain version .",
+          "incrementalPhase": "build",
+          "total_file_count": 73,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
