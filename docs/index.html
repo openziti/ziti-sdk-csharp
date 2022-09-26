@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>OpenZiti .NET SDK </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="OpenZiti .NET SDK ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/docfx.vendor.css">
+    <link rel="stylesheet" href="styles/docfx.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <meta property="docfx:navrel" content="toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="openziti-net-sdk">OpenZiti .NET SDK</h1>
+
+<p>An C#-based SDK to access and integrate with OpenZiti</p>
+<h2 id="build-the-ziti-c-sdk">Build the Ziti C SDK</h2>
+<p>The Ziti C# SDK is based on the <a href="https://github.com/nf-dev/ziti-sdk-c">C SDK</a> and requires a native library for your target platform of choice.</p>
+<h2 id="add-links-to-the-native-libraries">Add Links to the Native Libraries</h2>
+<p>This project uses a native library for most of the work communicating to ziti. When you are consuming the nuget pagage - this is all packaged up
+for you. However if you are trying to do development of the c# sdk itself you'll need to build these native libraries yourself. This can be done
+easily if you have experience with cmake. The ZitiNativeApiForDotnetCore folder contains a CMakeLists.txt file which can be used to build these
+native libraries as well as a bat file that makes it easier to build in the expected mannor.</p>
+<p>To prepare for building the nuget package - cd to ZitiNativeApiForDotnetCore and run <code>msvc-build.bat</code> from a Visual Studio 2019 command prompt.
+After it completes you should see output similar to:</p>
+<pre><code>Build from cmake using:
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x86 --config Debug
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x86 --config Release
+
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x64 --config Debug
+    cmake --build c:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build-win\x64 --config Release
+</code></pre>
+<p>You'll likely want to just build the Release libraries but you can use Debug if you like but you'll have to update any references to the .dlls.</p>
+<p>Once built - the project will expect these libraries to be at:</p>
+<ul>
+<li>ZitiNativeApiForDotnetCore\build-win\x86\library\Release\ziti4dotnet.dll</li>
+<li>ZitiNativeApiForDotnetCore\build-win\x64\library\Release\ziti4dotnet.dll</li>
+</ul>
+<p>If the C SDK changes and you need to export additional functions with ziti4dotnet.dll you will need to rerun defgen after building the C SDK and the
+you'll want to rebuild the ziti4dotnet.dll libs for x86 and x64. You &quot;should&quot; only have to run defgen one time to generate the proper files for the
+dll to be built correctly. The ZitiNativeApiForDotnetCore\library\CMakeLists.txt file will refer to ziti.def and is what allows the static functions
+to be exported by the resultant dll.</p>
+<pre><code>cd ZitiNativeApiForDotnetCore
+defgen 32 build-win\x86\_deps\ziti-sdk-c-build\library\Release\ziti.dll
+</code></pre>
+<h2 id="build-the-zitinugetsln-project">Build the Ziti.NuGet.sln Project</h2>
+<p>Open Ziti.NuGet.sln or use msbuild (<code>msbuild Ziti.NuGet.sln</code>) to build the project. The output from within visual studio looks like this:</p>
+<pre><code>1&gt;------ Build started: Project: Ziti.NET.Standard, Configuration: Release Any CPU ------
+1&gt;Ziti.NET.Standard -&gt; C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\netcoreapp2.0\Ziti.NET.Standard.dll
+1&gt;Ziti.NET.Standard -&gt; C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\net472\Ziti.NET.Standard.dll
+1&gt;Ziti.NET.Standard -&gt; C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\netstandard2.0\Ziti.NET.Standard.dll
+1&gt;Successfully created package 'C:\git\github\ziti-sdk-csharp\Ziti.NET.Standard\bin\Release\Ziti.NET.Standard.0.0.19.nupkg'.
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+</code></pre>
+<h2 id="build-the-nuget-package">Build the NuGet Package</h2>
+<p>Consuming native artifacts from C# is sometimes tedious. As you may have noted above the Ziti.NET.Standard project will build a nupkg when it builds.
+If you add that package to a local NuGet repository it makes consuming the C# SDK much easier as the native libraries will be added to the proejct
+correctly and should &quot;just work&quot;</p>
+<p>Here's how you would make your own local NuGet repository on your developer machine:</p>
+<ul>
+<li>open a command prompt</li>
+<li>set some environment variables:
+** SET NUGET_PATH=C:\git\github\ziti-sdk-csharp\NuGet
+** SET VERSION=0.5.16  REM Or whatever the version is built - see the version of the Ziti.NET.Standard project</li>
+<li>Make a local nuget repo: <code>mkdir %NUGET_PATH%</code></li>
+<li>Push the package into the local repo: <code>nuget push -source %NUGET_PATH% Ziti.NET.Standard\bin\Release\Ziti.NET.Standard.%VERSION%.nupkg</code></li>
+</ul>
+<p>You should see output like:</p>
+<pre><code>Pushing Ziti.NET.Standard.0.0.19.nupkg to 'C:\git\github\ziti-sdk-csharp\NuGet'...
+Your package was pushed.
+</code></pre>
+<h2 id="using-the-c-sdk">Using the C# SDK</h2>
+<p>You can choose to use the latest version of the C# SDK which NetFoundry has published on nuget.org or you can
+work with the C# SDK you built and deployed to your own NuGet local repository. Open the example
+solution: Ziti.Core.Example.sln. In there is one project - Ziti.Core.Console.</p>
+<p>This is a sample application that allows you to make an http request to a website (<a href="http://wttr.in">http://wttr.in</a>) to return
+a weather forcast.  After getting the project to build you'll want to run it. If you have access to a Ziti network
+this will be easy. If you are not familiar with Ziti and need to create this service.</p>
+<h2 id="building-the-docs">Building the Docs</h2>
+<p>See the /docs folder for information on building the api docs</p>
+<h2 id="docs">Docs</h2>
+<p>The API docs are currently built with docfx using xml comments in the code.</p>
+<p>There's a docfx.json file in this directory. To build these docs you need to:</p>
+<ol>
+<li>Get the latest docfx - 2.59.4.0+ (if something goes wrong - start with that version)</li>
+<li>[optional] put <code>docfx</code> on your path</li>
+<li><code>cd</code> to this directory</li>
+<li>Remove the existing <code>${CHECKOUT_ROOT}/docs</code> folder (<code>../docs</code> from this folder) and <code>./metadata</code> folder</li>
+<li>Run <code>docfx metadata</code> to regenerate the metadata</li>
+<li>Run <code>docfx build</code> to regenerate the site (or <code>docfx build --serve</code> to build and preview in one step)</li>
+<li>Run <code>docfx serve ../docs</code> to preview the content</li>
+<li>When happy, commit the <code>docs</code> and any changes. The site will update once pushed to main</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/openziti/ziti-sdk-csharp/blob/main/c:/git/github/openziti/ziti-sdk-csharp/docfx/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>

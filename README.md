@@ -1,6 +1,6 @@
-# ziti-sdk-csharp
+# OpenZiti .NET SDK
 
-An C#-based SDK to access Ziti 
+An C#-based SDK to access and integrate with OpenZiti
 
 ## Build the Ziti C SDK
 
@@ -81,6 +81,8 @@ solution: Ziti.Core.Example.sln. In there is one project - Ziti.Core.Console.
 
 This is a sample application that allows you to make an http request to a website (http://wttr.in) to return 
 a weather forcast.  After getting the project to build you'll want to run it. If you have access to a Ziti network
-this will be easy. If you are not familiar with Ziti and need to create this service. Check out the docs 
-over at https://nf-dev.github.io/ziti-doc/samples/index.html?tabs=csharp
+this will be easy. If you are not familiar with Ziti and need to create this service.
 
+## Building the Docs
+
+See the /docs folder for information on building the api docs
