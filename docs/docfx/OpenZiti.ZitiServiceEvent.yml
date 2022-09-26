@@ -1,0 +1,283 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiServiceEvent
+  commentId: T:OpenZiti.ZitiServiceEvent
+  id: ZitiServiceEvent
+  parent: OpenZiti
+  children:
+  - OpenZiti.ZitiServiceEvent.Added
+  - OpenZiti.ZitiServiceEvent.Changed
+  - OpenZiti.ZitiServiceEvent.Context
+  - OpenZiti.ZitiServiceEvent.Removed
+  langs:
+  - csharp
+  - vb
+  name: ZitiServiceEvent
+  nameWithType: ZitiServiceEvent
+  fullName: OpenZiti.ZitiServiceEvent
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiServiceEvent
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 376
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public class ZitiServiceEvent : object'
+    content.vb: >-
+      Public Class ZitiServiceEvent
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: OpenZiti.ZitiServiceEvent.Context
+  commentId: P:OpenZiti.ZitiServiceEvent.Context
+  id: Context
+  parent: OpenZiti.ZitiServiceEvent
+  langs:
+  - csharp
+  - vb
+  name: Context
+  nameWithType: ZitiServiceEvent.Context
+  fullName: OpenZiti.ZitiServiceEvent.Context
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Context
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 383
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public object Context { get; }
+    parameters: []
+    return:
+      type: System.Object
+    content.vb: Public ReadOnly Property Context As Object
+  overload: OpenZiti.ZitiServiceEvent.Context*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: OpenZiti.ZitiServiceEvent.Removed
+  commentId: M:OpenZiti.ZitiServiceEvent.Removed
+  id: Removed
+  parent: OpenZiti.ZitiServiceEvent
+  langs:
+  - csharp
+  - vb
+  name: Removed()
+  nameWithType: ZitiServiceEvent.Removed()
+  fullName: OpenZiti.ZitiServiceEvent.Removed()
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Removed
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 398
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public IEnumerable<ZitiService> Removed()
+    return:
+      type: IEnumerable{OpenZiti.ZitiService}
+    content.vb: Public Function Removed As IEnumerable(Of ZitiService)
+  overload: OpenZiti.ZitiServiceEvent.Removed*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiServiceEvent.Changed
+  commentId: M:OpenZiti.ZitiServiceEvent.Changed
+  id: Changed
+  parent: OpenZiti.ZitiServiceEvent
+  langs:
+  - csharp
+  - vb
+  name: Changed()
+  nameWithType: ZitiServiceEvent.Changed()
+  fullName: OpenZiti.ZitiServiceEvent.Changed()
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Changed
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 405
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public IEnumerable<ZitiService> Changed()
+    return:
+      type: IEnumerable{OpenZiti.ZitiService}
+    content.vb: Public Function Changed As IEnumerable(Of ZitiService)
+  overload: OpenZiti.ZitiServiceEvent.Changed*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiServiceEvent.Added
+  commentId: M:OpenZiti.ZitiServiceEvent.Added
+  id: Added
+  parent: OpenZiti.ZitiServiceEvent
+  langs:
+  - csharp
+  - vb
+  name: Added()
+  nameWithType: ZitiServiceEvent.Added()
+  fullName: OpenZiti.ZitiServiceEvent.Added()
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Added
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 412
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public IEnumerable<ZitiService> Added()
+    return:
+      type: IEnumerable{OpenZiti.ZitiService}
+    content.vb: Public Function Added As IEnumerable(Of ZitiService)
+  overload: OpenZiti.ZitiServiceEvent.Added*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: OpenZiti.ZitiServiceEvent.Context*
+  commentId: Overload:OpenZiti.ZitiServiceEvent.Context
+  name: Context
+  nameWithType: ZitiServiceEvent.Context
+  fullName: OpenZiti.ZitiServiceEvent.Context
+- uid: OpenZiti.ZitiServiceEvent.Removed*
+  commentId: Overload:OpenZiti.ZitiServiceEvent.Removed
+  name: Removed
+  nameWithType: ZitiServiceEvent.Removed
+  fullName: OpenZiti.ZitiServiceEvent.Removed
+- uid: IEnumerable{OpenZiti.ZitiService}
+  commentId: '!:IEnumerable{OpenZiti.ZitiService}'
+  definition: IEnumerable`1
+  name: IEnumerable<ZitiService>
+  nameWithType: IEnumerable<ZitiService>
+  fullName: IEnumerable<OpenZiti.ZitiService>
+  nameWithType.vb: IEnumerable(Of ZitiService)
+  fullName.vb: IEnumerable(Of OpenZiti.ZitiService)
+  name.vb: IEnumerable(Of ZitiService)
+  spec.csharp:
+  - uid: IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: OpenZiti.ZitiService
+    name: ZitiService
+    nameWithType: ZitiService
+    fullName: OpenZiti.ZitiService
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: OpenZiti.ZitiService
+    name: ZitiService
+    nameWithType: ZitiService
+    fullName: OpenZiti.ZitiService
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: IEnumerable`1
+  isExternal: true
+  name: IEnumerable<>
+  nameWithType: IEnumerable<>
+  fullName: IEnumerable<>
+  nameWithType.vb: IEnumerable(Of )
+  fullName.vb: IEnumerable(Of )
+  name.vb: IEnumerable(Of )
+  spec.csharp:
+  - uid: IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: ''
+    nameWithType: ''
+    fullName: ''
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: ''
+    nameWithType: ''
+    fullName: ''
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: OpenZiti.ZitiServiceEvent.Changed*
+  commentId: Overload:OpenZiti.ZitiServiceEvent.Changed
+  name: Changed
+  nameWithType: ZitiServiceEvent.Changed
+  fullName: OpenZiti.ZitiServiceEvent.Changed
+- uid: OpenZiti.ZitiServiceEvent.Added*
+  commentId: Overload:OpenZiti.ZitiServiceEvent.Added
+  name: Added
+  nameWithType: ZitiServiceEvent.Added
+  fullName: OpenZiti.ZitiServiceEvent.Added

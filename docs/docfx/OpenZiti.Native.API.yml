@@ -1,0 +1,1592 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.API
+  commentId: T:OpenZiti.Native.API
+  id: API
+  parent: OpenZiti.Native
+  children:
+  - OpenZiti.Native.API.CALL_CONVENTION
+  - OpenZiti.Native.API.gimme_string_intptr
+  - OpenZiti.Native.API.newLoop
+  - OpenZiti.Native.API.z4d_all_config_types
+  - OpenZiti.Native.API.z4d_default_loop
+  - OpenZiti.Native.API.Z4D_DLL_PATH
+  - OpenZiti.Native.API.z4d_registerUVTimer(IntPtr,OpenZiti.Native.OnUVTimer,System.Int64,System.Int64)
+  - OpenZiti.Native.API.z4d_stop_uv_timer(IntPtr)
+  - OpenZiti.Native.API.z4d_uv_run(IntPtr)
+  - OpenZiti.Native.API.z4d_ziti_close(IntPtr)
+  - OpenZiti.Native.API.ziti_accept(IntPtr,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  - OpenZiti.Native.API.ziti_app_ctx(IntPtr)
+  - OpenZiti.Native.API.ziti_close(IntPtr,OpenZiti.Native.ziti_close_cb)
+  - OpenZiti.Native.API.ziti_config_to_json(IntPtr,System.Byte[],System.Int32,System.Int32@)
+  - OpenZiti.Native.API.ziti_conn_init(IntPtr,IntPtr@,IntPtr)
+  - OpenZiti.Native.API.ziti_ctx_free(IntPtr)
+  - OpenZiti.Native.API.ziti_dial(IntPtr,System.String,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  - OpenZiti.Native.API.ziti_enroll(IntPtr,IntPtr,OpenZiti.Native.ziti_enroll_cb,GCHandle)
+  - OpenZiti.Native.API.ziti_get_controller(IntPtr)
+  - OpenZiti.Native.API.ziti_get_controller_version(IntPtr)
+  - OpenZiti.Native.API.ziti_get_identity(IntPtr)
+  - OpenZiti.Native.API.ziti_get_transfer_rates(IntPtr,System.Double@,System.Double@)
+  - OpenZiti.Native.API.ziti_get_version
+  - OpenZiti.Native.API.ziti_init(System.String,IntPtr,OpenZiti.Native.ziti_event_cb,System.Int32,IntPtr)
+  - OpenZiti.Native.API.ziti_init_opts(IntPtr,IntPtr)
+  - OpenZiti.Native.API.ziti_listen(IntPtr,System.String,OpenZiti.Native.ziti_listen_cb,OpenZiti.Native.ziti_client_cb)
+  - OpenZiti.Native.API.ziti_log_init(IntPtr,System.Int32,IntPtr)
+  - OpenZiti.Native.API.ziti_service_array_get(IntPtr,System.Int32)
+  - OpenZiti.Native.API.ziti_service_available(IntPtr,System.String,OpenZiti.Native.ziti_service_cb,IntPtr)
+  - OpenZiti.Native.API.ziti_service_get_raw_config(IntPtr,System.String)
+  - OpenZiti.Native.API.ziti_set_app_info(System.String,System.String)
+  - OpenZiti.Native.API.ziti_set_timeout(IntPtr,System.Int32)
+  - OpenZiti.Native.API.ziti_shutdown(IntPtr)
+  - OpenZiti.Native.API.ziti_write(IntPtr,System.Byte[],System.Int32,OpenZiti.Native.ziti_write_cb,IntPtr)
+  langs:
+  - csharp
+  - vb
+  name: API
+  nameWithType: API
+  fullName: OpenZiti.Native.API
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: API
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 74
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: 'public class API : object'
+    content.vb: >-
+      Public Class API
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: OpenZiti.Native.API.CALL_CONVENTION
+  commentId: F:OpenZiti.Native.API.CALL_CONVENTION
+  id: CALL_CONVENTION
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: CALL_CONVENTION
+  nameWithType: API.CALL_CONVENTION
+  fullName: OpenZiti.Native.API.CALL_CONVENTION
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CALL_CONVENTION
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 75
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public const CallingConvention CALL_CONVENTION = null
+    return:
+      type: CallingConvention
+    content.vb: Public Const CALL_CONVENTION As CallingConvention = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.Native.API.Z4D_DLL_PATH
+  commentId: F:OpenZiti.Native.API.Z4D_DLL_PATH
+  id: Z4D_DLL_PATH
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: Z4D_DLL_PATH
+  nameWithType: API.Z4D_DLL_PATH
+  fullName: OpenZiti.Native.API.Z4D_DLL_PATH
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Z4D_DLL_PATH
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 77
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public const string Z4D_DLL_PATH = null
+    return:
+      type: System.String
+    content.vb: Public Const Z4D_DLL_PATH As String = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.Native.API.z4d_default_loop
+  commentId: M:OpenZiti.Native.API.z4d_default_loop
+  id: z4d_default_loop
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: z4d_default_loop()
+  nameWithType: API.z4d_default_loop()
+  fullName: OpenZiti.Native.API.z4d_default_loop()
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr z4d_default_loop()
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function z4d_default_loop As IntPtr
+  overload: OpenZiti.Native.API.z4d_default_loop*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_enroll(IntPtr,IntPtr,OpenZiti.Native.ziti_enroll_cb,GCHandle)
+  commentId: M:OpenZiti.Native.API.ziti_enroll(IntPtr,IntPtr,OpenZiti.Native.ziti_enroll_cb,GCHandle)
+  id: ziti_enroll(IntPtr,IntPtr,OpenZiti.Native.ziti_enroll_cb,GCHandle)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_enroll(IntPtr, IntPtr, ziti_enroll_cb, GCHandle)
+  nameWithType: API.ziti_enroll(IntPtr, IntPtr, ziti_enroll_cb, GCHandle)
+  fullName: OpenZiti.Native.API.ziti_enroll(IntPtr, IntPtr, OpenZiti.Native.ziti_enroll_cb, GCHandle)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_enroll(IntPtr opts, IntPtr loop, ziti_enroll_cb enroll_cb, GCHandle enroll_context)
+    parameters:
+    - id: opts
+      type: IntPtr
+    - id: loop
+      type: IntPtr
+    - id: enroll_cb
+      type: OpenZiti.Native.ziti_enroll_cb
+    - id: enroll_context
+      type: GCHandle
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_enroll(opts As IntPtr, loop As IntPtr, enroll_cb As ziti_enroll_cb, enroll_context As GCHandle) As Integer
+  overload: OpenZiti.Native.API.ziti_enroll*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_log_init(IntPtr,System.Int32,IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_log_init(IntPtr,System.Int32,IntPtr)
+  id: ziti_log_init(IntPtr,System.Int32,IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_log_init(IntPtr, Int32, IntPtr)
+  nameWithType: API.ziti_log_init(IntPtr, Int32, IntPtr)
+  fullName: OpenZiti.Native.API.ziti_log_init(IntPtr, System.Int32, IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern void ziti_log_init(IntPtr loop, int level, IntPtr logger)
+    parameters:
+    - id: loop
+      type: IntPtr
+    - id: level
+      type: System.Int32
+    - id: logger
+      type: IntPtr
+    content.vb: Public Shared Sub ziti_log_init(loop As IntPtr, level As Integer, logger As IntPtr)
+  overload: OpenZiti.Native.API.ziti_log_init*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.newLoop
+  commentId: M:OpenZiti.Native.API.newLoop
+  id: newLoop
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: newLoop()
+  nameWithType: API.newLoop()
+  fullName: OpenZiti.Native.API.newLoop()
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr newLoop()
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function newLoop As IntPtr
+  overload: OpenZiti.Native.API.newLoop*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_init_opts(IntPtr,IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_init_opts(IntPtr,IntPtr)
+  id: ziti_init_opts(IntPtr,IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_init_opts(IntPtr, IntPtr)
+  nameWithType: API.ziti_init_opts(IntPtr, IntPtr)
+  fullName: OpenZiti.Native.API.ziti_init_opts(IntPtr, IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_init_opts(IntPtr options, IntPtr loop)
+    parameters:
+    - id: options
+      type: IntPtr
+    - id: loop
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_init_opts(options As IntPtr, loop As IntPtr) As Integer
+  overload: OpenZiti.Native.API.ziti_init_opts*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.z4d_uv_run(IntPtr)
+  commentId: M:OpenZiti.Native.API.z4d_uv_run(IntPtr)
+  id: z4d_uv_run(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: z4d_uv_run(IntPtr)
+  nameWithType: API.z4d_uv_run(IntPtr)
+  fullName: OpenZiti.Native.API.z4d_uv_run(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int z4d_uv_run(IntPtr loop)
+    parameters:
+    - id: loop
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function z4d_uv_run(loop As IntPtr) As Integer
+  overload: OpenZiti.Native.API.z4d_uv_run*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.z4d_all_config_types
+  commentId: M:OpenZiti.Native.API.z4d_all_config_types
+  id: z4d_all_config_types
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: z4d_all_config_types()
+  nameWithType: API.z4d_all_config_types()
+  fullName: OpenZiti.Native.API.z4d_all_config_types()
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr z4d_all_config_types()
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function z4d_all_config_types As IntPtr
+  overload: OpenZiti.Native.API.z4d_all_config_types*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_get_identity(IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_get_identity(IntPtr)
+  id: ziti_get_identity(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_get_identity(IntPtr)
+  nameWithType: API.ziti_get_identity(IntPtr)
+  fullName: OpenZiti.Native.API.ziti_get_identity(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr ziti_get_identity(IntPtr ztx)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function ziti_get_identity(ztx As IntPtr) As IntPtr
+  overload: OpenZiti.Native.API.ziti_get_identity*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_get_controller(IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_get_controller(IntPtr)
+  id: ziti_get_controller(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_get_controller(IntPtr)
+  nameWithType: API.ziti_get_controller(IntPtr)
+  fullName: OpenZiti.Native.API.ziti_get_controller(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr ziti_get_controller(IntPtr ztx)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function ziti_get_controller(ztx As IntPtr) As IntPtr
+  overload: OpenZiti.Native.API.ziti_get_controller*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_get_controller_version(IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_get_controller_version(IntPtr)
+  id: ziti_get_controller_version(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_get_controller_version(IntPtr)
+  nameWithType: API.ziti_get_controller_version(IntPtr)
+  fullName: OpenZiti.Native.API.ziti_get_controller_version(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr ziti_get_controller_version(IntPtr ztx)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function ziti_get_controller_version(ztx As IntPtr) As IntPtr
+  overload: OpenZiti.Native.API.ziti_get_controller_version*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_get_version
+  commentId: M:OpenZiti.Native.API.ziti_get_version
+  id: ziti_get_version
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_get_version()
+  nameWithType: API.ziti_get_version()
+  fullName: OpenZiti.Native.API.ziti_get_version()
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr ziti_get_version()
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function ziti_get_version As IntPtr
+  overload: OpenZiti.Native.API.ziti_get_version*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_service_array_get(IntPtr,System.Int32)
+  commentId: M:OpenZiti.Native.API.ziti_service_array_get(IntPtr,System.Int32)
+  id: ziti_service_array_get(IntPtr,System.Int32)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_service_array_get(IntPtr, Int32)
+  nameWithType: API.ziti_service_array_get(IntPtr, Int32)
+  fullName: OpenZiti.Native.API.ziti_service_array_get(IntPtr, System.Int32)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr ziti_service_array_get(IntPtr ziti_service_array, int idx)
+    parameters:
+    - id: ziti_service_array
+      type: IntPtr
+    - id: idx
+      type: System.Int32
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function ziti_service_array_get(ziti_service_array As IntPtr, idx As Integer) As IntPtr
+  overload: OpenZiti.Native.API.ziti_service_array_get*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_dial(IntPtr,System.String,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  commentId: M:OpenZiti.Native.API.ziti_dial(IntPtr,System.String,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  id: ziti_dial(IntPtr,System.String,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_dial(IntPtr, String, ziti_conn_cb, ziti_data_cb)
+  nameWithType: API.ziti_dial(IntPtr, String, ziti_conn_cb, ziti_data_cb)
+  fullName: OpenZiti.Native.API.ziti_dial(IntPtr, System.String, OpenZiti.Native.ziti_conn_cb, OpenZiti.Native.ziti_data_cb)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_dial(IntPtr ziti_connection, string serviceName, ziti_conn_cb conn_cb, ziti_data_cb data_cb)
+    parameters:
+    - id: ziti_connection
+      type: IntPtr
+    - id: serviceName
+      type: System.String
+    - id: conn_cb
+      type: OpenZiti.Native.ziti_conn_cb
+    - id: data_cb
+      type: OpenZiti.Native.ziti_data_cb
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_dial(ziti_connection As IntPtr, serviceName As String, conn_cb As ziti_conn_cb, data_cb As ziti_data_cb) As Integer
+  overload: OpenZiti.Native.API.ziti_dial*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_conn_init(IntPtr,IntPtr@,IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_conn_init(IntPtr,IntPtr@,IntPtr)
+  id: ziti_conn_init(IntPtr,IntPtr@,IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_conn_init(IntPtr, out IntPtr, IntPtr)
+  nameWithType: API.ziti_conn_init(IntPtr, out IntPtr, IntPtr)
+  fullName: OpenZiti.Native.API.ziti_conn_init(IntPtr, out IntPtr, IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_conn_init(IntPtr ziti_context, out IntPtr ziti_connection, IntPtr connection_context)
+    parameters:
+    - id: ziti_context
+      type: IntPtr
+    - id: ziti_connection
+      type: IntPtr
+    - id: connection_context
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_conn_init(ziti_context As IntPtr, ByRef ziti_connection As IntPtr, connection_context As IntPtr) As Integer
+  overload: OpenZiti.Native.API.ziti_conn_init*
+  nameWithType.vb: API.ziti_conn_init(IntPtr, ByRef IntPtr, IntPtr)
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: OpenZiti.Native.API.ziti_conn_init(IntPtr, ByRef IntPtr, IntPtr)
+  name.vb: ziti_conn_init(IntPtr, ByRef IntPtr, IntPtr)
+- uid: OpenZiti.Native.API.ziti_write(IntPtr,System.Byte[],System.Int32,OpenZiti.Native.ziti_write_cb,IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_write(IntPtr,System.Byte[],System.Int32,OpenZiti.Native.ziti_write_cb,IntPtr)
+  id: ziti_write(IntPtr,System.Byte[],System.Int32,OpenZiti.Native.ziti_write_cb,IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_write(IntPtr, Byte[], Int32, ziti_write_cb, IntPtr)
+  nameWithType: API.ziti_write(IntPtr, Byte[], Int32, ziti_write_cb, IntPtr)
+  fullName: OpenZiti.Native.API.ziti_write(IntPtr, System.Byte[], System.Int32, OpenZiti.Native.ziti_write_cb, IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_write(IntPtr conn, byte[] data, int length, ziti_write_cb afterData, IntPtr dataContext)
+    parameters:
+    - id: conn
+      type: IntPtr
+    - id: data
+      type: System.Byte[]
+    - id: length
+      type: System.Int32
+    - id: afterData
+      type: OpenZiti.Native.ziti_write_cb
+    - id: dataContext
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_write(conn As IntPtr, data As Byte(), length As Integer, afterData As ziti_write_cb, dataContext As IntPtr) As Integer
+  overload: OpenZiti.Native.API.ziti_write*
+  nameWithType.vb: API.ziti_write(IntPtr, Byte(), Int32, ziti_write_cb, IntPtr)
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: OpenZiti.Native.API.ziti_write(IntPtr, System.Byte(), System.Int32, OpenZiti.Native.ziti_write_cb, IntPtr)
+  name.vb: ziti_write(IntPtr, Byte(), Int32, ziti_write_cb, IntPtr)
+- uid: OpenZiti.Native.API.ziti_accept(IntPtr,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  commentId: M:OpenZiti.Native.API.ziti_accept(IntPtr,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  id: ziti_accept(IntPtr,OpenZiti.Native.ziti_conn_cb,OpenZiti.Native.ziti_data_cb)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_accept(IntPtr, ziti_conn_cb, ziti_data_cb)
+  nameWithType: API.ziti_accept(IntPtr, ziti_conn_cb, ziti_data_cb)
+  fullName: OpenZiti.Native.API.ziti_accept(IntPtr, OpenZiti.Native.ziti_conn_cb, OpenZiti.Native.ziti_data_cb)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_accept(IntPtr conn, ziti_conn_cb cb, ziti_data_cb data_cb)
+    parameters:
+    - id: conn
+      type: IntPtr
+    - id: cb
+      type: OpenZiti.Native.ziti_conn_cb
+    - id: data_cb
+      type: OpenZiti.Native.ziti_data_cb
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_accept(conn As IntPtr, cb As ziti_conn_cb, data_cb As ziti_data_cb) As Integer
+  overload: OpenZiti.Native.API.ziti_accept*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.z4d_ziti_close(IntPtr)
+  commentId: M:OpenZiti.Native.API.z4d_ziti_close(IntPtr)
+  id: z4d_ziti_close(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: z4d_ziti_close(IntPtr)
+  nameWithType: API.z4d_ziti_close(IntPtr)
+  fullName: OpenZiti.Native.API.z4d_ziti_close(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int z4d_ziti_close(IntPtr conn)
+    parameters:
+    - id: conn
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function z4d_ziti_close(conn As IntPtr) As Integer
+  overload: OpenZiti.Native.API.z4d_ziti_close*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_config_to_json(IntPtr,System.Byte[],System.Int32,System.Int32@)
+  commentId: M:OpenZiti.Native.API.ziti_config_to_json(IntPtr,System.Byte[],System.Int32,System.Int32@)
+  id: ziti_config_to_json(IntPtr,System.Byte[],System.Int32,System.Int32@)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_config_to_json(IntPtr, Byte[], Int32, out Int32)
+  nameWithType: API.ziti_config_to_json(IntPtr, Byte[], Int32, out Int32)
+  fullName: OpenZiti.Native.API.ziti_config_to_json(IntPtr, System.Byte[], System.Int32, out System.Int32)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern string ziti_config_to_json(IntPtr ziti_config, byte[] rawjson, int maxlen, out int len)
+    parameters:
+    - id: ziti_config
+      type: IntPtr
+    - id: rawjson
+      type: System.Byte[]
+    - id: maxlen
+      type: System.Int32
+    - id: len
+      type: System.Int32
+    return:
+      type: System.String
+    content.vb: Public Shared Function ziti_config_to_json(ziti_config As IntPtr, rawjson As Byte(), maxlen As Integer, ByRef len As Integer) As String
+  overload: OpenZiti.Native.API.ziti_config_to_json*
+  nameWithType.vb: API.ziti_config_to_json(IntPtr, Byte(), Int32, ByRef Int32)
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: OpenZiti.Native.API.ziti_config_to_json(IntPtr, System.Byte(), System.Int32, ByRef System.Int32)
+  name.vb: ziti_config_to_json(IntPtr, Byte(), Int32, ByRef Int32)
+- uid: OpenZiti.Native.API.ziti_listen(IntPtr,System.String,OpenZiti.Native.ziti_listen_cb,OpenZiti.Native.ziti_client_cb)
+  commentId: M:OpenZiti.Native.API.ziti_listen(IntPtr,System.String,OpenZiti.Native.ziti_listen_cb,OpenZiti.Native.ziti_client_cb)
+  id: ziti_listen(IntPtr,System.String,OpenZiti.Native.ziti_listen_cb,OpenZiti.Native.ziti_client_cb)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_listen(IntPtr, String, ziti_listen_cb, ziti_client_cb)
+  nameWithType: API.ziti_listen(IntPtr, String, ziti_listen_cb, ziti_client_cb)
+  fullName: OpenZiti.Native.API.ziti_listen(IntPtr, System.String, OpenZiti.Native.ziti_listen_cb, OpenZiti.Native.ziti_client_cb)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_listen(IntPtr serv_conn, string service, ziti_listen_cb lcb, ziti_client_cb cb)
+    parameters:
+    - id: serv_conn
+      type: IntPtr
+    - id: service
+      type: System.String
+    - id: lcb
+      type: OpenZiti.Native.ziti_listen_cb
+    - id: cb
+      type: OpenZiti.Native.ziti_client_cb
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_listen(serv_conn As IntPtr, service As String, lcb As ziti_listen_cb, cb As ziti_client_cb) As Integer
+  overload: OpenZiti.Native.API.ziti_listen*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_init(System.String,IntPtr,OpenZiti.Native.ziti_event_cb,System.Int32,IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_init(System.String,IntPtr,OpenZiti.Native.ziti_event_cb,System.Int32,IntPtr)
+  id: ziti_init(System.String,IntPtr,OpenZiti.Native.ziti_event_cb,System.Int32,IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_init(String, IntPtr, ziti_event_cb, Int32, IntPtr)
+  nameWithType: API.ziti_init(String, IntPtr, ziti_event_cb, Int32, IntPtr)
+  fullName: OpenZiti.Native.API.ziti_init(System.String, IntPtr, OpenZiti.Native.ziti_event_cb, System.Int32, IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_init(string config, IntPtr loop, ziti_event_cb event_cb, int event_flags, IntPtr init_ctx)
+    parameters:
+    - id: config
+      type: System.String
+    - id: loop
+      type: IntPtr
+    - id: event_cb
+      type: OpenZiti.Native.ziti_event_cb
+    - id: event_flags
+      type: System.Int32
+    - id: init_ctx
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_init(config As String, loop As IntPtr, event_cb As ziti_event_cb, event_flags As Integer, init_ctx As IntPtr) As Integer
+  overload: OpenZiti.Native.API.ziti_init*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_set_app_info(System.String,System.String)
+  commentId: M:OpenZiti.Native.API.ziti_set_app_info(System.String,System.String)
+  id: ziti_set_app_info(System.String,System.String)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_set_app_info(String, String)
+  nameWithType: API.ziti_set_app_info(String, String)
+  fullName: OpenZiti.Native.API.ziti_set_app_info(System.String, System.String)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_set_app_info(string app_id, string app_version)
+    parameters:
+    - id: app_id
+      type: System.String
+    - id: app_version
+      type: System.String
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_set_app_info(app_id As String, app_version As String) As Integer
+  overload: OpenZiti.Native.API.ziti_set_app_info*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_app_ctx(IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_app_ctx(IntPtr)
+  id: ziti_app_ctx(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_app_ctx(IntPtr)
+  nameWithType: API.ziti_app_ctx(IntPtr)
+  fullName: OpenZiti.Native.API.ziti_app_ctx(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr ziti_app_ctx(IntPtr ztx)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function ziti_app_ctx(ztx As IntPtr) As IntPtr
+  overload: OpenZiti.Native.API.ziti_app_ctx*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_get_transfer_rates(IntPtr,System.Double@,System.Double@)
+  commentId: M:OpenZiti.Native.API.ziti_get_transfer_rates(IntPtr,System.Double@,System.Double@)
+  id: ziti_get_transfer_rates(IntPtr,System.Double@,System.Double@)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_get_transfer_rates(IntPtr, ref Double, ref Double)
+  nameWithType: API.ziti_get_transfer_rates(IntPtr, ref Double, ref Double)
+  fullName: OpenZiti.Native.API.ziti_get_transfer_rates(IntPtr, ref System.Double, ref System.Double)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern void ziti_get_transfer_rates(IntPtr ztx, ref double up, ref double down)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    - id: up
+      type: System.Double
+    - id: down
+      type: System.Double
+    content.vb: Public Shared Sub ziti_get_transfer_rates(ztx As IntPtr, ByRef up As Double, ByRef down As Double)
+  overload: OpenZiti.Native.API.ziti_get_transfer_rates*
+  nameWithType.vb: API.ziti_get_transfer_rates(IntPtr, ByRef Double, ByRef Double)
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: OpenZiti.Native.API.ziti_get_transfer_rates(IntPtr, ByRef System.Double, ByRef System.Double)
+  name.vb: ziti_get_transfer_rates(IntPtr, ByRef Double, ByRef Double)
+- uid: OpenZiti.Native.API.ziti_set_timeout(IntPtr,System.Int32)
+  commentId: M:OpenZiti.Native.API.ziti_set_timeout(IntPtr,System.Int32)
+  id: ziti_set_timeout(IntPtr,System.Int32)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_set_timeout(IntPtr, Int32)
+  nameWithType: API.ziti_set_timeout(IntPtr, Int32)
+  fullName: OpenZiti.Native.API.ziti_set_timeout(IntPtr, System.Int32)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_set_timeout(IntPtr ztx, int timeout)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    - id: timeout
+      type: System.Int32
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_set_timeout(ztx As IntPtr, timeout As Integer) As Integer
+  overload: OpenZiti.Native.API.ziti_set_timeout*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_shutdown(IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_shutdown(IntPtr)
+  id: ziti_shutdown(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_shutdown(IntPtr)
+  nameWithType: API.ziti_shutdown(IntPtr)
+  fullName: OpenZiti.Native.API.ziti_shutdown(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_shutdown(IntPtr ztx)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_shutdown(ztx As IntPtr) As Integer
+  overload: OpenZiti.Native.API.ziti_shutdown*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_ctx_free(IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_ctx_free(IntPtr)
+  id: ziti_ctx_free(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_ctx_free(IntPtr)
+  nameWithType: API.ziti_ctx_free(IntPtr)
+  fullName: OpenZiti.Native.API.ziti_ctx_free(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_ctx_free(IntPtr ztx)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_ctx_free(ztx As IntPtr) As Integer
+  overload: OpenZiti.Native.API.ziti_ctx_free*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_close(IntPtr,OpenZiti.Native.ziti_close_cb)
+  commentId: M:OpenZiti.Native.API.ziti_close(IntPtr,OpenZiti.Native.ziti_close_cb)
+  id: ziti_close(IntPtr,OpenZiti.Native.ziti_close_cb)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_close(IntPtr, ziti_close_cb)
+  nameWithType: API.ziti_close(IntPtr, ziti_close_cb)
+  fullName: OpenZiti.Native.API.ziti_close(IntPtr, OpenZiti.Native.ziti_close_cb)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_close(IntPtr conn, ziti_close_cb close_cb)
+    parameters:
+    - id: conn
+      type: IntPtr
+    - id: close_cb
+      type: OpenZiti.Native.ziti_close_cb
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_close(conn As IntPtr, close_cb As ziti_close_cb) As Integer
+  overload: OpenZiti.Native.API.ziti_close*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_service_available(IntPtr,System.String,OpenZiti.Native.ziti_service_cb,IntPtr)
+  commentId: M:OpenZiti.Native.API.ziti_service_available(IntPtr,System.String,OpenZiti.Native.ziti_service_cb,IntPtr)
+  id: ziti_service_available(IntPtr,System.String,OpenZiti.Native.ziti_service_cb,IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_service_available(IntPtr, String, ziti_service_cb, IntPtr)
+  nameWithType: API.ziti_service_available(IntPtr, String, ziti_service_cb, IntPtr)
+  fullName: OpenZiti.Native.API.ziti_service_available(IntPtr, System.String, OpenZiti.Native.ziti_service_cb, IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern int ziti_service_available(IntPtr ztx, string service_name, ziti_service_cb cb, IntPtr context)
+    parameters:
+    - id: ztx
+      type: IntPtr
+    - id: service_name
+      type: System.String
+    - id: cb
+      type: OpenZiti.Native.ziti_service_cb
+    - id: context
+      type: IntPtr
+    return:
+      type: System.Int32
+    content.vb: Public Shared Function ziti_service_available(ztx As IntPtr, service_name As String, cb As ziti_service_cb, context As IntPtr) As Integer
+  overload: OpenZiti.Native.API.ziti_service_available*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.ziti_service_get_raw_config(IntPtr,System.String)
+  commentId: M:OpenZiti.Native.API.ziti_service_get_raw_config(IntPtr,System.String)
+  id: ziti_service_get_raw_config(IntPtr,System.String)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: ziti_service_get_raw_config(IntPtr, String)
+  nameWithType: API.ziti_service_get_raw_config(IntPtr, String)
+  fullName: OpenZiti.Native.API.ziti_service_get_raw_config(IntPtr, System.String)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr ziti_service_get_raw_config(IntPtr svc, string config_name)
+    parameters:
+    - id: svc
+      type: IntPtr
+    - id: config_name
+      type: System.String
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function ziti_service_get_raw_config(svc As IntPtr, config_name As String) As IntPtr
+  overload: OpenZiti.Native.API.ziti_service_get_raw_config*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.gimme_string_intptr
+  commentId: M:OpenZiti.Native.API.gimme_string_intptr
+  id: gimme_string_intptr
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: gimme_string_intptr()
+  nameWithType: API.gimme_string_intptr()
+  fullName: OpenZiti.Native.API.gimme_string_intptr()
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr gimme_string_intptr()
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function gimme_string_intptr As IntPtr
+  overload: OpenZiti.Native.API.gimme_string_intptr*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.z4d_registerUVTimer(IntPtr,OpenZiti.Native.OnUVTimer,System.Int64,System.Int64)
+  commentId: M:OpenZiti.Native.API.z4d_registerUVTimer(IntPtr,OpenZiti.Native.OnUVTimer,System.Int64,System.Int64)
+  id: z4d_registerUVTimer(IntPtr,OpenZiti.Native.OnUVTimer,System.Int64,System.Int64)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: z4d_registerUVTimer(IntPtr, OnUVTimer, Int64, Int64)
+  nameWithType: API.z4d_registerUVTimer(IntPtr, OnUVTimer, Int64, Int64)
+  fullName: OpenZiti.Native.API.z4d_registerUVTimer(IntPtr, OpenZiti.Native.OnUVTimer, System.Int64, System.Int64)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr z4d_registerUVTimer(IntPtr loop, OnUVTimer timer_cb, long delay, long iterations)
+    parameters:
+    - id: loop
+      type: IntPtr
+    - id: timer_cb
+      type: OpenZiti.Native.OnUVTimer
+    - id: delay
+      type: System.Int64
+    - id: iterations
+      type: System.Int64
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function z4d_registerUVTimer(loop As IntPtr, timer_cb As OnUVTimer, delay As Long, iterations As Long) As IntPtr
+  overload: OpenZiti.Native.API.z4d_registerUVTimer*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.Native.API.z4d_stop_uv_timer(IntPtr)
+  commentId: M:OpenZiti.Native.API.z4d_stop_uv_timer(IntPtr)
+  id: z4d_stop_uv_timer(IntPtr)
+  parent: OpenZiti.Native.API
+  langs:
+  - csharp
+  - vb
+  name: z4d_stop_uv_timer(IntPtr)
+  nameWithType: API.z4d_stop_uv_timer(IntPtr)
+  fullName: OpenZiti.Native.API.z4d_stop_uv_timer(IntPtr)
+  type: Method
+  source:
+    path: Ziti.NET.Standard
+    isExternal: true
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public static extern IntPtr z4d_stop_uv_timer(IntPtr timer)
+    parameters:
+    - id: timer
+      type: IntPtr
+    return:
+      type: IntPtr
+    content.vb: Public Shared Function z4d_stop_uv_timer(timer As IntPtr) As IntPtr
+  overload: OpenZiti.Native.API.z4d_stop_uv_timer*
+  modifiers.csharp:
+  - public
+  - static
+  - extern
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: CallingConvention
+  commentId: '!:CallingConvention'
+  isExternal: true
+  name: CallingConvention
+  nameWithType: CallingConvention
+  fullName: CallingConvention
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: OpenZiti.Native.API.z4d_default_loop*
+  commentId: Overload:OpenZiti.Native.API.z4d_default_loop
+  isExternal: true
+  name: z4d_default_loop
+  nameWithType: API.z4d_default_loop
+  fullName: OpenZiti.Native.API.z4d_default_loop
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: OpenZiti.Native.API.ziti_enroll*
+  commentId: Overload:OpenZiti.Native.API.ziti_enroll
+  isExternal: true
+  name: ziti_enroll
+  nameWithType: API.ziti_enroll
+  fullName: OpenZiti.Native.API.ziti_enroll
+- uid: OpenZiti.Native.ziti_enroll_cb
+  commentId: T:OpenZiti.Native.ziti_enroll_cb
+  parent: OpenZiti.Native
+  name: ziti_enroll_cb
+  nameWithType: ziti_enroll_cb
+  fullName: OpenZiti.Native.ziti_enroll_cb
+- uid: GCHandle
+  isExternal: true
+  name: GCHandle
+  nameWithType: GCHandle
+  fullName: GCHandle
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: OpenZiti.Native.API.ziti_log_init*
+  commentId: Overload:OpenZiti.Native.API.ziti_log_init
+  isExternal: true
+  name: ziti_log_init
+  nameWithType: API.ziti_log_init
+  fullName: OpenZiti.Native.API.ziti_log_init
+- uid: OpenZiti.Native.API.newLoop*
+  commentId: Overload:OpenZiti.Native.API.newLoop
+  isExternal: true
+  name: newLoop
+  nameWithType: API.newLoop
+  fullName: OpenZiti.Native.API.newLoop
+- uid: OpenZiti.Native.API.ziti_init_opts*
+  commentId: Overload:OpenZiti.Native.API.ziti_init_opts
+  isExternal: true
+  name: ziti_init_opts
+  nameWithType: API.ziti_init_opts
+  fullName: OpenZiti.Native.API.ziti_init_opts
+- uid: OpenZiti.Native.API.z4d_uv_run*
+  commentId: Overload:OpenZiti.Native.API.z4d_uv_run
+  isExternal: true
+  name: z4d_uv_run
+  nameWithType: API.z4d_uv_run
+  fullName: OpenZiti.Native.API.z4d_uv_run
+- uid: OpenZiti.Native.API.z4d_all_config_types*
+  commentId: Overload:OpenZiti.Native.API.z4d_all_config_types
+  isExternal: true
+  name: z4d_all_config_types
+  nameWithType: API.z4d_all_config_types
+  fullName: OpenZiti.Native.API.z4d_all_config_types
+- uid: OpenZiti.Native.API.ziti_get_identity*
+  commentId: Overload:OpenZiti.Native.API.ziti_get_identity
+  isExternal: true
+  name: ziti_get_identity
+  nameWithType: API.ziti_get_identity
+  fullName: OpenZiti.Native.API.ziti_get_identity
+- uid: OpenZiti.Native.API.ziti_get_controller*
+  commentId: Overload:OpenZiti.Native.API.ziti_get_controller
+  isExternal: true
+  name: ziti_get_controller
+  nameWithType: API.ziti_get_controller
+  fullName: OpenZiti.Native.API.ziti_get_controller
+- uid: OpenZiti.Native.API.ziti_get_controller_version*
+  commentId: Overload:OpenZiti.Native.API.ziti_get_controller_version
+  isExternal: true
+  name: ziti_get_controller_version
+  nameWithType: API.ziti_get_controller_version
+  fullName: OpenZiti.Native.API.ziti_get_controller_version
+- uid: OpenZiti.Native.API.ziti_get_version*
+  commentId: Overload:OpenZiti.Native.API.ziti_get_version
+  isExternal: true
+  name: ziti_get_version
+  nameWithType: API.ziti_get_version
+  fullName: OpenZiti.Native.API.ziti_get_version
+- uid: OpenZiti.Native.API.ziti_service_array_get*
+  commentId: Overload:OpenZiti.Native.API.ziti_service_array_get
+  isExternal: true
+  name: ziti_service_array_get
+  nameWithType: API.ziti_service_array_get
+  fullName: OpenZiti.Native.API.ziti_service_array_get
+- uid: OpenZiti.Native.API.ziti_dial*
+  commentId: Overload:OpenZiti.Native.API.ziti_dial
+  isExternal: true
+  name: ziti_dial
+  nameWithType: API.ziti_dial
+  fullName: OpenZiti.Native.API.ziti_dial
+- uid: OpenZiti.Native.ziti_conn_cb
+  commentId: T:OpenZiti.Native.ziti_conn_cb
+  parent: OpenZiti.Native
+  name: ziti_conn_cb
+  nameWithType: ziti_conn_cb
+  fullName: OpenZiti.Native.ziti_conn_cb
+- uid: OpenZiti.Native.ziti_data_cb
+  commentId: T:OpenZiti.Native.ziti_data_cb
+  parent: OpenZiti.Native
+  name: ziti_data_cb
+  nameWithType: ziti_data_cb
+  fullName: OpenZiti.Native.ziti_data_cb
+- uid: OpenZiti.Native.API.ziti_conn_init*
+  commentId: Overload:OpenZiti.Native.API.ziti_conn_init
+  isExternal: true
+  name: ziti_conn_init
+  nameWithType: API.ziti_conn_init
+  fullName: OpenZiti.Native.API.ziti_conn_init
+- uid: OpenZiti.Native.API.ziti_write*
+  commentId: Overload:OpenZiti.Native.API.ziti_write
+  isExternal: true
+  name: ziti_write
+  nameWithType: API.ziti_write
+  fullName: OpenZiti.Native.API.ziti_write
+- uid: System.Byte[]
+  isExternal: true
+  name: Byte[]
+  nameWithType: Byte[]
+  fullName: System.Byte[]
+  nameWithType.vb: Byte()
+  fullName.vb: System.Byte()
+  name.vb: Byte()
+  spec.csharp:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: OpenZiti.Native.ziti_write_cb
+  commentId: T:OpenZiti.Native.ziti_write_cb
+  parent: OpenZiti.Native
+  name: ziti_write_cb
+  nameWithType: ziti_write_cb
+  fullName: OpenZiti.Native.ziti_write_cb
+- uid: OpenZiti.Native.API.ziti_accept*
+  commentId: Overload:OpenZiti.Native.API.ziti_accept
+  isExternal: true
+  name: ziti_accept
+  nameWithType: API.ziti_accept
+  fullName: OpenZiti.Native.API.ziti_accept
+- uid: OpenZiti.Native.API.z4d_ziti_close*
+  commentId: Overload:OpenZiti.Native.API.z4d_ziti_close
+  isExternal: true
+  name: z4d_ziti_close
+  nameWithType: API.z4d_ziti_close
+  fullName: OpenZiti.Native.API.z4d_ziti_close
+- uid: OpenZiti.Native.API.ziti_config_to_json*
+  commentId: Overload:OpenZiti.Native.API.ziti_config_to_json
+  isExternal: true
+  name: ziti_config_to_json
+  nameWithType: API.ziti_config_to_json
+  fullName: OpenZiti.Native.API.ziti_config_to_json
+- uid: OpenZiti.Native.API.ziti_listen*
+  commentId: Overload:OpenZiti.Native.API.ziti_listen
+  isExternal: true
+  name: ziti_listen
+  nameWithType: API.ziti_listen
+  fullName: OpenZiti.Native.API.ziti_listen
+- uid: OpenZiti.Native.ziti_listen_cb
+  commentId: T:OpenZiti.Native.ziti_listen_cb
+  parent: OpenZiti.Native
+  name: ziti_listen_cb
+  nameWithType: ziti_listen_cb
+  fullName: OpenZiti.Native.ziti_listen_cb
+- uid: OpenZiti.Native.ziti_client_cb
+  commentId: T:OpenZiti.Native.ziti_client_cb
+  parent: OpenZiti.Native
+  name: ziti_client_cb
+  nameWithType: ziti_client_cb
+  fullName: OpenZiti.Native.ziti_client_cb
+- uid: OpenZiti.Native.API.ziti_init*
+  commentId: Overload:OpenZiti.Native.API.ziti_init
+  isExternal: true
+  name: ziti_init
+  nameWithType: API.ziti_init
+  fullName: OpenZiti.Native.API.ziti_init
+- uid: OpenZiti.Native.ziti_event_cb
+  commentId: T:OpenZiti.Native.ziti_event_cb
+  parent: OpenZiti.Native
+  name: ziti_event_cb
+  nameWithType: ziti_event_cb
+  fullName: OpenZiti.Native.ziti_event_cb
+- uid: OpenZiti.Native.API.ziti_set_app_info*
+  commentId: Overload:OpenZiti.Native.API.ziti_set_app_info
+  isExternal: true
+  name: ziti_set_app_info
+  nameWithType: API.ziti_set_app_info
+  fullName: OpenZiti.Native.API.ziti_set_app_info
+- uid: OpenZiti.Native.API.ziti_app_ctx*
+  commentId: Overload:OpenZiti.Native.API.ziti_app_ctx
+  isExternal: true
+  name: ziti_app_ctx
+  nameWithType: API.ziti_app_ctx
+  fullName: OpenZiti.Native.API.ziti_app_ctx
+- uid: OpenZiti.Native.API.ziti_get_transfer_rates*
+  commentId: Overload:OpenZiti.Native.API.ziti_get_transfer_rates
+  isExternal: true
+  name: ziti_get_transfer_rates
+  nameWithType: API.ziti_get_transfer_rates
+  fullName: OpenZiti.Native.API.ziti_get_transfer_rates
+- uid: System.Double
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: OpenZiti.Native.API.ziti_set_timeout*
+  commentId: Overload:OpenZiti.Native.API.ziti_set_timeout
+  isExternal: true
+  name: ziti_set_timeout
+  nameWithType: API.ziti_set_timeout
+  fullName: OpenZiti.Native.API.ziti_set_timeout
+- uid: OpenZiti.Native.API.ziti_shutdown*
+  commentId: Overload:OpenZiti.Native.API.ziti_shutdown
+  isExternal: true
+  name: ziti_shutdown
+  nameWithType: API.ziti_shutdown
+  fullName: OpenZiti.Native.API.ziti_shutdown
+- uid: OpenZiti.Native.API.ziti_ctx_free*
+  commentId: Overload:OpenZiti.Native.API.ziti_ctx_free
+  isExternal: true
+  name: ziti_ctx_free
+  nameWithType: API.ziti_ctx_free
+  fullName: OpenZiti.Native.API.ziti_ctx_free
+- uid: OpenZiti.Native.API.ziti_close*
+  commentId: Overload:OpenZiti.Native.API.ziti_close
+  isExternal: true
+  name: ziti_close
+  nameWithType: API.ziti_close
+  fullName: OpenZiti.Native.API.ziti_close
+- uid: OpenZiti.Native.ziti_close_cb
+  commentId: T:OpenZiti.Native.ziti_close_cb
+  parent: OpenZiti.Native
+  name: ziti_close_cb
+  nameWithType: ziti_close_cb
+  fullName: OpenZiti.Native.ziti_close_cb
+- uid: OpenZiti.Native.API.ziti_service_available*
+  commentId: Overload:OpenZiti.Native.API.ziti_service_available
+  isExternal: true
+  name: ziti_service_available
+  nameWithType: API.ziti_service_available
+  fullName: OpenZiti.Native.API.ziti_service_available
+- uid: OpenZiti.Native.ziti_service_cb
+  commentId: T:OpenZiti.Native.ziti_service_cb
+  parent: OpenZiti.Native
+  name: ziti_service_cb
+  nameWithType: ziti_service_cb
+  fullName: OpenZiti.Native.ziti_service_cb
+- uid: OpenZiti.Native.API.ziti_service_get_raw_config*
+  commentId: Overload:OpenZiti.Native.API.ziti_service_get_raw_config
+  isExternal: true
+  name: ziti_service_get_raw_config
+  nameWithType: API.ziti_service_get_raw_config
+  fullName: OpenZiti.Native.API.ziti_service_get_raw_config
+- uid: OpenZiti.Native.API.gimme_string_intptr*
+  commentId: Overload:OpenZiti.Native.API.gimme_string_intptr
+  isExternal: true
+  name: gimme_string_intptr
+  nameWithType: API.gimme_string_intptr
+  fullName: OpenZiti.Native.API.gimme_string_intptr
+- uid: OpenZiti.Native.API.z4d_registerUVTimer*
+  commentId: Overload:OpenZiti.Native.API.z4d_registerUVTimer
+  isExternal: true
+  name: z4d_registerUVTimer
+  nameWithType: API.z4d_registerUVTimer
+  fullName: OpenZiti.Native.API.z4d_registerUVTimer
+- uid: OpenZiti.Native.OnUVTimer
+  commentId: T:OpenZiti.Native.OnUVTimer
+  parent: OpenZiti.Native
+  name: OnUVTimer
+  nameWithType: OnUVTimer
+  fullName: OpenZiti.Native.OnUVTimer
+- uid: System.Int64
+  isExternal: true
+  name: Int64
+  nameWithType: Int64
+  fullName: System.Int64
+- uid: OpenZiti.Native.API.z4d_stop_uv_timer*
+  commentId: Overload:OpenZiti.Native.API.z4d_stop_uv_timer
+  isExternal: true
+  name: z4d_stop_uv_timer
+  nameWithType: API.z4d_stop_uv_timer
+  fullName: OpenZiti.Native.API.z4d_stop_uv_timer

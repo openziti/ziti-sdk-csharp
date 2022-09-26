@@ -1,0 +1,61 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_pr_os_cb
+  commentId: T:OpenZiti.Native.ziti_pr_os_cb
+  id: ziti_pr_os_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_pr_os_cb
+  nameWithType: ziti_pr_os_cb
+  fullName: OpenZiti.Native.ziti_pr_os_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_pr_os_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 48
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate void ziti_pr_os_cb(IntPtr ziti_context, string id, string os_type, string os_version, string os_build);
+    parameters:
+    - id: ziti_context
+      type: IntPtr
+    - id: id
+      type: System.String
+    - id: os_type
+      type: System.String
+    - id: os_version
+      type: System.String
+    - id: os_build
+      type: System.String
+    content.vb: Public Delegate Sub ziti_pr_os_cb(ziti_context As IntPtr, id As String, os_type As String, os_version As String, os_build As String)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String

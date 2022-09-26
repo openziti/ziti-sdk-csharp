@@ -1,0 +1,49 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiEnrollment
+  commentId: T:OpenZiti.ZitiEnrollment
+  id: ZitiEnrollment
+  parent: OpenZiti
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ZitiEnrollment
+  nameWithType: ZitiEnrollment
+  fullName: OpenZiti.ZitiEnrollment
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiEnrollment.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiEnrollment
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiEnrollment.cs
+    startLine: 22
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public class ZitiEnrollment : object'
+    content.vb: >-
+      Public Class ZitiEnrollment
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object

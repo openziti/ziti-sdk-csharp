@@ -1,0 +1,63 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_pq_domain_cb
+  commentId: T:OpenZiti.Native.ziti_pq_domain_cb
+  id: ziti_pq_domain_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_pq_domain_cb
+  nameWithType: ziti_pq_domain_cb
+  fullName: OpenZiti.Native.ziti_pq_domain_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_pq_domain_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 60
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate void ziti_pq_domain_cb(IntPtr ziti_context, string id, ziti_pr_domain_cb response_cb);
+    parameters:
+    - id: ziti_context
+      type: IntPtr
+    - id: id
+      type: System.String
+    - id: response_cb
+      type: OpenZiti.Native.ziti_pr_domain_cb
+    content.vb: Public Delegate Sub ziti_pq_domain_cb(ziti_context As IntPtr, id As String, response_cb As ziti_pr_domain_cb)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: OpenZiti.Native.ziti_pr_domain_cb
+  commentId: T:OpenZiti.Native.ziti_pr_domain_cb
+  parent: OpenZiti.Native
+  name: ziti_pr_domain_cb
+  nameWithType: ziti_pr_domain_cb
+  fullName: OpenZiti.Native.ziti_pr_domain_cb

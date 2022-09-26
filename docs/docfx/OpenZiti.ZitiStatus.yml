@@ -1,0 +1,1239 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiStatus
+  commentId: T:OpenZiti.ZitiStatus
+  id: ZitiStatus
+  parent: OpenZiti
+  children:
+  - OpenZiti.ZitiStatus.CONFIG_NOT_FOUND
+  - OpenZiti.ZitiStatus.CONN_CLOSED
+  - OpenZiti.ZitiStatus.CONNABORT
+  - OpenZiti.ZitiStatus.CONTROLLER_UNAVAILABLE
+  - OpenZiti.ZitiStatus.CRYPTO_FAIL
+  - OpenZiti.ZitiStatus.CSR_GENERATION_FAILED
+  - OpenZiti.ZitiStatus.ENROLLMENT_CERTIFICATE_REQUIRED
+  - OpenZiti.ZitiStatus.ENROLLMENT_METHOD_UNSUPPORTED
+  - OpenZiti.ZitiStatus.EOF
+  - OpenZiti.ZitiStatus.GATEWAY_UNAVAILABLE
+  - OpenZiti.ZitiStatus.INVALID_CONFIG
+  - OpenZiti.ZitiStatus.INVALID_POSTURE
+  - OpenZiti.ZitiStatus.INVALID_STATE
+  - OpenZiti.ZitiStatus.JWT_INVALID
+  - OpenZiti.ZitiStatus.JWT_INVALID_FORMAT
+  - OpenZiti.ZitiStatus.JWT_NOT_FOUND
+  - OpenZiti.ZitiStatus.JWT_SIGNING_ALG_UNSUPPORTED
+  - OpenZiti.ZitiStatus.JWT_VERIFICATION_FAILED
+  - OpenZiti.ZitiStatus.KEY_GENERATION_FAILED
+  - OpenZiti.ZitiStatus.KEY_LOAD_FAILED
+  - OpenZiti.ZitiStatus.MFA_EXISTS
+  - OpenZiti.ZitiStatus.MFA_INVALID_TOKEN
+  - OpenZiti.ZitiStatus.MFA_NOT_ENROLLED
+  - OpenZiti.ZitiStatus.NOT_AUTHORIZED
+  - OpenZiti.ZitiStatus.NOT_FOUND
+  - OpenZiti.ZitiStatus.OK
+  - OpenZiti.ZitiStatus.PKCS7_ASN1_PARSING_FAILED
+  - OpenZiti.ZitiStatus.SERVICE_UNAVAILABLE
+  - OpenZiti.ZitiStatus.TIMEOUT
+  - OpenZiti.ZitiStatus.WTF
+  langs:
+  - csharp
+  - vb
+  name: ZitiStatus
+  nameWithType: ZitiStatus
+  fullName: OpenZiti.ZitiStatus
+  type: Enum
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiStatus
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 41
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public enum ZitiStatus : int'
+    content.vb: Public Enum ZitiStatus As Integer
+  extensionMethods:
+  - OpenZiti.ZitiStatus.OpenZiti.ZitiStatusExtensions.Ok
+  - OpenZiti.ZitiStatus.OpenZiti.ZitiUtil.Check
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: OpenZiti.ZitiStatus.OK
+  commentId: F:OpenZiti.ZitiStatus.OK
+  id: OK
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: OK
+  nameWithType: ZitiStatus.OK
+  fullName: OpenZiti.ZitiStatus.OK
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: OK
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: OK = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: OK = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.CONFIG_NOT_FOUND
+  commentId: F:OpenZiti.ZitiStatus.CONFIG_NOT_FOUND
+  id: CONFIG_NOT_FOUND
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: CONFIG_NOT_FOUND
+  nameWithType: ZitiStatus.CONFIG_NOT_FOUND
+  fullName: OpenZiti.ZitiStatus.CONFIG_NOT_FOUND
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CONFIG_NOT_FOUND
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: CONFIG_NOT_FOUND = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: CONFIG_NOT_FOUND = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.JWT_NOT_FOUND
+  commentId: F:OpenZiti.ZitiStatus.JWT_NOT_FOUND
+  id: JWT_NOT_FOUND
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: JWT_NOT_FOUND
+  nameWithType: ZitiStatus.JWT_NOT_FOUND
+  fullName: OpenZiti.ZitiStatus.JWT_NOT_FOUND
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: JWT_NOT_FOUND
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: JWT_NOT_FOUND = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: JWT_NOT_FOUND = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.JWT_INVALID
+  commentId: F:OpenZiti.ZitiStatus.JWT_INVALID
+  id: JWT_INVALID
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: JWT_INVALID
+  nameWithType: ZitiStatus.JWT_INVALID
+  fullName: OpenZiti.ZitiStatus.JWT_INVALID
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: JWT_INVALID
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: JWT_INVALID = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: JWT_INVALID = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.JWT_INVALID_FORMAT
+  commentId: F:OpenZiti.ZitiStatus.JWT_INVALID_FORMAT
+  id: JWT_INVALID_FORMAT
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: JWT_INVALID_FORMAT
+  nameWithType: ZitiStatus.JWT_INVALID_FORMAT
+  fullName: OpenZiti.ZitiStatus.JWT_INVALID_FORMAT
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: JWT_INVALID_FORMAT
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: JWT_INVALID_FORMAT = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: JWT_INVALID_FORMAT = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.PKCS7_ASN1_PARSING_FAILED
+  commentId: F:OpenZiti.ZitiStatus.PKCS7_ASN1_PARSING_FAILED
+  id: PKCS7_ASN1_PARSING_FAILED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: PKCS7_ASN1_PARSING_FAILED
+  nameWithType: ZitiStatus.PKCS7_ASN1_PARSING_FAILED
+  fullName: OpenZiti.ZitiStatus.PKCS7_ASN1_PARSING_FAILED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: PKCS7_ASN1_PARSING_FAILED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: PKCS7_ASN1_PARSING_FAILED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: PKCS7_ASN1_PARSING_FAILED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.JWT_SIGNING_ALG_UNSUPPORTED
+  commentId: F:OpenZiti.ZitiStatus.JWT_SIGNING_ALG_UNSUPPORTED
+  id: JWT_SIGNING_ALG_UNSUPPORTED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: JWT_SIGNING_ALG_UNSUPPORTED
+  nameWithType: ZitiStatus.JWT_SIGNING_ALG_UNSUPPORTED
+  fullName: OpenZiti.ZitiStatus.JWT_SIGNING_ALG_UNSUPPORTED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: JWT_SIGNING_ALG_UNSUPPORTED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: JWT_SIGNING_ALG_UNSUPPORTED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: JWT_SIGNING_ALG_UNSUPPORTED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.JWT_VERIFICATION_FAILED
+  commentId: F:OpenZiti.ZitiStatus.JWT_VERIFICATION_FAILED
+  id: JWT_VERIFICATION_FAILED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: JWT_VERIFICATION_FAILED
+  nameWithType: ZitiStatus.JWT_VERIFICATION_FAILED
+  fullName: OpenZiti.ZitiStatus.JWT_VERIFICATION_FAILED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: JWT_VERIFICATION_FAILED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: JWT_VERIFICATION_FAILED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: JWT_VERIFICATION_FAILED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.ENROLLMENT_METHOD_UNSUPPORTED
+  commentId: F:OpenZiti.ZitiStatus.ENROLLMENT_METHOD_UNSUPPORTED
+  id: ENROLLMENT_METHOD_UNSUPPORTED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: ENROLLMENT_METHOD_UNSUPPORTED
+  nameWithType: ZitiStatus.ENROLLMENT_METHOD_UNSUPPORTED
+  fullName: OpenZiti.ZitiStatus.ENROLLMENT_METHOD_UNSUPPORTED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ENROLLMENT_METHOD_UNSUPPORTED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: ENROLLMENT_METHOD_UNSUPPORTED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: ENROLLMENT_METHOD_UNSUPPORTED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.ENROLLMENT_CERTIFICATE_REQUIRED
+  commentId: F:OpenZiti.ZitiStatus.ENROLLMENT_CERTIFICATE_REQUIRED
+  id: ENROLLMENT_CERTIFICATE_REQUIRED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: ENROLLMENT_CERTIFICATE_REQUIRED
+  nameWithType: ZitiStatus.ENROLLMENT_CERTIFICATE_REQUIRED
+  fullName: OpenZiti.ZitiStatus.ENROLLMENT_CERTIFICATE_REQUIRED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ENROLLMENT_CERTIFICATE_REQUIRED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: ENROLLMENT_CERTIFICATE_REQUIRED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: ENROLLMENT_CERTIFICATE_REQUIRED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.KEY_GENERATION_FAILED
+  commentId: F:OpenZiti.ZitiStatus.KEY_GENERATION_FAILED
+  id: KEY_GENERATION_FAILED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: KEY_GENERATION_FAILED
+  nameWithType: ZitiStatus.KEY_GENERATION_FAILED
+  fullName: OpenZiti.ZitiStatus.KEY_GENERATION_FAILED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: KEY_GENERATION_FAILED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: KEY_GENERATION_FAILED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: KEY_GENERATION_FAILED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.KEY_LOAD_FAILED
+  commentId: F:OpenZiti.ZitiStatus.KEY_LOAD_FAILED
+  id: KEY_LOAD_FAILED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: KEY_LOAD_FAILED
+  nameWithType: ZitiStatus.KEY_LOAD_FAILED
+  fullName: OpenZiti.ZitiStatus.KEY_LOAD_FAILED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: KEY_LOAD_FAILED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: KEY_LOAD_FAILED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: KEY_LOAD_FAILED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.CSR_GENERATION_FAILED
+  commentId: F:OpenZiti.ZitiStatus.CSR_GENERATION_FAILED
+  id: CSR_GENERATION_FAILED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: CSR_GENERATION_FAILED
+  nameWithType: ZitiStatus.CSR_GENERATION_FAILED
+  fullName: OpenZiti.ZitiStatus.CSR_GENERATION_FAILED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CSR_GENERATION_FAILED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: CSR_GENERATION_FAILED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: CSR_GENERATION_FAILED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.INVALID_CONFIG
+  commentId: F:OpenZiti.ZitiStatus.INVALID_CONFIG
+  id: INVALID_CONFIG
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: INVALID_CONFIG
+  nameWithType: ZitiStatus.INVALID_CONFIG
+  fullName: OpenZiti.ZitiStatus.INVALID_CONFIG
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: INVALID_CONFIG
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: INVALID_CONFIG = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: INVALID_CONFIG = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.NOT_AUTHORIZED
+  commentId: F:OpenZiti.ZitiStatus.NOT_AUTHORIZED
+  id: NOT_AUTHORIZED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: NOT_AUTHORIZED
+  nameWithType: ZitiStatus.NOT_AUTHORIZED
+  fullName: OpenZiti.ZitiStatus.NOT_AUTHORIZED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: NOT_AUTHORIZED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 47
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: NOT_AUTHORIZED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: NOT_AUTHORIZED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.CONTROLLER_UNAVAILABLE
+  commentId: F:OpenZiti.ZitiStatus.CONTROLLER_UNAVAILABLE
+  id: CONTROLLER_UNAVAILABLE
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: CONTROLLER_UNAVAILABLE
+  nameWithType: ZitiStatus.CONTROLLER_UNAVAILABLE
+  fullName: OpenZiti.ZitiStatus.CONTROLLER_UNAVAILABLE
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CONTROLLER_UNAVAILABLE
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 49
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: CONTROLLER_UNAVAILABLE = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: CONTROLLER_UNAVAILABLE = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.GATEWAY_UNAVAILABLE
+  commentId: F:OpenZiti.ZitiStatus.GATEWAY_UNAVAILABLE
+  id: GATEWAY_UNAVAILABLE
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: GATEWAY_UNAVAILABLE
+  nameWithType: ZitiStatus.GATEWAY_UNAVAILABLE
+  fullName: OpenZiti.ZitiStatus.GATEWAY_UNAVAILABLE
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: GATEWAY_UNAVAILABLE
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 52
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: GATEWAY_UNAVAILABLE = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: GATEWAY_UNAVAILABLE = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.SERVICE_UNAVAILABLE
+  commentId: F:OpenZiti.ZitiStatus.SERVICE_UNAVAILABLE
+  id: SERVICE_UNAVAILABLE
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: SERVICE_UNAVAILABLE
+  nameWithType: ZitiStatus.SERVICE_UNAVAILABLE
+  fullName: OpenZiti.ZitiStatus.SERVICE_UNAVAILABLE
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: SERVICE_UNAVAILABLE
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: SERVICE_UNAVAILABLE = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: SERVICE_UNAVAILABLE = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.EOF
+  commentId: F:OpenZiti.ZitiStatus.EOF
+  id: EOF
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: EOF
+  nameWithType: ZitiStatus.EOF
+  fullName: OpenZiti.ZitiStatus.EOF
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: EOF
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: EOF = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: EOF = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.TIMEOUT
+  commentId: F:OpenZiti.ZitiStatus.TIMEOUT
+  id: TIMEOUT
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: TIMEOUT
+  nameWithType: ZitiStatus.TIMEOUT
+  fullName: OpenZiti.ZitiStatus.TIMEOUT
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: TIMEOUT
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: TIMEOUT = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: TIMEOUT = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.CONNABORT
+  commentId: F:OpenZiti.ZitiStatus.CONNABORT
+  id: CONNABORT
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: CONNABORT
+  nameWithType: ZitiStatus.CONNABORT
+  fullName: OpenZiti.ZitiStatus.CONNABORT
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CONNABORT
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: CONNABORT = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: CONNABORT = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.INVALID_STATE
+  commentId: F:OpenZiti.ZitiStatus.INVALID_STATE
+  id: INVALID_STATE
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: INVALID_STATE
+  nameWithType: ZitiStatus.INVALID_STATE
+  fullName: OpenZiti.ZitiStatus.INVALID_STATE
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: INVALID_STATE
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: INVALID_STATE = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: INVALID_STATE = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.CRYPTO_FAIL
+  commentId: F:OpenZiti.ZitiStatus.CRYPTO_FAIL
+  id: CRYPTO_FAIL
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: CRYPTO_FAIL
+  nameWithType: ZitiStatus.CRYPTO_FAIL
+  fullName: OpenZiti.ZitiStatus.CRYPTO_FAIL
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CRYPTO_FAIL
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: CRYPTO_FAIL = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: CRYPTO_FAIL = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.CONN_CLOSED
+  commentId: F:OpenZiti.ZitiStatus.CONN_CLOSED
+  id: CONN_CLOSED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: CONN_CLOSED
+  nameWithType: ZitiStatus.CONN_CLOSED
+  fullName: OpenZiti.ZitiStatus.CONN_CLOSED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CONN_CLOSED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: CONN_CLOSED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: CONN_CLOSED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.INVALID_POSTURE
+  commentId: F:OpenZiti.ZitiStatus.INVALID_POSTURE
+  id: INVALID_POSTURE
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: INVALID_POSTURE
+  nameWithType: ZitiStatus.INVALID_POSTURE
+  fullName: OpenZiti.ZitiStatus.INVALID_POSTURE
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: INVALID_POSTURE
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: INVALID_POSTURE = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: INVALID_POSTURE = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.MFA_EXISTS
+  commentId: F:OpenZiti.ZitiStatus.MFA_EXISTS
+  id: MFA_EXISTS
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: MFA_EXISTS
+  nameWithType: ZitiStatus.MFA_EXISTS
+  fullName: OpenZiti.ZitiStatus.MFA_EXISTS
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: MFA_EXISTS
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: MFA_EXISTS = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: MFA_EXISTS = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.MFA_INVALID_TOKEN
+  commentId: F:OpenZiti.ZitiStatus.MFA_INVALID_TOKEN
+  id: MFA_INVALID_TOKEN
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: MFA_INVALID_TOKEN
+  nameWithType: ZitiStatus.MFA_INVALID_TOKEN
+  fullName: OpenZiti.ZitiStatus.MFA_INVALID_TOKEN
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: MFA_INVALID_TOKEN
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: MFA_INVALID_TOKEN = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: MFA_INVALID_TOKEN = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.MFA_NOT_ENROLLED
+  commentId: F:OpenZiti.ZitiStatus.MFA_NOT_ENROLLED
+  id: MFA_NOT_ENROLLED
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: MFA_NOT_ENROLLED
+  nameWithType: ZitiStatus.MFA_NOT_ENROLLED
+  fullName: OpenZiti.ZitiStatus.MFA_NOT_ENROLLED
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: MFA_NOT_ENROLLED
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: MFA_NOT_ENROLLED = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: MFA_NOT_ENROLLED = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.NOT_FOUND
+  commentId: F:OpenZiti.ZitiStatus.NOT_FOUND
+  id: NOT_FOUND
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: NOT_FOUND
+  nameWithType: ZitiStatus.NOT_FOUND
+  fullName: OpenZiti.ZitiStatus.NOT_FOUND
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: NOT_FOUND
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: NOT_FOUND = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: NOT_FOUND = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiStatus.WTF
+  commentId: F:OpenZiti.ZitiStatus.WTF
+  id: WTF
+  parent: OpenZiti.ZitiStatus
+  langs:
+  - csharp
+  - vb
+  name: WTF
+  nameWithType: ZitiStatus.WTF
+  fullName: OpenZiti.ZitiStatus.WTF
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: WTF
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  example: []
+  syntax:
+    content: WTF = null
+    return:
+      type: OpenZiti.ZitiStatus
+    content.vb: WTF = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: OpenZiti.ZitiStatus.OpenZiti.ZitiStatusExtensions.Ok
+  commentId: M:OpenZiti.ZitiStatusExtensions.Ok(OpenZiti.ZitiStatus)
+  parent: OpenZiti.ZitiStatusExtensions
+  definition: OpenZiti.ZitiStatusExtensions.Ok(OpenZiti.ZitiStatus)
+  name: Ok()
+  nameWithType: ZitiStatusExtensions.Ok()
+  fullName: OpenZiti.ZitiStatusExtensions.Ok()
+  spec.csharp:
+  - uid: OpenZiti.ZitiStatusExtensions.Ok
+    name: Ok
+    nameWithType: ZitiStatusExtensions.Ok
+    fullName: OpenZiti.ZitiStatusExtensions.Ok
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: OpenZiti.ZitiStatusExtensions.Ok
+    name: Ok
+    nameWithType: ZitiStatusExtensions.Ok
+    fullName: OpenZiti.ZitiStatusExtensions.Ok
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: OpenZiti.ZitiStatus.OpenZiti.ZitiUtil.Check
+  commentId: M:OpenZiti.ZitiUtil.Check(OpenZiti.ZitiStatus)
+  parent: OpenZiti.ZitiUtil
+  definition: OpenZiti.ZitiUtil.Check(OpenZiti.ZitiStatus)
+  name: Check()
+  nameWithType: ZitiUtil.Check()
+  fullName: OpenZiti.ZitiUtil.Check()
+  spec.csharp:
+  - uid: OpenZiti.ZitiUtil.Check
+    name: Check
+    nameWithType: ZitiUtil.Check
+    fullName: OpenZiti.ZitiUtil.Check
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: OpenZiti.ZitiUtil.Check
+    name: Check
+    nameWithType: ZitiUtil.Check
+    fullName: OpenZiti.ZitiUtil.Check
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: OpenZiti.ZitiStatusExtensions.Ok(OpenZiti.ZitiStatus)
+  commentId: M:OpenZiti.ZitiStatusExtensions.Ok(OpenZiti.ZitiStatus)
+  name: Ok(ZitiStatus)
+  nameWithType: ZitiStatusExtensions.Ok(ZitiStatus)
+  fullName: OpenZiti.ZitiStatusExtensions.Ok(OpenZiti.ZitiStatus)
+  spec.csharp:
+  - uid: OpenZiti.ZitiStatusExtensions.Ok(OpenZiti.ZitiStatus)
+    name: Ok
+    nameWithType: ZitiStatusExtensions.Ok
+    fullName: OpenZiti.ZitiStatusExtensions.Ok
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: OpenZiti.ZitiStatus
+    name: ZitiStatus
+    nameWithType: ZitiStatus
+    fullName: OpenZiti.ZitiStatus
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: OpenZiti.ZitiStatusExtensions.Ok(OpenZiti.ZitiStatus)
+    name: Ok
+    nameWithType: ZitiStatusExtensions.Ok
+    fullName: OpenZiti.ZitiStatusExtensions.Ok
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: OpenZiti.ZitiStatus
+    name: ZitiStatus
+    nameWithType: ZitiStatus
+    fullName: OpenZiti.ZitiStatus
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: OpenZiti.ZitiStatusExtensions
+  commentId: T:OpenZiti.ZitiStatusExtensions
+  parent: OpenZiti
+  name: ZitiStatusExtensions
+  nameWithType: ZitiStatusExtensions
+  fullName: OpenZiti.ZitiStatusExtensions
+- uid: OpenZiti.ZitiUtil.Check(OpenZiti.ZitiStatus)
+  commentId: M:OpenZiti.ZitiUtil.Check(OpenZiti.ZitiStatus)
+  name: Check(ZitiStatus)
+  nameWithType: ZitiUtil.Check(ZitiStatus)
+  fullName: OpenZiti.ZitiUtil.Check(OpenZiti.ZitiStatus)
+  spec.csharp:
+  - uid: OpenZiti.ZitiUtil.Check(OpenZiti.ZitiStatus)
+    name: Check
+    nameWithType: ZitiUtil.Check
+    fullName: OpenZiti.ZitiUtil.Check
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: OpenZiti.ZitiStatus
+    name: ZitiStatus
+    nameWithType: ZitiStatus
+    fullName: OpenZiti.ZitiStatus
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: OpenZiti.ZitiUtil.Check(OpenZiti.ZitiStatus)
+    name: Check
+    nameWithType: ZitiUtil.Check
+    fullName: OpenZiti.ZitiUtil.Check
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: OpenZiti.ZitiStatus
+    name: ZitiStatus
+    nameWithType: ZitiStatus
+    fullName: OpenZiti.ZitiStatus
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: OpenZiti.ZitiUtil
+  commentId: T:OpenZiti.ZitiUtil
+  parent: OpenZiti
+  name: ZitiUtil
+  nameWithType: ZitiUtil
+  fullName: OpenZiti.ZitiUtil
+- uid: OpenZiti.ZitiStatus
+  commentId: T:OpenZiti.ZitiStatus
+  parent: OpenZiti
+  name: ZitiStatus
+  nameWithType: ZitiStatus
+  fullName: OpenZiti.ZitiStatus

@@ -1,0 +1,49 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.API.Enrollment.AfterEnroll
+  commentId: T:OpenZiti.API.Enrollment.AfterEnroll
+  id: API.Enrollment.AfterEnroll
+  parent: OpenZiti
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: API.Enrollment.AfterEnroll
+  nameWithType: API.Enrollment.AfterEnroll
+  fullName: OpenZiti.API.Enrollment.AfterEnroll
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: AfterEnroll
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 56
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public delegate void AfterEnroll(ZitiEnrollment.EnrollmentResult result);
+    parameters:
+    - id: result
+      type: OpenZiti.ZitiEnrollment.EnrollmentResult
+    content.vb: Public Delegate Sub AfterEnroll(result As ZitiEnrollment.EnrollmentResult)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: OpenZiti.ZitiEnrollment.EnrollmentResult
+  commentId: T:OpenZiti.ZitiEnrollment.EnrollmentResult
+  parent: OpenZiti
+  name: ZitiEnrollment.EnrollmentResult
+  nameWithType: ZitiEnrollment.EnrollmentResult
+  fullName: OpenZiti.ZitiEnrollment.EnrollmentResult

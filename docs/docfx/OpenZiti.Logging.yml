@@ -1,0 +1,104 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Logging
+  commentId: T:OpenZiti.Logging
+  id: Logging
+  parent: OpenZiti
+  children:
+  - OpenZiti.Logging.SimpleConsoleLogging(NLog.LogLevel)
+  langs:
+  - csharp
+  - vb
+  name: Logging
+  nameWithType: Logging
+  fullName: OpenZiti.Logging
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Logging.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Logging
+    path: Ziti.NET.Standard/src/OpenZiti/Logging.cs
+    startLine: 24
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public static class Logging : object'
+    content.vb: >-
+      Public Module Logging
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: OpenZiti.Logging.SimpleConsoleLogging(NLog.LogLevel)
+  commentId: M:OpenZiti.Logging.SimpleConsoleLogging(NLog.LogLevel)
+  id: SimpleConsoleLogging(NLog.LogLevel)
+  parent: OpenZiti.Logging
+  langs:
+  - csharp
+  - vb
+  name: SimpleConsoleLogging(LogLevel)
+  nameWithType: Logging.SimpleConsoleLogging(LogLevel)
+  fullName: OpenZiti.Logging.SimpleConsoleLogging(NLog.LogLevel)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Logging.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: SimpleConsoleLogging
+    path: Ziti.NET.Standard/src/OpenZiti/Logging.cs
+    startLine: 25
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static void SimpleConsoleLogging(LogLevel min)
+    parameters:
+    - id: min
+      type: NLog.LogLevel
+    content.vb: Public Shared Sub SimpleConsoleLogging(min As LogLevel)
+  overload: OpenZiti.Logging.SimpleConsoleLogging*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: OpenZiti.Logging.SimpleConsoleLogging*
+  commentId: Overload:OpenZiti.Logging.SimpleConsoleLogging
+  name: SimpleConsoleLogging
+  nameWithType: Logging.SimpleConsoleLogging
+  fullName: OpenZiti.Logging.SimpleConsoleLogging
+- uid: NLog.LogLevel
+  commentId: T:NLog.LogLevel
+  parent: NLog
+  isExternal: true
+  name: LogLevel
+  nameWithType: LogLevel
+  fullName: NLog.LogLevel
+- uid: NLog
+  commentId: N:NLog
+  isExternal: true
+  name: NLog
+  nameWithType: NLog
+  fullName: NLog

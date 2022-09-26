@@ -1,0 +1,40 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.tls_context
+  commentId: T:OpenZiti.Native.tls_context
+  id: tls_context
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: tls_context
+  nameWithType: tls_context
+  fullName: OpenZiti.Native.tls_context
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: tls_context
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 273
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public struct tls_context
+    content.vb: Public Structure tls_context
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native

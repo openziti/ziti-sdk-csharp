@@ -1,0 +1,40 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ziti_version
+  commentId: T:OpenZiti.ziti_version
+  id: ziti_version
+  parent: OpenZiti
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_version
+  nameWithType: ziti_version
+  fullName: OpenZiti.ziti_version
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_version
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 199
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public struct ziti_version
+    content.vb: Public Structure ziti_version
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti

@@ -9,7 +9,7 @@
           ]
         }
       ],
-      "dest": "api",
+      "dest": "docs/docfx",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -45,11 +45,11 @@
         ],
         "exclude": [
           "obj/**",
-          "_site/**"
+          "docs/docfx/_site/**"
         ]
       }
     ],
-    "dest": "_site",
+    "dest": "docs/docfx/_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [

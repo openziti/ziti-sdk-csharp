@@ -1,0 +1,151 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.EnumHelper
+  commentId: T:OpenZiti.EnumHelper
+  id: EnumHelper
+  parent: OpenZiti
+  children:
+  - OpenZiti.EnumHelper.GetDescription(Enum)
+  - OpenZiti.EnumHelper.NO_DESC
+  langs:
+  - csharp
+  - vb
+  name: EnumHelper
+  nameWithType: EnumHelper
+  fullName: OpenZiti.EnumHelper
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ExtensionMethods.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: EnumHelper
+    path: Ziti.NET.Standard/src/OpenZiti/ExtensionMethods.cs
+    startLine: 26
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nA class which provides an extension method to get a Description from an enum. The enum must be\ndecorated with a <see cref=\"!:DescriptionAttribute\"></see>\n"
+  example: []
+  syntax:
+    content: 'public static class EnumHelper : object'
+    content.vb: >-
+      Public Module EnumHelper
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: OpenZiti.EnumHelper.NO_DESC
+  commentId: F:OpenZiti.EnumHelper.NO_DESC
+  id: NO_DESC
+  parent: OpenZiti.EnumHelper
+  langs:
+  - csharp
+  - vb
+  name: NO_DESC
+  nameWithType: EnumHelper.NO_DESC
+  fullName: OpenZiti.EnumHelper.NO_DESC
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ExtensionMethods.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: NO_DESC
+    path: Ziti.NET.Standard/src/OpenZiti/ExtensionMethods.cs
+    startLine: 28
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public const string NO_DESC = null
+    return:
+      type: System.String
+    content.vb: Public Const NO_DESC As String = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.EnumHelper.GetDescription(Enum)
+  commentId: M:OpenZiti.EnumHelper.GetDescription(Enum)
+  id: GetDescription(Enum)
+  isExtensionMethod: true
+  parent: OpenZiti.EnumHelper
+  langs:
+  - csharp
+  - vb
+  name: GetDescription(Enum)
+  nameWithType: EnumHelper.GetDescription(Enum)
+  fullName: OpenZiti.EnumHelper.GetDescription(Enum)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ExtensionMethods.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: GetDescription
+    path: Ziti.NET.Standard/src/OpenZiti/ExtensionMethods.cs
+    startLine: 36
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nExtension method to return the <see cref=\"!:DescriptionAttribute\"></see> of the enum.\nIf no <see cref=\"!:DescriptionAttribute\"></see> exists, returns <xref href=\"OpenZiti.EnumHelper.NO_DESC\" data-throw-if-not-resolved=\"false\"></xref>\n"
+  example: []
+  syntax:
+    content: public static string GetDescription(this Enum enumVal)
+    parameters:
+    - id: enumVal
+      type: Enum
+      description: The enum in question to get the description from
+    return:
+      type: System.String
+      description: ''
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function GetDescription(enumVal As  Enum) As String
+  overload: OpenZiti.EnumHelper.GetDescription*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: OpenZiti.EnumHelper.NO_DESC
+  commentId: F:OpenZiti.EnumHelper.NO_DESC
+  isExternal: true
+- uid: OpenZiti.EnumHelper.GetDescription*
+  commentId: Overload:OpenZiti.EnumHelper.GetDescription
+  name: GetDescription
+  nameWithType: EnumHelper.GetDescription
+  fullName: OpenZiti.EnumHelper.GetDescription
+- uid: Enum
+  commentId: '!:Enum'
+  isExternal: true
+  name: Enum
+  nameWithType: Enum
+  fullName: Enum

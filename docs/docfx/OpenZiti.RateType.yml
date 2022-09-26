@@ -1,0 +1,277 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.RateType
+  commentId: T:OpenZiti.RateType
+  id: RateType
+  parent: OpenZiti
+  children:
+  - OpenZiti.RateType.CMA_1m
+  - OpenZiti.RateType.EWMA_15m
+  - OpenZiti.RateType.EWMA_1m
+  - OpenZiti.RateType.EWMA_5m
+  - OpenZiti.RateType.EWMA_5s
+  - OpenZiti.RateType.INSTANT
+  - OpenZiti.RateType.MMA_1m
+  langs:
+  - csharp
+  - vb
+  name: RateType
+  nameWithType: RateType
+  fullName: OpenZiti.RateType
+  type: Enum
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: RateType
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 41
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public enum RateType : int'
+    content.vb: Public Enum RateType As Integer
+  modifiers.csharp:
+  - public
+  - enum
+  modifiers.vb:
+  - Public
+  - Enum
+- uid: OpenZiti.RateType.EWMA_1m
+  commentId: F:OpenZiti.RateType.EWMA_1m
+  id: EWMA_1m
+  parent: OpenZiti.RateType
+  langs:
+  - csharp
+  - vb
+  name: EWMA_1m
+  nameWithType: RateType.EWMA_1m
+  fullName: OpenZiti.RateType.EWMA_1m
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: EWMA_1m
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: EWMA_1m = 0
+    return:
+      type: OpenZiti.RateType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.RateType.EWMA_5m
+  commentId: F:OpenZiti.RateType.EWMA_5m
+  id: EWMA_5m
+  parent: OpenZiti.RateType
+  langs:
+  - csharp
+  - vb
+  name: EWMA_5m
+  nameWithType: RateType.EWMA_5m
+  fullName: OpenZiti.RateType.EWMA_5m
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: EWMA_5m
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 43
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: EWMA_5m = 1
+    return:
+      type: OpenZiti.RateType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.RateType.EWMA_15m
+  commentId: F:OpenZiti.RateType.EWMA_15m
+  id: EWMA_15m
+  parent: OpenZiti.RateType
+  langs:
+  - csharp
+  - vb
+  name: EWMA_15m
+  nameWithType: RateType.EWMA_15m
+  fullName: OpenZiti.RateType.EWMA_15m
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: EWMA_15m
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 44
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: EWMA_15m = 2
+    return:
+      type: OpenZiti.RateType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.RateType.MMA_1m
+  commentId: F:OpenZiti.RateType.MMA_1m
+  id: MMA_1m
+  parent: OpenZiti.RateType
+  langs:
+  - csharp
+  - vb
+  name: MMA_1m
+  nameWithType: RateType.MMA_1m
+  fullName: OpenZiti.RateType.MMA_1m
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: MMA_1m
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 45
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: MMA_1m = 3
+    return:
+      type: OpenZiti.RateType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.RateType.CMA_1m
+  commentId: F:OpenZiti.RateType.CMA_1m
+  id: CMA_1m
+  parent: OpenZiti.RateType
+  langs:
+  - csharp
+  - vb
+  name: CMA_1m
+  nameWithType: RateType.CMA_1m
+  fullName: OpenZiti.RateType.CMA_1m
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CMA_1m
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 46
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: CMA_1m = 4
+    return:
+      type: OpenZiti.RateType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.RateType.EWMA_5s
+  commentId: F:OpenZiti.RateType.EWMA_5s
+  id: EWMA_5s
+  parent: OpenZiti.RateType
+  langs:
+  - csharp
+  - vb
+  name: EWMA_5s
+  nameWithType: RateType.EWMA_5s
+  fullName: OpenZiti.RateType.EWMA_5s
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: EWMA_5s
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 47
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: EWMA_5s = 5
+    return:
+      type: OpenZiti.RateType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.RateType.INSTANT
+  commentId: F:OpenZiti.RateType.INSTANT
+  id: INSTANT
+  parent: OpenZiti.RateType
+  langs:
+  - csharp
+  - vb
+  name: INSTANT
+  nameWithType: RateType.INSTANT
+  fullName: OpenZiti.RateType.INSTANT
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: INSTANT
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 48
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: INSTANT = 6
+    return:
+      type: OpenZiti.RateType
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: OpenZiti.RateType
+  commentId: T:OpenZiti.RateType
+  parent: OpenZiti
+  name: RateType
+  nameWithType: RateType
+  fullName: OpenZiti.RateType

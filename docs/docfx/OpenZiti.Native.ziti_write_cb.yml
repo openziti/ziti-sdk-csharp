@@ -1,0 +1,62 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_write_cb
+  commentId: T:OpenZiti.Native.ziti_write_cb
+  id: ziti_write_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_write_cb
+  nameWithType: ziti_write_cb
+  fullName: OpenZiti.Native.ziti_write_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_write_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 38
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate void ziti_write_cb(IntPtr ziti_connection, int status, GCHandle write_context);
+    parameters:
+    - id: ziti_connection
+      type: IntPtr
+    - id: status
+      type: System.Int32
+    - id: write_context
+      type: GCHandle
+    content.vb: Public Delegate Sub ziti_write_cb(ziti_connection As IntPtr, status As Integer, write_context As GCHandle)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: GCHandle
+  isExternal: true
+  name: GCHandle
+  nameWithType: GCHandle
+  fullName: GCHandle

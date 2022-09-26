@@ -1,0 +1,50 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.NativeHelperFunctions
+  commentId: T:OpenZiti.Native.NativeHelperFunctions
+  id: NativeHelperFunctions
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: NativeHelperFunctions
+  nameWithType: NativeHelperFunctions
+  fullName: OpenZiti.Native.NativeHelperFunctions
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/NativeHelperFunctions.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: NativeHelperFunctions
+    path: Ziti.NET.Standard/src/OpenZiti/Native/NativeHelperFunctions.cs
+    startLine: 22
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: 'public static class NativeHelperFunctions : object'
+    content.vb: >-
+      Public Module NativeHelperFunctions
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object

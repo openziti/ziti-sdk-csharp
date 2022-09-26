@@ -1,0 +1,221 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.posture_query
+  commentId: T:OpenZiti.posture_query
+  id: posture_query
+  parent: OpenZiti
+  children:
+  - OpenZiti.posture_query.id
+  - OpenZiti.posture_query.is_passing
+  - OpenZiti.posture_query.process
+  - OpenZiti.posture_query.query_type
+  - OpenZiti.posture_query.timeout
+  langs:
+  - csharp
+  - vb
+  name: posture_query
+  nameWithType: posture_query
+  fullName: OpenZiti.posture_query
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: posture_query
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 230
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public struct posture_query
+    content.vb: Public Structure posture_query
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+- uid: OpenZiti.posture_query.id
+  commentId: F:OpenZiti.posture_query.id
+  id: id
+  parent: OpenZiti.posture_query
+  langs:
+  - csharp
+  - vb
+  name: id
+  nameWithType: posture_query.id
+  fullName: OpenZiti.posture_query.id
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: id
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 231
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string id
+    return:
+      type: System.String
+    content.vb: Public id As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.posture_query.is_passing
+  commentId: F:OpenZiti.posture_query.is_passing
+  id: is_passing
+  parent: OpenZiti.posture_query
+  langs:
+  - csharp
+  - vb
+  name: is_passing
+  nameWithType: posture_query.is_passing
+  fullName: OpenZiti.posture_query.is_passing
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: is_passing
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 232
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public bool is_passing
+    return:
+      type: System.Boolean
+    content.vb: Public is_passing As Boolean
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.posture_query.query_type
+  commentId: F:OpenZiti.posture_query.query_type
+  id: query_type
+  parent: OpenZiti.posture_query
+  langs:
+  - csharp
+  - vb
+  name: query_type
+  nameWithType: posture_query.query_type
+  fullName: OpenZiti.posture_query.query_type
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: query_type
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 233
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string query_type
+    return:
+      type: System.String
+    content.vb: Public query_type As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.posture_query.process
+  commentId: F:OpenZiti.posture_query.process
+  id: process
+  parent: OpenZiti.posture_query
+  langs:
+  - csharp
+  - vb
+  name: process
+  nameWithType: posture_query.process
+  fullName: OpenZiti.posture_query.process
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: process
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 234
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public ziti_process process
+    return:
+      type: OpenZiti.ziti_process
+    content.vb: Public process As ziti_process
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.posture_query.timeout
+  commentId: F:OpenZiti.posture_query.timeout
+  id: timeout
+  parent: OpenZiti.posture_query
+  langs:
+  - csharp
+  - vb
+  name: timeout
+  nameWithType: posture_query.timeout
+  fullName: OpenZiti.posture_query.timeout
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: timeout
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 235
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public int timeout
+    return:
+      type: System.Int32
+    content.vb: Public timeout As Integer
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Boolean
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: OpenZiti.ziti_process
+  commentId: T:OpenZiti.ziti_process
+  parent: OpenZiti
+  name: ziti_process
+  nameWithType: ziti_process
+  fullName: OpenZiti.ziti_process
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

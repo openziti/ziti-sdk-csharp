@@ -1,0 +1,157 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiEventFlags
+  commentId: T:OpenZiti.ZitiEventFlags
+  id: ZitiEventFlags
+  parent: OpenZiti
+  children:
+  - OpenZiti.ZitiEventFlags.ZitiContextEvent
+  - OpenZiti.ZitiEventFlags.ZitiRouterEvent
+  - OpenZiti.ZitiEventFlags.ZitiServiceEvent
+  langs:
+  - csharp
+  - vb
+  name: ZitiEventFlags
+  nameWithType: ZitiEventFlags
+  fullName: OpenZiti.ZitiEventFlags
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiEventFlags
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 420
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public static class ZitiEventFlags : object'
+    content.vb: >-
+      Public Module ZitiEventFlags
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: OpenZiti.ZitiEventFlags.ZitiContextEvent
+  commentId: F:OpenZiti.ZitiEventFlags.ZitiContextEvent
+  id: ZitiContextEvent
+  parent: OpenZiti.ZitiEventFlags
+  langs:
+  - csharp
+  - vb
+  name: ZitiContextEvent
+  nameWithType: ZitiEventFlags.ZitiContextEvent
+  fullName: OpenZiti.ZitiEventFlags.ZitiContextEvent
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiContextEvent
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 421
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public const int ZitiContextEvent = null
+    return:
+      type: System.Int32
+    content.vb: Public Const ZitiContextEvent As Integer = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiEventFlags.ZitiRouterEvent
+  commentId: F:OpenZiti.ZitiEventFlags.ZitiRouterEvent
+  id: ZitiRouterEvent
+  parent: OpenZiti.ZitiEventFlags
+  langs:
+  - csharp
+  - vb
+  name: ZitiRouterEvent
+  nameWithType: ZitiEventFlags.ZitiRouterEvent
+  fullName: OpenZiti.ZitiEventFlags.ZitiRouterEvent
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiRouterEvent
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 422
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public const int ZitiRouterEvent = null
+    return:
+      type: System.Int32
+    content.vb: Public Const ZitiRouterEvent As Integer = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: OpenZiti.ZitiEventFlags.ZitiServiceEvent
+  commentId: F:OpenZiti.ZitiEventFlags.ZitiServiceEvent
+  id: ZitiServiceEvent
+  parent: OpenZiti.ZitiEventFlags
+  langs:
+  - csharp
+  - vb
+  name: ZitiServiceEvent
+  nameWithType: ZitiEventFlags.ZitiServiceEvent
+  fullName: OpenZiti.ZitiEventFlags.ZitiServiceEvent
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiServiceEvent
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 423
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public const int ZitiServiceEvent = null
+    return:
+      type: System.Int32
+    content.vb: Public Const ZitiServiceEvent As Integer = Nothing
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

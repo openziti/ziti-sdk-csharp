@@ -1,0 +1,90 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_pr_mac_cb
+  commentId: T:OpenZiti.Native.ziti_pr_mac_cb
+  id: ziti_pr_mac_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_pr_mac_cb
+  nameWithType: ziti_pr_mac_cb
+  fullName: OpenZiti.Native.ziti_pr_mac_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_pr_mac_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 44
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate void ziti_pr_mac_cb(IntPtr ziti_context, string id, string[] mac_addresses, int num_mac);
+    parameters:
+    - id: ziti_context
+      type: IntPtr
+    - id: id
+      type: System.String
+    - id: mac_addresses
+      type: System.String[]
+    - id: num_mac
+      type: System.Int32
+    content.vb: Public Delegate Sub ziti_pr_mac_cb(ziti_context As IntPtr, id As String, mac_addresses As String(), num_mac As Integer)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.String[]
+  isExternal: true
+  name: String[]
+  nameWithType: String[]
+  fullName: System.String[]
+  nameWithType.vb: String()
+  fullName.vb: System.String()
+  name.vb: String()
+  spec.csharp:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

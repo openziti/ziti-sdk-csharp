@@ -1,0 +1,127 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.UVLoop
+  commentId: T:OpenZiti.UVLoop
+  id: UVLoop
+  parent: OpenZiti
+  children:
+  - OpenZiti.UVLoop.#ctor
+  - OpenZiti.UVLoop.DefaultLoop
+  langs:
+  - csharp
+  - vb
+  name: UVLoop
+  nameWithType: UVLoop
+  fullName: OpenZiti.UVLoop
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/UVLoop.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: UVLoop
+    path: Ziti.NET.Standard/src/OpenZiti/UVLoop.cs
+    startLine: 19
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public class UVLoop : object'
+    content.vb: >-
+      Public Class UVLoop
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: OpenZiti.UVLoop.DefaultLoop
+  commentId: F:OpenZiti.UVLoop.DefaultLoop
+  id: DefaultLoop
+  parent: OpenZiti.UVLoop
+  langs:
+  - csharp
+  - vb
+  name: DefaultLoop
+  nameWithType: UVLoop.DefaultLoop
+  fullName: OpenZiti.UVLoop.DefaultLoop
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/UVLoop.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: DefaultLoop
+    path: Ziti.NET.Standard/src/OpenZiti/UVLoop.cs
+    startLine: 20
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static readonly UVLoop DefaultLoop
+    return:
+      type: OpenZiti.UVLoop
+    content.vb: Public Shared ReadOnly DefaultLoop As UVLoop
+  modifiers.csharp:
+  - public
+  - static
+  - readonly
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: OpenZiti.UVLoop.#ctor
+  commentId: M:OpenZiti.UVLoop.#ctor
+  id: '#ctor'
+  parent: OpenZiti.UVLoop
+  langs:
+  - csharp
+  - vb
+  name: UVLoop()
+  nameWithType: UVLoop.UVLoop()
+  fullName: OpenZiti.UVLoop.UVLoop()
+  type: Constructor
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/UVLoop.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: .ctor
+    path: Ziti.NET.Standard/src/OpenZiti/UVLoop.cs
+    startLine: 23
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public UVLoop()
+    content.vb: Public Sub New
+  overload: OpenZiti.UVLoop.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: OpenZiti.UVLoop
+  commentId: T:OpenZiti.UVLoop
+  parent: OpenZiti
+  name: UVLoop
+  nameWithType: UVLoop
+  fullName: OpenZiti.UVLoop
+- uid: OpenZiti.UVLoop.#ctor*
+  commentId: Overload:OpenZiti.UVLoop.#ctor
+  name: UVLoop
+  nameWithType: UVLoop.UVLoop
+  fullName: OpenZiti.UVLoop.UVLoop
