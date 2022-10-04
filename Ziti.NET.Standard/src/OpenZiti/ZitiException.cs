@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,11 @@ limitations under the License.
 */
 using System;
 
-namespace OpenZiti
-{
+namespace OpenZiti {
     /// <summary>
     /// Represents a Ziti-specific exception
     /// </summary>
-    public class ZitiException : Exception
-    {
+    public class ZitiException : Exception {
         /// <summary>
         /// The basic constructor for creating a ZitiException
         /// </summary>

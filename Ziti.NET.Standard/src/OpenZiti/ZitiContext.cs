@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,13 @@ limitations under the License.
 
 using System;
 
-namespace OpenZiti
-{
+namespace OpenZiti {
     /// <summary>
     /// An opaque handle to a native Ziti context. Required for certain operations
     /// </summary>
-    public class ZitiContext
-    {
+    public class ZitiContext {
         internal IntPtr nativeZitiContext = IntPtr.Zero;
-        internal ZitiContext(IntPtr ptr)
-        {
+        internal ZitiContext(IntPtr ptr) {
             nativeZitiContext = ptr;
         }
     }

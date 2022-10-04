@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -198,7 +198,7 @@ namespace OpenZiti.Native {
         //defined in C: char* gimme_string();
         [DllImport(Z4D_DLL_PATH, EntryPoint = "gimme_string", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr gimme_string_intptr();
-        
+
 
         /*
         //defined in C: extern void ziti_dump(ziti_context ztx);
@@ -241,10 +241,10 @@ namespace OpenZiti.Native {
         //public IntPtr config_types; 
         public IntPtr /*public char**/ config_types;
 
-        public Int32 refresh_interval; //the duration in seconds between checking for updates from the controller
+        public int refresh_interval; //the duration in seconds between checking for updates from the controller
         public RateType metrics_type; //an enum describing the metrics to collect
 
-        public Int32 router_keepalive;
+        public int router_keepalive;
 
         //posture query cbs
         public ziti_pq_mac_cb pq_mac_cb;
@@ -277,65 +277,65 @@ namespace OpenZiti.Native {
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    struct ziti_context_event {
-	    [FieldOffset(0)]
+    internal struct ziti_context_event {
+        [FieldOffset(0)]
         public int type;
 #if ZITI_X64
         [FieldOffset(8)]
 #else
-	    [FieldOffset(4)]
+        [FieldOffset(4)]
 #endif
         public int ctrl_status;
 #if ZITI_X64
         [FieldOffset(16)]
 #else
-	    [FieldOffset(8)]
+        [FieldOffset(8)]
 #endif
         public IntPtr err;
     };
     [StructLayout(LayoutKind.Explicit)]
-    struct ziti_router_event {
-	    [FieldOffset(0)]
+    internal struct ziti_router_event {
+        [FieldOffset(0)]
         public int type;
-#if ZITI_X64 
+#if ZITI_X64
         [FieldOffset(8)]
 #else
-	    [FieldOffset(4)]
+        [FieldOffset(4)]
 #endif
         public int status;
 #if ZITI_X64
 	    [FieldOffset(16)]
 #else
-	    [FieldOffset(8)]
+        [FieldOffset(8)]
 #endif
-	    public IntPtr name;
+        public IntPtr name;
 #if ZITI_X64
         [FieldOffset(24)]
 #else
-	    [FieldOffset(12)]
+        [FieldOffset(12)]
 #endif
         public IntPtr version;
     };
     [StructLayout(LayoutKind.Explicit)]
-    struct ziti_service_event {
-	    [FieldOffset(0)]
+    internal struct ziti_service_event {
+        [FieldOffset(0)]
         public int type;
 #if ZITI_X64
         [FieldOffset(8)]
 #else
-	    [FieldOffset(4)]
+        [FieldOffset(4)]
 #endif
         public IntPtr removed;
 #if ZITI_X64
         [FieldOffset(16)]
 #else
-	    [FieldOffset(8)]
+        [FieldOffset(8)]
 #endif
         public IntPtr changed;
 #if ZITI_X64
         [FieldOffset(24)]
 #else
-	    [FieldOffset(12)]
+        [FieldOffset(12)]
 #endif
         public IntPtr added;
     };
