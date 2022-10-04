@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,8 @@ namespace OpenZiti {
 
         }
         internal ZitiIdentityFormat(ZitiIdentityFormatNative native) {
-            this.ControllerUrl = native.ControllerUrl;
-            this.IdMaterial = new IdMaterial() {
+            ControllerUrl = native.ControllerUrl;
+            IdMaterial = new IdMaterial() {
                 CA = native.IdMaterial.CA,
                 Certificate = native.IdMaterial.Certificate,
                 Key = native.IdMaterial.Key,

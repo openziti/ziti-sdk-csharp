@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,17 +66,17 @@ namespace OpenZiti {
 
             internal static void ziti_enroll_cb_impl(IntPtr ziti_config, int status, string msg, GCHandle enroll_context) {
                 if (enroll_context.IsAllocated) {
-                    Enrollment.AfterEnrollWrapper w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
+                    var w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
                     w.wrapper.Dispose();
 
-                    ZitiEnrollment.EnrollmentResult r = new ZitiEnrollment.EnrollmentResult(ziti_config) {
+                    var r = new ZitiEnrollment.EnrollmentResult(ziti_config) {
                         Status = (ZitiStatus)status,
                         Message = msg,
                         Context = w.Context,
                     };
 
                     if (r.Status.Ok()) {
-                        ZitiIdentityFormatNative fromZiti = Marshal.PtrToStructure<ZitiIdentityFormatNative>(ziti_config);
+                        var fromZiti = Marshal.PtrToStructure<ZitiIdentityFormatNative>(ziti_config);
                         r.ZitiIdentity = new ZitiIdentityFormat(fromZiti);
                     }
 
@@ -88,12 +88,7 @@ namespace OpenZiti {
         }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.newLoop() };
-        public static UVLoop DefaultLoop {
-            get {
-                return defaultLoop;
-            }
-        }
+        public static UVLoop DefaultLoop { get; } = new UVLoop() { nativeUvLoop = Native.API.newLoop() };
 
         public static Native.log_writer NativeLogger = NoopNativeLogFunction;
 
@@ -129,18 +124,19 @@ namespace OpenZiti {
                     break;
             }
         }
-        static Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
+
+        private static readonly Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
 
         public static void Enroll(string identityFile, Enrollment.AfterEnroll afterEnroll, object ctx) {
             var loop = API.DefaultLoop;
             Native.API.ziti_log_init(loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(NativeLogger));
 
 
-            Native.ziti_enroll_options opts = new Native.ziti_enroll_options() {
+            var opts = new Native.ziti_enroll_options() {
                 jwt = identityFile,
             };
 
-            Enrollment.AfterEnrollWrapper w = new Enrollment.AfterEnrollWrapper() {
+            var w = new Enrollment.AfterEnrollWrapper() {
                 AfterEnroll = afterEnroll,
                 wrapper = new StructWrapper(opts),
                 Context = ctx,
@@ -154,7 +150,7 @@ namespace OpenZiti {
         }
 
         public static string GetConfiguration(ZitiService svc, string configName) {
-            IntPtr nativeConfig = Native.API.ziti_service_get_raw_config(svc.nativeServicePointer, configName);
+            var nativeConfig = Native.API.ziti_service_get_raw_config(svc.nativeServicePointer, configName);
             return Marshal.PtrToStringUTF8(nativeConfig);
         }
 
@@ -163,12 +159,12 @@ namespace OpenZiti {
         }
     }
 
-    class StructWrapper : IDisposable {
+    internal class StructWrapper : IDisposable {
         public IntPtr Ptr { get; private set; }
 
         public StructWrapper(object obj) {
-	        Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
-	        Marshal.StructureToPtr(obj, Ptr, false);
+            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
+            Marshal.StructureToPtr(obj, Ptr, false);
         }
 
         ~StructWrapper() {

@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace OpenZiti.Native { 
+namespace OpenZiti.Native {
     public static class NativeHelperFunctions {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -40,12 +40,12 @@ namespace OpenZiti.Native {
             if (array == null || array.Length == 0) {
                 return IntPtr.Zero;
             }
-            IntPtr arr = make_char_array(array.Length);
-            int idx = 0;
-            foreach(string s in array) {
+            var arr = make_char_array(array.Length);
+            var idx = 0;
+            foreach (var s in array) {
                 set_char_at(arr, s, idx++);
             }
-            
+
             return arr;
         }
     }

@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,42 +17,32 @@ limitations under the License.
 using System;
 using System.Runtime.InteropServices;
 
-namespace OpenZiti
-{
-    public static class ZitiUtil
-    {
-        public readonly static GCHandle NO_CONTEXT = GCHandle.Alloc(new object());
-        public readonly static IntPtr NO_CONTEXT_PTR = GCHandle.ToIntPtr(NO_CONTEXT);
+namespace OpenZiti {
+    public static class ZitiUtil {
+        public static readonly GCHandle NO_CONTEXT = GCHandle.Alloc(new object());
+        public static readonly IntPtr NO_CONTEXT_PTR = GCHandle.ToIntPtr(NO_CONTEXT);
 
-        public static void CheckStatus(ZitiContext zitiContext, ZitiStatus status, object initContext)
-        {
+        public static void CheckStatus(ZitiContext zitiContext, ZitiStatus status, object initContext) {
             status.Check();
         }
 
-        public static void CheckStatus(int status)
-        {
-            if (status < 0)
-            {
+        public static void CheckStatus(int status) {
+            if (status < 0) {
                 CheckStatus((ZitiStatus)status);
             }
         }
 
-        public static void CheckStatus(ZitiStatus status)
-        {
-            if (status != ZitiStatus.OK)
-            {
+        public static void CheckStatus(ZitiStatus status) {
+            if (status != ZitiStatus.OK) {
                 throw new ZitiException(status);
             }
         }
-        public static void Check(this ZitiStatus status)
-        {
+        public static void Check(this ZitiStatus status) {
             ZitiUtil.CheckStatus(status);
         }
 
-        public static object GetTarget(GCHandle handle)
-        {
-            if (handle.IsAllocated)
-            {
+        public static object GetTarget(GCHandle handle) {
+            if (handle.IsAllocated) {
                 return handle.Target;
             }
             return null;
