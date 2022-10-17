@@ -80,7 +80,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.x
       - name: Create the Nuget package
         run: nuget pack -version ${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }} ${{ github.workspace }}/native-package.nuspec
       - name: upload nuget package
