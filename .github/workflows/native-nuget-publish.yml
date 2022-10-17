@@ -39,6 +39,12 @@ jobs:
             arch: x86
             cmake_arch_flag: '-A Win32'
             os: windows-2019
+          - ext: dll
+            pathext: /Release
+            dist: win
+            arch: x64
+            cmake_arch_flag: '-A Win32'
+            os: windows-2019
     steps:
       - uses: actions/checkout@v3
         with:
