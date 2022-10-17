@@ -14,7 +14,8 @@ The project depends on the [ziti-sdk-c](https://github.com/openziti/ziti-sdk-c).
 ways. The first way is by setting an environment variable named ZITI_SDK_C_BRANCH. The cmake file will look for this
 env var and use it, if it's supplied. The [github action](../.github/workflows/native-nuget-publish.yml) will set this
 value as of May-14-2022. This is done so the action knows what version of the sdk is built, and the version of the native
-package will be ZITI_SDK_C_VERSION.BUILD_NUMBER. Such as 0.28.1.123.
+package will be ZITI_SDK_C_VERSION.BUILD_NUMBER. Such as 0.28.1.123.  As of Oct-17-2022 you need to also update the 
+github action at `.github\workflows\native-nuget-publish.yml`
 
 ## Upgrading the ZITI SDK C library version
 
