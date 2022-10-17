@@ -22,13 +22,17 @@ package will be ZITI_SDK_C_VERSION.BUILD_NUMBER. Such as 0.28.1.123.
 
 If you explore the CMakeLists.txt file you will see there is a ziti.def file. This file is **REQUIRED** for Windows library
 builds. It is also imperative that it is update this file. A .bat file named defgen.bat has been provided which does this.
-Find usages in msvc-build.bat. This allows the exported functions from ziti.dll to be re-exported in ziti4dotnet.
+This file allows the exported functions from ziti.dll to be re-exported in ziti4dotnet.
 
 Example:
 ```
 cd ZitiNativeApiForDotnetCore
-defgen 64 build/x64/_deps/ziti-sdk-c-build/library/Release/ziti.dll
+msvc-build.bat
+defgen 64 %BUILDFOLDER%\x64\_deps\ziti-sdk-c-build\library\Release\ziti.dll
 ```
+
+You'll probably have to remove the three extraneous files: ziti-exports.txt, ziti.dll, ziti.exp. defgen leaves these files
+behind in case you need to do deubgging on the process. 
 
 #### "No function found"
 
@@ -47,6 +51,6 @@ SET TARGETDIR=_TEMP_
 cmake -E make_directory %TARGETDIR%
 cmake -S . -B %TARGETDIR% 
 cl /C /EP /I %TARGETDIR%/_deps/ziti-sdk-c-src/includes /c library/sharp-errors.c > ../Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
-- OR -
+- OR if using gcc not developer command prompt -
 gcc -nostdinc -E -CC -P -I%TARGETDIR%/_deps/ziti-sdk-c-src/includes library/sharp-errors.c > ../Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
 ```
