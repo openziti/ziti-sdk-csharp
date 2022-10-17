@@ -44,8 +44,8 @@ namespace OpenZiti.Samples
                     }
                 case 14:
                     {
-                        Console.WriteLine("Fetching Ziti version (verbose mode) - {0}", ZitiUtil.GetVersion(true));
-                        Console.WriteLine("Fetching Ziti version (non-verbose mode) - {0}", ZitiUtil.GetVersion(false));
+                        //Console.WriteLine("Fetching Ziti version (verbose mode) - {0}", ZitiUtil.GetVersion(true));
+                        //Console.WriteLine("Fetching Ziti version (non-verbose mode) - {0}", ZitiUtil.GetVersion(false));
                         Options.InvokeNextCommand(supportedCommands);
 
                     }
