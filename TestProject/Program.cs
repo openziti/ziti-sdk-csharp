@@ -25,6 +25,7 @@ namespace ConsoleTestApp {
         private static readonly string identityFile = @"c:\temp\id.json";
 
         private static async Task Main(string[] args) {
+            API.NativeLogger = API.DefaultNativeLogFunction;
             Logging.SimpleConsoleLogging(LogLevel.Trace);
             Console.Clear();
             await OpenZiti.Samples.WeatherStream.Run(identityFile);
