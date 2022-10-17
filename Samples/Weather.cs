@@ -62,7 +62,7 @@ namespace OpenZiti.Samples {
 
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
             ZitiUtil.CheckStatus(status);
-
+            
             string cfg = connection.Service.GetConfiguration("weather-config-type");
             string where = null;
             if (cfg == null) {

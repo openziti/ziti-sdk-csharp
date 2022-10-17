@@ -321,4 +321,32 @@ namespace OpenZiti {
         EdgeRouterRemoved,
         EdgeRouterUnavailable,
     }
+
+    public struct ziti_service {
+        public string id;
+        public string name;
+        public string permissions;
+        public bool encryption;
+        public int perm_flags;
+        public string config;
+        //public posture_query_set posture_query_set;
+    }
+
+    public struct posture_query_set {
+        public string policy_id;
+        public bool is_passing;
+        public string policy_type;
+        public posture_query[] posture_queries;
+    }
+    public struct posture_query {
+        public string id;
+        public bool is_passing;
+        public string query_type;
+        public ziti_process process;
+        public int timeout;
+    }
+
+    public struct ziti_process {
+        public string path;
+    }
 }

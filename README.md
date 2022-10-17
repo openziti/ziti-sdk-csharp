@@ -1,4 +1,4 @@
-# ziti-sdk-csharp
+# OpenZiti .NET SDK
 
 An dotnet SDK written using C# to provide dotnet the ability to use Ziti natively
 
