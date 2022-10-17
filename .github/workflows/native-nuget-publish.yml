@@ -3,8 +3,9 @@ name: Matrix Build and publish Ziti Native to nuget
 on:
   push:
     branches:
-      - enable-macos-linux
-      - mfa_auth_operation 
+      - main
+      - release-next
+       
 env:
   ZITI_SDK_C_BRANCH: 0.28.4
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
