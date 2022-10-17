@@ -1,13 +1,15 @@
 name: Matrix Build and publish Ziti Native to nuget
 
 on:
-  push:
-    branches:
-      - main
-      - release-next
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version of CSDK/Nuget Package
+        default: 0.30.1
+        required: true
        
 env:
-  ZITI_SDK_C_BRANCH: 0.30.1
+  ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   BUILD_NUMBER: ${{ github.run_number }}
   BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
