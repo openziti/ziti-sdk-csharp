@@ -48,10 +48,22 @@ namespace OpenZiti {
             return null;
         }
 
-        public static string GetVersion(bool verbose)
-        {
+        public static string GetVersion(bool verbose) {
+
+/* Unmerged change from project 'TestProject'
+Before:
             Func<int> verboseLogging = () => verbose ? 1 : 0;
             IntPtr zitiVersion = OpenZiti.Native.API.ziti_get_build_version(verboseLogging());
+After:
+            Func<int> verboseLogging = () => {
+                return verbose ? 1 : 0;
+            };
+            var zitiVersion = OpenZiti.Native.API.ziti_get_build_version(verboseLogging());
+*/
+            Func<int> verboseLogging = () => {
+                return verbose ? 1 : 0;
+            };
+            var zitiVersion = OpenZiti.Native.API.ziti_get_build_version(verboseLogging());
             return Marshal.PtrToStringUTF8(zitiVersion);
         }
     }

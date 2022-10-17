@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,41 +17,33 @@ limitations under the License.
 using System;
 using System.IO;
 
-namespace OpenZiti.Samples
-{
-    public class ZitiListOptions
-    {
-        static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
-        static ZitiCommand.Options Options = new ZitiCommand.Options();
-        static int[] supportedCommands = new int[4] { 0, 5, 14, 15 };
+namespace OpenZiti.Samples {
+    public class ZitiListOptions {
+        private static readonly MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
+        private static readonly ZitiCommand.Options Options = new ZitiCommand.Options();
+        private static readonly int[] supportedCommands = new int[4] { 0, 5, 14, 15 };
+        private static ZitiInstance zitiInstance = new ZitiInstance();
 
-        static ZitiInstance zitiInstance = new ZitiInstance();
-
-        internal static void OnZitiTunnelNextAction(object sender, ZitiCommand.NextAction action)
-        {
+        internal static void OnZitiTunnelNextAction(object sender, ZitiCommand.NextAction action) {
             string mfacode;
-            string idName = (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile);
+            var idName = (zitiInstance.Zid?.IdentityNameFromController) ?? (zitiInstance.Zid?.InitOpts.IdentityFile);
 
-            switch (action.command)
-            {
-                case 5:
-                    {
+            switch (action.command) {
+                case 5: {
                         Console.WriteLine("Submit MFA for the identity " + idName);
                         Console.WriteLine("Enter the mfa auth code: ");
                         mfacode = Console.ReadLine();
                         zitiInstance.Zid.SubmitMFA(mfacode);
                         break;
                     }
-                case 14:
-                    {
+                case 14: {
                         //Console.WriteLine("Fetching Ziti version (verbose mode) - {0}", ZitiUtil.GetVersion(true));
                         //Console.WriteLine("Fetching Ziti version (non-verbose mode) - {0}", ZitiUtil.GetVersion(false));
                         Options.InvokeNextCommand(supportedCommands);
 
                     }
                     break;
-                case 15:
-                    {
+                case 15: {
                         Console.WriteLine("Fetching Ziti controller version - {0}", zitiInstance.Zid?.ControllerVersion);
                         Options.InvokeNextCommand(supportedCommands);
                     }
@@ -65,13 +57,11 @@ namespace OpenZiti.Samples
             }
         }
 
-        public static void Run(string identityFile)
-        {
+        public static void Run(string identityFile) {
             Options.OnNextAction += OnZitiTunnelNextAction;
-            Object eventFlags = ZitiEventFlags.All;
+            object eventFlags = ZitiEventFlags.All;
 
-            ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions()
-            {
+            var opts = new ZitiIdentity.InitOptions() {
                 EventFlags = (uint)(int)eventFlags,
                 IdentityFile = identityFile,
                 ApplicationContext = "weather-svc",
@@ -81,21 +71,17 @@ namespace OpenZiti.Samples
             opts.OnZitiMFAEvent += Opts_OnZitiMFAEvent;
             opts.OnZitiMFAStatusEvent += Opts_OnZitiMFAStatusEvent;
 
-            ZitiIdentity zid = new ZitiIdentity(opts);
+            var zid = new ZitiIdentity(opts);
             zitiInstance.Initialize(zid);
             zid.Run();
             Console.WriteLine("=================LOOP IS COMPLETE=================");
         }
 
-        private static void Opts_OnZitiContextEvent(object sender, ZitiContextEvent e)
-        {
-            if (e.Status.Ok())
-            {
+        private static void Opts_OnZitiContextEvent(object sender, ZitiContextEvent e) {
+            if (e.Status.Ok()) {
                 Console.WriteLine("Identity connected event received for the identity {0}", e?.Name);
                 //good. carry on.
-            }
-            else
-            {
+            } else {
                 //something went wrong. inspect the erorr here...
                 Console.WriteLine("An error occurred.");
                 Console.WriteLine("    ZitiStatus : " + e.Status);
@@ -104,30 +90,24 @@ namespace OpenZiti.Samples
             }
         }
 
-        private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e)
-        {
-            string nameOfId = (e.id.IdentityNameFromController != null ? e.id.IdentityNameFromController : e.id.InitOpts.IdentityFile);
+        private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e) {
+            var nameOfId = e.id.IdentityNameFromController ?? e.id.InitOpts.IdentityFile;
             Console.WriteLine("MFA Auth requested for identity {0}", nameOfId);
             Console.WriteLine("Enter the mfa auth codo: ");
-            string mfacode = Console.ReadLine();
+            var mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", nameOfId, mfacode);
             e.id.SubmitMFA(mfacode);
         }
 
-        private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e)
-        {
+        private static void Opts_OnZitiMFAStatusEvent(object sender, ZitiMFAStatusEvent e) {
             ZitiIdentity.InitOptions senderInstance;
-            if (sender is ZitiIdentity.InitOptions)
-            {
+            if (sender is ZitiIdentity.InitOptions) {
                 senderInstance = (ZitiIdentity.InitOptions)sender;
                 Console.WriteLine("MFA status event received for identity {0}", senderInstance.IdentityFile);
             }
-            if (e.status.Ok())
-            {
+            if (e.status.Ok()) {
                 Console.WriteLine("Status Event {0} - verified {1}, operation type {2}", e.status, e.isVerified, e.operationType);
-            }
-            else
-            {
+            } else {
                 Console.WriteLine("MFA operation {0} failed due to {1}", e.operationType, e.status);
             }
             Options.InvokeNextCommand(supportedCommands);

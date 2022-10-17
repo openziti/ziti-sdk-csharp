@@ -1,12 +1,10 @@
-﻿using System;
-using System.Runtime.InteropServices;
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
-namespace OpenZiti.Samples
-{
-    public class ConsoleHelper
-    {
+namespace OpenZiti.Samples {
+    public class ConsoleHelper {
         // credit for most of this code to https://gist.github.com/tomzorz/6142d69852f831fb5393654c90a1f22e
         private const int STD_OUTPUT_HANDLE = -11;
         private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
@@ -24,19 +22,16 @@ namespace OpenZiti.Samples
         [DllImport("kernel32.dll")]
         public static extern uint GetLastError();
 
-        public static void AllowAsciEscapeCodes()
-        {
+        public static void AllowAsciEscapeCodes() {
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-            if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
-            {
+            if (!GetConsoleMode(iStdOut, out var outConsoleMode)) {
                 Console.WriteLine("failed to get output console mode");
                 Console.ReadKey();
                 return;
             }
 
             outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
-            if (!SetConsoleMode(iStdOut, outConsoleMode))
-            {
+            if (!SetConsoleMode(iStdOut, outConsoleMode)) {
                 Console.WriteLine($"failed to set output console mode, error code: {GetLastError()}");
                 Console.ReadKey();
                 return;
@@ -49,25 +44,22 @@ namespace OpenZiti.Samples
         /// line by line. Why _this_ seems to be necessary is still unknown but this does seem to work.
         /// </summary>
         /// <param name="utf8bytes"></param>
-        public static void OutputResponseToConsole(byte[] utf8bytes)
-        {
-            if(!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && !RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
+        public static void OutputResponseToConsole(byte[] utf8bytes) {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && !RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
                 AllowAsciEscapeCodes();
             }
 
-            StringReader sr = new StringReader(Encoding.UTF8.GetString(utf8bytes));
+            var sr = new StringReader(Encoding.UTF8.GetString(utf8bytes));
 
             Console.WriteLine("");
             Console.WriteLine("Response is output between the asterisks: ");
-            Console.WriteLine(new String('*', 125));
+            Console.WriteLine(new string('*', 125));
             var l = sr.ReadLine();
-            while (l != null)
-            {
+            while (l != null) {
                 Console.WriteLine(l);
                 l = sr.ReadLine();
             }
-            Console.WriteLine(new String('*', 125));
+            Console.WriteLine(new string('*', 125));
         }
     }
 }

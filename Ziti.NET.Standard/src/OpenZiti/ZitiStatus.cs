@@ -108,8 +108,7 @@ This file is generated using the C preprocessor. Do not edit
 using System.ComponentModel;
 
 namespace OpenZiti {
-
-    enum err {
+    internal enum err {
         _ziti_OK, _ziti_CONFIG_NOT_FOUND, _ziti_JWT_NOT_FOUND, _ziti_JWT_INVALID, _ziti_JWT_INVALID_FORMAT, _ziti_PKCS7_ASN1_PARSING_FAILED, _ziti_JWT_SIGNING_ALG_UNSUPPORTED, _ziti_JWT_VERIFICATION_FAILED, _ziti_ENROLLMENT_METHOD_UNSUPPORTED, _ziti_ENROLLMENT_CERTIFICATE_REQUIRED, _ziti_KEY_GENERATION_FAILED, _ziti_KEY_LOAD_FAILED, _ziti_CSR_GENERATION_FAILED, _ziti_INVALID_CONFIG, _ziti_NOT_AUTHORIZED, _ziti_CONTROLLER_UNAVAILABLE, _ziti_GATEWAY_UNAVAILABLE, _ziti_SERVICE_UNAVAILABLE, _ziti_EOF, _ziti_TIMEOUT, _ziti_CONNABORT, _ziti_INVALID_STATE, _ziti_CRYPTO_FAIL, _ziti_CONN_CLOSED, _ziti_INVALID_POSTURE, _ziti_MFA_EXISTS, _ziti_MFA_INVALID_TOKEN, _ziti_MFA_NOT_ENROLLED, _ziti_NOT_FOUND, _ziti_DISABLED, _ziti_PARTIALLY_AUTHENTICATED, _ziti_WTF,
     }
 

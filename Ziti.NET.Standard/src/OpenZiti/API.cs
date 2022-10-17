@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using OpenZiti.Native;
 using System;
 using System.Runtime.InteropServices;
-using OpenZiti.Native;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -67,17 +67,17 @@ namespace OpenZiti {
 
             internal static void ziti_enroll_cb_impl(IntPtr ziti_config, int status, string msg, GCHandle enroll_context) {
                 if (enroll_context.IsAllocated) {
-                    Enrollment.AfterEnrollWrapper w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
+                    var w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
                     w.wrapper.Dispose();
 
-                    ZitiEnrollment.EnrollmentResult r = new ZitiEnrollment.EnrollmentResult(ziti_config) {
+                    var r = new ZitiEnrollment.EnrollmentResult(ziti_config) {
                         Status = (ZitiStatus)status,
                         Message = msg,
                         Context = w.Context,
                     };
 
                     if (r.Status.Ok()) {
-                        ZitiIdentityFormatNative fromZiti = Marshal.PtrToStructure<ZitiIdentityFormatNative>(ziti_config);
+                        var fromZiti = Marshal.PtrToStructure<ZitiIdentityFormatNative>(ziti_config);
                         r.ZitiIdentity = new ZitiIdentityFormat(fromZiti);
                     }
 
@@ -89,12 +89,7 @@ namespace OpenZiti {
         }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.z4d_new_loop() };
-        public static UVLoop DefaultLoop {
-            get {
-                return defaultLoop;
-            }
-        }
+        public static UVLoop DefaultLoop { get; } = new UVLoop() { nativeUvLoop = Native.API.z4d_new_loop() };
 
         public static Native.log_writer NativeLogger = NoopNativeLogFunction;
 
@@ -130,18 +125,19 @@ namespace OpenZiti {
                     break;
             }
         }
-        static Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
+
+        private static readonly Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
 
         public static void Enroll(string identityFile, Enrollment.AfterEnroll afterEnroll, object ctx) {
             var loop = API.DefaultLoop;
             Native.API.ziti_log_init(loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(NativeLogger));
 
 
-            Native.ziti_enroll_options opts = new Native.ziti_enroll_options() {
+            var opts = new Native.ziti_enroll_options() {
                 jwt = identityFile,
             };
 
-            Enrollment.AfterEnrollWrapper w = new Enrollment.AfterEnrollWrapper() {
+            var w = new Enrollment.AfterEnrollWrapper() {
                 AfterEnroll = afterEnroll,
                 wrapper = new StructWrapper(opts),
                 Context = ctx,
@@ -155,7 +151,7 @@ namespace OpenZiti {
         }
 
         public static string GetConfiguration(ZitiService svc, string configName) {
-            IntPtr nativeConfig = Native.API.ziti_service_get_raw_config(svc.nativeServicePointer, configName);
+            var nativeConfig = Native.API.ziti_service_get_raw_config(svc.nativeServicePointer, configName);
             return Marshal.PtrToStringUTF8(nativeConfig);
         }
 
@@ -179,19 +175,20 @@ namespace OpenZiti {
         public string provisioningUrl;
     }
 
-    class MFA {
+    internal class MFA {
 
         internal static IntPtr GetMFAStatusDelegate(ZitiIdentity zid) {
-            ZitiIdentity.MFAStatusCB mfaStatusCB = new ZitiIdentity.MFAStatusCB();
-            mfaStatusCB.zidOpts = zid.InitOpts;
+            var mfaStatusCB = new ZitiIdentity.MFAStatusCB {
+                zidOpts = zid.InitOpts
+            };
             ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cbDelegate = mfaStatusCB.ZitiResponse;
             return Marshal.GetFunctionPointerForDelegate(cbDelegate);
         }
 
         internal static void AfterMFASubmit(IntPtr ziti_context, int status, IntPtr ctx) {
-            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+            var cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
-            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+            var evt = new ZitiMFAStatusEvent() {
                 status = (ZitiStatus)status,
                 operationType = MFAOperationType.MFA_AUTH_STATUS
             };
@@ -199,10 +196,10 @@ namespace OpenZiti {
         }
 
         internal static void AfterMFAEnroll(IntPtr ziti_context, int status, IntPtr /*ziti_mfa_enrollment*/ enrollment, IntPtr ctx) {
-            OpenZiti.Native.ziti_mfa_enrollment ziti_mfa_enrollment = Marshal.PtrToStructure<OpenZiti.Native.ziti_mfa_enrollment>(enrollment);
-            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+            var ziti_mfa_enrollment = Marshal.PtrToStructure<OpenZiti.Native.ziti_mfa_enrollment>(enrollment);
+            var cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
-            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+            var evt = new ZitiMFAStatusEvent() {
                 status = (ZitiStatus)status,
                 isVerified = ziti_mfa_enrollment.is_verified,
                 operationType = MFAOperationType.ENROLLMENT_CHALLENGE,
@@ -218,27 +215,27 @@ namespace OpenZiti {
         }
 
         internal static void AfterMFAVerify(IntPtr ziti_context, int status, IntPtr ctx) {
-            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+            var cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
-            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+            var evt = new ZitiMFAStatusEvent() {
                 status = (ZitiStatus)status,
                 operationType = MFAOperationType.ENROLLMENT_VERIFICATION
             };
             cb?.Invoke(evt);
         }
         internal static void AfterMFARemove(IntPtr ziti_context, int status, IntPtr ctx) {
-            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+            var cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
-            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+            var evt = new ZitiMFAStatusEvent() {
                 status = (ZitiStatus)status,
                 operationType = MFAOperationType.ENROLLMENT_REMOVE
             };
             cb?.Invoke(evt);
         }
         internal static void AfterMFARecoveryCodes(IntPtr ziti_context, int status, IntPtr recoveryCodes, IntPtr ctx) {
-            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+            var cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
 
-            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+            var evt = new ZitiMFAStatusEvent() {
                 status = (ZitiStatus)status,
                 operationType = MFAOperationType.RECOVERY_CODES
             };
@@ -249,12 +246,12 @@ namespace OpenZiti {
         }
     }
 
-    class StructWrapper : IDisposable {
+    internal class StructWrapper : IDisposable {
         public IntPtr Ptr { get; private set; }
 
         public StructWrapper(object obj) {
-	        Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
-	        Marshal.StructureToPtr(obj, Ptr, false);
+            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
+            Marshal.StructureToPtr(obj, Ptr, false);
         }
 
         ~StructWrapper() {
@@ -275,7 +272,8 @@ namespace OpenZiti {
         }
 
     }
-    class PrimitiveWrapper<T> : IDisposable {
+
+    internal class PrimitiveWrapper<T> : IDisposable {
         public IntPtr Ptr { get; private set; }
 
         public PrimitiveWrapper() {

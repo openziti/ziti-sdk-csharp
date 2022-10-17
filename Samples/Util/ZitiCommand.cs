@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace OpenZiti {
     public class ZitiCommand {
-        
+
         public struct NextAction {
             public int command;
 
@@ -23,25 +23,27 @@ namespace OpenZiti {
             }
 
             public void InvokeNextCommand(int[] supportedCmds) {
-                NextAction action = new ZitiCommand.NextAction() {
+                var action = new ZitiCommand.NextAction() {
                     command = ZitiCommand.GetNextCommand(supportedCmds)
                 };
-                this.NextAction(action);
+                NextAction(action);
             }
         }
 
-        public static void isSupported(int[] supportedCmds, int index, string statement) {           
+        public static void isSupported(int[] supportedCmds, int index, string statement) {
             if (checkSupported(supportedCmds, index)) {
                 Console.WriteLine("Select {0} to {1}", index, statement);
             }
         }
 
         public static bool checkSupported(int[] supportedCmds, int index) {
-            return Array.Exists(supportedCmds, x => x == index);
+            return Array.Exists(supportedCmds, x => {
+                return x == index;
+            });
         }
 
         public static int GetNextCommand(int[] supportedCmds) {
-            int choice = -1;
+            var choice = -1;
 
             do {
                 Console.WriteLine("Choose one of the tunnel options: ");
@@ -62,7 +64,7 @@ namespace OpenZiti {
                 isSupported(supportedCmds, 15, "Find ziti controller version");
                 isSupported(supportedCmds, 0, "Exit from the application");
                 Console.WriteLine("Enter your choice and press enter: ");
-                string value = Console.ReadLine();
+                var value = Console.ReadLine();
                 try {
                     choice = Convert.ToInt32(value);
                     if (!checkSupported(supportedCmds, choice)) {
@@ -71,7 +73,7 @@ namespace OpenZiti {
 
                 } catch {
                     Console.WriteLine("You have entered a wrong value {0}, try again (Y/N) : ", value);
-                    string retryVar = Console.ReadLine();
+                    var retryVar = Console.ReadLine();
                     if (!("Y".Equals(retryVar) || "y".Equals(retryVar))) {
                         return 0; // exit code
                     }

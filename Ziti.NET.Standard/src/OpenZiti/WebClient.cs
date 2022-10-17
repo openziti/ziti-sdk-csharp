@@ -18,12 +18,12 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace OpenZiti
-{
-    public class WebClient
-    {
-        private static HttpClient GetClient(string controllerBaseAddress)
-        {
+namespace OpenZiti {
+    public class WebClient {
+        private static HttpClient GetClient(string controllerBaseAddress) {
+
+/* Unmerged change from project 'TestProject'
+Before:
             var handler = new HttpClientHandler();
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
             handler.ServerCertificateCustomValidationCallback =
@@ -33,17 +33,51 @@ namespace OpenZiti
                 };
             var client = new HttpClient(handler);
             client.BaseAddress = new Uri(controllerBaseAddress);
+After:
+            var handler = new HttpClientHandler {
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) => {
+                    return true;
+                }
+            };
+            var client = new HttpClient(handler);
+            client.BaseAddress = new Uri(controllerBaseAddress)
+            };
+*/
+            var handler = new HttpClientHandler {
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) => {
+                    return true;
+                }
+            };
+            var client = new HttpClient(handler) {
+                BaseAddress = new Uri(controllerBaseAddress)
+            };
             return client;
         }
 
         public static async Task<string> HttpGet(string controllerBaseUrl, string url)
-        {
+/* Unmerged change from project 'TestProject'
+Before:
             using (var client = GetClient(controllerBaseUrl))
             {
                 HttpResponseMessage response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
             }                
+After:
+            using var client = GetClient(controllerBaseUrl);
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+*/
+ {
+            using var client = GetClient(controllerBaseUrl);
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace OpenZiti.Native {
     [StructLayout(LayoutKind.Sequential)]
@@ -27,8 +27,7 @@ namespace OpenZiti.Native {
     };
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct ziti_mfa_enrollment
-	{
+    public struct ziti_mfa_enrollment {
         [MarshalAs(UnmanagedType.Bool)]
         public bool is_verified;
         public IntPtr recovery_codes; // convert IntPtr to string array
@@ -219,7 +218,7 @@ namespace OpenZiti.Native {
         //defined in C: extern void ziti_endpoint_state_change(ziti_context ztx, bool woken, bool unlocked);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_endpoint_state_change", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_endpoint_state_change(IntPtr ziti_context, bool woken, bool unlocked);
-        
+
         #endregion
 
         #region //ziti_log.h - functions exported from the ziti-sdk-c project from ziti_log.h
@@ -245,7 +244,7 @@ namespace OpenZiti.Native {
         public static extern IntPtr ziti_log_level_label();
 
         #endregion
-        
+
         #region //functions from ziti4dotnet.h
 
         //defined in C: extern int z4d_ziti_close(ziti_connection con);
@@ -266,7 +265,7 @@ namespace OpenZiti.Native {
         public static extern IntPtr z4d_default_loop();
         //defined in C: void* z4d_registerUVTimer(uv_loop_t* loop, uv_timer_cb timer_cb, uint64_t iterations, uint64_t delay);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_registerUVTimer", CallingConvention = CALL_CONVENTION)]
-        public static extern IntPtr z4d_registerUVTimer(IntPtr loop, OnUVTimer timer_cb, Int64 delay, Int64 iterations);
+        public static extern IntPtr z4d_registerUVTimer(IntPtr loop, OnUVTimer timer_cb, long delay, long iterations);
         //defined in C: void* z4d_stop_uv_timer(uv_timer_t* t);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_stop_uv_timer", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr z4d_stop_uv_timer(IntPtr timer);
@@ -314,23 +313,32 @@ namespace OpenZiti.Native {
 
         #endregion
 
-        internal static IntPtr ToPtr(string[] array)
-        {
-	        if (array == null || array.Length == 0)
-	        {
-		        return IntPtr.Zero;
-	        }
+        internal static IntPtr ToPtr(string[] array) {
+            if (array == null || array.Length == 0) {
+                return IntPtr.Zero;
+
+/* Unmerged change from project 'TestProject'
+Before:
 	        IntPtr arr = API.z4d_make_char_array(array.Length);
 	        int idx = 0;
-	        foreach (string s in array)
-	        {
-		        API.z4d_set_char_at(arr, s, idx++);
-	        }
+After:
+	        var arr = API.z4d_make_char_array(array.Length);
+	        var idx = 0;
+*/
+            }
+            var arr = API.z4d_make_char_array(array.Length);
+            var idx = 0;
+            foreach (var s in array) {
+                API.z4d_set_char_at(arr, s, idx++);
+            }
 
-	        return arr;
+            return arr;
         }
     }
 
+
+/* Unmerged change from project 'TestProject'
+Before:
     class MarshalUtils<T>
     {
         internal static List<T> convertPointerToList(IntPtr arrayPointer)
@@ -343,15 +351,33 @@ namespace OpenZiti.Native {
             {
                 T objectT;
                 if (typeof(T) == typeof(String))
-                {
+After:
+    internal class MarshalUtils<T>
+    {
+        internal static List<T> convertPointerToList(IntPtr arrayPointer)
+        {
+            IntPtr currentArrLoc;
+            var result = new List<T>();
+            var sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero)
+            {
+                T objectT;
+                if (typeof(T) == typeof(string))
+*/
+    internal class MarshalUtils<T> {
+        internal static List<T> convertPointerToList(IntPtr arrayPointer) {
+            IntPtr currentArrLoc;
+            var result = new List<T>();
+            var sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero) {
+                T objectT;
+                if (typeof(T) == typeof(string)) {
                     objectT = (T)(object)Marshal.PtrToStringUTF8(currentArrLoc);
-                }
-                else if (typeof(T).IsValueType && !typeof(T).IsPrimitive)
-                {
+                } else if (typeof(T).IsValueType && !typeof(T).IsPrimitive) {
                     objectT = Marshal.PtrToStructure<T>(currentArrLoc);
-                }
-                else
-                {
+                } else {
                     // marshal operations for other types can be added here
                     throw new ZitiException("Marshalling is not yet supported for " + typeof(T));
                 }
@@ -361,15 +387,30 @@ namespace OpenZiti.Native {
             return result;
         }
 
-        internal static List<model_map_entry> convertPointerMapToList(IntPtr arrayPointer)
-        {
+        internal static List<model_map_entry> convertPointerMapToList(IntPtr arrayPointer) {
             IntPtr currentArrLoc;
+
+/* Unmerged change from project 'TestProject'
+Before:
             List<model_map_entry> result = new List<model_map_entry>();
             int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
 
             while ((currentArrLoc = arrayPointer) != IntPtr.Zero)
             {
                 model_map_entry objectT = Marshal.PtrToStructure<model_map_entry>(currentArrLoc);
+After:
+            var result = new List<model_map_entry>();
+            var sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = arrayPointer) != IntPtr.Zero)
+            {
+                var objectT = Marshal.PtrToStructure<model_map_entry>(currentArrLoc);
+*/
+            var result = new List<model_map_entry>();
+            var sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
+
+            while ((currentArrLoc = arrayPointer) != IntPtr.Zero) {
+                var objectT = Marshal.PtrToStructure<model_map_entry>(currentArrLoc);
                 result.Add(objectT);
                 arrayPointer = objectT._next;
             }
@@ -380,13 +421,13 @@ namespace OpenZiti.Native {
 
 #pragma warning disable 0649
     [StructLayout(LayoutKind.Sequential)]
-	public struct ziti_identity {
-		[MarshalAs(UnmanagedType.LPUTF8Str)] public string id;
-		[MarshalAs(UnmanagedType.LPUTF8Str)] public string name;
-		public IntPtr tags;
-	}
+    public struct ziti_identity {
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string id;
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string name;
+        public IntPtr tags;
+    }
 
-	[StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct ziti_options {
         [MarshalAs(UnmanagedType.LPUTF8Str)]
         public string config;
@@ -406,11 +447,11 @@ namespace OpenZiti.Native {
 #if ZITI_X64
         public long refresh_interval; //the duration in seconds between checking for updates from the controller
 #else
-        public Int32 refresh_interval; //the duration in seconds between checking for updates from the controller
+        public int refresh_interval; //the duration in seconds between checking for updates from the controller
 #endif
         public RateType metrics_type; //an enum describing the metrics to collect
 
-        public Int32 router_keepalive;
+        public int router_keepalive;
 
         //posture query cbs
         public ziti_pq_mac_cb pq_mac_cb;
@@ -427,15 +468,15 @@ namespace OpenZiti.Native {
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_service {
-	    [MarshalAs(UnmanagedType.LPUTF8Str)] public string id;
-	    [MarshalAs(UnmanagedType.LPUTF8Str)] public string name;
-	    public IntPtr permissions;
-	    public bool encryption;
-	    public int perm_flags;
-	    [MarshalAs(UnmanagedType.LPUTF8Str)] public string config;
-	    public IntPtr /** posture_query_set[] **/ posture_query_set;
-	    public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
-	    [MarshalAs(UnmanagedType.LPUTF8Str)] public string updated_at;
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string id;
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string name;
+        public IntPtr permissions;
+        public bool encryption;
+        public int perm_flags;
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string config;
+        public IntPtr /** posture_query_set[] **/ posture_query_set;
+        public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string updated_at;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -444,80 +485,92 @@ namespace OpenZiti.Native {
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    struct ziti_context_event {
-	    [FieldOffset(0)]
+    internal struct ziti_context_event {
+        [FieldOffset(0)]
         public int type;
 #if ZITI_X64
         [FieldOffset(8)]
 #else
-	    [FieldOffset(4)]
+        [FieldOffset(4)]
 #endif
         public int ctrl_status;
 #if ZITI_X64
         [FieldOffset(16)]
 #else
-	    [FieldOffset(8)]
+        [FieldOffset(8)]
 #endif
         public IntPtr err;
     };
     [StructLayout(LayoutKind.Explicit)]
-    struct ziti_router_event {
-	    [FieldOffset(0)]
+    internal struct ziti_router_event {
+        [FieldOffset(0)]
         public int type;
 #if ZITI_X64
         [FieldOffset(8)]
 #else
-	    [FieldOffset(4)]
+        [FieldOffset(4)]
 #endif
         public int status;
 #if ZITI_X64
 	    [FieldOffset(16)]
 #else
-	    [FieldOffset(8)]
+        [FieldOffset(8)]
 #endif
-	    public IntPtr name;
+        public IntPtr name;
 #if ZITI_X64
         [FieldOffset(24)]
 #else
-	    [FieldOffset(12)]
+        [FieldOffset(12)]
 #endif
         public IntPtr version;
     };
     [StructLayout(LayoutKind.Explicit)]
-    struct ziti_service_event {
-	    [FieldOffset(0)]
+    internal struct ziti_service_event {
+        [FieldOffset(0)]
         public int type;
 #if ZITI_X64
         [FieldOffset(8)]
 #else
-	    [FieldOffset(4)]
+        [FieldOffset(4)]
 #endif
         public IntPtr removed;
 #if ZITI_X64
         [FieldOffset(16)]
 #else
-	    [FieldOffset(8)]
+        [FieldOffset(8)]
 #endif
         public IntPtr changed;
 #if ZITI_X64
         [FieldOffset(24)]
 #else
-	    [FieldOffset(12)]
+        [FieldOffset(12)]
 #endif
         public IntPtr added;
     };
 
     [StructLayout(LayoutKind.Explicit)]
+
+/* Unmerged change from project 'TestProject'
+Before:
     struct ziti_mfa_event
-    {
+After:
+    internal struct ziti_mfa_event
+*/
+    internal struct ziti_mfa_event {
         [FieldOffset(0)]
         public int type;
     };
 
 
     [StructLayout(LayoutKind.Explicit)]
+
+/* Unmerged change from project 'TestProject'
+Before:
     struct ziti_api_event
-    {
+After:
+    internal struct ziti_api_event
+*/
+    internal struct ziti_api_event {
         [FieldOffset(0)]
         public int type;
 #if ZITI_X64
@@ -529,75 +582,98 @@ namespace OpenZiti.Native {
     };
 
 
-	public struct size_t
-	{
+    public struct size_t {
 #if ZITI_X64
 		public long val;
 #else
-	    public int val;
+        public int val;
 #endif
-	}
+    }
 
-	public struct posture_query_set {
-		[MarshalAs(UnmanagedType.LPUTF8Str)] public string policy_id;
-		public bool is_passing;
-		[MarshalAs(UnmanagedType.LPUTF8Str)] public string policy_type;
-		public IntPtr /** posture_query[] **/ posture_queries;
-	}
+    public struct posture_query_set {
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string policy_id;
+        public bool is_passing;
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string policy_type;
+        public IntPtr /** posture_query[] **/ posture_queries;
+    }
 
-	public struct posture_query {
-		[MarshalAs(UnmanagedType.LPUTF8Str)] public string id;
-		public bool is_passing;
-		[MarshalAs(UnmanagedType.LPUTF8Str)] public string query_type;
-		public IntPtr /** ziti_process **/ process; 
-		public int timeout;
-	}
+    public struct posture_query {
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string id;
+        public bool is_passing;
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string query_type;
+        public IntPtr /** ziti_process **/ process;
+        public int timeout;
+    }
 
-	public struct ziti_process {
-		[MarshalAs(UnmanagedType.LPUTF8Str)] public string path;
-	}
+    public struct ziti_process {
+        [MarshalAs(UnmanagedType.LPUTF8Str)] public string path;
+    }
 
-	public struct model_map_impl
-	{
-		public IntPtr /** model_map_entry[] **/ entries;
-		public IntPtr table;
-		public int buckets;
-		public size_t size;
-	}
+    public struct model_map_impl {
+        public IntPtr /** model_map_entry[] **/ entries;
+        public IntPtr table;
+        public int buckets;
+        public size_t size;
+    }
 
-	public struct model_map_entry
-	{
-		public IntPtr key;
-		public size_t key_len;
-		public uint key_hash;
-		public IntPtr value;
-		public IntPtr _next;
-		public IntPtr _tnext;
-		public IntPtr _map;
-	}
+    public struct model_map_entry {
+        public IntPtr key;
+        public size_t key_len;
+        public uint key_hash;
+        public IntPtr value;
+        public IntPtr _next;
+        public IntPtr _tnext;
+        public IntPtr _map;
+    }
 
-	public struct ziti_dial_opts
-	{
+    public struct ziti_dial_opts {
 #pragma warning disable 0649
 #pragma warning disable 0169
-        int connect_timeout_seconds;
+        private readonly private readonly int connect_timeout_seconds;
+
+/* Unmerged change from project 'TestProject'
+Before:
 		[MarshalAs(UnmanagedType.LPUTF8Str)] string identity;
 		IntPtr app_data;
 		size_t app_data_sz;
+After:
+		[MarshalAs(UnmanagedType.LPUTF8Str)] private readonly string identity;
+        private readonly IntPtr app_data;
+        private size_t app_data_sz;
+*/
+        [MarshalAs(UnmanagedType.LPUTF8Str)] private readonly string identity;
+        private readonly IntPtr app_data;
+        private size_t app_data_sz;
 #pragma warning restore 0169
 #pragma warning restore 0649
     }
 
     public struct ziti_listen_opts
-    {
-#pragma warning disable 0649
-#pragma warning disable 0169
+/* Unmerged change from project 'TestProject'
+Before:
         UInt16 terminator_cost;
 		byte terminator_precedence;
 		int connect_timeout_seconds;
 		//int max_connections;  // todo implement
 		[MarshalAs(UnmanagedType.LPUTF8Str)] string identity;
 		bool bind_using_edge_identity;
+After:
+        private readonly ushort terminator_cost;
+        private readonly byte terminator_precedence;
+        private readonly int connect_timeout_seconds;
+		//int max_connections;  // todo implement
+		[MarshalAs(UnmanagedType.LPUTF8Str)] private readonly string identity;
+        private readonly bool bind_using_edge_identity;
+*/
+ {
+#pragma warning disable 0649
+#pragma warning disable 0169
+        private readonly ushort terminator_cost;
+        private readonly byte terminator_precedence;
+        private readonly int connect_timeout_seconds;
+        //int max_connections;  // todo implement
+        [MarshalAs(UnmanagedType.LPUTF8Str)] private readonly string identity;
+        private readonly bool bind_using_edge_identity;
 #pragma warning restore 0169
 #pragma warning restore 0649
     }

@@ -21,11 +21,11 @@ namespace OpenZiti {
         public static readonly UVLoop DefaultLoop = new UVLoop(Native.API.z4d_default_loop());
 
         internal IntPtr nativeUvLoop;
-        public UVLoop() : this(Native.API.z4d_new_loop()) { 
+        public UVLoop() : this(Native.API.z4d_new_loop()) {
             //empty
         }
         internal UVLoop(IntPtr nativeLoop) {
-            this.nativeUvLoop = nativeLoop;
+            nativeUvLoop = nativeLoop;
         }
     }
 }

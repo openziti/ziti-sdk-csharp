@@ -41,7 +41,7 @@ namespace OpenZiti {
             get { return nativeService.id; }
         }
 
-        public Dictionary<String, PostureQuerySet> PostureQueryMap {
+        public Dictionary<string, PostureQuerySet> PostureQueryMap {
             get; internal set;
         }
 
@@ -57,15 +57,15 @@ namespace OpenZiti {
         private OnZitiDataReceived onData;
         private OnZitiListening listenCallback;
         private OnZitiClientConnected onClientConnected;
-        private ziti_data_cb dataCB = null;
-        private ziti_conn_cb connCB = null;
+        private readonly ziti_data_cb dataCB = null;
+        private readonly ziti_conn_cb connCB = null;
 
         internal ZitiService(ZitiIdentity id, ZitiContext context, IntPtr ziti_service) {
             Identity = id;
             zitiContext = context;
             nativeServicePointer = ziti_service;
             nativeService = Marshal.PtrToStructure<ziti_service>(ziti_service);
-            this.PostureQueryMap = getPostureQueryMap(nativeService);
+            PostureQueryMap = getPostureQueryMap(nativeService);
             // NOTE: Keep delegates references so they will not be garbage collected, before ziti service is shutdown
             dataCB = data_cb;
             connCB = conn_cb;
@@ -149,6 +149,9 @@ namespace OpenZiti {
 
         private Dictionary<string, PostureQuerySet> getPostureQueryMap(ziti_service nativeService) {
 
+
+/* Unmerged change from project 'TestProject'
+Before:
             Dictionary<string, PostureQuerySet> postureQMap = new Dictionary<string, PostureQuerySet>();
             if (nativeService.posture_query_map != IntPtr.Zero) {
 	            model_map_impl impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
@@ -176,6 +179,64 @@ namespace OpenZiti {
                         if (pq.process != IntPtr.Zero) {
                             ZitiProcess ziti_process = new ZitiProcess();
                             ziti_process process = Marshal.PtrToStructure<ziti_process>(pq.process);
+After:
+            var postureQMap = new Dictionary<string, PostureQuerySet>();
+            if (nativeService.posture_query_map != IntPtr.Zero) {
+	            var impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
+
+                var nativeModelMapList = MarshalUtils<model_map_entry>.convertPointerMapToList(impl.entries);
+
+                foreach (var entry in nativeModelMapList) {
+                    var policyId = Marshal.PtrToStringUTF8(entry.key);
+                    var pqs = Marshal.PtrToStructure<posture_query_set>(entry.value);
+                    var pqSet = new PostureQuerySet {
+                        PolicyId = pqs.policy_id,
+                        IsPassing = pqs.is_passing,
+                        PolicyType = pqs.policy_type
+                    };
+
+                    var nativePostureQueriesList = MarshalUtils<posture_query>.convertPointerToList(pqs.posture_queries);
+                    var postureQueriesArr = new PostureQuery[nativePostureQueriesList.Count];
+                    var j = 0;
+                    foreach (var pq in nativePostureQueriesList) {
+                        var postureQuery = new PostureQuery {
+                            QueryType = pq.query_type,
+                            Id = pq.id,
+                            IsPassing = pq.is_passing
+                        };
+
+                        if (pq.process != IntPtr.Zero) {
+                            var ziti_process = new ZitiProcess();
+                            var process = Marshal.PtrToStructure<ziti_process>(pq.process);
+*/
+            var postureQMap = new Dictionary<string, PostureQuerySet>();
+            if (nativeService.posture_query_map != IntPtr.Zero) {
+                var impl = Marshal.PtrToStructure<model_map_impl>(nativeService.posture_query_map);
+
+                var nativeModelMapList = MarshalUtils<model_map_entry>.convertPointerMapToList(impl.entries);
+
+                foreach (var entry in nativeModelMapList) {
+                    var policyId = Marshal.PtrToStringUTF8(entry.key);
+                    var pqs = Marshal.PtrToStructure<posture_query_set>(entry.value);
+                    var pqSet = new PostureQuerySet {
+                        PolicyId = pqs.policy_id,
+                        IsPassing = pqs.is_passing,
+                        PolicyType = pqs.policy_type
+                    };
+
+                    var nativePostureQueriesList = MarshalUtils<posture_query>.convertPointerToList(pqs.posture_queries);
+                    var postureQueriesArr = new PostureQuery[nativePostureQueriesList.Count];
+                    var j = 0;
+                    foreach (var pq in nativePostureQueriesList) {
+                        var postureQuery = new PostureQuery {
+                            QueryType = pq.query_type,
+                            Id = pq.id,
+                            IsPassing = pq.is_passing
+                        };
+
+                        if (pq.process != IntPtr.Zero) {
+                            var ziti_process = new ZitiProcess();
+                            var process = Marshal.PtrToStructure<ziti_process>(pq.process);
                             ziti_process.Path = process.path;
                             postureQuery.Process = ziti_process;
                         }

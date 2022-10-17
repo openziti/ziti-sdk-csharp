@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,25 +15,24 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
 
 namespace OpenZiti.Samples {
 
     public class WeatherOnOff {
-        static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
-        static ZitiCommand.Options Options = new ZitiCommand.Options();
-        static int[] supportedCommands = new int[6] { 0, 1, 5, 8, 9, 10 };
-
-        static ZitiInstance zitiInstance = new ZitiInstance();
+        private static readonly MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
+        private static readonly ZitiCommand.Options Options = new ZitiCommand.Options();
+        private static readonly int[] supportedCommands = new int[6] { 0, 1, 5, 8, 9, 10 };
+        private static ZitiInstance zitiInstance = new ZitiInstance();
 
         internal static void OnZitiTunnelNextAction(object sender, ZitiCommand.NextAction action) {
             string mfacode;
-            string idName = (zitiInstance.Zid?.IdentityNameFromController != null ? zitiInstance.Zid?.IdentityNameFromController : zitiInstance.Zid?.InitOpts.IdentityFile);
+            var idName = (zitiInstance.Zid?.IdentityNameFromController) ?? (zitiInstance.Zid?.InitOpts.IdentityFile);
 
             switch (action.command) {
                 case 1:
@@ -45,7 +44,7 @@ namespace OpenZiti.Samples {
                         break;
                     }
                     if (zitiInstance.Services.Count > 0) {
-                        ZitiService svc = zitiInstance.Services.First().Value;
+                        var svc = zitiInstance.Services.First().Value;
                         svc.Dial(onConnected, onData);
                     } else {
                         Console.WriteLine("No service found.");
@@ -66,7 +65,7 @@ namespace OpenZiti.Samples {
                     }
                 case 10: {
                         Console.WriteLine("Check identity enabled status" + idName);
-                        bool idStatus = zitiInstance.Zid.IsEnabled();
+                        var idStatus = zitiInstance.Zid.IsEnabled();
                         Console.WriteLine("Status of Identity : {0}", idStatus);
                         Options.InvokeNextCommand(supportedCommands);
                         break;
@@ -89,9 +88,9 @@ namespace OpenZiti.Samples {
 
         public static void Run(string identityFile) {
             Options.OnNextAction += OnZitiTunnelNextAction;
-            Object eventFlags = ZitiEventFlags.All;
+            object eventFlags = ZitiEventFlags.All;
 
-            ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
+            var opts = new ZitiIdentity.InitOptions() {
                 EventFlags = (uint)(int)eventFlags,
                 IdentityFile = identityFile,
                 ApplicationContext = "weather-svc",
@@ -102,7 +101,7 @@ namespace OpenZiti.Samples {
             opts.OnZitiMFAEvent += Opts_OnZitiMFAEvent;
             opts.OnZitiMFAStatusEvent += Opts_OnZitiMFAStatusEvent;
 
-            ZitiIdentity zid = new ZitiIdentity(opts);
+            var zid = new ZitiIdentity(opts);
             zitiInstance.Initialize(zid);
             zid.Run();
             Console.WriteLine("=================LOOP IS COMPLETE=================");
@@ -121,33 +120,33 @@ namespace OpenZiti.Samples {
         }
 
         private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
-            string expected = (string)e.Context;
+            var expected = (string)e.Context;
             try {
-                IEnumerable<ZitiService> removedServices = e.Removed();
+                var removedServices = e.Removed();
                 Console.WriteLine("Removed Services ({0}): ", removedServices.Count());
-                foreach (ZitiService svc in removedServices) {
+                foreach (var svc in removedServices) {
                     if (zitiInstance.Services.ContainsKey(svc.Name)) {
                         zitiInstance.Services.Remove(svc.Name);
 
                     }
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
-                IEnumerable<ZitiService> modifiedServices = e.Changed();
+                var modifiedServices = e.Changed();
                 Console.WriteLine("Modified Services ({0}): ", modifiedServices.Count());
-                foreach (ZitiService svc in modifiedServices) {
+                foreach (var svc in modifiedServices) {
                     if (zitiInstance.Services.ContainsKey(svc.Name)) {
                         zitiInstance.Services.Remove(svc.Name);
                         zitiInstance.Services.Add(svc.Name, svc);
                     }
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                 }
-                IEnumerable<ZitiService> addedServices = e.Added();
+                var addedServices = e.Added();
                 Console.WriteLine("Available Services ({0}): ", addedServices.Count());
-                foreach (ZitiService svc in addedServices) {
+                foreach (var svc in addedServices) {
                     zitiInstance.Services.Add(svc.Name, svc);
                     Console.WriteLine("{0} ({1})", svc.Name, svc.Id);
                     foreach (var entry in svc.PostureQueryMap) {
-                        PostureQuerySet pqs = entry.Value;
+                        var pqs = entry.Value;
                         Console.WriteLine("Policy Id {0} of the service - {1} is passing : {2}", pqs.PolicyId, svc.Name, pqs.IsPassing);
                     }
                 }
@@ -159,15 +158,15 @@ namespace OpenZiti.Samples {
         }
 
         private static void Opts_OnZitiMFAEvent(object sender, ZitiMFAEvent e) {
-            string nameOfId = (e.id.IdentityNameFromController != null ? e.id.IdentityNameFromController : e.id.InitOpts.IdentityFile);
+            var nameOfId = e.id.IdentityNameFromController ?? e.id.InitOpts.IdentityFile;
             Console.WriteLine("MFA Auth requested for identity {0}", nameOfId);
             Console.WriteLine("Enter the mfa auth codo: ");
-            string mfacode = Console.ReadLine();
+            var mfacode = Console.ReadLine();
             Console.WriteLine("Authcode for id {0} is {1}", nameOfId, mfacode);
             e.id.SubmitMFA(mfacode);
         }
 
-        private static void Opts_OnZitiMFAStatusEvent(Object sender, ZitiMFAStatusEvent e) {
+        private static void Opts_OnZitiMFAStatusEvent(object sender, ZitiMFAStatusEvent e) {
             ZitiIdentity.InitOptions senderInstance;
             if (sender is ZitiIdentity.InitOptions) {
                 senderInstance = (ZitiIdentity.InitOptions)sender;
@@ -177,7 +176,7 @@ namespace OpenZiti.Samples {
                 Console.WriteLine("Status Event {0} - verified {1}, operation type {2}", e.status, e.isVerified, e.operationType);
                 if (e.recoveryCodes != null) {
                     Console.WriteLine("Provisioning URL : {0}", e.provisioningUrl);
-                    for (int i = 0; i < e.recoveryCodes.Length; i++) {
+                    for (var i = 0; i < e.recoveryCodes.Length; i++) {
                         Console.WriteLine("Recovery Code {0}", e.recoveryCodes[i]);
                     }
                     Options.InvokeNextCommand(supportedCommands); // after enabling mfa, show option to verify
@@ -192,7 +191,7 @@ namespace OpenZiti.Samples {
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
             ZitiUtil.CheckStatus(status);
 
-            string cfg = connection.Service.GetConfiguration("weather-config-type");
+            var cfg = connection.Service.GetConfiguration("weather-config-type");
             string where = null;
             if (cfg == null) {
                 where = "London";
@@ -200,7 +199,7 @@ namespace OpenZiti.Samples {
             } else {
                 where = JsonDocument.Parse(cfg).RootElement.GetProperty("where").ToString();
             }
-            byte[] bytes = Encoding.UTF8.GetBytes($"GET /{where} HTTP/1.0\r\n"
+            var bytes = Encoding.UTF8.GetBytes($"GET /{where} HTTP/1.0\r\n"
                                                 + "Accept: *-/*\r\n"
                                                 + "Connection: close\r\n"
                                                 + "User-Agent: curl/7.59.0\r\n"
