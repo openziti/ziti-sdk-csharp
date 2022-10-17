@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1</TargetFrameworks>
@@ -35,10 +35,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog" Version="4.7.15" />
-        <PackageReference Include="System.Memory" Version="4.5.4" />
-        <PackageReference Include="System.Text.Json" Version="6.0.4" />
-        <PackageReference Include="Ziti.NET.Standard.native" Version="0.28.1.76" />
+        <PackageReference Include="NLog" Version="5.0.4" />
+        <PackageReference Include="System.Memory" Version="4.5.5" />
+        <PackageReference Include="System.Text.Json" Version="6.0.6" />
+        <PackageReference Include="Ziti.NET.Standard.native" Version="0.30.1.110" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
