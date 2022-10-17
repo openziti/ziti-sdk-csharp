@@ -4,3 +4,4 @@ build
 #clion likes this folder name
 cmake-build-debug
 build-*
+library/ZitiStatus.cs

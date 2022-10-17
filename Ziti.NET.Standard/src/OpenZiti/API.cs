@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Runtime.InteropServices;
+using OpenZiti.Native;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,17 +67,17 @@ namespace OpenZiti {
 
             internal static void ziti_enroll_cb_impl(IntPtr ziti_config, int status, string msg, GCHandle enroll_context) {
                 if (enroll_context.IsAllocated) {
-                    var w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
+                    Enrollment.AfterEnrollWrapper w = (Enrollment.AfterEnrollWrapper)enroll_context.Target;
                     w.wrapper.Dispose();
 
-                    var r = new ZitiEnrollment.EnrollmentResult(ziti_config) {
+                    ZitiEnrollment.EnrollmentResult r = new ZitiEnrollment.EnrollmentResult(ziti_config) {
                         Status = (ZitiStatus)status,
                         Message = msg,
                         Context = w.Context,
                     };
 
                     if (r.Status.Ok()) {
-                        var fromZiti = Marshal.PtrToStructure<ZitiIdentityFormatNative>(ziti_config);
+                        ZitiIdentityFormatNative fromZiti = Marshal.PtrToStructure<ZitiIdentityFormatNative>(ziti_config);
                         r.ZitiIdentity = new ZitiIdentityFormat(fromZiti);
                     }
 
@@ -88,7 +89,12 @@ namespace OpenZiti {
         }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static UVLoop DefaultLoop { get; } = new UVLoop() { nativeUvLoop = Native.API.newLoop() };
+        private static UVLoop defaultLoop = new UVLoop() { nativeUvLoop = Native.API.z4d_new_loop() };
+        public static UVLoop DefaultLoop {
+            get {
+                return defaultLoop;
+            }
+        }
 
         public static Native.log_writer NativeLogger = NoopNativeLogFunction;
 
@@ -124,19 +130,18 @@ namespace OpenZiti {
                     break;
             }
         }
-
-        private static readonly Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
+        static Native.ziti_enroll_cb enroll_cb = Enrollment.ziti_enroll_cb_impl;
 
         public static void Enroll(string identityFile, Enrollment.AfterEnroll afterEnroll, object ctx) {
             var loop = API.DefaultLoop;
             Native.API.ziti_log_init(loop.nativeUvLoop, 11, Marshal.GetFunctionPointerForDelegate(NativeLogger));
 
 
-            var opts = new Native.ziti_enroll_options() {
+            Native.ziti_enroll_options opts = new Native.ziti_enroll_options() {
                 jwt = identityFile,
             };
 
-            var w = new Enrollment.AfterEnrollWrapper() {
+            Enrollment.AfterEnrollWrapper w = new Enrollment.AfterEnrollWrapper() {
                 AfterEnroll = afterEnroll,
                 wrapper = new StructWrapper(opts),
                 Context = ctx,
@@ -146,25 +151,110 @@ namespace OpenZiti {
         }
 
         public static UVLoop NewLoop() {
-            return new UVLoop(Native.API.newLoop());
+            return new UVLoop(Native.API.z4d_new_loop());
         }
 
         public static string GetConfiguration(ZitiService svc, string configName) {
-            var nativeConfig = Native.API.ziti_service_get_raw_config(svc.nativeServicePointer, configName);
+            IntPtr nativeConfig = Native.API.ziti_service_get_raw_config(svc.nativeServicePointer, configName);
             return Marshal.PtrToStringUTF8(nativeConfig);
         }
 
         public static void Run() {
             Native.API.z4d_uv_run(DefaultLoop.nativeUvLoop);
         }
+
     }
 
-    internal class StructWrapper : IDisposable {
+    public enum MFAOperationType {
+        MFA_AUTH_STATUS,
+        ENROLLMENT_VERIFICATION,
+        ENROLLMENT_REMOVE,
+        ENROLLMENT_CHALLENGE,
+        RECOVERY_CODES,
+    }
+
+    public struct MFAEnrollment {
+        public bool isVerified;
+        public string[] recoveryCodes;
+        public string provisioningUrl;
+    }
+
+    class MFA {
+
+        internal static IntPtr GetMFAStatusDelegate(ZitiIdentity zid) {
+            ZitiIdentity.MFAStatusCB mfaStatusCB = new ZitiIdentity.MFAStatusCB();
+            mfaStatusCB.zidOpts = zid.InitOpts;
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cbDelegate = mfaStatusCB.ZitiResponse;
+            return Marshal.GetFunctionPointerForDelegate(cbDelegate);
+        }
+
+        internal static void AfterMFASubmit(IntPtr ziti_context, int status, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.MFA_AUTH_STATUS
+            };
+            cb?.Invoke(evt);
+        }
+
+        internal static void AfterMFAEnroll(IntPtr ziti_context, int status, IntPtr /*ziti_mfa_enrollment*/ enrollment, IntPtr ctx) {
+            OpenZiti.Native.ziti_mfa_enrollment ziti_mfa_enrollment = Marshal.PtrToStructure<OpenZiti.Native.ziti_mfa_enrollment>(enrollment);
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                isVerified = ziti_mfa_enrollment.is_verified,
+                operationType = MFAOperationType.ENROLLMENT_CHALLENGE,
+                provisioningUrl = ziti_mfa_enrollment.provisioning_url,
+            };
+
+            if (ziti_mfa_enrollment.recovery_codes != IntPtr.Zero) {
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(ziti_mfa_enrollment.recovery_codes).ToArray();
+            }
+
+            cb?.Invoke(evt);
+
+        }
+
+        internal static void AfterMFAVerify(IntPtr ziti_context, int status, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.ENROLLMENT_VERIFICATION
+            };
+            cb?.Invoke(evt);
+        }
+        internal static void AfterMFARemove(IntPtr ziti_context, int status, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.ENROLLMENT_REMOVE
+            };
+            cb?.Invoke(evt);
+        }
+        internal static void AfterMFARecoveryCodes(IntPtr ziti_context, int status, IntPtr recoveryCodes, IntPtr ctx) {
+            ZitiIdentity.MFAStatusCB.ZitiResponseDelegate cb = Marshal.GetDelegateForFunctionPointer<ZitiIdentity.MFAStatusCB.ZitiResponseDelegate>(ctx);
+
+            ZitiMFAStatusEvent evt = new ZitiMFAStatusEvent() {
+                status = (ZitiStatus)status,
+                operationType = MFAOperationType.RECOVERY_CODES
+            };
+            if (recoveryCodes != IntPtr.Zero) {
+                evt.recoveryCodes = MarshalUtils<string>.convertPointerToList(recoveryCodes).ToArray();
+            }
+            cb?.Invoke(evt);
+        }
+    }
+
+    class StructWrapper : IDisposable {
         public IntPtr Ptr { get; private set; }
 
         public StructWrapper(object obj) {
-            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
-            Marshal.StructureToPtr(obj, Ptr, false);
+	        Ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
+	        Marshal.StructureToPtr(obj, Ptr, false);
         }
 
         ~StructWrapper() {
@@ -185,7 +275,31 @@ namespace OpenZiti {
         }
 
     }
+    class PrimitiveWrapper<T> : IDisposable {
+        public IntPtr Ptr { get; private set; }
 
+        public PrimitiveWrapper() {
+            Ptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+        }
+
+        ~PrimitiveWrapper() {
+            if (Ptr != IntPtr.Zero) {
+                Marshal.FreeHGlobal(Ptr);
+                Ptr = IntPtr.Zero;
+            }
+        }
+
+        public void Dispose() {
+            Marshal.FreeHGlobal(Ptr);
+            Ptr = IntPtr.Zero;
+            GC.SuppressFinalize(this);
+        }
+
+        public static implicit operator IntPtr(PrimitiveWrapper<T> w) {
+            return w.Ptr;
+        }
+
+    }
 
     /*
     public struct IdentityMaterial {
@@ -206,33 +320,5 @@ namespace OpenZiti {
         EdgeRouterDisconnected,
         EdgeRouterRemoved,
         EdgeRouterUnavailable,
-    }
-
-    public struct ziti_service {
-        public string id;
-        public string name;
-        public string permissions;
-        public bool encryption;
-        public int perm_flags;
-        public string config;
-        //public posture_query_set posture_query_set;
-    }
-
-    public struct posture_query_set {
-        public string policy_id;
-        public bool is_passing;
-        public string policy_type;
-        public posture_query[] posture_queries;
-    }
-    public struct posture_query {
-        public string id;
-        public bool is_passing;
-        public string query_type;
-        public ziti_process process;
-        public int timeout;
-    }
-
-    public struct ziti_process {
-        public string path;
     }
 }

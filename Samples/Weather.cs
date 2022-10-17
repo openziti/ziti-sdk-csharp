@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,10 @@ using System.Text.Json;
 
 namespace OpenZiti.Samples {
     public class Weather {
-        private static readonly MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
+        static MemoryStream ms = new MemoryStream(2 << 16); //a big bucket to hold bytes to display contiguously at the end of the program
 
         public static void Run(string identityFile) {
-            var opts = new ZitiIdentity.InitOptions() {
+            ZitiIdentity.InitOptions opts = new ZitiIdentity.InitOptions() {
                 EventFlags = ZitiEventFlags.ZitiContextEvent | ZitiEventFlags.ZitiServiceEvent,
                 IdentityFile = identityFile,
                 ApplicationContext = "weather-svc",
@@ -34,7 +34,7 @@ namespace OpenZiti.Samples {
             opts.OnZitiContextEvent += Opts_OnZitiContextEvent;
             opts.OnZitiServiceEvent += Opts_OnZitiServiceEvent;
 
-            var zid = new ZitiIdentity(opts);
+            ZitiIdentity zid = new ZitiIdentity(opts);
             zid.Run();
             Console.WriteLine("=================LOOP IS COMPLETE=================");
         }
@@ -51,11 +51,9 @@ namespace OpenZiti.Samples {
         }
 
         private static void Opts_OnZitiServiceEvent(object sender, ZitiServiceEvent e) {
-            var expected = (string)e.Context;
+            string expected = (string)e.Context;
             try {
-                var service = e.Added().First(s => {
-                    return s.Name == expected;
-                });
+                var service = e.Added().First(s => s.Name == expected);
                 service.Dial(onConnected, onData);
             } catch (Exception ex) {
                 Console.WriteLine("ERROR: Could not find the service we want [" + expected + "]? " + ex.Message);
@@ -65,7 +63,7 @@ namespace OpenZiti.Samples {
         private static void onConnected(ZitiConnection connection, ZitiStatus status) {
             ZitiUtil.CheckStatus(status);
 
-            var cfg = connection.Service.GetConfiguration("weather-config-type");
+            string cfg = connection.Service.GetConfiguration("weather-config-type");
             string where = null;
             if (cfg == null) {
                 where = "London";
@@ -73,7 +71,7 @@ namespace OpenZiti.Samples {
             } else {
                 where = JsonDocument.Parse(cfg).RootElement.GetProperty("where").ToString();
             }
-            var bytes = Encoding.UTF8.GetBytes($"GET /{where} HTTP/1.0\r\n"
+            byte[] bytes = Encoding.UTF8.GetBytes($"GET /{where} HTTP/1.0\r\n"
                                                 + "Accept: *-/*\r\n"
                                                 + "Connection: close\r\n"
                                                 + "User-Agent: curl/7.59.0\r\n"

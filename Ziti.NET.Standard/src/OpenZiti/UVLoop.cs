@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,11 @@ namespace OpenZiti {
         public static readonly UVLoop DefaultLoop = new UVLoop(Native.API.z4d_default_loop());
 
         internal IntPtr nativeUvLoop;
-        public UVLoop() : this(Native.API.newLoop()) {
+        public UVLoop() : this(Native.API.z4d_new_loop()) { 
             //empty
         }
         internal UVLoop(IntPtr nativeLoop) {
-            nativeUvLoop = nativeLoop;
+            this.nativeUvLoop = nativeLoop;
         }
     }
 }

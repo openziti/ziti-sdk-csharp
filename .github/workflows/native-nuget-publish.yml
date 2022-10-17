@@ -1,33 +1,92 @@
-name: Publish Ziti.NET.Standard.native 
+name: Matrix Build and publish Ziti Native to nuget
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: Version of CSDK/Nuget Package
-        default: 0.29.1
-        required: true
+  push:
+    branches:
+      - enable-macos-linux
+      - mfa_auth_operation 
 env:
-  ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
+  ZITI_SDK_C_BRANCH: 0.28.4
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
+  BUILD_NUMBER: ${{ github.run_number }}
+  BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
+  TARGETDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build
 jobs:
-  build-csdk-win:
-    runs-on: windows-2019
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
+  native-matrix-build:
+    if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macOS-10.15, windows-2022]
+        arch: [x64]
+        include:
+          - ext: so
+            prefix: lib
+            dist: linux
+            os: ubuntu-18.04
+          - ext: dylib
+            prefix: lib
+            dist: macos
+            os: macOS-10.15
+          - ext: dll
+            pathext: /Release
+            dist: win
+            os: windows-2019
+          - ext: dll
+            pathext: /Release
+            dist: win
+            arch: x86
+            cmake_arch_flag: '-A Win32'
+            os: windows-2019
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: setup/build CMake
+        run: |
+          echo "build number = ${{ env.BUILD_NUMBER }}"
+          cmake -E make_directory ${{ env.TARGETDIR }}
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} ${{ matrix.cmake_arch_flag }}
+          cmake --build ${{ env.TARGETDIR }} --config Release
+      - name: upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
+          path: ${{ env.TARGETDIR }}/library${{ matrix.pathExt }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
+          if-no-files-found: error
+  create-nuget-package:
+    runs-on: ubuntu-latest
+    needs: [native-matrix-build]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: mkdir ${{github.workspace}}/native
+      - name: download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ${{github.workspace}}/native
+      - name: move files to expected locations
+        run: |
+          mkdir -p ${{github.workspace}}/runtimes/osx-x64/native
+          mv ${{github.workspace}}/native/macos.x64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-x64/native/
+          mkdir -p ${{github.workspace}}/runtimes/linux-x64/native
+          mv ${{github.workspace}}/native/linux.x64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-x64/native/
+          mkdir -p ${{github.workspace}}/runtimes/win-x86/native
+          mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native/
+          mkdir -p ${{github.workspace}}/runtimes/win-x64/native
+          mv ${{github.workspace}}/native/win.x64.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x64/native/
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 5.0.x
-      - name: Generate Native Libraries
-        run: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/msvc-build.bat
-      - name: compile x86
-        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x86 --config Release
-      - name: compile x64
-        run: cmake --build ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build-win/x64 --config Release
-      - name: Pack Ziti.NET.Standard.native
-        run: nuget pack native-package.nuspec -Version ${{ env.ZITI_SDK_C_BRANCH }}
+      - name: Create the Nuget package
+        run: nuget pack -version ${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }} ${{ github.workspace }}/native-package.nuspec
+      - name: upload nuget package
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ github.workspace }}/Ziti.NET.Standard.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
+          name: Ziti.NET.Standard.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
+          if-no-files-found: error
       - name: Publish Ziti.NET.Standard.native
-        run: nuget push Ziti.NET.Standard.native.${{ env.ZITI_SDK_C_BRANCH }}.nupkg -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}} -Source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push Ziti.NET.Standard.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
