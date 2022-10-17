@@ -1,0 +1,592 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_options
+  commentId: T:OpenZiti.Native.ziti_options
+  id: ziti_options
+  parent: OpenZiti.Native
+  children:
+  - OpenZiti.Native.ziti_options.app_ctx
+  - OpenZiti.Native.ziti_options.aq_mfa_cb
+  - OpenZiti.Native.ziti_options.config
+  - OpenZiti.Native.ziti_options.config_types
+  - OpenZiti.Native.ziti_options.controller
+  - OpenZiti.Native.ziti_options.event_cb
+  - OpenZiti.Native.ziti_options.events
+  - OpenZiti.Native.ziti_options.metrics_type
+  - OpenZiti.Native.ziti_options.pq_domain_cb
+  - OpenZiti.Native.ziti_options.pq_mac_cb
+  - OpenZiti.Native.ziti_options.pq_os_cb
+  - OpenZiti.Native.ziti_options.pq_process_cb
+  - OpenZiti.Native.ziti_options.refresh_interval
+  - OpenZiti.Native.ziti_options.router_keepalive
+  - OpenZiti.Native.ziti_options.tls
+  langs:
+  - csharp
+  - vb
+  name: ziti_options
+  nameWithType: ziti_options
+  fullName: OpenZiti.Native.ziti_options
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_options
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 230
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public struct ziti_options
+    content.vb: Public Structure ziti_options
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+- uid: OpenZiti.Native.ziti_options.config
+  commentId: F:OpenZiti.Native.ziti_options.config
+  id: config
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: config
+  nameWithType: ziti_options.config
+  fullName: OpenZiti.Native.ziti_options.config
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: config
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 233
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public string config
+    return:
+      type: System.String
+    content.vb: Public config As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.controller
+  commentId: F:OpenZiti.Native.ziti_options.controller
+  id: controller
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: controller
+  nameWithType: ziti_options.controller
+  fullName: OpenZiti.Native.ziti_options.controller
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: controller
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 236
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public string controller
+    return:
+      type: System.String
+    content.vb: Public controller As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.tls
+  commentId: F:OpenZiti.Native.ziti_options.tls
+  id: tls
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: tls
+  nameWithType: ziti_options.tls
+  fullName: OpenZiti.Native.ziti_options.tls
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: tls
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 238
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public IntPtr tls
+    return:
+      type: IntPtr
+    content.vb: Public tls As IntPtr
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.config_types
+  commentId: F:OpenZiti.Native.ziti_options.config_types
+  id: config_types
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: config_types
+  nameWithType: ziti_options.config_types
+  fullName: OpenZiti.Native.ziti_options.config_types
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: config_types
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 241
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public IntPtr config_types
+    return:
+      type: IntPtr
+    content.vb: Public config_types As IntPtr
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.refresh_interval
+  commentId: F:OpenZiti.Native.ziti_options.refresh_interval
+  id: refresh_interval
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: refresh_interval
+  nameWithType: ziti_options.refresh_interval
+  fullName: OpenZiti.Native.ziti_options.refresh_interval
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: refresh_interval
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 243
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public Int32 refresh_interval
+    return:
+      type: Int32
+    content.vb: Public refresh_interval As Int32
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.metrics_type
+  commentId: F:OpenZiti.Native.ziti_options.metrics_type
+  id: metrics_type
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: metrics_type
+  nameWithType: ziti_options.metrics_type
+  fullName: OpenZiti.Native.ziti_options.metrics_type
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: metrics_type
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 244
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public RateType metrics_type
+    return:
+      type: OpenZiti.RateType
+    content.vb: Public metrics_type As RateType
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.router_keepalive
+  commentId: F:OpenZiti.Native.ziti_options.router_keepalive
+  id: router_keepalive
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: router_keepalive
+  nameWithType: ziti_options.router_keepalive
+  fullName: OpenZiti.Native.ziti_options.router_keepalive
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: router_keepalive
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 246
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public Int32 router_keepalive
+    return:
+      type: Int32
+    content.vb: Public router_keepalive As Int32
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.pq_mac_cb
+  commentId: F:OpenZiti.Native.ziti_options.pq_mac_cb
+  id: pq_mac_cb
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: pq_mac_cb
+  nameWithType: ziti_options.pq_mac_cb
+  fullName: OpenZiti.Native.ziti_options.pq_mac_cb
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: pq_mac_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 249
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public ziti_pq_mac_cb pq_mac_cb
+    return:
+      type: OpenZiti.Native.ziti_pq_mac_cb
+    content.vb: Public pq_mac_cb As ziti_pq_mac_cb
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.pq_os_cb
+  commentId: F:OpenZiti.Native.ziti_options.pq_os_cb
+  id: pq_os_cb
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: pq_os_cb
+  nameWithType: ziti_options.pq_os_cb
+  fullName: OpenZiti.Native.ziti_options.pq_os_cb
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: pq_os_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 250
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public ziti_pq_os_cb pq_os_cb
+    return:
+      type: OpenZiti.Native.ziti_pq_os_cb
+    content.vb: Public pq_os_cb As ziti_pq_os_cb
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.pq_process_cb
+  commentId: F:OpenZiti.Native.ziti_options.pq_process_cb
+  id: pq_process_cb
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: pq_process_cb
+  nameWithType: ziti_options.pq_process_cb
+  fullName: OpenZiti.Native.ziti_options.pq_process_cb
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: pq_process_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 251
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public ziti_pq_process_cb pq_process_cb
+    return:
+      type: OpenZiti.Native.ziti_pq_process_cb
+    content.vb: Public pq_process_cb As ziti_pq_process_cb
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.pq_domain_cb
+  commentId: F:OpenZiti.Native.ziti_options.pq_domain_cb
+  id: pq_domain_cb
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: pq_domain_cb
+  nameWithType: ziti_options.pq_domain_cb
+  fullName: OpenZiti.Native.ziti_options.pq_domain_cb
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: pq_domain_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 252
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public ziti_pq_domain_cb pq_domain_cb
+    return:
+      type: OpenZiti.Native.ziti_pq_domain_cb
+    content.vb: Public pq_domain_cb As ziti_pq_domain_cb
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.aq_mfa_cb
+  commentId: F:OpenZiti.Native.ziti_options.aq_mfa_cb
+  id: aq_mfa_cb
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: aq_mfa_cb
+  nameWithType: ziti_options.aq_mfa_cb
+  fullName: OpenZiti.Native.ziti_options.aq_mfa_cb
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: aq_mfa_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 255
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public ziti_aq_mfa_cb aq_mfa_cb
+    return:
+      type: OpenZiti.Native.ziti_aq_mfa_cb
+    content.vb: Public aq_mfa_cb As ziti_aq_mfa_cb
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.app_ctx
+  commentId: F:OpenZiti.Native.ziti_options.app_ctx
+  id: app_ctx
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: app_ctx
+  nameWithType: ziti_options.app_ctx
+  fullName: OpenZiti.Native.ziti_options.app_ctx
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: app_ctx
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 257
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public GCHandle app_ctx
+    return:
+      type: GCHandle
+    content.vb: Public app_ctx As GCHandle
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.events
+  commentId: F:OpenZiti.Native.ziti_options.events
+  id: events
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: events
+  nameWithType: ziti_options.events
+  fullName: OpenZiti.Native.ziti_options.events
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: events
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 259
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public uint events
+    return:
+      type: System.UInt32
+    content.vb: Public events As UInteger
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_options.event_cb
+  commentId: F:OpenZiti.Native.ziti_options.event_cb
+  id: event_cb
+  parent: OpenZiti.Native.ziti_options
+  langs:
+  - csharp
+  - vb
+  name: event_cb
+  nameWithType: ziti_options.event_cb
+  fullName: OpenZiti.Native.ziti_options.event_cb
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: event_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 261
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public ziti_event_cb event_cb
+    return:
+      type: OpenZiti.Native.ziti_event_cb
+    content.vb: Public event_cb As ziti_event_cb
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: Int32
+- uid: OpenZiti.RateType
+  commentId: T:OpenZiti.RateType
+  parent: OpenZiti
+  name: RateType
+  nameWithType: RateType
+  fullName: OpenZiti.RateType
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: OpenZiti.Native.ziti_pq_mac_cb
+  commentId: T:OpenZiti.Native.ziti_pq_mac_cb
+  parent: OpenZiti.Native
+  name: ziti_pq_mac_cb
+  nameWithType: ziti_pq_mac_cb
+  fullName: OpenZiti.Native.ziti_pq_mac_cb
+- uid: OpenZiti.Native.ziti_pq_os_cb
+  commentId: T:OpenZiti.Native.ziti_pq_os_cb
+  parent: OpenZiti.Native
+  name: ziti_pq_os_cb
+  nameWithType: ziti_pq_os_cb
+  fullName: OpenZiti.Native.ziti_pq_os_cb
+- uid: OpenZiti.Native.ziti_pq_process_cb
+  commentId: T:OpenZiti.Native.ziti_pq_process_cb
+  parent: OpenZiti.Native
+  name: ziti_pq_process_cb
+  nameWithType: ziti_pq_process_cb
+  fullName: OpenZiti.Native.ziti_pq_process_cb
+- uid: OpenZiti.Native.ziti_pq_domain_cb
+  commentId: T:OpenZiti.Native.ziti_pq_domain_cb
+  parent: OpenZiti.Native
+  name: ziti_pq_domain_cb
+  nameWithType: ziti_pq_domain_cb
+  fullName: OpenZiti.Native.ziti_pq_domain_cb
+- uid: OpenZiti.Native.ziti_aq_mfa_cb
+  commentId: T:OpenZiti.Native.ziti_aq_mfa_cb
+  parent: OpenZiti.Native
+  name: ziti_aq_mfa_cb
+  nameWithType: ziti_aq_mfa_cb
+  fullName: OpenZiti.Native.ziti_aq_mfa_cb
+- uid: GCHandle
+  isExternal: true
+  name: GCHandle
+  nameWithType: GCHandle
+  fullName: GCHandle
+- uid: System.UInt32
+  isExternal: true
+  name: UInt32
+  nameWithType: UInt32
+  fullName: System.UInt32
+- uid: OpenZiti.Native.ziti_event_cb
+  commentId: T:OpenZiti.Native.ziti_event_cb
+  parent: OpenZiti.Native
+  name: ziti_event_cb
+  nameWithType: ziti_event_cb
+  fullName: OpenZiti.Native.ziti_event_cb

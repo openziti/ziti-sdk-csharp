@@ -1,0 +1,177 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.IdMaterial
+  commentId: T:OpenZiti.IdMaterial
+  id: IdMaterial
+  parent: OpenZiti
+  children:
+  - OpenZiti.IdMaterial.CA
+  - OpenZiti.IdMaterial.Certificate
+  - OpenZiti.IdMaterial.Key
+  langs:
+  - csharp
+  - vb
+  name: IdMaterial
+  nameWithType: IdMaterial
+  fullName: OpenZiti.IdMaterial
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: IdMaterial
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+    startLine: 38
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public class IdMaterial : object'
+    content.vb: >-
+      Public Class IdMaterial
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: OpenZiti.IdMaterial.Certificate
+  commentId: P:OpenZiti.IdMaterial.Certificate
+  id: Certificate
+  parent: OpenZiti.IdMaterial
+  langs:
+  - csharp
+  - vb
+  name: Certificate
+  nameWithType: IdMaterial.Certificate
+  fullName: OpenZiti.IdMaterial.Certificate
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Certificate
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+    startLine: 39
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string Certificate { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property Certificate As String
+  overload: OpenZiti.IdMaterial.Certificate*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.IdMaterial.Key
+  commentId: P:OpenZiti.IdMaterial.Key
+  id: Key
+  parent: OpenZiti.IdMaterial
+  langs:
+  - csharp
+  - vb
+  name: Key
+  nameWithType: IdMaterial.Key
+  fullName: OpenZiti.IdMaterial.Key
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Key
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+    startLine: 41
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string Key { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property Key As String
+  overload: OpenZiti.IdMaterial.Key*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.IdMaterial.CA
+  commentId: P:OpenZiti.IdMaterial.CA
+  id: CA
+  parent: OpenZiti.IdMaterial
+  langs:
+  - csharp
+  - vb
+  name: CA
+  nameWithType: IdMaterial.CA
+  fullName: OpenZiti.IdMaterial.CA
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CA
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentityFormat.cs
+    startLine: 43
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string CA { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property CA As String
+  overload: OpenZiti.IdMaterial.CA*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: OpenZiti.IdMaterial.Certificate*
+  commentId: Overload:OpenZiti.IdMaterial.Certificate
+  name: Certificate
+  nameWithType: IdMaterial.Certificate
+  fullName: OpenZiti.IdMaterial.Certificate
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: OpenZiti.IdMaterial.Key*
+  commentId: Overload:OpenZiti.IdMaterial.Key
+  name: Key
+  nameWithType: IdMaterial.Key
+  fullName: OpenZiti.IdMaterial.Key
+- uid: OpenZiti.IdMaterial.CA*
+  commentId: Overload:OpenZiti.IdMaterial.CA
+  name: CA
+  nameWithType: IdMaterial.CA
+  fullName: OpenZiti.IdMaterial.CA

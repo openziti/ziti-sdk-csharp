@@ -1,0 +1,141 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_enroll_options
+  commentId: T:OpenZiti.Native.ziti_enroll_options
+  id: ziti_enroll_options
+  parent: OpenZiti.Native
+  children:
+  - OpenZiti.Native.ziti_enroll_options.enroll_cert
+  - OpenZiti.Native.ziti_enroll_options.enroll_key
+  - OpenZiti.Native.ziti_enroll_options.jwt
+  langs:
+  - csharp
+  - vb
+  name: ziti_enroll_options
+  nameWithType: ziti_enroll_options
+  fullName: OpenZiti.Native.ziti_enroll_options
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_enroll_options
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 20
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public struct ziti_enroll_options
+    content.vb: Public Structure ziti_enroll_options
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+- uid: OpenZiti.Native.ziti_enroll_options.jwt
+  commentId: F:OpenZiti.Native.ziti_enroll_options.jwt
+  id: jwt
+  parent: OpenZiti.Native.ziti_enroll_options
+  langs:
+  - csharp
+  - vb
+  name: jwt
+  nameWithType: ziti_enroll_options.jwt
+  fullName: OpenZiti.Native.ziti_enroll_options.jwt
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: jwt
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 22
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public string jwt
+    return:
+      type: System.String
+    content.vb: Public jwt As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_enroll_options.enroll_key
+  commentId: F:OpenZiti.Native.ziti_enroll_options.enroll_key
+  id: enroll_key
+  parent: OpenZiti.Native.ziti_enroll_options
+  langs:
+  - csharp
+  - vb
+  name: enroll_key
+  nameWithType: ziti_enroll_options.enroll_key
+  fullName: OpenZiti.Native.ziti_enroll_options.enroll_key
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: enroll_key
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 23
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public string enroll_key
+    return:
+      type: System.String
+    content.vb: Public enroll_key As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_enroll_options.enroll_cert
+  commentId: F:OpenZiti.Native.ziti_enroll_options.enroll_cert
+  id: enroll_cert
+  parent: OpenZiti.Native.ziti_enroll_options
+  langs:
+  - csharp
+  - vb
+  name: enroll_cert
+  nameWithType: ziti_enroll_options.enroll_cert
+  fullName: OpenZiti.Native.ziti_enroll_options.enroll_cert
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: enroll_cert
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 24
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public string enroll_cert
+    return:
+      type: System.String
+    content.vb: Public enroll_cert As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String

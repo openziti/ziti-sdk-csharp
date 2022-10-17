@@ -1,0 +1,50 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_event_cb
+  commentId: T:OpenZiti.Native.ziti_event_cb
+  id: ziti_event_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_event_cb
+  nameWithType: ziti_event_cb
+  fullName: OpenZiti.Native.ziti_event_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_event_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 68
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate void ziti_event_cb(IntPtr ziti_context, IntPtr ziti_event);
+    parameters:
+    - id: ziti_context
+      type: IntPtr
+    - id: ziti_event
+      type: IntPtr
+    content.vb: Public Delegate Sub ziti_event_cb(ziti_context As IntPtr, ziti_event As IntPtr)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr

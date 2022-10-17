@@ -1,0 +1,215 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_service
+  commentId: T:OpenZiti.Native.ziti_service
+  id: ziti_service
+  parent: OpenZiti.Native
+  children:
+  - OpenZiti.Native.ziti_service.config
+  - OpenZiti.Native.ziti_service.id
+  - OpenZiti.Native.ziti_service.name
+  - OpenZiti.Native.ziti_service.perm_flags
+  - OpenZiti.Native.ziti_service.permissions
+  langs:
+  - csharp
+  - vb
+  name: ziti_service
+  nameWithType: ziti_service
+  fullName: OpenZiti.Native.ziti_service
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_service
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 264
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public struct ziti_service
+    content.vb: Public Structure ziti_service
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+- uid: OpenZiti.Native.ziti_service.id
+  commentId: F:OpenZiti.Native.ziti_service.id
+  id: id
+  parent: OpenZiti.Native.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: id
+  nameWithType: ziti_service.id
+  fullName: OpenZiti.Native.ziti_service.id
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: id
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 266
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public string id
+    return:
+      type: System.String
+    content.vb: Public id As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_service.name
+  commentId: F:OpenZiti.Native.ziti_service.name
+  id: name
+  parent: OpenZiti.Native.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: name
+  nameWithType: ziti_service.name
+  fullName: OpenZiti.Native.ziti_service.name
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: name
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 267
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public string name
+    return:
+      type: System.String
+    content.vb: Public name As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_service.permissions
+  commentId: F:OpenZiti.Native.ziti_service.permissions
+  id: permissions
+  parent: OpenZiti.Native.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: permissions
+  nameWithType: ziti_service.permissions
+  fullName: OpenZiti.Native.ziti_service.permissions
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: permissions
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 268
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public IntPtr permissions
+    return:
+      type: IntPtr
+    content.vb: Public permissions As IntPtr
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_service.perm_flags
+  commentId: F:OpenZiti.Native.ziti_service.perm_flags
+  id: perm_flags
+  parent: OpenZiti.Native.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: perm_flags
+  nameWithType: ziti_service.perm_flags
+  fullName: OpenZiti.Native.ziti_service.perm_flags
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: perm_flags
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 269
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public int perm_flags
+    return:
+      type: System.Int32
+    content.vb: Public perm_flags As Integer
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.Native.ziti_service.config
+  commentId: F:OpenZiti.Native.ziti_service.config
+  id: config
+  parent: OpenZiti.Native.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: config
+  nameWithType: ziti_service.config
+  fullName: OpenZiti.Native.ziti_service.config
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: config
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 270
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public IntPtr config
+    return:
+      type: IntPtr
+    content.vb: Public config As IntPtr
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

@@ -1,0 +1,247 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ziti_service
+  commentId: T:OpenZiti.ziti_service
+  id: ziti_service
+  parent: OpenZiti
+  children:
+  - OpenZiti.ziti_service.config
+  - OpenZiti.ziti_service.encryption
+  - OpenZiti.ziti_service.id
+  - OpenZiti.ziti_service.name
+  - OpenZiti.ziti_service.perm_flags
+  - OpenZiti.ziti_service.permissions
+  langs:
+  - csharp
+  - vb
+  name: ziti_service
+  nameWithType: ziti_service
+  fullName: OpenZiti.ziti_service
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_service
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 214
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public struct ziti_service
+    content.vb: Public Structure ziti_service
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+- uid: OpenZiti.ziti_service.id
+  commentId: F:OpenZiti.ziti_service.id
+  id: id
+  parent: OpenZiti.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: id
+  nameWithType: ziti_service.id
+  fullName: OpenZiti.ziti_service.id
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: id
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 215
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string id
+    return:
+      type: System.String
+    content.vb: Public id As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ziti_service.name
+  commentId: F:OpenZiti.ziti_service.name
+  id: name
+  parent: OpenZiti.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: name
+  nameWithType: ziti_service.name
+  fullName: OpenZiti.ziti_service.name
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: name
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 216
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string name
+    return:
+      type: System.String
+    content.vb: Public name As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ziti_service.permissions
+  commentId: F:OpenZiti.ziti_service.permissions
+  id: permissions
+  parent: OpenZiti.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: permissions
+  nameWithType: ziti_service.permissions
+  fullName: OpenZiti.ziti_service.permissions
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: permissions
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 217
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string permissions
+    return:
+      type: System.String
+    content.vb: Public permissions As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ziti_service.encryption
+  commentId: F:OpenZiti.ziti_service.encryption
+  id: encryption
+  parent: OpenZiti.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: encryption
+  nameWithType: ziti_service.encryption
+  fullName: OpenZiti.ziti_service.encryption
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: encryption
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 218
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public bool encryption
+    return:
+      type: System.Boolean
+    content.vb: Public encryption As Boolean
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ziti_service.perm_flags
+  commentId: F:OpenZiti.ziti_service.perm_flags
+  id: perm_flags
+  parent: OpenZiti.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: perm_flags
+  nameWithType: ziti_service.perm_flags
+  fullName: OpenZiti.ziti_service.perm_flags
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: perm_flags
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 219
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public int perm_flags
+    return:
+      type: System.Int32
+    content.vb: Public perm_flags As Integer
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ziti_service.config
+  commentId: F:OpenZiti.ziti_service.config
+  id: config
+  parent: OpenZiti.ziti_service
+  langs:
+  - csharp
+  - vb
+  name: config
+  nameWithType: ziti_service.config
+  fullName: OpenZiti.ziti_service.config
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: config
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 220
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string config
+    return:
+      type: System.String
+    content.vb: Public config As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Boolean
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

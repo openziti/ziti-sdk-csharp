@@ -1,0 +1,504 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiIdentity.InitOptions
+  commentId: T:OpenZiti.ZitiIdentity.InitOptions
+  id: ZitiIdentity.InitOptions
+  parent: OpenZiti
+  children:
+  - OpenZiti.ZitiIdentity.InitOptions.ApplicationContext
+  - OpenZiti.ZitiIdentity.InitOptions.ConfigurationTypes
+  - OpenZiti.ZitiIdentity.InitOptions.EventFlags
+  - OpenZiti.ZitiIdentity.InitOptions.IdentityFile
+  - OpenZiti.ZitiIdentity.InitOptions.MetricType
+  - OpenZiti.ZitiIdentity.InitOptions.OnZitiContextEvent
+  - OpenZiti.ZitiIdentity.InitOptions.OnZitiRouterEvent
+  - OpenZiti.ZitiIdentity.InitOptions.OnZitiServiceEvent
+  langs:
+  - csharp
+  - vb
+  name: ZitiIdentity.InitOptions
+  nameWithType: ZitiIdentity.InitOptions
+  fullName: OpenZiti.ZitiIdentity.InitOptions
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: InitOptions
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 273
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public struct InitOptions
+    content.vb: Public Structure InitOptions
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+- uid: OpenZiti.ZitiIdentity.InitOptions.ApplicationContext
+  commentId: F:OpenZiti.ZitiIdentity.InitOptions.ApplicationContext
+  id: ApplicationContext
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: ApplicationContext
+  nameWithType: ZitiIdentity.InitOptions.ApplicationContext
+  fullName: OpenZiti.ZitiIdentity.InitOptions.ApplicationContext
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ApplicationContext
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 274
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public object ApplicationContext
+    return:
+      type: System.Object
+    content.vb: Public ApplicationContext As Object
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiIdentity.InitOptions.IdentityFile
+  commentId: F:OpenZiti.ZitiIdentity.InitOptions.IdentityFile
+  id: IdentityFile
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: IdentityFile
+  nameWithType: ZitiIdentity.InitOptions.IdentityFile
+  fullName: OpenZiti.ZitiIdentity.InitOptions.IdentityFile
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: IdentityFile
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 275
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string IdentityFile
+    return:
+      type: System.String
+    content.vb: Public IdentityFile As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiIdentity.InitOptions.ConfigurationTypes
+  commentId: F:OpenZiti.ZitiIdentity.InitOptions.ConfigurationTypes
+  id: ConfigurationTypes
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: ConfigurationTypes
+  nameWithType: ZitiIdentity.InitOptions.ConfigurationTypes
+  fullName: OpenZiti.ZitiIdentity.InitOptions.ConfigurationTypes
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ConfigurationTypes
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 277
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string[] ConfigurationTypes
+    return:
+      type: System.String[]
+    content.vb: Public ConfigurationTypes As String()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiIdentity.InitOptions.MetricType
+  commentId: F:OpenZiti.ZitiIdentity.InitOptions.MetricType
+  id: MetricType
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: MetricType
+  nameWithType: ZitiIdentity.InitOptions.MetricType
+  fullName: OpenZiti.ZitiIdentity.InitOptions.MetricType
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: MetricType
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 280
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public RateType MetricType
+    return:
+      type: OpenZiti.RateType
+    content.vb: Public MetricType As RateType
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiIdentity.InitOptions.EventFlags
+  commentId: F:OpenZiti.ZitiIdentity.InitOptions.EventFlags
+  id: EventFlags
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: EventFlags
+  nameWithType: ZitiIdentity.InitOptions.EventFlags
+  fullName: OpenZiti.ZitiIdentity.InitOptions.EventFlags
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: EventFlags
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 281
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public uint EventFlags
+    return:
+      type: System.UInt32
+    content.vb: Public EventFlags As UInteger
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiIdentity.InitOptions.OnZitiContextEvent
+  commentId: E:OpenZiti.ZitiIdentity.InitOptions.OnZitiContextEvent
+  id: OnZitiContextEvent
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: OnZitiContextEvent
+  nameWithType: ZitiIdentity.InitOptions.OnZitiContextEvent
+  fullName: OpenZiti.ZitiIdentity.InitOptions.OnZitiContextEvent
+  type: Event
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: OnZitiContextEvent
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 282
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public event EventHandler<ZitiContextEvent> OnZitiContextEvent
+    return:
+      type: EventHandler{OpenZiti.ZitiContextEvent}
+    content.vb: Public Event OnZitiContextEvent As EventHandler(Of ZitiContextEvent)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiIdentity.InitOptions.OnZitiRouterEvent
+  commentId: E:OpenZiti.ZitiIdentity.InitOptions.OnZitiRouterEvent
+  id: OnZitiRouterEvent
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: OnZitiRouterEvent
+  nameWithType: ZitiIdentity.InitOptions.OnZitiRouterEvent
+  fullName: OpenZiti.ZitiIdentity.InitOptions.OnZitiRouterEvent
+  type: Event
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: OnZitiRouterEvent
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 283
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public event EventHandler<ZitiRouterEvent> OnZitiRouterEvent
+    return:
+      type: EventHandler{OpenZiti.ZitiRouterEvent}
+    content.vb: Public Event OnZitiRouterEvent As EventHandler(Of ZitiRouterEvent)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiIdentity.InitOptions.OnZitiServiceEvent
+  commentId: E:OpenZiti.ZitiIdentity.InitOptions.OnZitiServiceEvent
+  id: OnZitiServiceEvent
+  parent: OpenZiti.ZitiIdentity.InitOptions
+  langs:
+  - csharp
+  - vb
+  name: OnZitiServiceEvent
+  nameWithType: ZitiIdentity.InitOptions.OnZitiServiceEvent
+  fullName: OpenZiti.ZitiIdentity.InitOptions.OnZitiServiceEvent
+  type: Event
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: OnZitiServiceEvent
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiIdentity.cs
+    startLine: 284
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public event EventHandler<ZitiServiceEvent> OnZitiServiceEvent
+    return:
+      type: EventHandler{OpenZiti.ZitiServiceEvent}
+    content.vb: Public Event OnZitiServiceEvent As EventHandler(Of ZitiServiceEvent)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.String[]
+  isExternal: true
+  name: String[]
+  nameWithType: String[]
+  fullName: System.String[]
+  nameWithType.vb: String()
+  fullName.vb: System.String()
+  name.vb: String()
+  spec.csharp:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: OpenZiti.RateType
+  commentId: T:OpenZiti.RateType
+  parent: OpenZiti
+  name: RateType
+  nameWithType: RateType
+  fullName: OpenZiti.RateType
+- uid: System.UInt32
+  isExternal: true
+  name: UInt32
+  nameWithType: UInt32
+  fullName: System.UInt32
+- uid: EventHandler{OpenZiti.ZitiContextEvent}
+  commentId: '!:EventHandler{OpenZiti.ZitiContextEvent}'
+  definition: EventHandler`1
+  name: EventHandler<ZitiContextEvent>
+  nameWithType: EventHandler<ZitiContextEvent>
+  fullName: EventHandler<OpenZiti.ZitiContextEvent>
+  nameWithType.vb: EventHandler(Of ZitiContextEvent)
+  fullName.vb: EventHandler(Of OpenZiti.ZitiContextEvent)
+  name.vb: EventHandler(Of ZitiContextEvent)
+  spec.csharp:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: OpenZiti.ZitiContextEvent
+    name: ZitiContextEvent
+    nameWithType: ZitiContextEvent
+    fullName: OpenZiti.ZitiContextEvent
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: OpenZiti.ZitiContextEvent
+    name: ZitiContextEvent
+    nameWithType: ZitiContextEvent
+    fullName: OpenZiti.ZitiContextEvent
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: EventHandler`1
+  isExternal: true
+  name: EventHandler<>
+  nameWithType: EventHandler<>
+  fullName: EventHandler<>
+  nameWithType.vb: EventHandler(Of )
+  fullName.vb: EventHandler(Of )
+  name.vb: EventHandler(Of )
+  spec.csharp:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: ''
+    nameWithType: ''
+    fullName: ''
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: ''
+    nameWithType: ''
+    fullName: ''
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: EventHandler{OpenZiti.ZitiRouterEvent}
+  commentId: '!:EventHandler{OpenZiti.ZitiRouterEvent}'
+  definition: EventHandler`1
+  name: EventHandler<ZitiRouterEvent>
+  nameWithType: EventHandler<ZitiRouterEvent>
+  fullName: EventHandler<OpenZiti.ZitiRouterEvent>
+  nameWithType.vb: EventHandler(Of ZitiRouterEvent)
+  fullName.vb: EventHandler(Of OpenZiti.ZitiRouterEvent)
+  name.vb: EventHandler(Of ZitiRouterEvent)
+  spec.csharp:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: OpenZiti.ZitiRouterEvent
+    name: ZitiRouterEvent
+    nameWithType: ZitiRouterEvent
+    fullName: OpenZiti.ZitiRouterEvent
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: OpenZiti.ZitiRouterEvent
+    name: ZitiRouterEvent
+    nameWithType: ZitiRouterEvent
+    fullName: OpenZiti.ZitiRouterEvent
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: EventHandler{OpenZiti.ZitiServiceEvent}
+  commentId: '!:EventHandler{OpenZiti.ZitiServiceEvent}'
+  definition: EventHandler`1
+  name: EventHandler<ZitiServiceEvent>
+  nameWithType: EventHandler<ZitiServiceEvent>
+  fullName: EventHandler<OpenZiti.ZitiServiceEvent>
+  nameWithType.vb: EventHandler(Of ZitiServiceEvent)
+  fullName.vb: EventHandler(Of OpenZiti.ZitiServiceEvent)
+  name.vb: EventHandler(Of ZitiServiceEvent)
+  spec.csharp:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: OpenZiti.ZitiServiceEvent
+    name: ZitiServiceEvent
+    nameWithType: ZitiServiceEvent
+    fullName: OpenZiti.ZitiServiceEvent
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: EventHandler`1
+    name: EventHandler
+    nameWithType: EventHandler
+    fullName: EventHandler
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: OpenZiti.ZitiServiceEvent
+    name: ZitiServiceEvent
+    nameWithType: ZitiServiceEvent
+    fullName: OpenZiti.ZitiServiceEvent
+  - name: )
+    nameWithType: )
+    fullName: )

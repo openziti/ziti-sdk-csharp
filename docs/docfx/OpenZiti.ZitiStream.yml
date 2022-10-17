@@ -1,0 +1,761 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiStream
+  commentId: T:OpenZiti.ZitiStream
+  id: ZitiStream
+  parent: OpenZiti
+  children:
+  - OpenZiti.ZitiStream.#ctor(OpenZiti.ZitiConnection)
+  - OpenZiti.ZitiStream.CanRead
+  - OpenZiti.ZitiStream.CanSeek
+  - OpenZiti.ZitiStream.CanWrite
+  - OpenZiti.ZitiStream.Dispose(System.Boolean)
+  - OpenZiti.ZitiStream.Flush
+  - OpenZiti.ZitiStream.Length
+  - OpenZiti.ZitiStream.Position
+  - OpenZiti.ZitiStream.PumpAsync(Stream)
+  - OpenZiti.ZitiStream.PumpAsync(Stream,Stream)
+  - OpenZiti.ZitiStream.Read(System.Byte[],System.Int32,System.Int32)
+  - OpenZiti.ZitiStream.Seek(System.Int64,SeekOrigin)
+  - OpenZiti.ZitiStream.SetLength(System.Int64)
+  - OpenZiti.ZitiStream.Write(System.Byte[],System.Int32,System.Int32)
+  langs:
+  - csharp
+  - vb
+  name: ZitiStream
+  nameWithType: ZitiStream
+  fullName: OpenZiti.ZitiStream
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiStream
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 12
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nA representation of a standard <see cref=\"!:System.IO.Stream\"></see> which utilizes the NetFoundry network\n"
+  example: []
+  syntax:
+    content: 'public class ZitiStream : Stream'
+    content.vb: >-
+      Public Class ZitiStream
+          Inherits Stream
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: OpenZiti.ZitiStream.#ctor(OpenZiti.ZitiConnection)
+  commentId: M:OpenZiti.ZitiStream.#ctor(OpenZiti.ZitiConnection)
+  id: '#ctor(OpenZiti.ZitiConnection)'
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: ZitiStream(ZitiConnection)
+  nameWithType: ZitiStream.ZitiStream(ZitiConnection)
+  fullName: OpenZiti.ZitiStream.ZitiStream(OpenZiti.ZitiConnection)
+  type: Constructor
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: .ctor
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 23
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nCreates a <xref href=\"OpenZiti.ZitiStream\" data-throw-if-not-resolved=\"false\"></xref> from the provided <xref href=\"OpenZiti.ZitiConnection\" data-throw-if-not-resolved=\"false\"></xref>\n"
+  example: []
+  syntax:
+    content: public ZitiStream(ZitiConnection conn)
+    parameters:
+    - id: conn
+      type: OpenZiti.ZitiConnection
+      description: 'The <xref href="OpenZiti.ZitiConnection" data-throw-if-not-resolved="false"></xref> to create a <xref href="OpenZiti.ZitiStream" data-throw-if-not-resolved="false"></xref> from '
+    content.vb: Public Sub New(conn As ZitiConnection)
+  overload: OpenZiti.ZitiStream.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiStream.CanRead
+  commentId: P:OpenZiti.ZitiStream.CanRead
+  id: CanRead
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: CanRead
+  nameWithType: ZitiStream.CanRead
+  fullName: OpenZiti.ZitiStream.CanRead
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CanRead
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 31
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nIndicates if the stream can be read from\n"
+  example: []
+  syntax:
+    content: public override bool CanRead { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Overrides ReadOnly Property CanRead As Boolean
+  overload: OpenZiti.ZitiStream.CanRead*
+  modifiers.csharp:
+  - public
+  - override
+  - get
+  modifiers.vb:
+  - Public
+  - Overrides
+  - ReadOnly
+- uid: OpenZiti.ZitiStream.CanSeek
+  commentId: P:OpenZiti.ZitiStream.CanSeek
+  id: CanSeek
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: CanSeek
+  nameWithType: ZitiStream.CanSeek
+  fullName: OpenZiti.ZitiStream.CanSeek
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CanSeek
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 40
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nSeeking is not supported\n"
+  example: []
+  syntax:
+    content: public override bool CanSeek { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Overrides ReadOnly Property CanSeek As Boolean
+  overload: OpenZiti.ZitiStream.CanSeek*
+  modifiers.csharp:
+  - public
+  - override
+  - get
+  modifiers.vb:
+  - Public
+  - Overrides
+  - ReadOnly
+- uid: OpenZiti.ZitiStream.CanWrite
+  commentId: P:OpenZiti.ZitiStream.CanWrite
+  id: CanWrite
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: CanWrite
+  nameWithType: ZitiStream.CanWrite
+  fullName: OpenZiti.ZitiStream.CanWrite
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: CanWrite
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 49
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nindicates if the stream is ready for writing\n"
+  example: []
+  syntax:
+    content: public override bool CanWrite { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Overrides ReadOnly Property CanWrite As Boolean
+  overload: OpenZiti.ZitiStream.CanWrite*
+  modifiers.csharp:
+  - public
+  - override
+  - get
+  modifiers.vb:
+  - Public
+  - Overrides
+  - ReadOnly
+- uid: OpenZiti.ZitiStream.Length
+  commentId: P:OpenZiti.ZitiStream.Length
+  id: Length
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: Length
+  nameWithType: ZitiStream.Length
+  fullName: OpenZiti.ZitiStream.Length
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Length
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 58
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nunsupported - always returns 0\n"
+  example: []
+  syntax:
+    content: public override long Length { get; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Overrides ReadOnly Property Length As Long
+  overload: OpenZiti.ZitiStream.Length*
+  modifiers.csharp:
+  - public
+  - override
+  - get
+  modifiers.vb:
+  - Public
+  - Overrides
+  - ReadOnly
+- uid: OpenZiti.ZitiStream.Position
+  commentId: P:OpenZiti.ZitiStream.Position
+  id: Position
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: Position
+  nameWithType: ZitiStream.Position
+  fullName: OpenZiti.ZitiStream.Position
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Position
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 68
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nunsupported - always returns 0\n"
+  example: []
+  syntax:
+    content: public override long Position { get; set; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Overrides Property Position As Long
+  overload: OpenZiti.ZitiStream.Position*
+  modifiers.csharp:
+  - public
+  - override
+  - get
+  - set
+  modifiers.vb:
+  - Public
+  - Overrides
+- uid: OpenZiti.ZitiStream.Flush
+  commentId: M:OpenZiti.ZitiStream.Flush
+  id: Flush
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: Flush()
+  nameWithType: ZitiStream.Flush()
+  fullName: OpenZiti.ZitiStream.Flush()
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Flush
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 80
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nFlushes bytes\n"
+  example: []
+  syntax:
+    content: public override void Flush()
+    content.vb: Public Overrides Sub Flush
+  overload: OpenZiti.ZitiStream.Flush*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+- uid: OpenZiti.ZitiStream.Read(System.Byte[],System.Int32,System.Int32)
+  commentId: M:OpenZiti.ZitiStream.Read(System.Byte[],System.Int32,System.Int32)
+  id: Read(System.Byte[],System.Int32,System.Int32)
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: Read(Byte[], Int32, Int32)
+  nameWithType: ZitiStream.Read(Byte[], Int32, Int32)
+  fullName: OpenZiti.ZitiStream.Read(System.Byte[], System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Read
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 98
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nReads data into the provided buffer\n"
+  example: []
+  syntax:
+    content: public override int Read(byte[] buffer, int offset, int count)
+    parameters:
+    - id: buffer
+      type: System.Byte[]
+      description: The buffer to read data into
+    - id: offset
+      type: System.Int32
+      description: The position in the bufer to begin appending data
+    - id: count
+      type: System.Int32
+      description: The number of bytes to append
+    return:
+      type: System.Int32
+      description: Returns the number of bytes read
+    content.vb: Public Overrides Function Read(buffer As Byte(), offset As Integer, count As Integer) As Integer
+  overload: OpenZiti.ZitiStream.Read*
+  nameWithType.vb: ZitiStream.Read(Byte(), Int32, Int32)
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+  fullName.vb: OpenZiti.ZitiStream.Read(System.Byte(), System.Int32, System.Int32)
+  name.vb: Read(Byte(), Int32, Int32)
+- uid: OpenZiti.ZitiStream.Seek(System.Int64,SeekOrigin)
+  commentId: M:OpenZiti.ZitiStream.Seek(System.Int64,SeekOrigin)
+  id: Seek(System.Int64,SeekOrigin)
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: Seek(Int64, SeekOrigin)
+  nameWithType: ZitiStream.Seek(Int64, SeekOrigin)
+  fullName: OpenZiti.ZitiStream.Seek(System.Int64, SeekOrigin)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Seek
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 161
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nunsupported\n"
+  example: []
+  syntax:
+    content: public override long Seek(long offset, SeekOrigin origin)
+    parameters:
+    - id: offset
+      type: System.Int64
+    - id: origin
+      type: SeekOrigin
+    return:
+      type: System.Int64
+    content.vb: Public Overrides Function Seek(offset As Long, origin As SeekOrigin) As Long
+  overload: OpenZiti.ZitiStream.Seek*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+- uid: OpenZiti.ZitiStream.SetLength(System.Int64)
+  commentId: M:OpenZiti.ZitiStream.SetLength(System.Int64)
+  id: SetLength(System.Int64)
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: SetLength(Int64)
+  nameWithType: ZitiStream.SetLength(Int64)
+  fullName: OpenZiti.ZitiStream.SetLength(System.Int64)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: SetLength
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 168
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nunsupported\n"
+  example: []
+  syntax:
+    content: public override void SetLength(long value)
+    parameters:
+    - id: value
+      type: System.Int64
+    content.vb: Public Overrides Sub SetLength(value As Long)
+  overload: OpenZiti.ZitiStream.SetLength*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+- uid: OpenZiti.ZitiStream.Write(System.Byte[],System.Int32,System.Int32)
+  commentId: M:OpenZiti.ZitiStream.Write(System.Byte[],System.Int32,System.Int32)
+  id: Write(System.Byte[],System.Int32,System.Int32)
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: Write(Byte[], Int32, Int32)
+  nameWithType: ZitiStream.Write(Byte[], Int32, Int32)
+  fullName: OpenZiti.ZitiStream.Write(System.Byte[], System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Write
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 182
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nWrites the provided buffer over the ZitiNetwork\n"
+  example: []
+  syntax:
+    content: public override void Write(byte[] buffer, int offset, int count)
+    parameters:
+    - id: buffer
+      type: System.Byte[]
+      description: The buffer containing data to write
+    - id: offset
+      type: System.Int32
+      description: The position in the buffer to read from
+    - id: count
+      type: System.Int32
+      description: The number of bytes to write from the buffer
+    content.vb: Public Overrides Sub Write(buffer As Byte(), offset As Integer, count As Integer)
+  overload: OpenZiti.ZitiStream.Write*
+  nameWithType.vb: ZitiStream.Write(Byte(), Int32, Int32)
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+  fullName.vb: OpenZiti.ZitiStream.Write(System.Byte(), System.Int32, System.Int32)
+  name.vb: Write(Byte(), Int32, Int32)
+- uid: OpenZiti.ZitiStream.Dispose(System.Boolean)
+  commentId: M:OpenZiti.ZitiStream.Dispose(System.Boolean)
+  id: Dispose(System.Boolean)
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: Dispose(Boolean)
+  nameWithType: ZitiStream.Dispose(Boolean)
+  fullName: OpenZiti.ZitiStream.Dispose(System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Dispose
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 225
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nDisposes of the <xref href=\"OpenZiti.ZitiStream\" data-throw-if-not-resolved=\"false\"></xref>, cleaning up any retained resources\n"
+  example: []
+  syntax:
+    content: protected override void Dispose(bool disposing)
+    parameters:
+    - id: disposing
+      type: System.Boolean
+      description: ''
+    content.vb: Protected Overrides Sub Dispose(disposing As Boolean)
+  overload: OpenZiti.ZitiStream.Dispose*
+  modifiers.csharp:
+  - protected
+  - override
+  modifiers.vb:
+  - Protected
+  - Overrides
+- uid: OpenZiti.ZitiStream.PumpAsync(Stream,Stream)
+  commentId: M:OpenZiti.ZitiStream.PumpAsync(Stream,Stream)
+  id: PumpAsync(Stream,Stream)
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: PumpAsync(Stream, Stream)
+  nameWithType: ZitiStream.PumpAsync(Stream, Stream)
+  fullName: OpenZiti.ZitiStream.PumpAsync(Stream, Stream)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: PumpAsync
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 235
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nAsynchronously pumps data between the input <see cref=\"!:System.IO.Stream\"></see> and destination <see cref=\"!:System.IO.Stream\"></see>\n"
+  example: []
+  syntax:
+    content: public static async Task PumpAsync(Stream input, Stream destination)
+    parameters:
+    - id: input
+      type: Stream
+      description: The input stream
+    - id: destination
+      type: Stream
+      description: The destination stream
+    return:
+      type: Task
+      description: A <see cref="!:System.Threading.Tasks.Task"></see> which is awaitable
+    content.vb: Public Shared Function PumpAsync(input As Stream, destination As Stream) As Task
+  overload: OpenZiti.ZitiStream.PumpAsync*
+  modifiers.csharp:
+  - public
+  - static
+  - async
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.ZitiStream.PumpAsync(Stream)
+  commentId: M:OpenZiti.ZitiStream.PumpAsync(Stream)
+  id: PumpAsync(Stream)
+  parent: OpenZiti.ZitiStream
+  langs:
+  - csharp
+  - vb
+  name: PumpAsync(Stream)
+  nameWithType: ZitiStream.PumpAsync(Stream)
+  fullName: OpenZiti.ZitiStream.PumpAsync(Stream)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: PumpAsync
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiStream.cs
+    startLine: 250
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nAsynchronously pumps this <xref href=\"OpenZiti.ZitiStream\" data-throw-if-not-resolved=\"false\"></xref> to/from the destination <see cref=\"!:System.IO.Stream\"></see>\n"
+  example: []
+  syntax:
+    content: public async Task PumpAsync(Stream destination)
+    parameters:
+    - id: destination
+      type: Stream
+      description: ''
+    return:
+      type: Task
+      description: ''
+    content.vb: Public Function PumpAsync(destination As Stream) As Task
+  overload: OpenZiti.ZitiStream.PumpAsync*
+  modifiers.csharp:
+  - public
+  - async
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: OpenZiti.ZitiStream
+  commentId: T:OpenZiti.ZitiStream
+  name: ZitiStream
+  nameWithType: ZitiStream
+  fullName: OpenZiti.ZitiStream
+- uid: OpenZiti.ZitiConnection
+  commentId: T:OpenZiti.ZitiConnection
+  parent: OpenZiti
+  name: ZitiConnection
+  nameWithType: ZitiConnection
+  fullName: OpenZiti.ZitiConnection
+- uid: OpenZiti.ZitiStream.#ctor*
+  commentId: Overload:OpenZiti.ZitiStream.#ctor
+  name: ZitiStream
+  nameWithType: ZitiStream.ZitiStream
+  fullName: OpenZiti.ZitiStream.ZitiStream
+- uid: OpenZiti.ZitiStream.CanRead*
+  commentId: Overload:OpenZiti.ZitiStream.CanRead
+  name: CanRead
+  nameWithType: ZitiStream.CanRead
+  fullName: OpenZiti.ZitiStream.CanRead
+- uid: System.Boolean
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: OpenZiti.ZitiStream.CanSeek*
+  commentId: Overload:OpenZiti.ZitiStream.CanSeek
+  name: CanSeek
+  nameWithType: ZitiStream.CanSeek
+  fullName: OpenZiti.ZitiStream.CanSeek
+- uid: OpenZiti.ZitiStream.CanWrite*
+  commentId: Overload:OpenZiti.ZitiStream.CanWrite
+  name: CanWrite
+  nameWithType: ZitiStream.CanWrite
+  fullName: OpenZiti.ZitiStream.CanWrite
+- uid: OpenZiti.ZitiStream.Length*
+  commentId: Overload:OpenZiti.ZitiStream.Length
+  name: Length
+  nameWithType: ZitiStream.Length
+  fullName: OpenZiti.ZitiStream.Length
+- uid: System.Int64
+  isExternal: true
+  name: Int64
+  nameWithType: Int64
+  fullName: System.Int64
+- uid: OpenZiti.ZitiStream.Position*
+  commentId: Overload:OpenZiti.ZitiStream.Position
+  name: Position
+  nameWithType: ZitiStream.Position
+  fullName: OpenZiti.ZitiStream.Position
+- uid: OpenZiti.ZitiStream.Flush*
+  commentId: Overload:OpenZiti.ZitiStream.Flush
+  name: Flush
+  nameWithType: ZitiStream.Flush
+  fullName: OpenZiti.ZitiStream.Flush
+- uid: OpenZiti.ZitiStream.Read*
+  commentId: Overload:OpenZiti.ZitiStream.Read
+  name: Read
+  nameWithType: ZitiStream.Read
+  fullName: OpenZiti.ZitiStream.Read
+- uid: System.Byte[]
+  isExternal: true
+  name: Byte[]
+  nameWithType: Byte[]
+  fullName: System.Byte[]
+  nameWithType.vb: Byte()
+  fullName.vb: System.Byte()
+  name.vb: Byte()
+  spec.csharp:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: OpenZiti.ZitiStream.Seek*
+  commentId: Overload:OpenZiti.ZitiStream.Seek
+  name: Seek
+  nameWithType: ZitiStream.Seek
+  fullName: OpenZiti.ZitiStream.Seek
+- uid: SeekOrigin
+  commentId: '!:SeekOrigin'
+  isExternal: true
+  name: SeekOrigin
+  nameWithType: SeekOrigin
+  fullName: SeekOrigin
+- uid: OpenZiti.ZitiStream.SetLength*
+  commentId: Overload:OpenZiti.ZitiStream.SetLength
+  name: SetLength
+  nameWithType: ZitiStream.SetLength
+  fullName: OpenZiti.ZitiStream.SetLength
+- uid: OpenZiti.ZitiStream.Write*
+  commentId: Overload:OpenZiti.ZitiStream.Write
+  name: Write
+  nameWithType: ZitiStream.Write
+  fullName: OpenZiti.ZitiStream.Write
+- uid: OpenZiti.ZitiStream.Dispose*
+  commentId: Overload:OpenZiti.ZitiStream.Dispose
+  name: Dispose
+  nameWithType: ZitiStream.Dispose
+  fullName: OpenZiti.ZitiStream.Dispose
+- uid: OpenZiti.ZitiStream.PumpAsync*
+  commentId: Overload:OpenZiti.ZitiStream.PumpAsync
+  name: PumpAsync
+  nameWithType: ZitiStream.PumpAsync
+  fullName: OpenZiti.ZitiStream.PumpAsync
+- uid: Stream
+  isExternal: true
+  name: Stream
+  nameWithType: Stream
+  fullName: Stream
+- uid: Task
+  isExternal: true
+  name: Task
+  nameWithType: Task
+  fullName: Task

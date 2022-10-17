@@ -1,0 +1,51 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiContext
+  commentId: T:OpenZiti.ZitiContext
+  id: ZitiContext
+  parent: OpenZiti
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ZitiContext
+  nameWithType: ZitiContext
+  fullName: OpenZiti.ZitiContext
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiContext.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiContext
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiContext.cs
+    startLine: 23
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nAn opaque handle to a native Ziti context. Required for certain operations\n"
+  example: []
+  syntax:
+    content: 'public class ZitiContext : object'
+    content.vb: >-
+      Public Class ZitiContext
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object

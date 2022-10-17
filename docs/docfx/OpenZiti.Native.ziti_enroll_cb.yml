@@ -1,0 +1,69 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_enroll_cb
+  commentId: T:OpenZiti.Native.ziti_enroll_cb
+  id: ziti_enroll_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_enroll_cb
+  nameWithType: ziti_enroll_cb
+  fullName: OpenZiti.Native.ziti_enroll_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_enroll_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 40
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate void ziti_enroll_cb(IntPtr ziti_config, int status, string errorMessage, GCHandle enroll_context);
+    parameters:
+    - id: ziti_config
+      type: IntPtr
+    - id: status
+      type: System.Int32
+    - id: errorMessage
+      type: System.String
+    - id: enroll_context
+      type: GCHandle
+    content.vb: Public Delegate Sub ziti_enroll_cb(ziti_config As IntPtr, status As Integer, errorMessage As String, enroll_context As GCHandle)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: GCHandle
+  isExternal: true
+  name: GCHandle
+  nameWithType: GCHandle
+  fullName: GCHandle

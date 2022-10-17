@@ -1,0 +1,77 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ziti_process
+  commentId: T:OpenZiti.ziti_process
+  id: ziti_process
+  parent: OpenZiti
+  children:
+  - OpenZiti.ziti_process.path
+  langs:
+  - csharp
+  - vb
+  name: ziti_process
+  nameWithType: ziti_process
+  fullName: OpenZiti.ziti_process
+  type: Struct
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_process
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 238
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public struct ziti_process
+    content.vb: Public Structure ziti_process
+  modifiers.csharp:
+  - public
+  - struct
+  modifiers.vb:
+  - Public
+  - Structure
+- uid: OpenZiti.ziti_process.path
+  commentId: F:OpenZiti.ziti_process.path
+  id: path
+  parent: OpenZiti.ziti_process
+  langs:
+  - csharp
+  - vb
+  name: path
+  nameWithType: ziti_process.path
+  fullName: OpenZiti.ziti_process.path
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: path
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 239
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public string path
+    return:
+      type: System.String
+    content.vb: Public path As String
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String

@@ -1,0 +1,59 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_ar_mfa_status_cb
+  commentId: T:OpenZiti.Native.ziti_ar_mfa_status_cb
+  id: ziti_ar_mfa_status_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_ar_mfa_status_cb
+  nameWithType: ziti_ar_mfa_status_cb
+  fullName: OpenZiti.Native.ziti_ar_mfa_status_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_ar_mfa_status_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 62
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate void ziti_ar_mfa_status_cb(IntPtr ziti_context, IntPtr mfa_ctx, int status, IntPtr ctx);
+    parameters:
+    - id: ziti_context
+      type: IntPtr
+    - id: mfa_ctx
+      type: IntPtr
+    - id: status
+      type: System.Int32
+    - id: ctx
+      type: IntPtr
+    content.vb: Public Delegate Sub ziti_ar_mfa_status_cb(ziti_context As IntPtr, mfa_ctx As IntPtr, status As Integer, ctx As IntPtr)
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

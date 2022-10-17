@@ -1,0 +1,140 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.ZitiException
+  commentId: T:OpenZiti.ZitiException
+  id: ZitiException
+  parent: OpenZiti
+  children:
+  - OpenZiti.ZitiException.#ctor(OpenZiti.ZitiStatus)
+  - OpenZiti.ZitiException.#ctor(System.String)
+  langs:
+  - csharp
+  - vb
+  name: ZitiException
+  nameWithType: ZitiException
+  fullName: OpenZiti.ZitiException
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiException.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ZitiException
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiException.cs
+    startLine: 22
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nRepresents a Ziti-specific exception\n"
+  example: []
+  syntax:
+    content: 'public class ZitiException : Exception'
+    content.vb: >-
+      Public Class ZitiException
+          Inherits Exception
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: OpenZiti.ZitiException.#ctor(System.String)
+  commentId: M:OpenZiti.ZitiException.#ctor(System.String)
+  id: '#ctor(System.String)'
+  parent: OpenZiti.ZitiException
+  langs:
+  - csharp
+  - vb
+  name: ZitiException(String)
+  nameWithType: ZitiException.ZitiException(String)
+  fullName: OpenZiti.ZitiException.ZitiException(System.String)
+  type: Constructor
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiException.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: .ctor
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiException.cs
+    startLine: 28
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nThe basic constructor for creating a ZitiException\n"
+  example: []
+  syntax:
+    content: public ZitiException(string message)
+    parameters:
+    - id: message
+      type: System.String
+      description: The message
+    content.vb: Public Sub New(message As String)
+  overload: OpenZiti.ZitiException.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: OpenZiti.ZitiException.#ctor(OpenZiti.ZitiStatus)
+  commentId: M:OpenZiti.ZitiException.#ctor(OpenZiti.ZitiStatus)
+  id: '#ctor(OpenZiti.ZitiStatus)'
+  parent: OpenZiti.ZitiException
+  langs:
+  - csharp
+  - vb
+  name: ZitiException(ZitiStatus)
+  nameWithType: ZitiException.ZitiException(ZitiStatus)
+  fullName: OpenZiti.ZitiException.ZitiException(OpenZiti.ZitiStatus)
+  type: Constructor
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/ZitiException.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: .ctor
+    path: Ziti.NET.Standard/src/OpenZiti/ZitiException.cs
+    startLine: 34
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  summary: "\nThe basic constructor for creating a ZitiException\n"
+  example: []
+  syntax:
+    content: public ZitiException(ZitiStatus status)
+    parameters:
+    - id: status
+      type: OpenZiti.ZitiStatus
+    content.vb: Public Sub New(status As ZitiStatus)
+  overload: OpenZiti.ZitiException.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: OpenZiti.ZitiException.#ctor*
+  commentId: Overload:OpenZiti.ZitiException.#ctor
+  name: ZitiException
+  nameWithType: ZitiException.ZitiException
+  fullName: OpenZiti.ZitiException.ZitiException
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: OpenZiti.ZitiStatus
+  commentId: T:OpenZiti.ZitiStatus
+  parent: OpenZiti
+  name: ZitiStatus
+  nameWithType: ZitiStatus
+  fullName: OpenZiti.ZitiStatus

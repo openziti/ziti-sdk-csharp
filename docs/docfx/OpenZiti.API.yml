@@ -1,0 +1,494 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.API
+  commentId: T:OpenZiti.API
+  id: API
+  parent: OpenZiti
+  children:
+  - OpenZiti.API.AllConfigs
+  - OpenZiti.API.DefaultLoop
+  - OpenZiti.API.DefaultNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  - OpenZiti.API.Enroll(System.String,OpenZiti.API.Enrollment.AfterEnroll,System.Object)
+  - OpenZiti.API.GetConfiguration(OpenZiti.ZitiService,System.String)
+  - OpenZiti.API.NativeLogger
+  - OpenZiti.API.NewLoop
+  - OpenZiti.API.NoopNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  - OpenZiti.API.Run
+  langs:
+  - csharp
+  - vb
+  name: API
+  nameWithType: API
+  fullName: OpenZiti.API
+  type: Class
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: API
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 51
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: 'public class API : object'
+    content.vb: >-
+      Public Class API
+          Inherits Object
+  inheritance:
+  - System.Object
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: OpenZiti.API.AllConfigs
+  commentId: F:OpenZiti.API.AllConfigs
+  id: AllConfigs
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: AllConfigs
+  nameWithType: API.AllConfigs
+  fullName: OpenZiti.API.AllConfigs
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: AllConfigs
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 53
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static readonly string[] AllConfigs
+    return:
+      type: System.String[]
+    content.vb: Public Shared ReadOnly AllConfigs As String()
+  modifiers.csharp:
+  - public
+  - static
+  - readonly
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: OpenZiti.API.DefaultLoop
+  commentId: P:OpenZiti.API.DefaultLoop
+  id: DefaultLoop
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: DefaultLoop
+  nameWithType: API.DefaultLoop
+  fullName: OpenZiti.API.DefaultLoop
+  type: Property
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: DefaultLoop
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 91
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static UVLoop DefaultLoop { get; }
+    parameters: []
+    return:
+      type: OpenZiti.UVLoop
+    content.vb: Public Shared ReadOnly Property DefaultLoop As UVLoop
+  overload: OpenZiti.API.DefaultLoop*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: OpenZiti.API.NativeLogger
+  commentId: F:OpenZiti.API.NativeLogger
+  id: NativeLogger
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: NativeLogger
+  nameWithType: API.NativeLogger
+  fullName: OpenZiti.API.NativeLogger
+  type: Field
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: NativeLogger
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 97
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static log_writer NativeLogger
+    return:
+      type: OpenZiti.Native.log_writer
+    content.vb: Public Shared NativeLogger As log_writer
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.API.NoopNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  commentId: M:OpenZiti.API.NoopNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  id: NoopNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: NoopNativeLogFunction(Int32, String, String, UInt32)
+  nameWithType: API.NoopNativeLogFunction(Int32, String, String, UInt32)
+  fullName: OpenZiti.API.NoopNativeLogFunction(System.Int32, System.String, System.String, System.UInt32)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: NoopNativeLogFunction
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 99
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static void NoopNativeLogFunction(int level, string loc, string msg, uint msglen)
+    parameters:
+    - id: level
+      type: System.Int32
+    - id: loc
+      type: System.String
+    - id: msg
+      type: System.String
+    - id: msglen
+      type: System.UInt32
+    content.vb: Public Shared Sub NoopNativeLogFunction(level As Integer, loc As String, msg As String, msglen As UInteger)
+  overload: OpenZiti.API.NoopNativeLogFunction*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.API.DefaultNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  commentId: M:OpenZiti.API.DefaultNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  id: DefaultNativeLogFunction(System.Int32,System.String,System.String,System.UInt32)
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: DefaultNativeLogFunction(Int32, String, String, UInt32)
+  nameWithType: API.DefaultNativeLogFunction(Int32, String, String, UInt32)
+  fullName: OpenZiti.API.DefaultNativeLogFunction(System.Int32, System.String, System.String, System.UInt32)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: DefaultNativeLogFunction
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 101
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static void DefaultNativeLogFunction(int level, string loc, string msg, uint msglen)
+    parameters:
+    - id: level
+      type: System.Int32
+    - id: loc
+      type: System.String
+    - id: msg
+      type: System.String
+    - id: msglen
+      type: System.UInt32
+    content.vb: Public Shared Sub DefaultNativeLogFunction(level As Integer, loc As String, msg As String, msglen As UInteger)
+  overload: OpenZiti.API.DefaultNativeLogFunction*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.API.Enroll(System.String,OpenZiti.API.Enrollment.AfterEnroll,System.Object)
+  commentId: M:OpenZiti.API.Enroll(System.String,OpenZiti.API.Enrollment.AfterEnroll,System.Object)
+  id: Enroll(System.String,OpenZiti.API.Enrollment.AfterEnroll,System.Object)
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: Enroll(String, API.Enrollment.AfterEnroll, Object)
+  nameWithType: API.Enroll(String, API.Enrollment.AfterEnroll, Object)
+  fullName: OpenZiti.API.Enroll(System.String, OpenZiti.API.Enrollment.AfterEnroll, System.Object)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Enroll
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 133
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static void Enroll(string identityFile, API.Enrollment.AfterEnroll afterEnroll, object ctx)
+    parameters:
+    - id: identityFile
+      type: System.String
+    - id: afterEnroll
+      type: OpenZiti.API.Enrollment.AfterEnroll
+    - id: ctx
+      type: System.Object
+    content.vb: Public Shared Sub Enroll(identityFile As String, afterEnroll As API.Enrollment.AfterEnroll, ctx As Object)
+  overload: OpenZiti.API.Enroll*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.API.NewLoop
+  commentId: M:OpenZiti.API.NewLoop
+  id: NewLoop
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: NewLoop()
+  nameWithType: API.NewLoop()
+  fullName: OpenZiti.API.NewLoop()
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: NewLoop
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 151
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static UVLoop NewLoop()
+    return:
+      type: OpenZiti.UVLoop
+    content.vb: Public Shared Function NewLoop As UVLoop
+  overload: OpenZiti.API.NewLoop*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.API.GetConfiguration(OpenZiti.ZitiService,System.String)
+  commentId: M:OpenZiti.API.GetConfiguration(OpenZiti.ZitiService,System.String)
+  id: GetConfiguration(OpenZiti.ZitiService,System.String)
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: GetConfiguration(ZitiService, String)
+  nameWithType: API.GetConfiguration(ZitiService, String)
+  fullName: OpenZiti.API.GetConfiguration(OpenZiti.ZitiService, System.String)
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: GetConfiguration
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 155
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static string GetConfiguration(ZitiService svc, string configName)
+    parameters:
+    - id: svc
+      type: OpenZiti.ZitiService
+    - id: configName
+      type: System.String
+    return:
+      type: System.String
+    content.vb: Public Shared Function GetConfiguration(svc As ZitiService, configName As String) As String
+  overload: OpenZiti.API.GetConfiguration*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: OpenZiti.API.Run
+  commentId: M:OpenZiti.API.Run
+  id: Run
+  parent: OpenZiti.API
+  langs:
+  - csharp
+  - vb
+  name: Run()
+  nameWithType: API.Run()
+  fullName: OpenZiti.API.Run()
+  type: Method
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/API.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: Run
+    path: Ziti.NET.Standard/src/OpenZiti/API.cs
+    startLine: 160
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti
+  syntax:
+    content: public static void Run()
+    content.vb: Public Shared Sub Run
+  overload: OpenZiti.API.Run*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: OpenZiti
+  commentId: N:OpenZiti
+  name: OpenZiti
+  nameWithType: OpenZiti
+  fullName: OpenZiti
+- uid: System.Object
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.String[]
+  isExternal: true
+  name: String[]
+  nameWithType: String[]
+  fullName: System.String[]
+  nameWithType.vb: String()
+  fullName.vb: System.String()
+  name.vb: String()
+  spec.csharp:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: OpenZiti.API.DefaultLoop*
+  commentId: Overload:OpenZiti.API.DefaultLoop
+  name: DefaultLoop
+  nameWithType: API.DefaultLoop
+  fullName: OpenZiti.API.DefaultLoop
+- uid: OpenZiti.UVLoop
+  commentId: T:OpenZiti.UVLoop
+  parent: OpenZiti
+  name: UVLoop
+  nameWithType: UVLoop
+  fullName: OpenZiti.UVLoop
+- uid: OpenZiti.Native.log_writer
+  commentId: T:OpenZiti.Native.log_writer
+  parent: OpenZiti.Native
+  name: log_writer
+  nameWithType: log_writer
+  fullName: OpenZiti.Native.log_writer
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: OpenZiti.API.NoopNativeLogFunction*
+  commentId: Overload:OpenZiti.API.NoopNativeLogFunction
+  name: NoopNativeLogFunction
+  nameWithType: API.NoopNativeLogFunction
+  fullName: OpenZiti.API.NoopNativeLogFunction
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.String
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.UInt32
+  isExternal: true
+  name: UInt32
+  nameWithType: UInt32
+  fullName: System.UInt32
+- uid: OpenZiti.API.DefaultNativeLogFunction*
+  commentId: Overload:OpenZiti.API.DefaultNativeLogFunction
+  name: DefaultNativeLogFunction
+  nameWithType: API.DefaultNativeLogFunction
+  fullName: OpenZiti.API.DefaultNativeLogFunction
+- uid: OpenZiti.API.Enroll*
+  commentId: Overload:OpenZiti.API.Enroll
+  name: Enroll
+  nameWithType: API.Enroll
+  fullName: OpenZiti.API.Enroll
+- uid: OpenZiti.API.Enrollment.AfterEnroll
+  commentId: T:OpenZiti.API.Enrollment.AfterEnroll
+  parent: OpenZiti
+  name: API.Enrollment.AfterEnroll
+  nameWithType: API.Enrollment.AfterEnroll
+  fullName: OpenZiti.API.Enrollment.AfterEnroll
+- uid: OpenZiti.API.NewLoop*
+  commentId: Overload:OpenZiti.API.NewLoop
+  name: NewLoop
+  nameWithType: API.NewLoop
+  fullName: OpenZiti.API.NewLoop
+- uid: OpenZiti.API.GetConfiguration*
+  commentId: Overload:OpenZiti.API.GetConfiguration
+  name: GetConfiguration
+  nameWithType: API.GetConfiguration
+  fullName: OpenZiti.API.GetConfiguration
+- uid: OpenZiti.ZitiService
+  commentId: T:OpenZiti.ZitiService
+  parent: OpenZiti
+  name: ZitiService
+  nameWithType: ZitiService
+  fullName: OpenZiti.ZitiService
+- uid: OpenZiti.API.Run*
+  commentId: Overload:OpenZiti.API.Run
+  name: Run
+  nameWithType: API.Run
+  fullName: OpenZiti.API.Run

@@ -1,17 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Runtime.InteropServices;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenZiti {
     /// <summary>
     /// A representation of a standard <see cref="System.IO.Stream"/> which utilizes the NetFoundry network
     /// </summary>
     public class ZitiStream : Stream {
-	    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private readonly ZitiConnection conn;
         private Native.ziti_write_cb azdw;
@@ -82,8 +82,8 @@ namespace OpenZiti {
             //do nothing but also don't throw an exception
         }
 
-        byte[] current = null;
-        int currentPos = 0;
+        private byte[] current = null;
+        private int currentPos = 0;
 
         /// <summary>
         /// Reads data into the provided buffer
@@ -117,8 +117,8 @@ namespace OpenZiti {
             } else {
                 while (!conn.responses.IsCompleted && conn.CheckConnection()) {
                     Logger.Debug("reading stream starts. responses size: " + conn.responses.Count);
-                    if (conn.responses.TryTake(out byte[] response, 500)) {
-	                    Logger.Debug("read from conn.responses size: " + conn.responses.Count);
+                    if (conn.responses.TryTake(out var response, 500)) {
+                        Logger.Debug("read from conn.responses size: " + conn.responses.Count);
                         //need to copy the bytes into the buffer...
                         if (count > response.Length) {
                             //good that means the provided byte array is large enough to accept all the bytes
@@ -140,7 +140,7 @@ namespace OpenZiti {
         }
 
         private int fillFromCache(byte[] buffer, int offset, int count) {
-            int remaining = current.Length - currentPos;
+            var remaining = current.Length - currentPos;
             //there are leftover bytes... fill the buffer with the leftover, then fill some more... rinse repeat...
             if (count >= remaining) {
                 //means the buffer is bigger than the remaining - return the remaining (keep it simple)
@@ -203,18 +203,18 @@ namespace OpenZiti {
                 }
             }
             Logger.Debug("writing to ziti " + count + " bytes");
-            
+
             //assign delegate to a local variable so that it is not eligible for GC
             azdw = (IntPtr nf_connection, int status, GCHandle write_ctx) => {
                 lock (this) {
-	                Logger.Debug("Unlocking write lock");
+                    Logger.Debug("Unlocking write lock");
                     Monitor.Pulse(this);
                 }
             };
 
             Native.API.ziti_write(conn.nativeConnection, buffer, count, azdw, ZitiUtil.NO_CONTEXT_PTR/*GCHandle*/);
             lock (this) {
-	            Logger.Debug("blocking until write is flushed to wire");
+                Logger.Debug("blocking until write is flushed to wire");
                 Monitor.Wait(this);
             }
         }
@@ -234,9 +234,9 @@ namespace OpenZiti {
         /// <param name="destination">The destination stream</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task"/> which is awaitable</returns>
         public static async Task PumpAsync(Stream input, Stream destination) {
-            int count = DefaultStreamPumpBufferSize;
-            byte[] buffer = new byte[count];
-            int numRead = await input.ReadAsync(buffer, 0, count).ConfigureAwait(false);
+            var count = DefaultStreamPumpBufferSize;
+            var buffer = new byte[count];
+            var numRead = await input.ReadAsync(buffer, 0, count).ConfigureAwait(false);
             while (numRead > 0) {
                 await destination.WriteAsync(buffer, 0, numRead);
                 numRead = await input.ReadAsync(buffer, 0, count).ConfigureAwait(false);

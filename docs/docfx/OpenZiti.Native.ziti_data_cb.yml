@@ -1,0 +1,59 @@
+### YamlMime:ManagedReference
+items:
+- uid: OpenZiti.Native.ziti_data_cb
+  commentId: T:OpenZiti.Native.ziti_data_cb
+  id: ziti_data_cb
+  parent: OpenZiti.Native
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ziti_data_cb
+  nameWithType: ziti_data_cb
+  fullName: OpenZiti.Native.ziti_data_cb
+  type: Delegate
+  source:
+    remote:
+      path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+      branch: main
+      repo: git@github.com:openziti/ziti-sdk-csharp.git
+    id: ziti_data_cb
+    path: Ziti.NET.Standard/src/OpenZiti/Native/nAPI.cs
+    startLine: 42
+  assemblies:
+  - Ziti.NET.Standard
+  namespace: OpenZiti.Native
+  syntax:
+    content: public delegate int ziti_data_cb(IntPtr conn, IntPtr data, int length);
+    parameters:
+    - id: conn
+      type: IntPtr
+    - id: data
+      type: IntPtr
+    - id: length
+      type: System.Int32
+    return:
+      type: System.Int32
+    content.vb: Public Delegate Function ziti_data_cb(conn As IntPtr, data As IntPtr, length As Integer) As Integer
+  modifiers.csharp:
+  - public
+  - delegate
+  modifiers.vb:
+  - Public
+  - Delegate
+references:
+- uid: OpenZiti.Native
+  commentId: N:OpenZiti.Native
+  name: OpenZiti.Native
+  nameWithType: OpenZiti.Native
+  fullName: OpenZiti.Native
+- uid: IntPtr
+  isExternal: true
+  name: IntPtr
+  nameWithType: IntPtr
+  fullName: IntPtr
+- uid: System.Int32
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

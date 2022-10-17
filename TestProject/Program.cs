@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using NLog;
+using OpenZiti;
 using System;
 using System.Threading.Tasks;
-using OpenZiti;
-using NLog;
 
 namespace ConsoleTestApp {
-    class Program {
+    internal class Program {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        static string identityFile = @"c:\temp\id.json";
-        static async Task Main(string[] args) {
+        private static readonly string identityFile = @"c:\temp\id.json";
+
+        private static async Task Main(string[] args) {
             Logging.SimpleConsoleLogging(LogLevel.Trace);
             Console.Clear();
             await OpenZiti.Samples.WeatherStream.Run(identityFile);
