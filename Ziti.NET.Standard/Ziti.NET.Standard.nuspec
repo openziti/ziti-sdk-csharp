@@ -17,10 +17,11 @@
         <description>This is the .NET library used to create applications which leverage the fully zero-trust ziti overlay network</description>
         <dependencies>
             <group targetFramework=".NETStandard2.1">
-                <dependency id="NLog" version="4.7.15" exclude="Build,Analyzers" />
-                <dependency id="System.Memory" version="4.5.4" exclude="Build,Analyzers" />
-                <dependency id="System.Text.Json" version="6.0.4" exclude="Build,Analyzers" />
-                <dependency id="Ziti.NET.Standard.native" version="0.28.1.91" exclude="Build,Analyzers" />
+                <dependency id="NLog" version="5.0.4" exclude="Build,Analyzers" />
+                <dependency id="Newtonsoft.Json" Version="13.0.1" exclude="Build,Analyzers" />
+                <dependency id="System.Memory" version="4.5.5" exclude="Build,Analyzers" />
+                <dependency id="System.Text.Json" version="6.0.6" exclude="Build,Analyzers" />
+                <dependency id="Ziti.NET.Standard.native" version="0.30.1.110" exclude="Build,Analyzers" />
             </group>
         </dependencies>
     </metadata>
