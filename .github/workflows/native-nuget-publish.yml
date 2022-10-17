@@ -24,11 +24,11 @@ jobs:
           - ext: so
             prefix: lib
             dist: linux
-            os: ubuntu-18.04
+            os: ubuntu-20.04
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macOS-10.15
+            os: macOS-12
           - ext: dll
             pathext: /Release
             dist: win
