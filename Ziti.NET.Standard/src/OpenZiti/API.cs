@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright NetFoundry Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -322,6 +322,7 @@ namespace OpenZiti {
         EdgeRouterUnavailable,
     }
 
+    /*
     public struct ziti_service {
         public string id;
         public string name;
@@ -345,6 +346,7 @@ namespace OpenZiti {
         public ziti_process process;
         public int timeout;
     }
+    */
 
     public struct ziti_process {
         public string path;
