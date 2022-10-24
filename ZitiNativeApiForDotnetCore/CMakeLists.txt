@@ -7,9 +7,12 @@ set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(USING_ZITI_SHARED ON)
 set(BUILDING_ZITI_SHARED ON)
 
-if(NOT ZITI_SDK_C_BRANCH)
+if ("$ENV{ZITI_SDK_C_BRANCH}" STREQUAL "")
     #allow using a different branch of the CSDK easily
     set(ZITI_SDK_C_BRANCH "0.30.1")
+    message("using default ZITI_SDK_C_BRANCH: ${ZITI_SDK_C_BRANCH}")
+else()
+    set(ZITI_SDK_C_BRANCH "$ENV{ZITI_SDK_C_BRANCH}")
 endif()
 
 message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
