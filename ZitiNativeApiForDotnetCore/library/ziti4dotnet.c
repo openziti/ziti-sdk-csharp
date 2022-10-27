@@ -3,6 +3,7 @@
 #include <ziti/ziti.h>
 #include <uv.h>
 #include "ziti4dotnet.h"
+#include "ziti/zitilib.h"
 
 #if _WIN32
 #define strncasecmp _strnicmp
@@ -155,4 +156,5 @@ void useUnusedFuncs() {
     ziti_enroll(NULL, NULL, NULL, NULL);
     ziti_conn_bridge(NULL, NULL, NULL);
     ziti_conn_bridge_fds(NULL, NULL, NULL, NULL, NULL);
+    Ziti_lib_init();
 }
