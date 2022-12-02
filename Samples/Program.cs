@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using OpenZiti;
 using System.Runtime.InteropServices;
@@ -23,7 +23,7 @@ namespace OpenZiti.Samples {
                 }
 
                 string identityFile = args[1];
-                switch (args[0].ToLower()) {
+                switch (args[2].ToLower()) {
                     case "eth0":
                         Eth0.Run(identityFile);
                         break;
@@ -47,6 +47,7 @@ namespace OpenZiti.Samples {
             } catch (Exception e) {
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("Sample failed to execute: " + e.Message);
+                Console.WriteLine(e.StackTrace);
                 Console.WriteLine("==============================================================");
             }
         }
