@@ -22,8 +22,8 @@ namespace OpenZiti.Samples {
 	                return;
                 }
 
-                string identityFile = args[1];
-                switch (args[2].ToLower()) {
+                string identityFile = args[2];
+                switch (args[1].ToLower()) {
                     case "eth0":
                         Eth0.Run(identityFile);
                         break;
