@@ -15,7 +15,7 @@ if "%1"=="32" (set machine=x86) else (set machine=x64)
 set dll_file=%2
 set dll_file_no_ext=%~n2
 set exports_file=%dll_file_no_ext%-exports.txt
-set def_file=%dll_file_no_ext%.def
+set def_file=library\%dll_file_no_ext%.def
 set lib_file=%dll_file_no_ext%.dll
 set lib_name=%dll_file_no_ext%
 

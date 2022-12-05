@@ -29,3 +29,18 @@ target_compile_definitions(ziti4dotnet
 target_link_libraries(ziti4dotnet
         PUBLIC ziti
         )
+
+
+
+
+add_executable(zitistructalignment ${ZITI_4_DOTNET_SOURCE} ${ZITI_4_DOTNET_HEADERS} ${PROJECT_SOURCE_DIR}/library/zitistructalignment.c)
+target_include_directories(zitistructalignment
+        PUBLIC ${CMAKE_HOME_DIRECTORY}/includes
+        )
+
+set_property(TARGET zitistructalignment PROPERTY C_STANDARD 11)
+
+target_link_libraries(zitistructalignment
+        PUBLIC ziti
+        PUBLIC ziti4dotnet
+        )

@@ -7,10 +7,15 @@ set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(USING_ZITI_SHARED ON)
 set(BUILDING_ZITI_SHARED ON)
 
-if(NOT ZITI_SDK_C_BRANCH)
+if ("$ENV{ZITI_SDK_C_BRANCH}" STREQUAL "")
     #allow using a different branch of the CSDK easily
-    set(ZITI_SDK_C_BRANCH "0.24.1")
+    set(ZITI_SDK_C_BRANCH "0.30.8")
+    message("using default ZITI_SDK_C_BRANCH: ${ZITI_SDK_C_BRANCH}")
+else()
+    set(ZITI_SDK_C_BRANCH "$ENV{ZITI_SDK_C_BRANCH}")
 endif()
+
+message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
 
 file (STRINGS "../version" BUILD_NUMBER)
 
@@ -28,6 +33,7 @@ message("cross-compiling: ${CMAKE_CROSSCOMPILING}")
 
 add_subdirectory(cmake_deps)
 add_subdirectory(library)
+#add_subdirectory(programs)
 
 #generate the .cs file that represents the c sdk errors using the preprocessor
 if ("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
@@ -37,7 +43,7 @@ else()
 endif()
 message("USING INCLUDES FROM: ${ZITI_INCLUDES}")
 
-set(OUTPUT_FILE ${CMAKE_HOME_DIRECTORY}/../Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs)
+set(OUTPUT_FILE ${CMAKE_HOME_DIRECTORY}/../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs)
 set(ZITI_ERR_FILE ${CMAKE_HOME_DIRECTORY}/library/sharp-errors.c)
 
 if("${GENERATE_ZITI_STATUS}" STREQUAL "YES")

@@ -2,7 +2,7 @@
   "profiles": {
     "Console": {
       "commandName": "Project",
-      "commandLineArgs": "weather c:\\temp\\id.json",
+      "commandLineArgs": "weather C:\\git\\github\\openziti\\ziti-sdk-csharp\\Samples\\setup-scripts\\weather.demo.jwt",
       "sqlDebugging": false,
       "nativeDebugging": true
     }

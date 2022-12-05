@@ -7,38 +7,35 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace OpenZiti.Samples {
-    class Program {
+    public class Program {
         static async Task Main(string[] args) {
             try {
-                Logging.SimpleConsoleLogging(LogLevel.Trace);
-                
-                //uncomment this line to see the logs from the c-sdk
-                //API.NativeLogger = API.DefaultNativeLogFunction;
+                //uncomment these lines to enable logging
+                //API.NativeLogger = API.DefaultConsoleLoggerFunction;
+                //API.InitializeZiti(OpenZiti.Logging.ZitiLogLevel.DEBUG);
 
                 Console.Clear();
-
-                if (args == null || args.Length < 2) {
-	                Console.WriteLine("This app requires two parameters to be supplied. {exampleToRun=eth0|weather|enroll|hosted} {path-to-identity-file}");
+                
+                if (args == null || args.Length < 1) {
+	                Console.WriteLine("This app expects the first paramter to be the sample to run: {exampleToRun=weather|enroll|hosted|hosted-client} {path-to-identity-file} {other-options}");
 	                return;
                 }
 
-                string identityFile = args[2];
-                switch (args[1].ToLower()) {
-                    case "eth0":
-                        Eth0.Run(identityFile);
-                        break;
+                switch (args[0].ToLower()) {
                     case "weather":
-                        Weather.Run(identityFile);
+                        Weather.Run(args);
                         break;
                     case "enroll":
-                        Enrollment.Run(@"c:\temp\id.jwt");
+                        Enrollment.Run(args);
                         break;
                     case "hosted":
-                        await HostedService.RunAsync(identityFile);
+                        await HostedService.Run(args);
+                        break;
+                    case "hosted-client":
+                        await HostedServiceClient.Run(args);
                         break;
                     default:
-                        Console.WriteLine($"Unexpected sample supplied {args[0]}. Running weather sample");
-                        Weather.Run(identityFile);
+                        Console.WriteLine($"Unexpected sample supplied {args[0]}.");
                         break;
                 }
                 Console.WriteLine("==============================================================");
@@ -47,21 +44,9 @@ namespace OpenZiti.Samples {
             } catch (Exception e) {
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("Sample failed to execute: " + e.Message);
+                Console.WriteLine("");
                 Console.WriteLine(e.StackTrace);
                 Console.WriteLine("==============================================================");
-            }
-        }
-    }
-
-    public static class CommonMethods {
-        public static void CheckStatus(ZitiStatus status) {
-            if (status.Ok()) {
-                //good. carry on.
-            } else {
-                //something went wrong. inspect the erorr here...
-                Console.WriteLine("An error occurred.");
-                Console.WriteLine("    ZitiStatus : " + status);
-                Console.WriteLine("               : " + status.GetDescription());
             }
         }
     }

@@ -8,3 +8,10 @@ dotnet-install.sh
 *.nupkg
 docfx/metadata
 docfx/api
+local-nuget-packages/
+runtimes/
+
+cmake-build-debug-mingw/
+cmake-build-debug-msvc/
+
+*.jwt
