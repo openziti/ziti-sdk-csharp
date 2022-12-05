@@ -334,7 +334,7 @@ ziti_types_t* z4d_struct_test() {
     BYTEALIGNCHECK(ziti_service);
 
     rtn->ziti_address_host.type = ziti_address_hostname;
-    strncpy_s(rtn->ziti_address_host.addr.hostname, 255, "hostname", 8);
+    strncpy(rtn->ziti_address_host.addr.hostname, "hostname", 8);
     BYTEALIGNCHECKBYTYPE(ziti_address_host, ziti_address);
 
     rtn->ziti_address_cidr.type = ziti_address_cidr;
