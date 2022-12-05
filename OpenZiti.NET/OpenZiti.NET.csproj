@@ -36,7 +36,7 @@
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="5.0.4" />
-        <PackageReference Include="OpenZiti.NET.native" Version="2022.12.4.1329" />
+        <PackageReference Include="OpenZiti.NET.native" Version="0.30.8.132" />
         <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="System.Text.Json" Version="6.0.6" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
