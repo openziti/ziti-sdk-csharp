@@ -46,7 +46,7 @@
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Native\nAPI.cs" Link="src\OpenZiti\native\nAPI.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Native\ziti.cs" Link="src\OpenZiti\native\ziti.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Native\structs.cs" Link="src\OpenZiti\native\structs.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiSocketNew.cs" Link="src\OpenZiti\ZitiSocketNew.cs" />
+		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiSocket.cs" Link="src\OpenZiti\ZitiSocket.cs" />
 
 		<None Include="..\Samples\setup-scripts\enrollment.ps1" Link="setup-scripts\enrollment.ps1" />
 		<None Include="..\Samples\setup-scripts\hosted.ps1" Link="setup-scripts\hosted.ps1" />
