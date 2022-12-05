@@ -18,9 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.0.2" />
-    <PackageReference Include="OpenZiti.NET" Version="0.8.338.34612" />
-    <PackageReference Include="Ziti.NET.Standard" Version="0.8.300.26813" />
+    <PackageReference Include="OpenZiti.NET" Version="0.8.339.34111" />
   </ItemGroup>
 
 </Project>
