@@ -61,7 +61,6 @@
 		<Message Text="RUNNING: dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE)" Importance="high" />
 		<Message Text="Push NuGet Package to NuGet Feed $(MSBuildProjectDirectory)/bin/Release/$(PackageId).$(PackageVersion).nupkg" Importance="high" />
 		<Exec Command="dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE) --api-key $(API_KEY)"></Exec>
-		<Message Text="    - $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).*snupkg" Importance="high" />
 		<ItemGroup>
 			<FilesToDelete Include="$(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).*nupkg" />
 		</ItemGroup>

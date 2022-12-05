@@ -9,7 +9,7 @@ set(BUILDING_ZITI_SHARED ON)
 
 if ("$ENV{ZITI_SDK_C_BRANCH}" STREQUAL "")
     #allow using a different branch of the CSDK easily
-    set(ZITI_SDK_C_BRANCH "0.30.7")
+    set(ZITI_SDK_C_BRANCH "0.30.8")
     message("using default ZITI_SDK_C_BRANCH: ${ZITI_SDK_C_BRANCH}")
 else()
     set(ZITI_SDK_C_BRANCH "$ENV{ZITI_SDK_C_BRANCH}")

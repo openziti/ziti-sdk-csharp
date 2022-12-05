@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenZiti.NET" Version="0.8.339.34111" />
+    <PackageReference Include="OpenZiti.NET" Version="0.8.339.37518" />
   </ItemGroup>
 
 </Project>
