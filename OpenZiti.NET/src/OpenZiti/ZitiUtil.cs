@@ -47,5 +47,13 @@ namespace OpenZiti {
             }
             return null;
         }
+
+        public static string GetVersion(bool verbose) {
+            Func<int> verboseLogging = () => {
+                return verbose ? 1 : 0;
+            };
+            var zitiVersion = OpenZiti.Native.API.ziti_get_build_version(verboseLogging());
+            return Marshal.PtrToStringUTF8(zitiVersion);
+        }
     }
 }

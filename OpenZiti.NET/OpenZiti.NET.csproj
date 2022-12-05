@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0</TargetFrameworks>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
+        <SecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</SecondsOfDay>
+        <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_UtcNow().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</UtcSecondsOfDay>
+        <major>0</major>
+        <minor>8</minor>
+        <Version>$(major).$(minor).$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
+        <Authors>OpenZiti</Authors>
+        <Company>NetFoundry</Company>
+        <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
+        <Copyright>© NetFoundry Inc. All rights reserved.</Copyright>
+        <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl> 
+        <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
+        <RootNamespace></RootNamespace>
+        <Platforms>AnyCPU;x86;x64</Platforms>
+        <PackageIcon>ziti.png</PackageIcon>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Platform)' == 'x64'">
+        <DefineConstants>TRACE;ZITI_X64</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+        <DefineConstants>TRACE;ZITI_X86</DefineConstants>
+        <PlatformTarget>x86</PlatformTarget>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NLog" Version="5.0.4" />
+        <PackageReference Include="OpenZiti.NET.native" Version="2022.12.4.1329" />
+        <PackageReference Include="System.Memory" Version="4.5.5" />
+        <PackageReference Include="System.Text.Json" Version="6.0.6" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Resource Include="2019_NF TCL EULA.txt">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </Resource>
+        <Resource Include="ziti.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </Resource>
+    </ItemGroup>
+
+    <Target Name="NugetPack" DependsOnTargets="BuildAny;Buildx64;Buildx86">
+        <Message Text="RUNNING: nuget pack Ziti.NET.Standard.nuspec -Version $(PackageVersion) -Symbols -SymbolPackageFormat snupkg" Importance="high" />
+        <Exec Command="nuget pack Ziti.NET.Standard.nuspec -Version $(PackageVersion) -Symbols -SymbolPackageFormat snupkg"></Exec>
+    </Target>
+	<Target Name="NugetPush" DependsOnTargets="NugetPack">
+		<Message Text="RUNNING: dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE)" Importance="high" />
+		<Message Text="Push NuGet Package to NuGet Feed $(MSBuildProjectDirectory)/bin/Release/$(PackageId).$(PackageVersion).nupkg" Importance="high" />
+		<Exec Command="dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE) --api-key $(API_KEY)"></Exec>
+		<ItemGroup>
+			<FilesToDelete Include="$(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).*nupkg" />
+		</ItemGroup>
+		<Delete Files="@(FilesToDelete)">
+			<Output TaskParameter="DeletedFiles" ItemName="DeletedList" />
+		</Delete>
+		<Message Text="Deleted files: '@(DeletedList)'" Importance="high" />
+	</Target>
+    <Target Name="Buildx64">
+        <Message Text="BUILDING x64: dotnet build $(MSBuildProjectFullPath) --configuration Release /p:Platform=x64" Importance="high" />
+        <Exec Command="dotnet build $(MSBuildProjectFullPath) --configuration Release /p:PackageVersion=$(PackageVersion) /p:Platform=x64"></Exec>
+    </Target>
+    <Target Name="Buildx86">
+        <Message Text="BUILDING x86: dotnet build $(MSBuildProjectFullPath) --configuration Release /p:Platform=x86" Importance="high" />
+        <Exec Command="dotnet build $(MSBuildProjectFullPath) --configuration Release /p:PackageVersion=$(PackageVersion) /p:Platform=x86"></Exec>
+    </Target>
+    <Target Name="BuildAny">
+        <Message Text="BUILDING ANY: dotnet build $(MSBuildProjectFullPath) --configuration Release" Importance="high" />
+        <Exec Command="dotnet build $(MSBuildProjectFullPath) --configuration Release /p:PackageVersion=$(PackageVersion)"></Exec>
+    </Target>
+</Project>

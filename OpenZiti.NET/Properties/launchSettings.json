@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Ziti.NET.Standard": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

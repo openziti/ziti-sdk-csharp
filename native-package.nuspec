@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <package>
     <metadata>
-        <id>Ziti.NET.Standard.native</id>
+        <id>OpenZiti.NET.native</id>
         <version>0.0.1</version>
-        <title>Native Ziti Libraries for use with .NET</title>
+        <title>Native OpenZiti Libraries for use with .NET</title>
         <authors>openziti.org</authors>
-        <owners>Clint Dovholuk</owners>
+        <owners>OpenZiti Maintainers</owners>
         <license type="expression">Apache-2.0</license>
-        <projectUrl>https://openziti.github.io/openziti/ziti-sdk-csharp</projectUrl>
+        <projectUrl>https://openziti.github.io/ziti-sdk-csharp</projectUrl>
         <iconUrl>https://openziti.github.io/favicon.ico</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <summary>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</summary>
-        <copyright>Copyright NetFoundry, Inc. All rights reserved.</copyright>
+        <copyright>Copyright NetFoundry Inc. All rights reserved.</copyright>
         <tags>native dll</tags>
-        <description>This nuget package contains native libraries compiled for the targeted platforms. Initially this includes window x86 and x64. Eventually it may include libraries for MacOS/iOS/linux</description>
+        <description>This nuget package contains native libraries compiled for the targeted platforms. Expected targets are Windows x86 and x64, linux x64, MacOS x64</description>
     </metadata>
     <files>
-        <file src="ZitiNativeApiForDotnetCore\build-win\x86\library\Release\ziti4dotnet.dll" target="runtimes/win-x86/native" />
-        <file src="ZitiNativeApiForDotnetCore\build-win\x64\library\Release\ziti4dotnet.dll" target="runtimes/win-x64/native" />
+        <file src="./runtimes/osx-x64/native/libziti4dotnet.dylib" target="runtimes/osx-x64/native" />
+        <file src="./runtimes/linux-x64/native/libziti4dotnet.so" target="runtimes/linux-x64/native" />
+        <file src="./runtimes/win-x86/native/ziti4dotnet.dll" target="runtimes/win-x86/native" />
+        <file src="./runtimes/win-x64/native/ziti4dotnet.dll" target="runtimes/win-x64/native" />
     </files>
 </package>

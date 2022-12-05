@@ -17,8 +17,10 @@ limitations under the License.
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using OpenZiti.Native;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace OpenZiti {
@@ -36,6 +38,15 @@ namespace OpenZiti {
             // Apply config           
             LogManager.Configuration = config;
             LogManager.ReconfigExistingLoggers();
+        }
+        public enum ZitiLogLevel {
+            FATAL = 0,
+            ERROR = 1,
+            WARN = 2,
+            INFO = 3,
+            DEBUG = 4,
+            VERBOSE = 5,
+            TRACE = 6,
         }
     }
 }
