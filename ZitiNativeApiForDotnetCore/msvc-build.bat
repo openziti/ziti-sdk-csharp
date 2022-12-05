@@ -36,7 +36,7 @@ REM uncomment to generate a new ziti.def
 REM defgen 32 build-win\x86\_deps\ziti-sdk-c-build\library\Release\ziti.dll
 REM copy ziti.def library
 REM cl /C /EP /I build-win/x86/_deps/ziti-sdk-c-src/includes /c library/sharp-errors.c > library/ZitiStatus.cs
-REM copy library/ZitiStatus.cs ../Ziti.NET.Standard/src/OpenZiti 
+REM copy library/ZitiStatus.cs ../OpenZiti.NET/src/OpenZiti 
 
 ECHO Build from cmake using: 
 ECHO     cmake --build %BUILDFOLDER%\x86 --config Debug

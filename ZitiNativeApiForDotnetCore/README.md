@@ -1,3 +1,4 @@
+
 # Native NuGet Package
 
 As mentioned in [the README](../README.md), this project is responsible for creating a nuget package which
@@ -97,7 +98,7 @@ targetting - or just generate this project's meta data (which I think is easier)
 SET TARGETDIR=_TEMP_
 cmake -E make_directory %TARGETDIR%
 cmake -S . -B %TARGETDIR% 
-cl /C /EP /I %TARGETDIR%/_deps/ziti-sdk-c-src/includes /c library/sharp-errors.c > ../Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+cl /C /EP /I %TARGETDIR%/_deps/ziti-sdk-c-src/includes /c library/sharp-errors.c > ../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs
 - OR if using gcc not developer command prompt -
-gcc -nostdinc -E -CC -P -I%TARGETDIR%/_deps/ziti-sdk-c-src/includes library/sharp-errors.c > ../Ziti.NET.Standard/src/OpenZiti/ZitiStatus.cs
+gcc -nostdinc -E -CC -P -I%TARGETDIR%/_deps/ziti-sdk-c-src/includes library/sharp-errors.c > ../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs
 ```

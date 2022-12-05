@@ -1,6 +1,6 @@
 @echo off
 
-ECHO Building the solution for the Ziti.NET.standard.dll
+ECHO Building the solution for the OpenZiti.NET.dll
 
 SET Ziti_Net_HOME=%~dp0
 
@@ -69,7 +69,7 @@ if %ACTUAL_ERR% NEQ 0 (
 )
 
 REM 'tail' has to be on your path to execute the below command
-FOR /F "delims= " %%i IN ('ls -rt Ziti.NET.Standard.*.nupkg ^| tail -n 1') DO set NUPKG_FILE=%%i
+FOR /F "delims= " %%i IN ('ls -rt OpenZiti.NET.*.nupkg ^| tail -n 1') DO set NUPKG_FILE=%%i
 
 ECHO nuget push -source %NUGET_PATH% %Ziti_Net_HOME%%NUPKG_FILE%
 

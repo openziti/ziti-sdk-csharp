@@ -45,17 +45,20 @@ Things you should do/understand:
     native nuget package. 
   * Pull and use the latest native nuget package
 * Assuming you have 'the latest' nuget package - adapt the C# SDK code and write **IDIOMATIC** C# for the API.
-* Once the **IDIOMATIC** C# API exists, publish the Ziti.NET.Standard version to your **LOCAL** NuGet repo.
+* Once the **IDIOMATIC** C# API exists, publish the OpenZiti.NET version to your **LOCAL** NuGet repo.
   * Run `dotnet build` to build and publish the project. Make sure you supply the variable named "NUGET_SOURCE". It is used to control
     where you push to. It can be either your **LOCAL** nuget repo or https://api.nuget.org/v3/index.json. This build will **ALSO** 
     build both x86 and x64 for you.
     ```
-    dotnet build Ziti.NET.Standard\Ziti.NET.Standard.csproj /t:NugetPush /p:Configuration=Release;NUGET_SOURCE=c:/temp/nuget
+    SET LOCAL_NUGET_PACKAGES=%CD%\local-nuget-packages
+    SET APP_KEY=_local_
+    mkdir %LOCAL_NUGET_PACKAGES%
+    dotnet build OpenZiti.NET\OpenZiti.NET.csproj /t:NugetPush /p:Configuration=Release;NUGET_SOURCE=%LOCAL_NUGET_PACKAGES%
     ```
-* Open Ziti.Samples.sln and update the Ziti.NET.Standard version to use your latest version from local
+* Open Ziti.Samples.sln and update the OpenZiti.NET version to use your latest version from local
 * Develop one or more samples which illustrate the usage of the SDK. 
 * Once happy with the samples, push back to GitHub, merge to a release branch/tag/main and let GitHub publish the package to NuGet central
-* Once verified and published on NuGet, update the Ziti.Samples.sln with the **ACTUAL** deployed value for Ziti.NET.Standard
+* Once verified and published on NuGet, update the Ziti.Samples.sln with the **ACTUAL** deployed value for OpenZiti.NET
 * Test on Windows x86, x64, linux, MacOS - or hopefully we write (wrote?) automated tests to do this
 
 ### Build and Package the NuGet Native Project
@@ -65,7 +68,7 @@ to deploy a local version of the native NuGet package if you want to verify your
 
 ### Package the .NET Project Locally
 
-The [project](./Ziti.NET.Standard/) has a target within it which should make it trivial for you to build the dotnet NuGet package. To do so
+The [project](./OpenZiti.NET/) has a target within it which should make it trivial for you to build the dotnet NuGet package. To do so
 simply issue
 ```
 SET LOCAL_NUGET_PACKAGES=%CD%\local-nuget-packages
@@ -80,7 +83,7 @@ and will push your freshly built .nupkg into the location specified by the prope
 ### TestProject
 
 Another project is included in the [Ziti.NuGet.sln](./Ziti.NuGet.sln) is [TestProject](./TestProject). This project **should** contain
-**linked** .cs files from the [Ziti.NET.Standard](./Ziti.NET.Standard) project. Any new .cs files should be part of the project that 
+**linked** .cs files from the [OpenZiti.NET](./OpenZiti.NET) project. Any new .cs files should be part of the project that 
 produces the nuget package and only **linked** in TestProject.  TestProject is then able to be a playground to verify your changes
 are functioning as expected.
 
