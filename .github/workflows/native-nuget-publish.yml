@@ -88,8 +88,8 @@ jobs:
       - name: upload nuget package
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ github.workspace }}/Ziti.NET.Standard.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
-          name: Ziti.NET.Standard.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
+          path: ${{ github.workspace }}/OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
+          name: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
           if-no-files-found: error
-      - name: Publish Ziti.NET.Standard.native
-        run: dotnet nuget push Ziti.NET.Standard.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      - name: Publish OpenZiti.NET.native
+        run: dotnet nuget push OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
