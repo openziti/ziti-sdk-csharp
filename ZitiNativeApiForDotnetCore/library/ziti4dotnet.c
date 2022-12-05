@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdarg.h>
 
 #include <ziti/ziti.h>
 #include <uv.h>
