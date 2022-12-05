@@ -69,6 +69,7 @@ The [project](./Ziti.NET.Standard/) has a target within it which should make it 
 simply issue
 ```
 SET LOCAL_NUGET_PACKAGES=%CD%\local-nuget-packages
+SET APP_KEY=_local_
 mkdir %LOCAL_NUGET_PACKAGES%
 dotnet build OpenZiti.NET\OpenZiti.NET.csproj /t:NugetPush /p:Configuration=Release;NUGET_SOURCE=%LOCAL_NUGET_PACKAGES%
 ```
