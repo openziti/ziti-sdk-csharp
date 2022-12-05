@@ -35,6 +35,7 @@
 
 		<Compile Include="..\OpenZiti.NET\src\GlobalSuppressions.cs" Link="src\GlobalSuppressions.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\API.cs" Link="src\OpenZiti\API.cs" />
+		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Logging.cs" Link="src\OpenZiti\Logging.cs" />
 
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\v2\ZitiRouterStatus.cs" Link="src\OpenZiti\v2\ZitiRouterStatus.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiContext.cs" Link="src\OpenZiti\ZitiContext.cs" />

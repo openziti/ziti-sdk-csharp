@@ -12,7 +12,7 @@ namespace OpenZiti.Samples {
             try {
                 //uncomment these lines to enable logging
                 API.NativeLogger = API.DefaultConsoleLoggerFunction;
-                API.InitializeZiti(Logging.ZitiLogLevel.DEBUG);
+                API.InitializeZiti(OpenZiti.Logging.ZitiLogLevel.DEBUG);
 
                 Console.Clear();
                 

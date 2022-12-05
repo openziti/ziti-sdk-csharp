@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using OpenZiti.Native;
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -58,19 +59,36 @@ namespace OpenZiti {
                     break;
             }
         }
+        public static void DefaultConsoleLoggerFunction(int level, string loc, string msg, uint msglen) {
 
-
-
-
-
-
-
-
-
-
-
-
-
+            switch (level) {
+                case 0:
+                    Console.WriteLine("SDK_: level 0 should not be logged, please report: {0}", msg); break;
+                case 1:
+                    Console.WriteLine("SDKe: {0}\t{1}", loc, msg);
+                    break;
+                case 2:
+                    Console.WriteLine("SDKw: {0}\t{1}", loc, msg);
+                    break;
+                case 3:
+                    Console.WriteLine("SDKi: {0}\t{1}", loc, msg);
+                    break;
+                case 4:
+                    Console.WriteLine("SDKd: {0}\t{1}", loc, msg);
+                    break;
+                case 5:
+                    //VERBOSE:5
+                    Console.WriteLine("SDKv: {0}\t{1}", loc, msg);
+                    break;
+                case 6:
+                    //TRACE:6
+                    Console.WriteLine("SDKt: {0}\t{1}", loc, msg);
+                    break;
+                default:
+                    Console.WriteLine("SDK_: level [%d] NOT recognized: {1}", level, msg);
+                    break;
+            }
+        }
 
 
         private const int MaxCallerLen = 256;
@@ -81,6 +99,20 @@ namespace OpenZiti {
             nAPI.Ziti_lib_init();
         }
 
+        public static void InitializeZiti() {
+            var fp = Marshal.GetFunctionPointerForDelegate(NativeLogger);
+            nAPI.ziti_log_set_logger(fp);
+            nAPI.Ziti_lib_init();
+        }
+
+        public static void InitializeZiti(Logging.ZitiLogLevel level) {
+            InitializeZiti();
+            SetLogLevel(level);
+        }
+
+        public static void SetLogLevel(Logging.ZitiLogLevel level) {
+            nAPI.ziti_log_set_level((int)level, null);
+        }
 
 
         public static int LastError() {
