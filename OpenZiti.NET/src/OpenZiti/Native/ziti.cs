@@ -42,11 +42,9 @@ namespace OpenZiti.Native {
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_pr_os_cb(IntPtr ziti_context, string id, string os_type, string os_version, string os_build);
     //typedef void (*ziti_pq_os_cb)(ziti_context ztx, char *id, ziti_pr_os_cb response_cb);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_pq_os_cb(IntPtr ziti_context, string id, ziti_pr_os_cb response_cb);
-    //typedef void (* ziti_pr_process_cb) (ziti_context ztx, char* id, char* path, bool is_running, char* sha_512_hash,
-    //                                 char** signers, int num_signers);
+    //typedef void (* ziti_pr_process_cb) (ziti_context ztx, char* id, char* path, bool is_running, char* sha_512_hash, char** signers, int num_signers);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_pr_process_cb(IntPtr ziti_context, string id, string path, bool is_running, string sha_512, string[] signers, int num_signers);
-    //typedef void (* ziti_pq_process_cb) (ziti_context ztx, const char* id, const char* path,
-    //                                 ziti_pr_process_cb response_cb);
+    //typedef void (* ziti_pq_process_cb) (ziti_context ztx, const char* id, const char* path, ziti_pr_process_cb response_cb);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_pq_process_cb(IntPtr ziti_context, string id, string path, ziti_pr_process_cb response_cb);
     //typedef void (*ziti_pr_domain_cb)(ziti_context ztx, char *id, char *domain);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void ziti_pr_domain_cb(IntPtr ziti_context, string id, string domain);
@@ -67,35 +65,6 @@ namespace OpenZiti.Native {
     //typedef void (* uv_close_cb) (uv_handle_t* handle);
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void uv_close_cb(IntPtr handle);
 
-
-/* Unmerged change from project 'TestProject'
-Before:
-    class MarshalUtils<T>
-    {
-        internal static List<T> convertPointerToList(IntPtr arrayPointer)
-        {
-            IntPtr currentArrLoc;
-            List<T> result = new List<T>();
-            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
-
-            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero)
-            {
-                T objectT;
-                if (typeof(T) == typeof(String))
-After:
-    internal class MarshalUtils<T>
-    {
-        internal static List<T> convertPointerToList(IntPtr arrayPointer)
-        {
-            IntPtr currentArrLoc;
-            var result = new List<T>();
-            var sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
-
-            while ((currentArrLoc = Marshal.ReadIntPtr(arrayPointer)) != IntPtr.Zero)
-            {
-                T objectT;
-                if (typeof(T) == typeof(string))
-*/
     internal class MarshalUtils<T> {
         internal static List<T> convertPointerToList(IntPtr arrayPointer) {
             IntPtr currentArrLoc;
@@ -120,23 +89,6 @@ After:
 
         internal static List<model_map_entry> convertPointerMapToList(IntPtr arrayPointer) {
             IntPtr currentArrLoc;
-
-/* Unmerged change from project 'TestProject'
-Before:
-            List<model_map_entry> result = new List<model_map_entry>();
-            int sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
-
-            while ((currentArrLoc = arrayPointer) != IntPtr.Zero)
-            {
-                model_map_entry objectT = Marshal.PtrToStructure<model_map_entry>(currentArrLoc);
-After:
-            var result = new List<model_map_entry>();
-            var sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
-
-            while ((currentArrLoc = arrayPointer) != IntPtr.Zero)
-            {
-                var objectT = Marshal.PtrToStructure<model_map_entry>(currentArrLoc);
-*/
             var result = new List<model_map_entry>();
             var sizeOfPointer = Marshal.SizeOf(typeof(IntPtr));
 
@@ -148,6 +100,4 @@ After:
             return result;
         }
     }
-
-
 }

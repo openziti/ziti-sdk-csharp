@@ -11,8 +11,8 @@ namespace OpenZiti.Samples {
         static async Task Main(string[] args) {
             try {
                 //uncomment these lines to enable logging
-                API.NativeLogger = API.DefaultConsoleLoggerFunction;
-                API.InitializeZiti(OpenZiti.Logging.ZitiLogLevel.DEBUG);
+                //API.NativeLogger = API.DefaultConsoleLoggerFunction;
+                //API.InitializeZiti(OpenZiti.Logging.ZitiLogLevel.DEBUG);
 
                 Console.Clear();
                 

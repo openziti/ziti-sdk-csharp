@@ -11,7 +11,11 @@ namespace OpenZiti.Samples {
                 throw new Exception("This example expects the second paramter to be an unenrolled .jwt");
             }
             var outputPath = Directory.GetCurrentDirectory() + "/hosted.demo.json";
-            Enroll(args[1], outputPath);
+            try {
+                Enroll(args[1], outputPath);
+            } catch (Exception e) {
+                Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
+            }
 
             ZitiSocket socket = new ZitiSocket(SocketType.Stream);
             ZitiContext ctx = new ZitiContext(outputPath);

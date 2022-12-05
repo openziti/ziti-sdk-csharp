@@ -18,7 +18,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace OpenZiti {
-    public static class ZitiUtil {
+    internal static class ZitiUtil {
         public static readonly GCHandle NO_CONTEXT = GCHandle.Alloc(new object());
         public static readonly IntPtr NO_CONTEXT_PTR = GCHandle.ToIntPtr(NO_CONTEXT);
 

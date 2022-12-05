@@ -67,9 +67,8 @@ namespace OpenZiti {
         public SocketsHttpHandler NewZitiSocketHandler(string serviceName, string identity) {
             var sh = new SocketsHttpHandler {
                 ConnectCallback = (context, token) => {
-                    //xx var ns = ZitifiedNetworkStream.NewStream(this, serviceName, identity);
-                    //xx return new ValueTask<Stream>(ns);
-                    throw new NotImplementedException();
+                    var ns = ZitifiedNetworkStream.NewStream(this, serviceName, identity);
+                    return new ValueTask<Stream>(ns);
                 }
             };
 

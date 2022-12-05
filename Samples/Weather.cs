@@ -27,7 +27,11 @@ public class Weather : SampleBase {
             throw new Exception("This example expects the second paramter to be an unenrolled .jwt");
         }
         string outputPath = Directory.GetCurrentDirectory() + "/weather.demo.json";
-        Enroll(args[1], outputPath);
+        try {
+            Enroll(args[1], outputPath);
+        } catch (Exception e) {
+            Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
+        }
 
         var c = new ZitiContext(outputPath);
         var zitiSocketHandler = c.NewZitiSocketHandler("weather-svc");
