@@ -27,12 +27,12 @@
     </metadata>
     <files>
         <file src="ziti.png" target="images\"/>
-        <file src="bin\x86\Release\net6.0\Ziti.NET.Standard.dll" target="runtimes/win-x86/lib/net6.0" />
-        <file src="bin\x86\Release\net6.0\Ziti.NET.Standard.pdb" target="runtimes/win-x86/lib/net6.0" />
-        <file src="bin\x64\Release\net6.0\Ziti.NET.Standard.dll" target="runtimes/win-x64/lib/net6.0" />
-        <file src="bin\x64\Release\net6.0\Ziti.NET.Standard.pdb" target="runtimes/win-x64/lib/net6.0" />
-        <file src="bin\Release\net6.0\Ziti.NET.Standard.dll" target="lib/net6.0" />
-        <file src="bin\Release\net6.0\Ziti.NET.Standard.pdb" target="lib/net6.0" />
+        <file src="bin\x86\Release\net6.0\OpenZiti.NET.dll" target="runtimes/win-x86/lib/net6.0" />
+        <file src="bin\x86\Release\net6.0\OpenZiti.NET.pdb" target="runtimes/win-x86/lib/net6.0" />
+        <file src="bin\x64\Release\net6.0\OpenZiti.NET.dll" target="runtimes/win-x64/lib/net6.0" />
+        <file src="bin\x64\Release\net6.0\OpenZiti.NET.pdb" target="runtimes/win-x64/lib/net6.0" />
+        <file src="bin\Release\net6.0\OpenZiti.NET.dll" target="lib/net6.0" />
+        <file src="bin\Release\net6.0\OpenZiti.NET.pdb" target="lib/net6.0" />
     </files>
 </package>
 
