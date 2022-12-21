@@ -27,7 +27,7 @@ project in the form of another NuGet package. This package will provide idiomati
 The project provides [a solution file](./Ziti.Samples.sln) which contains a suite of samples which you can inspect and draw inspiration
 from.
 
-## For Project Developers
+## For Project Contributors
 
 If you're cloning this package with the intention to make a fix or to update the C SDK used, here's a quick punchlist of things you will
 want to review and understand before really digging in. This will take you through just the bullet points of what you need to do to make
@@ -86,4 +86,3 @@ Another project is included in the [Ziti.NuGet.sln](./Ziti.NuGet.sln) is [TestPr
 **linked** .cs files from the [OpenZiti.NET](./OpenZiti.NET) project. Any new .cs files should be part of the project that 
 produces the nuget package and only **linked** in TestProject.  TestProject is then able to be a playground to verify your changes
 are functioning as expected.
-
