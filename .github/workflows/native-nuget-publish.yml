@@ -126,22 +126,6 @@ jobs:
       buildnum: ${{needs.set-build-info.outputs.buildnum_official}}${{needs.set-build-info.outputs.buildnum_dev}}
     runs-on: ubuntu-latest
     steps:
-      - name: Attempt to update and echo vars
-        run: |
-          if [[ "${{ needs.set-build-info.outputs.buildnum_official }}" == "" ]]; then
-            echo "buildnum_official is empty ${{ needs.set-build-info.outputs.buildnum_official }}"
-            echo "buildnum_official is empty ${{ needs.set-build-info.outputs.buildnum_dev }}"
-            echo "SLACK_COLOR=good" &gt;&gt; $GITHUB_ENV
-            echo "SLACK_MESSAGE=This build has passed!" &gt;&gt; $GITHUB_ENV
-          else
-            echo "buildnum_official is __NOT__ empty ${{ needs.set-build-info.outputs.buildnum_official }}"
-            echo "buildnum_official is __NOT__ empty ${{ needs.set-build-info.outputs.buildnum_dev }}"
-            echo "SLACK_COLOR=danger" &gt;&gt; $GITHUB_ENV
-            echo "SLACK_MESSAGE=This build has failed." &gt;&gt; $GITHUB_ENV
-          fi
-          echo "now = ${{ env.now }}"
-          echo "build number = ${{ env.buildnum }}"
-          
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
