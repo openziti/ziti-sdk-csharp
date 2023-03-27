@@ -3,24 +3,23 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
-		<Platforms>AnyCPU;x86;x64</Platforms>
+		<Platforms>AnyCPU;x86;x64;ARM64</Platforms>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<RootNamespace>OpenZiti</RootNamespace>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<PlatformTarget>x64</PlatformTarget>
-		<DefineConstants>TRACE;ZITI_X64</DefineConstants>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(Platform)'=='x64'">
 		<PlatformTarget>x64</PlatformTarget>
-		<DefineConstants>TRACE;ZITI_X64</DefineConstants>
+		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-		<PlatformTarget>x86</PlatformTarget>
+	<PropertyGroup Condition="'$(Platform)'=='ARM64'">
+		<PlatformTarget>arm64</PlatformTarget>
+		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<DefineConstants>TRACE;$(DefinedConstants)</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -37,7 +36,6 @@
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\API.cs" Link="src\OpenZiti\API.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Logging.cs" Link="src\OpenZiti\Logging.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitifiedNetworkStream.cs" Link="src\OpenZiti\ZitifiedNetworkStream.cs" />
-
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiRouterStatus.cs" Link="src\OpenZiti\ZitiRouterStatus.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiContext.cs" Link="src\OpenZiti\ZitiContext.cs" />
 		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiStatus.cs" Link="src\OpenZiti\ZitiStatus.cs" />
@@ -55,8 +53,35 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\API.cs" Link="src\legacy\OpenZiti\API.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ExtensionMethods.cs" Link="src\legacy\OpenZiti\ExtensionMethods.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\Logging.cs" Link="src\legacy\OpenZiti\Logging.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\Native\IdentityFile.cs" Link="src\legacy\OpenZiti\native\IdentityFile.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\Native\nAPI.cs" Link="src\legacy\OpenZiti\native\nAPI.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\Native\NativeHelperFunctions.cs" Link="src\legacy\OpenZiti\native\NativeHelperFunctions.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\UVLoop.cs" Link="src\legacy\OpenZiti\UVLoop.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiConnection.cs" Link="src\legacy\OpenZiti\ZitiConnection.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiContext.cs" Link="src\legacy\OpenZiti\ZitiContext.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiEnrollment.cs" Link="src\legacy\OpenZiti\ZitiEnrollment.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiException.cs" Link="src\legacy\OpenZiti\ZitiException.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiIdentity.cs" Link="src\legacy\OpenZiti\ZitiIdentity.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiIdentityFormat.cs" Link="src\legacy\OpenZiti\ZitiIdentityFormat.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiService.cs" Link="src\legacy\OpenZiti\ZitiService.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiStatus.cs" Link="src\legacy\OpenZiti\ZitiStatus.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiStatusExtensions.cs" Link="src\legacy\OpenZiti\ZitiStatusExtensions.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiStream.cs" Link="src\legacy\OpenZiti\ZitiStream.cs" />
+		<Compile Include="..\OpenZiti.NET\src\legacy\OpenZiti\ZitiUtil.cs" Link="src\legacy\OpenZiti\ZitiUtil.cs" />
+
+
+		<Compile Include="..\Samples\legacy\Util\ConsoleHelper.cs" Link="Samples\legacy\Util\ConsoleHelper.cs" />
+		<Compile Include="..\Samples\legacy\Weather.cs" Link="Samples\legacy\Weather.cs" />
+		<Compile Include="..\Samples\legacy\WeatherStream.cs" Link="Samples\legacy\WeatherStream.cs" />
+		<Compile Include="..\Samples\legacy\Enrollment.cs" Link="Samples\legacy\Enrollment.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="NLog" Version="5.0.5" />
-		<PackageReference Include="OpenZiti.NET.native" Version="2022.12.4.1837" />
+		<PackageReference Include="OpenZiti.NET.native" Version="0.30.8-build.20230323173752" />
 		<PackageReference Include="xunit.assert" Version="2.4.2" />
 	</ItemGroup>
 

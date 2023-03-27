@@ -102,3 +102,4 @@ cl /C /EP /I %TARGETDIR%/_deps/ziti-sdk-c-src/includes /c library/sharp-errors.c
 - OR if using gcc not developer command prompt -
 gcc -nostdinc -E -CC -P -I%TARGETDIR%/_deps/ziti-sdk-c-src/includes library/sharp-errors.c > ../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs
 ```
+
