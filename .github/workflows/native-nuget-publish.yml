@@ -32,7 +32,7 @@ jobs:
       - name: Set buildnum_official
         if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
         id: buildnum_official
-        run: echo "val=${{env.BUILD_NUMBER}} and ${env.BUILD_NUMBER} and ${BUILD_NUMBER}" >> $GITHUB_OUTPUT
+        run: echo "val=${{env.BUILD_NUMBER}}" >> $GITHUB_OUTPUT
   native-matrix-build:
     needs: set-build-info
     env:
