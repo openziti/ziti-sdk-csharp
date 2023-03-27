@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         description: Version of CSDK/Nuget Package
-        default: _CHANGE_
+        default: 0.30.8
         required: true
        
 env:
@@ -15,26 +15,74 @@ env:
   BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
   TARGETDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build
 jobs:
+  set-build-info:
+    runs-on: ubuntu-latest
+    outputs:
+      now: ${{ steps.isotime.outputs.val }}
+      buildnum_official: ${{ steps.buildnum_official.outputs.val }}
+      buildnum_dev: ${{ steps.buildnum_dev.outputs.val }}
+    steps:
+      - name: Set date
+        id: isotime
+        run: echo "val=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+      - name: Set buildnum_dev
+        id: buildnum_dev
+        if: "${{ github.repository != 'openziti/ziti-sdk-csharp'}}"
+        run: echo "val=build.$(date '+%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+      - name: Set buildnum_official
+        if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
+        id: buildnum_official
+        run: echo "val=${{env.BUILD_NUMBER}} and ${env.BUILD_NUMBER} and ${BUILD_NUMBER}" >> $GITHUB_OUTPUT
   native-matrix-build:
-    if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}"
+    needs: set-build-info
+    env:
+      now: ${{needs.set-build-info.outputs.now}}
+      buildnum: ${{needs.set-build-info.outputs.buildnum_official}}${{needs.set-build-info.outputs.buildnum_dev}}
+    if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, macOS-12, windows-2019]
-        arch: [x64]
         include:
           - ext: so
             prefix: lib
             dist: linux
             os: ubuntu-20.04
+            arch: x64
+          - ext: so
+            prefix: lib
+            dist: 'Linux-arm'
+            os: ubuntu-20.04
+            arch: arm
+            toolchain: 'Linux-arm'
+          - ext: so
+            prefix: lib
+            dist: 'Linux-arm64'
+            os: ubuntu-20.04
+            arch: arm64
+            toolchain: 'Linux-arm64'
           - ext: dylib
             prefix: lib
             dist: macos
             os: macOS-12
+            arch: x64
+            toolchain: 'macOS-x86_64'
+          - ext: dylib
+            prefix: lib
+            dist: macos
+            os: macOS-12
+            arch: arm64
+            toolchain: 'macOS-arm64'
+          - ext: dylib
+            prefix: lib
+            dist: iOS
+            os: macOS-12
+            arch: arm64
+            toolchain: 'iOS-arm64'
           - ext: dll
             pathext: /Release
             dist: win
             os: windows-2019
+            arch: x64
           - ext: dll
             pathext: /Release
             dist: win
@@ -42,15 +90,29 @@ jobs:
             cmake_arch_flag: '-A Win32'
             os: windows-2019
     steps:
+      - name: Echo Vars
+        run: |
+          echo "now = ${{ env.now }}"
+          echo "build number = ${{ env.buildnum }}"
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: setup/build CMake
+
+      - name: Install Crossbuild tools
+        if: matrix.os == 'ubuntu-20.04' && contains(matrix.arch, 'arm')
         run: |
-          echo "build number = ${{ env.BUILD_NUMBER }}"
+          sudo apt update -y
+          sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
+
+      - name: setup/build CMake
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain && format('{0}/toolchains/{1}.cmake', env.BASEDIR, matrix.toolchain) || '' }}
+        run: |
+          echo "build number = ${{ env.buildnum }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} ${{ matrix.cmake_arch_flag }}
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} ${{ matrix.cmake_arch_flag }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN}" 
           cmake --build ${{ env.TARGETDIR }} --config Release
+          
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -58,8 +120,11 @@ jobs:
           path: ${{ env.TARGETDIR }}/library${{ matrix.pathExt }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           if-no-files-found: error
   create-nuget-package:
+    needs: [set-build-info, native-matrix-build]
+    env:
+      now: ${{needs.set-build-info.outputs.now}}
+      buildnum: ${{needs.set-build-info.outputs.buildnum_official}}${{needs.set-build-info.outputs.buildnum_dev}}
     runs-on: ubuntu-latest
-    needs: [native-matrix-build]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -71,25 +136,45 @@ jobs:
           path: ${{github.workspace}}/native
       - name: move files to expected locations
         run: |
+          echo "locating all the built libraries:"
+          find . -name "*ziti4dotnet.*"
+          echo "creating the RIDs"
           mkdir -p ${{github.workspace}}/runtimes/osx-x64/native
-          mv ${{github.workspace}}/native/macos.x64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-x64/native/
+          mkdir -p ${{github.workspace}}/runtimes/osx-arm64/native
+          mkdir -p ${{github.workspace}}/runtimes/ios-arm64/native
+          mkdir -p ${{github.workspace}}/runtimes/linux-arm/native
+          mkdir -p ${{github.workspace}}/runtimes/linux-arm64/native
           mkdir -p ${{github.workspace}}/runtimes/linux-x64/native
-          mv ${{github.workspace}}/native/linux.x64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-x64/native/
           mkdir -p ${{github.workspace}}/runtimes/win-x86/native
-          mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native/
           mkdir -p ${{github.workspace}}/runtimes/win-x64/native
-          mv ${{github.workspace}}/native/win.x64.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x64/native/
+          echo "moving the build libraries to the RIDs"
+          mv ${{github.workspace}}/native/macos.x64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-x64/native
+          mv ${{github.workspace}}/native/macos.arm64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-arm64/native
+          mv ${{github.workspace}}/native/iOS.arm64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/ios-arm64/native
+          mv ${{github.workspace}}/native/Linux-arm64.arm64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm64/native
+          mv ${{github.workspace}}/native/Linux-arm.arm.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm/native
+          mv ${{github.workspace}}/native/linux.x64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-x64/native
+          mv ${{github.workspace}}/native/win.x64.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x64/native
+          mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.x
       - name: Create the Nuget package
-        run: nuget pack -version ${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }} ${{ github.workspace }}/native-package.nuspec
+        run: nuget pack -version ${{ env.ZITI_SDK_C_BRANCH }}-${{ env.buildnum }} ${{ github.workspace }}/native-package.nuspec
       - name: upload nuget package
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ github.workspace }}/OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
-          name: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg
+          path: ${{ github.workspace }}/OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}-${{ env.buildnum }}.nupkg
+          name: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}-${{ env.buildnum }}.nupkg
+          if-no-files-found: error
+      - name: Upload OpenZiti.NET.native to job
+        uses: actions/upload-artifact@v3
+        with:
+          name: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}-${{ env.buildnum }}.nupkg
+          path: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}-${{ env.buildnum }}.nupkg
           if-no-files-found: error
       - name: Publish OpenZiti.NET.native
-        run: dotnet nuget push OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}.${{ env.BUILD_NUMBER }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
+        run: dotnet nuget push OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}-${{ env.buildnum }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json

@@ -33,7 +33,7 @@ namespace OpenZiti.Native {
 #pragma warning disable 0169
 
     internal class TestBlitting {
-        internal const int ZITI_EVENT_UNION_SIZE = (TestBlitting.ptr * 5);
+        internal const int ZITI_EVENT_UNION_SIZE = TestBlitting.ptr * 5;
 #if ZITI_X64
         internal const int ptr = 8;
 #else
@@ -463,11 +463,11 @@ namespace OpenZiti.Native {
         [FieldOffset(5 * TestBlitting.ptr)]
         public IntPtr config;
         [FieldOffset(6 * TestBlitting.ptr)]
-        public IntPtr /** posture_query_set[] **/ posture_query_set;
+        public IntPtr /* posture_query_set[] */ posture_query_set;
         [FieldOffset(7 * TestBlitting.ptr)]
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
         //internal byte[] _union;
-        public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
+        public IntPtr /*Dictionary<string, posture_query_set> */ posture_query_map;
         [FieldOffset(8 * TestBlitting.ptr)]
         public string updated_at;
 #endif
@@ -656,7 +656,7 @@ namespace OpenZiti.Native {
         public string enroll_cert;
     };
     public struct model_map_impl {
-        public IntPtr /** model_map_entry[] **/ entries;
+        public IntPtr /* model_map_entry[] */ entries;
         public IntPtr table;
         public int buckets;
         public size_t size;

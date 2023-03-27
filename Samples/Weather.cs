@@ -19,25 +19,26 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 
-namespace OpenZiti.Samples; 
+namespace OpenZiti.Samples {
 
-public class Weather : SampleBase {
-    public static void Run(string[] args) {
-        if (args == null || args.Length < 2) {
-            throw new Exception("This example expects the second paramter to be an unenrolled .jwt");
+    public class Weather : SampleBase {
+        public static void Run(string[] args) {
+            if (args == null || args.Length < 2) {
+                throw new Exception("This example expects the second paramter to be an unenrolled .jwt");
+            }
+            string outputPath = Directory.GetCurrentDirectory() + "/weather.demo.json";
+            try {
+                Enroll(args[1], outputPath);
+            } catch (Exception e) {
+                Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
+            }
+
+            var c = new ZitiContext(outputPath);
+            var zitiSocketHandler = c.NewZitiSocketHandler("weather-svc");
+            var client = new HttpClient(new LoggingHandler(zitiSocketHandler));
+            client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
+
+            var result = client.GetStringAsync("https://wttr.in:443").Result;
         }
-        string outputPath = Directory.GetCurrentDirectory() + "/weather.demo.json";
-        try {
-            Enroll(args[1], outputPath);
-        } catch (Exception e) {
-            Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
-        }
-
-        var c = new ZitiContext(outputPath);
-        var zitiSocketHandler = c.NewZitiSocketHandler("weather-svc");
-        var client = new HttpClient(new LoggingHandler(zitiSocketHandler));
-        client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
-
-        var result = client.GetStringAsync("https://wttr.in:443").Result;
     }
 }

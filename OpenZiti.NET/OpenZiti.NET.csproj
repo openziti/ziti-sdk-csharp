@@ -18,25 +18,29 @@
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl> 
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace></RootNamespace>
-        <Platforms>AnyCPU;x86;x64</Platforms>
+        <Platforms>AnyCPU;x86;x64;ARM32;ARM64</Platforms>
         <PackageIcon>ziti.png</PackageIcon>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Platform)' == 'x64'">
-        <DefineConstants>TRACE;ZITI_X64</DefineConstants>
-    </PropertyGroup>
+	<PropertyGroup Condition="'$(Platform)'=='x64'">
+		<PlatformTarget>x64</PlatformTarget>
+		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Platform)'=='ARM64'">
+		<PlatformTarget>arm64</PlatformTarget>
+		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
+	</PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
-        <DefineConstants>TRACE;ZITI_X86</DefineConstants>
-        <PlatformTarget>x86</PlatformTarget>
-    </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<DefineConstants>TRACE;$(DefinedConstants)</DefineConstants>
+	</PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="5.0.4" />
-        <PackageReference Include="OpenZiti.NET.native" Version="0.30.8.132" />
+        <PackageReference Include="OpenZiti.NET.native" Version="0.30.8.22" />
         <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="System.Text.Json" Version="6.0.6" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

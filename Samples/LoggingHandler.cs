@@ -6,31 +6,32 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenZiti.Samples;
-internal class LoggingHandler : DelegatingHandler {
-    public LoggingHandler(HttpMessageHandler innerHandler)
-        : base(innerHandler) {
-    }
-
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
-        Console.WriteLine("Request:");
-        Console.WriteLine(request.ToString());
-        if (request.Content != null) {
-            Console.WriteLine(await request.Content.ReadAsStringAsync());
+namespace OpenZiti.Samples {
+    internal class LoggingHandler : DelegatingHandler {
+        public LoggingHandler(HttpMessageHandler innerHandler)
+            : base(innerHandler) {
         }
-        Console.WriteLine();
 
-        HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
+            Console.WriteLine("Request:");
+            Console.WriteLine(request.ToString());
+            if (request.Content != null) {
+                Console.WriteLine(await request.Content.ReadAsStringAsync());
+            }
+            Console.WriteLine();
 
-        Console.WriteLine("Response:");
-        Console.WriteLine(response.ToString());
-        if (response.Content != null) {
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+            Console.WriteLine("Response:");
+            Console.WriteLine(response.ToString());
+            if (response.Content != null) {
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+            }
+            Console.WriteLine();
+            Console.WriteLine("===============================================================================================");
+            Console.WriteLine();
+
+            return response;
         }
-        Console.WriteLine();
-        Console.WriteLine("===============================================================================================");
-        Console.WriteLine();
-
-        return response;
     }
 }
