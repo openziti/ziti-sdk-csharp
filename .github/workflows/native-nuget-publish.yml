@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         description: Version of CSDK/Nuget Package
-        default: 0.30.8
+        default: _CHANGE_
         required: true
        
 env:
