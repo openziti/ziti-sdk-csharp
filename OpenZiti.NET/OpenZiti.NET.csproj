@@ -18,7 +18,7 @@
         <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl> 
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace></RootNamespace>
-        <Platforms>AnyCPU;x86;x64;ARM32;ARM64</Platforms>
+        <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
         <PackageIcon>ziti.png</PackageIcon>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
