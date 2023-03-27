@@ -128,7 +128,7 @@ jobs:
     steps:
       - name: Attempt to update and echo vars
         run: |
-          if [[ ${{ needs.set-build-info.outputs.buildnum_official }} == "" ]]; then
+          if [[ "${{ needs.set-build-info.outputs.buildnum_official" }} == "" ]]; then
             echo "buildnum_official is empty ${{ needs.set-build-info.outputs.buildnum_official }}"
             echo "buildnum_official is empty ${{ needs.set-build-info.outputs.buildnum_dev }}"
             echo "SLACK_COLOR=good" &gt;&gt; $GITHUB_ENV
