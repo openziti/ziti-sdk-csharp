@@ -16,7 +16,7 @@ if("$args[1]".ToLower().StartsWith("y")) {
 }
 
 if (!${EdgeRouter}) {
-	$ers = ziti edge list edge-routers -j | ConvertFrom-Json
+	$ers = ziti edge list edge-routers "limit none" -j | ConvertFrom-Json
 	echo "Router list:"
 	foreach($r in $ers.data) {
 		echo "  - $($r.name)"
@@ -26,7 +26,7 @@ if (!${EdgeRouter}) {
 }
 
 echo "EdgeRouter identity: ${EdgeRouter} will be used as the router to offload traffic for the demo."
-$er=ziti edge list identities "name=\`"${EdgeRouter}\`"" -j | ConvertFrom-Json
+$er=ziti edge list identities "name=`"${EdgeRouter}`" limit none" -j | ConvertFrom-Json
 
 $weatherAttr="weather-svc.binders"
 if($er.data.id) {
@@ -45,7 +45,7 @@ if($er.data.id) {
 	throw "ERROR: provided edge router identity [${EdgeRouter}] does not exist! Cannot continue."
 }
 
-$demoId = ziti edge list identities "name=\`"weather.demo\`"" -j | ConvertFrom-Json
+$demoId = ziti edge list identities "name=`"weather.demo`"" -j | ConvertFrom-Json
 if ($demoId.data.id) {
 	if($prompt) {
 		$createId = Read-Host "weather.demo identity exists. Delete and overwrite?"
@@ -68,7 +68,7 @@ if ($createId) {
 }
 
 $createServices = $true
-$service = ziti edge list services "name=\`"weather-svc\`"" -j | ConvertFrom-Json
+$service = ziti edge list services "name=`"weather-svc`" limit none" -j | ConvertFrom-Json
 if($service.data.id) {
 	if($prompt) {
 		$svcCleanUp = Read-Host "Looks like the service already exists. Try to cleanup/start again?"
@@ -85,8 +85,8 @@ if($service.data.id) {
 
 if ($createServices) {
 	# create the weather sample example
-	ziti edge create config "weather-svc.host.v1" host.v1 "{\`"protocol\`":\`"tcp\`", \`"address\`":\`"wttr.in\`",\`"port\`":443}"
-	ziti edge create config "weather-svc.intercept.v1" intercept.v1 "{\`"protocols\`":[\`"tcp\`"],\`"addresses\`":[\`"wttr.in\`"],\`"portRanges\`":[{\`"low\`":80, \`"high\`":443}]}"
+	ziti edge create config "weather-svc.host.v1" host.v1 "{`"protocol`":`"tcp`", `"address`":`"wttr.in`",`"port`":443}"
+	ziti edge create config "weather-svc.intercept.v1" intercept.v1 "{`"protocols`":[`"tcp`"],`"addresses`":[`"wttr.in`"],`"portRanges`":[{`"low`":80, `"high`":443}]}"
 	ziti edge create service "weather-svc"--configs "weather-svc.intercept.v1,weather-svc.host.v1" -a "sdk.service"
 
 	# authorize sdk clients to dial the sdk example services
@@ -101,5 +101,8 @@ echo "If this is the first time running this script, allow "
 echo "time for the services to propegate to the router     "
 echo "before running the sample or you may receive an error"
 echo "like: no terminators exist for service               "
+echo ""
+echo "then, execute the sample using: "
+echo "  dotnet run weather setup-scripts/weather.demo.jwt "
 echo "====================================================="
 echo " "

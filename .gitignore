@@ -16,3 +16,5 @@ cmake-build-debug-msvc/
 
 *.jwt
 *.snupkg
+
+weather.demo.json

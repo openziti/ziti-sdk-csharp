@@ -5,23 +5,15 @@ using System.Runtime.InteropServices;
 using NLog;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using OpenZiti.legacy;
 
 namespace OpenZiti.Samples {
     public class Program {
         static async Task Main(string[] args) {
             try {
                 //uncomment these lines to enable logging
-                Console.WriteLine("before native call");
-                OpenZiti.legacy.Logging.SimpleConsoleLogging(LogLevel.Trace);
-                OpenZiti.legacy.API.NativeLogger = OpenZiti.legacy.API.DefaultNativeLogFunction;
-                Console.WriteLine("after native call");
-
-                OpenZiti.legacy.API.Enroll(args[1], afterEnrollcb, null);
-
-                if(true) {
-                    return;
-                }
+                OpenZiti.Logging.SimpleConsoleLogging(LogLevel.Trace);
+                OpenZiti.API.NativeLogger = OpenZiti.API.DefaultNativeLogFunction;
+ 
                 Console.Clear();
                 
                 if (args == null || args.Length < 1) {
@@ -56,12 +48,6 @@ namespace OpenZiti.Samples {
                 Console.WriteLine(e.StackTrace);
                 Console.WriteLine("==============================================================");
             }
-        }
-
-        private static void afterEnrollcb(ZitiEnrollment.EnrollmentResult result) {
-
-            Console.WriteLine(result.Json);
-            Console.WriteLine(result.Message);
         }
     }
 }

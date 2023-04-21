@@ -24,7 +24,8 @@ namespace OpenZiti.Samples {
     public class Weather : SampleBase {
         public static void Run(string[] args) {
             if (args == null || args.Length < 2) {
-                throw new Exception("This example expects the second paramter to be an unenrolled .jwt");
+                throw new Exception(@"This example expects the second paramter to be an unenrolled .jwt.
+  Please login to your controller using 'ziti edge login' then run 'pwsh setup-scripts/weather.ps1'");
             }
             string outputPath = Directory.GetCurrentDirectory() + "/weather.demo.json";
             try {
