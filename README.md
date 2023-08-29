@@ -1,3 +1,5 @@
+![Ziggy using the sdk-csharp](https://raw.githubusercontent.com/openziti/branding/main/images/banners/CSharp.jpg)
+
 # OpenZiti .NET SDK
 
 An SDK targetting .NET 6.0, written in C#, deployed as a nuget package and designed to 
