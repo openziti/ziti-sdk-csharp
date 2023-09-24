@@ -105,11 +105,14 @@ jobs:
         with:
           vcpkgGitCommitId: '19af97cba8ca48474e4ad15a24ed50271a9ecdac'
 
+      - uses: lukka/run-cmake@v10
+        name: Configure CMake
+        with:
+          configurePreset: ci-${{ matrix.preset }}
+          configurePresetAdditionalArgs: "[ `-B`, ${{ env.TARGETDIR }}, ${{ matrix.cmake_arch_flag }} ]"
+
       - name: setup/build CMake
         run: |
-          echo "build number = ${{ env.buildnum }}"
-          cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }} ${{ matrix.cmake_arch_flag }}
           cmake --build ${{ env.TARGETDIR }}
           
       - name: upload artifacts
