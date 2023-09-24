@@ -48,36 +48,31 @@ jobs:
             dist: linux
             os: ubuntu-20.04
             arch: x64
+            preset: linux-x64
           - ext: so
             prefix: lib
             dist: 'Linux-arm'
             os: ubuntu-20.04
             arch: arm
-            toolchain: 'Linux-arm'
+            preset: linux-arm
           - ext: so
             prefix: lib
             dist: 'Linux-arm64'
             os: ubuntu-20.04
             arch: arm64
-            toolchain: 'Linux-arm64'
+            preset: linux-arm64
           - ext: dylib
             prefix: lib
             dist: macos
             os: macOS-12
             arch: x64
-            toolchain: 'macOS-x86_64'
+            preset: macOS-x64
           - ext: dylib
             prefix: lib
             dist: macos
             os: macOS-12
             arch: arm64
-            toolchain: 'macOS-arm64'
-          - ext: dylib
-            prefix: lib
-            dist: iOS
-            os: macOS-12
-            arch: arm64
-            toolchain: 'iOS-arm64'
+            preset: macOS-arm64
           - ext: dll
             pathext: /Release
             dist: win
@@ -109,12 +104,10 @@ jobs:
           vcpkgGitCommitId: '19af97cba8ca48474e4ad15a24ed50271a9ecdac'
 
       - name: setup/build CMake
-        env:
-          TOOLCHAIN: ${{ matrix.toolchain && format('{0}/toolchains/{1}.cmake', env.BASEDIR, matrix.toolchain) || '' }}
         run: |
           echo "build number = ${{ env.buildnum }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }}
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ env.PRESET }}
           cmake --build ${{ env.TARGETDIR }}
           
       - name: upload artifacts
@@ -123,6 +116,7 @@ jobs:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           path: ${{ env.TARGETDIR }}/library${{ matrix.pathExt }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           if-no-files-found: error
+
   create-nuget-package:
     needs: [set-build-info, native-matrix-build]
     env:
@@ -145,7 +139,6 @@ jobs:
           echo "creating the RIDs"
           mkdir -p ${{github.workspace}}/runtimes/osx-x64/native
           mkdir -p ${{github.workspace}}/runtimes/osx-arm64/native
-          mkdir -p ${{github.workspace}}/runtimes/ios-arm64/native
           mkdir -p ${{github.workspace}}/runtimes/linux-arm/native
           mkdir -p ${{github.workspace}}/runtimes/linux-arm64/native
           mkdir -p ${{github.workspace}}/runtimes/linux-x64/native
@@ -154,7 +147,6 @@ jobs:
           echo "moving the build libraries to the RIDs"
           mv ${{github.workspace}}/native/macos.x64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-x64/native
           mv ${{github.workspace}}/native/macos.arm64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-arm64/native
-          mv ${{github.workspace}}/native/iOS.arm64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/ios-arm64/native
           mv ${{github.workspace}}/native/Linux-arm64.arm64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm64/native
           mv ${{github.workspace}}/native/Linux-arm.arm.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm/native
           mv ${{github.workspace}}/native/linux.x64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-x64/native
