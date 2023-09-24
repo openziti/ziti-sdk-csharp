@@ -114,8 +114,8 @@ jobs:
         run: |
           echo "build number = ${{ env.buildnum }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} -DCMAKE_BUILD_TYPE=Debug
-          cmake --build ${{ env.TARGETDIR }} --config Release
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }}
+          cmake --build ${{ env.TARGETDIR }}
           
       - name: upload artifacts
         uses: actions/upload-artifact@v3
