@@ -108,6 +108,7 @@ jobs:
       - uses: lukka/run-cmake@v10
         name: Configure CMake
         with:
+          cmakeListsTxtPath: '${{ github.workspace }}/ZitiNativeApiForDotnetCore/CMakeLists.txt'
           configurePreset: ci-${{ matrix.preset }}
           configurePresetAdditionalArgs: "[ `-B`, ${{ env.TARGETDIR }}, ${{ matrix.cmake_arch_flag }} ]"
 
