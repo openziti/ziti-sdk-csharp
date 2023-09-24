@@ -103,18 +103,17 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
-          
-      - uses: lukka/run-vcpkg@v10
-        with:
-          vcpkgGitCommitId: '19af97cba8ca48474e4ad15a24ed50271a9ecdac'
 
       - name: setup/build CMake
-        env:
-          TOOLCHAIN: ${{ matrix.toolchain && format('{0}/toolchains/{1}.cmake', env.BASEDIR, matrix.toolchain) || '' }}
         run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          ./bootstrap-vcpkg.sh
+          ./vcpkg integrate install
+          cd ..
           echo "build number = ${{ env.buildnum }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }}
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }} ${{ matrix.cmake_arch_flag }}
           cmake --build ${{ env.TARGETDIR }}
           
       - name: upload artifacts

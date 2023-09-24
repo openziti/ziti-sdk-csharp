@@ -39,14 +39,14 @@
       "generator": "Ninja Multi-Config"
     },
     {
-      "name": "ci-macOS-x64",
+      "name": "macOS-x64",
       "inherits": [
         "common-settings",
         "common-unix"
       ]
     },
     {
-      "name": "ci-macOS-arm64",
+      "name": "macOS-arm64",
       "inherits": [
         "common-settings",
         "common-unix"
@@ -55,6 +55,18 @@
         "VCPKG_TARGET_ARCHITECTURE": "arm64",
         "VCPKG_TARGET_TRIPLET": "arm64-osx",
         "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/toolchains/macOS-arm64.cmake"
+      }
+    },
+    {
+      "name": "ios-arm64",
+      "inherits": [
+        "common-settings",
+        "common-unix"
+      ],
+      "cacheVariables": {
+        "VCPKG_TARGET_ARCHITECTURE": "arm64",
+        "VCPKG_TARGET_TRIPLET": "arm64-osx",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/toolchains/iOS-arm64.cmake"
       }
     },
     {
