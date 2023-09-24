@@ -6,10 +6,11 @@ set( CMAKE_SUPPORT_WINDOWS_EXPORT_ALL_SYMBOLS 1 )
 set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(USING_ZITI_SHARED ON)
 set(BUILDING_ZITI_SHARED ON)
+set(ZITI_SDK_C_BRANCH_DEFAULT "0.34.1")
 
 if ("$ENV{ZITI_SDK_C_BRANCH}" STREQUAL "")
     #allow using a different branch of the CSDK easily
-    set(ZITI_SDK_C_BRANCH "0.30.8")
+    set(ZITI_SDK_C_BRANCH "${ZITI_SDK_C_BRANCH_DEFAULT}")
     message("using default ZITI_SDK_C_BRANCH: ${ZITI_SDK_C_BRANCH}")
 else()
     set(ZITI_SDK_C_BRANCH "$ENV{ZITI_SDK_C_BRANCH}")
@@ -35,30 +36,13 @@ add_subdirectory(cmake_deps)
 add_subdirectory(library)
 #add_subdirectory(programs)
 
-#generate the .cs file that represents the c sdk errors using the preprocessor
-if ("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
-    set(ZITI_INCLUDES ${CMAKE_HOME_DIRECTORY}/build/x86/_deps/ziti-sdk-c-src/includes)
-else()
-    set(ZITI_INCLUDES ${CMAKE_HOME_DIRECTORY}/build/x64/_deps/ziti-sdk-c-src/includes)
-endif()
-message("USING INCLUDES FROM: ${ZITI_INCLUDES}")
-
-set(OUTPUT_FILE ${CMAKE_HOME_DIRECTORY}/../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs)
-set(ZITI_ERR_FILE ${CMAKE_HOME_DIRECTORY}/library/sharp-errors.c)
-
-if("${GENERATE_ZITI_STATUS}" STREQUAL "YES")
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+string(TOLOWER "${GENERATE_ZITI_STATUS}" generate_csharp_enum)
+    FetchContent_MakeAvailable(ziti-sdk-c)
+if("${generate_csharp_enum}" STREQUAL "yes")
+    set(SourceErrorsFile "${ziti-sdk-c_SOURCE_DIR}/includes/ziti/errors.h")
+    set(OUTPUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs")
     execute_process(
-            COMMAND cl.exe /C /EP /I ${ZITI_INCLUDES} ${ZITI_ERR_FILE}
-            COMMAND_ECHO STDOUT
-            OUTPUT_FILE ${OUTPUT_FILE}
+        COMMAND powershell -File "${CMAKE_CURRENT_SOURCE_DIR}/generateDotnetStatus.ps1" -SourceFile "${SourceErrorsFile}" -OutputPath ${OUTPUT_FILE}
     )
-else()
-    execute_process(
-            COMMAND gcc -nostdinc -E -CC -P -I${ZITI_INCLUDES} ${ZITI_ERR_FILE}
-            COMMAND_ECHO STDOUT
-            OUTPUT_FILE ${OUTPUT_FILE}
-    )
-endif()
-message("sharp-errors output to: ${OUTPUT_FILE}")
+    message("sharp-errors output to: ${OUTPUT_FILE}")
 endif()

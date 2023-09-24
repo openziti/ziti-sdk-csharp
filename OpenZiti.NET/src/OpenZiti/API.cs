@@ -127,8 +127,8 @@ namespace OpenZiti {
         public static string EnrollIdentity(byte[] jwt, string key, string cert) {
             var rtn = nAPI.Ziti_enroll_identity(jwt, key, cert, out var id_json_ptr, out var id_json_len);
             ZitiStatus status = (ZitiStatus)rtn;
-            if (status != ZitiStatus.OK) {
-                throw new ZitiException(status);
+            if (status != ZitiStatus.ZITI_OK) {
+                throw ZitiException.Create(rtn);
             }
             var id_json = Marshal.PtrToStringUTF8(id_json_ptr);
             return id_json;
@@ -153,7 +153,7 @@ namespace OpenZiti {
         public static ZitiSocket Connect(ZitiSocket socket, ZitiContext ztx, string service, string terminator) {
             var rtn = nAPI.Ziti_connect(socket.NativeSocket, ztx.NativeContext, service, terminator);
             if (rtn < 0) {
-                ZitiStatus s = (ZitiStatus)rtn;
+                string s = Marshal.PtrToStringAnsi(Native.API.ziti_errorstr(rtn));
                 throw new ZitiException(s);
             }
             return socket;
@@ -162,7 +162,7 @@ namespace OpenZiti {
         public static ZitiSocket ConnectByAddress(ZitiSocket socket, string host, UInt16 port) {
             var rtn = nAPI.Ziti_connect_addr(socket.NativeSocket, host, port);
             if (rtn < 0) {
-                ZitiStatus s = (ZitiStatus)rtn;
+                string s = Marshal.PtrToStringAnsi(Native.API.ziti_errorstr(rtn));
                 throw new ZitiException(s);
             }
             return socket;
@@ -171,18 +171,16 @@ namespace OpenZiti {
         public static void Bind(ZitiSocket socket, ZitiContext ztx, string service, string terminator) {
             var rtn = nAPI.Ziti_bind(socket.NativeSocket, ztx.NativeContext, service, terminator);
             if (rtn < 0) {
-                int be = LastError();
-                ZitiStatus s = (ZitiStatus)be;
-                throw new ZitiException(s);
+                int errNo = LastError();
+                throw ZitiException.Create(errNo);
             }
         }
 
         public static void Listen(ZitiSocket socket, int backlog) {
             var rtn = nAPI.Ziti_listen(socket.NativeSocket, backlog);
             if (rtn < 0) {
-                int le = LastError();
-                ZitiStatus s = (ZitiStatus)le;
-                throw new ZitiException(s);
+                int errNo = LastError();
+                throw ZitiException.Create(errNo);
             }
         }
 
@@ -200,9 +198,7 @@ namespace OpenZiti {
 
             if (client_sock.ToInt64() < 0) {
                 int errNo = LastError();
-                //string err = Marshal.PtrToStringUTF8(NAPI.ziti_errorstr(errNo));
-                ZitiStatus s = (ZitiStatus)errNo;
-                throw new ZitiException(s);
+                throw ZitiException.Create(errNo);
             }
 
             caller = Marshal.PtrToStringUTF8(callerBuff);

@@ -2,7 +2,7 @@
   "profiles": {
     "TestProject": {
       "commandName": "Project",
-      "commandLineArgs": "weather C:\\git\\github\\openziti\\ziti-sdk-csharp\\Samples\\setup-scripts\\weather.demo.jwt",
+      "commandLineArgs": "args0 weather c:\\git\\github\\openziti\\ziti-sdk-csharp\\Samples\\setup-scripts\\enroll.demo.json",
       "nativeDebugging": true
     },
     "WSL": {

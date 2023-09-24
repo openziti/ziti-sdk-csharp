@@ -43,10 +43,8 @@ if(${GIT_INFO} MATCHES "^([0-9]+\\.[0-9]+\\.[0-9]+)$")
 elseif(${GIT_INFO} MATCHES "^([0-9]+\\.[0-9]+\\.[0-9]+)-([0-9]+)-[^-]*")
     string(JOIN "." ver ${CMAKE_MATCH_1} ${CMAKE_MATCH_2})
 endif()
-message("aaproject version: ${ver} (derived from git)")
-
-
-message("bbproject version: ${ver}")
+message("project version: ${ver} (derived from git)")
+message("project version: ${ver}")
 message("git info:")
 message("   branch : ${GIT_BRANCH}")
 message("     hash : ${GIT_COMMIT_HASH}")

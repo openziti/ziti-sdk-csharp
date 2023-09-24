@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.Runtime.InteropServices;
 
 namespace OpenZiti {
     /// <summary>
@@ -27,9 +28,12 @@ namespace OpenZiti {
         public ZitiException(string message) : base(message) { }
 
         /// <summary>
-        /// The basic constructor for creating a ZitiException
+        /// A method to create an exception from a Native SDK response code
         /// </summary>
         /// <param name="message">The message</param>
-        public ZitiException(ZitiStatus status) : base(status.GetDescription()) { }
+        public static ZitiException Create(int code) {
+            string desc = Marshal.PtrToStringAnsi(Native.API.ziti_errorstr(code));
+            return new ZitiException(desc);
+        }
     }
 }

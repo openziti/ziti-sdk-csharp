@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 
 namespace OpenZiti.Samples {
     public class HostedService : SampleBase {
-        public static async Task Run(string[] args) {
-            if (args == null || args.Length < 2) {
-                throw new Exception("This example expects the second paramter to be an unenrolled .jwt");
+        public static async Task Run(string hostedJwt) {
+            string outputPath = "";
+            if (hostedJwt.EndsWith(".jwt")) {
+                outputPath = hostedJwt.Replace(".jwt", ".json");
+            } else {
+                Console.WriteLine("Please provide a file that ends with .jwt");
+                return;
             }
-            var outputPath = Directory.GetCurrentDirectory() + "/hosted.demo.json";
+
             try {
-                Enroll(args[1], outputPath);
+                Enroll(hostedJwt, outputPath);
             } catch (Exception e) {
                 Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
             }

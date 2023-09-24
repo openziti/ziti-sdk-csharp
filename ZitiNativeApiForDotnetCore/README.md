@@ -1,23 +1,56 @@
 
 # Native NuGet Package
 
-As mentioned in [the README](../README.md), this project is responsible for creating a nuget package which
+As mentioned in [the base README](../README.md), this project is responsible for creating a nuget package which
 not only exposes the [ziti-sdk-c](https://github.com/openziti/ziti-sdk-c) functions in an easy-to-consume
 way, but it also layers on helper functions as needed. Often these additional functions will be to do things
 which dotnet doesn't seem to support, or we haven't discovered how to support it yet. Generally things like 
 iterating a pointer or var args usage.
 
 This is a project based on [cmake](https://cmake.org/) which will compile the given C SDK into the native 
-nuget package.
+nuget package. It also now requires [VCPKG](https://github.com/microsoft/vcpkg) in order to build the C SDK.
 
 The package should be consumable on Windows AMD x86/x64, AMD MacOS x64 and AMD linux x64 architectures. It
 does not currently have ARM versions. We currently **do not** support every RID. If your favorite dotnet 
 arch is not covered by the ones mentioned, we'd love help it getting it working for your specific environment.
 
 ## Building
-If you're considering building this project, you are almost certainly trying to develop the actual dotnet SDK,
-or you're just wondering how all this project comes together. By far, the easiest way to learn is to go read
-[the helper bat file](../build-native.bat). Assuming you have the project checked out and the needed dependencies 
+If you're considering building this project, you are almost certainly trying to develop the actual dotnet SDK
+and you're trying to update the native NuGet package, or you're just wondering how all this project comes together.
+
+After installing cmake, gcc/msvc, vcpkg and any other dependencies that are needed, you'll first need to build this
+project. Since it uses cmake, and assuming your shell is located in the same directory as this readme, you 
+should be able to simply issue something like:
+
+```
+SET TARGETDIR=%CD%\build
+
+cmake -E make_directory %TARGETDIR%
+cmake --preset ci-windows-x64 -S . -B %TARGETDIR%
+cmake --build %TARGETDIR% --config Debug
+cmake --build %TARGETDIR% --config Release
+```
+
+When the build completes (shown here using the Windows x64 preset) you'll have two libraries compiled at:
+```
+%TARGETDIR%/library/Debug/ziti4dotnet.dll
+%TARGETDIR%/library/Release/ziti4dotnet.dll
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+By far, the easiest way to learn is to go read
+[the helper bat file](../dev-build-native.bat). Assuming you have the project checked out and the needed dependencies 
 on the path:
 * C compiler (Visual Studio 2019/2022 currently)
 * cmake

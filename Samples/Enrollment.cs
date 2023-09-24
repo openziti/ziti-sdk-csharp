@@ -22,12 +22,9 @@ using System.Text;
 namespace OpenZiti.Samples {
 
     public class Enrollment : SampleBase {
-        public static void Run(string[] args) {
-            if (args == null || args.Length < 2) {
-                throw new Exception("This example expects the second paramter to be an unenrolled .jwt");
-            }
+        public static void Run(string jwt) {
             Console.WriteLine("Enrolling the first time. This is expected to succeed");
-            Enroll(args[1], Directory.GetCurrentDirectory() + "/enroll.demo.json");
+            Enroll(jwt, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json");
 
             //now enroll the same exact token again and expect an error
             Console.WriteLine();
@@ -35,7 +32,7 @@ namespace OpenZiti.Samples {
             Console.WriteLine("    illustrate that enrollment may fail");
             Console.WriteLine();
             try {
-                Enroll(args[1], Directory.GetCurrentDirectory() + "/enroll.demo.json");
+                Enroll(jwt, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json");
             } catch (Exception ex) {
                 Console.WriteLine($"    EXPECTED ERROR: JWT not accepted by controller");
                 Console.WriteLine($"    ERROR RECEIVED: {ex.Message}");

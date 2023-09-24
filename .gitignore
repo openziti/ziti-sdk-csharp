@@ -15,6 +15,7 @@ cmake-build-debug-mingw/
 cmake-build-debug-msvc/
 
 *.jwt
+Samples/**/*.json
 *.snupkg
 
 weather.demo.json

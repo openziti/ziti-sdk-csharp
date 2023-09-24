@@ -8,7 +8,7 @@
         <owners>OpenZiti Maintainers</owners>
         <license type="expression">Apache-2.0</license>
         <projectUrl>https://openziti.github.io/ziti-sdk-csharp</projectUrl>
-        <iconUrl>https://openziti.github.io/favicon.ico</iconUrl>
+		<icon>ziti-v2.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <summary>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</summary>
         <copyright>Copyright NetFoundry Inc. All rights reserved.</copyright>
@@ -16,6 +16,7 @@
         <description>This nuget package contains native libraries compiled for the targeted platforms. Expected targets are Windows x86 and x64, linux x64, MacOS x64</description>
     </metadata>
     <files>
+		<file src="ziti-v2.png" />
         <file src="./runtimes/osx-x64/native/libziti4dotnet.dylib" target="runtimes/osx-x64/native" />
         <file src="./runtimes/ios-arm64/native/libziti4dotnet.dylib" target="runtimes/ios-arm64/native" />
         <file src="./runtimes/osx-arm64/native/libziti4dotnet.dylib" target="runtimes/osx-arm64/native" />

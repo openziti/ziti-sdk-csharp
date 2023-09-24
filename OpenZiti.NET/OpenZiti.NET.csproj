@@ -1,46 +1,44 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFrameworks>net6.0</TargetFrameworks>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <CurrentYear>$([System.DateTime]::UtcNow.Year.ToString().Substring(2,2))</CurrentYear>
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
-        <SecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</SecondsOfDay>
-        <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::get_UtcNow().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</UtcSecondsOfDay>
+        <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds), 2).ToString('F0'))</UtcSecondsOfDay>
         <major>0</major>
-        <minor>8</minor>
-        <Version>$(major).$(minor).$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
+        <minor>9</minor>
+        <Version>$(major).$(minor).$(CurrentYear)$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
         <Authors>OpenZiti</Authors>
         <Company>NetFoundry</Company>
         <Description>A .NET standard library which wraps the C SDK and is consumable from .NET</Description>
         <Copyright>© NetFoundry Inc. All rights reserved.</Copyright>
         <PackageLicenseFile>2019_NF TCL EULA.txt</PackageLicenseFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <PackageProjectUrl>https://openziti.github.io/</PackageProjectUrl> 
+        <PackageProjectUrl>https://openziti.io/</PackageProjectUrl> 
         <RepositoryUrl>https://github.com/openziti/ziti-sdk-csharp</RepositoryUrl>
         <RootNamespace></RootNamespace>
         <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
-        <PackageIcon>ziti.png</PackageIcon>
+        <icon>..\ziti-v2.png</icon>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Platform)'=='x64'">
-		<PlatformTarget>x64</PlatformTarget>
-		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Platform)'=='ARM64'">
-		<PlatformTarget>arm64</PlatformTarget>
-		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<DefineConstants>TRACE;$(DefinedConstants)</DefineConstants>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(Platform)'=='x64'">
+        <PlatformTarget>x64</PlatformTarget>
+        <DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Platform)'=='ARM64'">
+        <PlatformTarget>arm64</PlatformTarget>
+        <DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <DefineConstants>TRACE;$(DefinedConstants)</DefineConstants>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="5.0.4" />
-        <PackageReference Include="OpenZiti.NET.native" Version="0.30.8.22" />
+        <PackageReference Include="OpenZiti.NET.native" Version="2023.9.23.1954" />
         <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="System.Text.Json" Version="6.0.6" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -61,18 +59,18 @@
         <Message Text="RUNNING: nuget pack OpenZiti.NET.nuspec -Version $(PackageVersion) -Symbols -SymbolPackageFormat snupkg" Importance="high" />
         <Exec Command="nuget pack OpenZiti.NET.nuspec -Version $(PackageVersion) -Symbols -SymbolPackageFormat snupkg"></Exec>
     </Target>
-	<Target Name="NugetPush" DependsOnTargets="NugetPack">
-		<Message Text="RUNNING: dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE)" Importance="high" />
-		<Message Text="Push NuGet Package to NuGet Feed $(MSBuildProjectDirectory)/bin/Release/$(PackageId).$(PackageVersion).nupkg" Importance="high" />
-		<Exec Command="dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE) --api-key $(API_KEY)"></Exec>
-		<ItemGroup>
-			<FilesToDelete Include="$(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).*nupkg" />
-		</ItemGroup>
-		<Delete Files="@(FilesToDelete)">
-			<Output TaskParameter="DeletedFiles" ItemName="DeletedList" />
-		</Delete>
-		<Message Text="Deleted files: '@(DeletedList)'" Importance="high" />
-	</Target>
+    <Target Name="NugetPush" DependsOnTargets="NugetPack">
+        <Message Text="RUNNING: dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE)" Importance="high" />
+        <Message Text="Push NuGet Package to NuGet Feed $(MSBuildProjectDirectory)/bin/Release/$(PackageId).$(PackageVersion).nupkg" Importance="high" />
+        <Exec Command="dotnet nuget push $(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).nupkg --source $(NUGET_SOURCE) --api-key $(API_KEY)"></Exec>
+        <ItemGroup>
+            <FilesToDelete Include="$(MSBuildProjectDirectory)/$(PackageId).$(PackageVersion).*nupkg" />
+        </ItemGroup>
+        <Delete Files="@(FilesToDelete)">
+            <Output TaskParameter="DeletedFiles" ItemName="DeletedList" />
+        </Delete>
+        <Message Text="Deleted files: '@(DeletedList)'" Importance="high" />
+    </Target>
     <Target Name="Buildx64">
         <Message Text="BUILDING x64: dotnet build $(MSBuildProjectFullPath) --configuration Release /p:Platform=x64" Importance="high" />
         <Exec Command="dotnet build $(MSBuildProjectFullPath) --configuration Release /p:PackageVersion=$(PackageVersion) /p:Platform=x64"></Exec>

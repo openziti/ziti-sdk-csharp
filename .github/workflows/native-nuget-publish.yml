@@ -103,6 +103,10 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
+          
+      - uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgGitCommitId: '19af97cba8ca48474e4ad15a24ed50271a9ecdac'
 
       - name: setup/build CMake
         env:
@@ -110,7 +114,7 @@ jobs:
         run: |
           echo "build number = ${{ env.buildnum }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} ${{ matrix.cmake_arch_flag }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN}" 
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} -DCMAKE_BUILD_TYPE=Debug
           cmake --build ${{ env.TARGETDIR }} --config Release
           
       - name: upload artifacts
