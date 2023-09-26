@@ -54,7 +54,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="NLog" Version="5.0.5" />
-		<PackageReference Include="OpenZiti.NET.native" Version="2023.9.23.1954" />
+		<PackageReference Include="OpenZiti.NET.native" Version="2023.9.25.2323" />
 		<PackageReference Include="xunit.assert" Version="2.4.2" />
 	</ItemGroup>
 

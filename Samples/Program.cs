@@ -6,6 +6,7 @@ using NLog;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using NLog.Fluent;
+using OpenZiti.Native;
 
 namespace OpenZiti.Samples {
     public class Program {
@@ -43,6 +44,9 @@ namespace OpenZiti.Samples {
                         break;
                     case "hosted-client":
                         await HostedServiceClient.Run(args[2]);
+                        break;
+                    case "test":
+                        TestBlitting.Run();
                         break;
                     default:
                         Console.WriteLine($"Unexpected sample supplied {args[0]}.");
