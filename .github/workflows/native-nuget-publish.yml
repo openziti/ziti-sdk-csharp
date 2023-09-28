@@ -64,27 +64,31 @@ jobs:
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macOS-12
+            os: macOS-13
             arch: x64
             preset: macOS-x64
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macOS-12
+            os: macOS-13
             arch: arm64
             preset: macOS-arm64
+          - ext: dylib
+            prefix: lib
+            dist: iOS
+            os: macOS-12
+            arch: arm64
+            toolchain: 'iOS-arm64'
           - ext: dll
-            pathext: /Release
             dist: win
-            os: windows-2019
+            os: windows-2022
             arch: x64
             preset: win64
           - ext: dll
-            pathext: /Release
             dist: win
             arch: x86
             cmake_arch_flag: '-A Win32'
-            os: windows-2019
+            os: windows-2022
             preset: win32
     steps:
       - name: Echo Vars
@@ -95,29 +99,55 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Linux pkg-config
+        if: matrix.os == 'ubuntu-20.04'
+        run: |
+          sudo apt update -y
+          sudo apt install -y pkg-config ninja-build
+          
       - name: Install Crossbuild tools
         if: matrix.os == 'ubuntu-20.04' && contains(matrix.arch, 'arm')
         run: |
           sudo apt update -y
           sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
           
-      - name: setup/build CMake
+      - name: Install MacOS Ninja
+        if: matrix.dist == 'macos'
         run: |
-          git clone https://github.com/microsoft/vcpkg.git
-          cd vcpkg
-          ./bootstrap-vcpkg.sh
-          ./vcpkg integrate install
-          cd ..
+          brew install ninja
+          
+      - name: Set up MSVC 2019
+        if: matrix.dist == 'win'
+        uses: microsoft/setup-msbuild@v1.1
+                    
+      - name: Restore vcpkg packages
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: vcpkg integrate install
+      
+      - name: Set VCPKG_ROOT
+        if: matrix.os == 'ubuntu-20.04' || matrix.dist == 'macos' 
+        run: echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
+      
+      - name: Set VCPKG_ROOT
+        if: matrix.dist == 'win'
+        run: echo "VCPKG_ROOT=C:/vcpkg" >> $env:GITHUB_ENV
+                
+      - name: configure / build CMake
+        working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
+        run: |
           echo "build number = ${{ env.buildnum }}"
+          echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
           cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }} ${{ matrix.cmake_arch_flag }}
+          cmake --build ${{ env.TARGETDIR }} --config Release
           
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
-          path: ${{ env.TARGETDIR }}/library${{ matrix.pathExt }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
+          path: ${{ env.TARGETDIR }}/library/Release/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           if-no-files-found: error
+          
   create-nuget-package:
     needs: [set-build-info, native-matrix-build]
     env:
