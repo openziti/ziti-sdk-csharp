@@ -22,7 +22,6 @@ jobs:
       repo: ${{ steps.buildinfo.outputs.repo }}
       qualifier: ${{ steps.buildinfo.outputs.qualifier }}
       branch: ${{ steps.buildinfo.outputs.qualifier }}
-      buildnum: ${{ steps.buildinfo.outputs.buildnum }}
     steps:
       - name: Set now, repo, qualifier, branch, build num
         id: buildinfo
@@ -36,11 +35,10 @@ jobs:
           echo "branch=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_ENV
           if [ "${BRANCH_NAME}" = "main" ]; then
-            echo "qualifier=" >> $GITHUB_OUTPUT
+            echo "qualifier=.${{github.run_number}}" >> $GITHUB_OUTPUT
           else
-            echo "qualifier=-rc" >> $GITHUB_OUTPUT
+            echo "qualifier=-rc${{github.run_number}}" >> $GITHUB_OUTPUT
           fi
-          echo "buildnum=.${{github.run_number}}" >> $GITHUB_OUTPUT
   native-matrix-build:
     needs: set-build-info
     if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' }}"
@@ -149,7 +147,6 @@ jobs:
       repo: ${{needs.set-build-info.outputs.repo}}
       qualifier: ${{needs.set-build-info.outputs.qualifier}}
       branch: ${{needs.set-build-info.outputs.branch}}
-      buildnum: ${{needs.set-build-info.outputs.buildnum}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -157,7 +154,7 @@ jobs:
           fetch-depth: 0
       - name: Set resolves version to env
         run: |
-          echo "resolvedversion=OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}${buildnum}" >> $GITHUB_ENV  
+          echo "resolvedversion=OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV  
       - run: mkdir ${{github.workspace}}/native
       - name: download all artifacts
         uses: actions/download-artifact@v3
