@@ -119,7 +119,7 @@ jobs:
           sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
           
       - name: Install MacOS Ninja
-        if: matrix.dist == 'macos'
+        if: matrix.os == 'macOS-13'
         run: |
           brew install ninja
           
@@ -132,7 +132,7 @@ jobs:
         run: vcpkg integrate install
       
       - name: Set VCPKG_ROOT
-        if: matrix.os == 'ubuntu-20.04' || matrix.dist == 'macos' 
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'macOS-13'
         run: echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
       
       - name: Set VCPKG_ROOT
