@@ -150,12 +150,14 @@ jobs:
       qualifier: ${{needs.set-build-info.outputs.qualifier}}
       branch: ${{needs.set-build-info.outputs.branch}}
       buildnum: ${{needs.set-build-info.outputs.buildnum}}
-      resolvedversion: "OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}${buildnum}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Set resolves version to env
+        run: |
+          echo "resolvedversion=OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}${buildnum}" >> $GITHUB_ENV  
       - run: mkdir ${{github.workspace}}/native
       - name: download all artifacts
         uses: actions/download-artifact@v3
@@ -187,19 +189,19 @@ jobs:
         with:
           dotnet-version: 6.x
       - name: Create the Nuget package
-        run: nuget pack -version ${resolvedversion} ${{ github.workspace }}/native-package.nuspec
+        run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}/native-package.nuspec
       - name: upload nuget package
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ github.workspace }}/OpenZiti.NET.native.${resolvedversion}.nupkg
-          name: OpenZiti.NET.native.${resolvedversion}.nupkg
+          path: ${{ github.workspace }}/OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
+          name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
       - name: Upload OpenZiti.NET.native to job
         uses: actions/upload-artifact@v3
         with:
-          name: OpenZiti.NET.native.${resolvedversion}.nupkg
-          path: OpenZiti.NET.native.${resolvedversion}.nupkg
+          name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
+          path: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
       - name: Publish OpenZiti.NET.native
         if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
-        run: dotnet nuget push OpenZiti.NET.native.${resolvedversion}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push OpenZiti.NET.native.${{env.resolvedversion}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
