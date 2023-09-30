@@ -37,7 +37,7 @@ jobs:
           if [ "${BRANCH_NAME}" = "main" ]; then
             echo "qualifier=.${{github.run_number}}" >> $GITHUB_OUTPUT
           else
-            echo "qualifier=-rc${{github.run_number}}" >> $GITHUB_OUTPUT
+            echo "qualifier=-${BRANCH_NAME}-rc${{github.run_number}}" >> $GITHUB_OUTPUT
           fi
   native-matrix-build:
     needs: set-build-info
