@@ -162,7 +162,7 @@ jobs:
           fetch-depth: 0
       - name: Set resolves version to env
         run: |
-          echo "resolvedversion=OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV  
+          echo "resolvedversion=${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV  
       - run: mkdir ${{github.workspace}}/native
       - name: download all artifacts
         uses: actions/download-artifact@v3
