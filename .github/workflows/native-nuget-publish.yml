@@ -7,9 +7,14 @@ on:
         description: Version of CSDK/Nuget Package
         default: _CHANGE_
         required: true
+      debugOrRelease:
+        description: Debug or Release
+        default: Release
+        required: true
        
 env:
   ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
+  ZITI_DEBUG_OR_RELEASE: ${{ github.event.inputs.debugOrRelease }}
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   BUILD_NUMBER: ${{ github.run_number }}
   BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
@@ -20,27 +25,30 @@ jobs:
     outputs:
       now: ${{ steps.buildinfo.outputs.now }}
       repo: ${{ steps.buildinfo.outputs.repo }}
-      qualifier: ${{ steps.buildinfo.outputs.qualifier }}
-      branch: ${{ steps.buildinfo.outputs.qualifier }}
+      branch: ${{ steps.buildinfo.outputs.branch }}
+      qualifier: ${{ steps.qualifierinfo.outputs.qualifier }}
     steps:
-      - name: Set now, repo, qualifier, branch, build num
+      - name: Set now, repo, branch, build num
         id: buildinfo
         run: |
           echo "now=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
           if [ "${{ github.repository }}" == 'openziti/ziti-sdk-csharp' ]; then
             echo "repo=" >> $GITHUB_OUTPUT
           else
-            echo "repo=-${{github.repository_owner}}" >> $GITHUB_OUTPUT
+            echo "repo=${{github.repository_owner}}" >> $GITHUB_OUTPUT
           fi
-          echo "branch=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_ENV
+          echo "branch=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_OUTPUT
+
+      - name: Set qualifier
+        id: qualifierinfo
+        run: |
           if [ "${BRANCH_NAME}" = "main" ]; then
-            echo "qualifier=.${{github.run_number}}" >> $GITHUB_OUTPUT
+            echo "qualifier=.${BRANCH_NAME}${{github.run_number}}" >> $GITHUB_OUTPUT
           else
-            echo "qualifier=-${BRANCH_NAME}-rc${{github.run_number}}" >> $GITHUB_OUTPUT
+            echo "qualifier=-${BRANCH_NAME}rc${{github.run_number}}" >> $GITHUB_OUTPUT
           fi
   native-matrix-build:
-    needs: set-build-info
     if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' }}"
     runs-on: ${{ matrix.os }}
     strategy:
@@ -131,13 +139,13 @@ jobs:
           echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
           cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }} ${{ matrix.cmake_arch_flag }}
-          cmake --build ${{ env.TARGETDIR }} --config Release
+          cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
           
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
-          path: ${{ env.TARGETDIR }}/library/Release/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
+          path: ${{ env.TARGETDIR }}/library/${{ env.ZITI_DEBUG_OR_RELEASE }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           if-no-files-found: error
           
   create-nuget-package:
@@ -145,8 +153,8 @@ jobs:
     env:
       now: ${{needs.set-build-info.outputs.now}}
       repo: ${{needs.set-build-info.outputs.repo}}
-      qualifier: ${{needs.set-build-info.outputs.qualifier}}
       branch: ${{needs.set-build-info.outputs.branch}}
+      qualifier: ${{needs.set-build-info.outputs.qualifier}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
