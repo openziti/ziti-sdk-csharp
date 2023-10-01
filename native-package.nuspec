@@ -16,7 +16,7 @@
         <description>This nuget package contains native libraries compiled for the targeted platforms. Expected targets are Windows x86 and x64, linux x64, MacOS x64</description>
     </metadata>
     <files>
-        <file src="ziti-v2.png" />
+        <file src="..\ziti-v2.png" target="" />
         <file src="runtimes\**\*" target="\runtimes" />
     </files>
 </package>
