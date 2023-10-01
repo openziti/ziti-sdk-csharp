@@ -22,6 +22,7 @@
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageIcon>ziti-v2.png</PackageIcon>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Platform)'=='x64'">
@@ -35,6 +36,12 @@
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <DefineConstants>TRACE;$(DefinedConstants)</DefineConstants>
     </PropertyGroup>
+    <ItemGroup>
+      <None Include="..\ziti-v2.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="5.0.4" />
@@ -46,10 +53,6 @@
 
     <ItemGroup>
         <Resource Include="2019_NF TCL EULA.txt">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-        </Resource>
-        <Resource Include="ziti.png">
             <Pack>True</Pack>
             <PackagePath></PackagePath>
         </Resource>
