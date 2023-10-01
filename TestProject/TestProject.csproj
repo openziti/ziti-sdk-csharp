@@ -1,65 +1,57 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 		<Platforms>AnyCPU;x86;x64;ARM64</Platforms>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<RootNamespace>OpenZiti</RootNamespace>
-		<PlatformTarget>AnyCPU</PlatformTarget>
+		<OutputType>exe</OutputType>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Platform)'=='x64'">
-		<PlatformTarget>x64</PlatformTarget>
-		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Platform)'=='ARM64'">
-		<PlatformTarget>arm64</PlatformTarget>
-		<DefineConstants>ZITI_X64;$(DefinedConstants)</DefineConstants>
-	</PropertyGroup>
-	
-	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<DefineConstants>TRACE;$(DefinedConstants)</DefineConstants>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'AnyCPU'">
+    <DefineConstants>ZITI_64BIT;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <DefineConstants>ZITI_64BIT;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='ARM64'">
+    <DefineConstants>ZITI_64BIT;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <DefineConstants>ZITI_32BIT;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='ARM'">
+    <DefineConstants>ZITI_32BIT;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Samples\Util\ConsoleHelper.cs" Link="Samples\Util\ConsoleHelper.cs" />
-		<Compile Include="..\Samples\Enrollment.cs" Link="Samples\Enrollment.cs" />
-		<Compile Include="..\Samples\HostedService.cs" Link="Samples\HostedService.cs" />
-		<Compile Include="..\Samples\HostedServiceClient.cs" Link="Samples\HostedServiceClient.cs" />
-		<Compile Include="..\Samples\SampleBase.cs" Link="Samples\SampleBase.cs" />
-		<Compile Include="..\Samples\Weather.cs" Link="Samples\Weather.cs" />
-		<Compile Include="..\Samples\LoggingHandler.cs" Link="LoggingHandler.cs" />
-		<Compile Include="..\Samples\Program.cs" Link="Program.cs" />
-
-		<Compile Include="..\OpenZiti.NET\src\GlobalSuppressions.cs" Link="src\GlobalSuppressions.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\API.cs" Link="src\OpenZiti\API.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Logging.cs" Link="src\OpenZiti\Logging.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitifiedNetworkStream.cs" Link="src\OpenZiti\ZitifiedNetworkStream.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiRouterStatus.cs" Link="src\OpenZiti\ZitiRouterStatus.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiContext.cs" Link="src\OpenZiti\ZitiContext.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiStatus.cs" Link="src\OpenZiti\ZitiStatus.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiException.cs" Link="src\OpenZiti\ZitiException.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ExtensionMethods.cs" Link="src\OpenZiti\ExtensionMethods.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiUtil.cs" Link="src\OpenZiti\ZitiUtil.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Native\nAPI.cs" Link="src\OpenZiti\native\nAPI.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Native\ziti.cs" Link="src\OpenZiti\native\ziti.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\Native\structs.cs" Link="src\OpenZiti\native\structs.cs" />
-		<Compile Include="..\OpenZiti.NET\src\OpenZiti\ZitiSocket.cs" Link="src\OpenZiti\ZitiSocket.cs" />
-
-		<None Include="..\Samples\setup-scripts\enrollment.ps1" Link="setup-scripts\enrollment.ps1" />
-		<None Include="..\Samples\setup-scripts\hosted.ps1" Link="setup-scripts\hosted.ps1" />
-		<None Include="..\Samples\setup-scripts\weather.ps1" Link="setup-scripts\weather.ps1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="NLog" Version="5.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Microsoft.OpenApi" Version="1.6.9" />
+		<PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.9" />
+		<PackageReference Include="NLog" Version="5.2.4" />
+		<PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
+		<PackageReference Include="NSwag.MSBuild" Version="13.18.2">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="OpenZiti.NET.native" Version="2023.9.25.2323" />
-		<PackageReference Include="xunit.assert" Version="2.4.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="xunit.assert" Version="2.5.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="..\OpenZiti.NET\src\OpenZiti\native\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\OpenZiti.Management\OpenZiti.Management.csproj" />
+	  <ProjectReference Include="..\OpenZiti.NET\OpenZiti.NET.csproj" />
 	</ItemGroup>
 
 </Project>

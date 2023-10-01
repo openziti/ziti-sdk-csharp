@@ -17,8 +17,6 @@ namespace OpenZiti.NET.Tests {
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
-//            Logger l = new Logger(context);
-
             // Code to run once before all test methods in the class
             Logging.SimpleConsoleLogging(LogLevel.Trace);
 
@@ -32,8 +30,8 @@ namespace OpenZiti.NET.Tests {
         public async Task TestMethod1() {
             Authenticate auth = new Authenticate();
             Method method = Method.Password;
-            auth.Username = "admin";
-            auth.Password = "cdaws8086";
+            auth.Username = Environment.GetEnvironmentVariable("ZITI_USERNAME");
+            auth.Password = Environment.GetEnvironmentVariable("ZITI_PASSWORD");
 
             var handler = new HttpClientHandler {
                 ClientCertificateOptions = ClientCertificateOption.Manual,
@@ -91,7 +89,7 @@ namespace OpenZiti.NET.Tests {
 
                 var c = new ZitiContext(tempFilePath);
                 var zitiSocketHandler = c.NewZitiSocketHandler("weather-svc");
-                var client = new HttpClient(new OpenZiti.NET.LoggingHandler(zitiSocketHandler));
+                var client = new HttpClient(new OpenZiti.NET.Debugging.LoggingHandler(zitiSocketHandler));
                 client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
 
                 var result = client.GetStringAsync("https://wttr.in:443").Result;

@@ -1,9 +1,26 @@
-
 # Native NuGet Package
 
 As mentioned in [the base README](../README.md), this project is responsible for creating a nuget package which
-not only exposes the [ziti-sdk-c](https://github.com/openziti/ziti-sdk-c) functions in an easy-to-consume
-way, but it also layers on helper functions as needed. Often these additional functions will be to do things
+exposes the [ziti-sdk-c](https://github.com/openziti/ziti-sdk-c) functions in an easy-to-consume way.
+
+This project does nothing but build the C libraries on the various platforms using [cmake](https://cmake.org/)
+and then it produces a [NuGet package](https://www.nuget.org/packages/OpenZiti.NET.native) which is expected
+to be included as dependency to another, [idiomatic donet (C#) SDK](../OpenZiti.NET) in this project.
+
+
+## Publishing the NuGet Package
+
+Generally, this project is only built from GitHub via the [native-nuget-publish.yml](../.github/actions/native-nuget-publish.yml) action.
+
+The action willl only push to NuGet when it's run from the project named `openziti/ziti-sdk-csharp` but it does
+not verify the branch is main.  It's designed to be 
+
+This project is build
+
+
+
+
+, but it also layers on helper functions as needed. Often these additional functions will be to do things
 which dotnet doesn't seem to support, or we haven't discovered how to support it yet. Generally things like 
 iterating a pointer or var args usage.
 
