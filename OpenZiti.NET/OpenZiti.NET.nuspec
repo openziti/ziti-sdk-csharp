@@ -8,7 +8,7 @@
         <owners>OpenZiti Maintainers</owners>
         <license type="expression">Apache-2.0</license>
         <projectUrl>https://openziti.github.io/ziti-sdk-csharp</projectUrl>
-        <icon>images\ziti.png</icon>
+        <icon>images\ziti-v2.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <!--<summary1>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</summary1>-->
         <summary>A .NET standard library which wraps the C SDK and is consumable from .NET</summary>
@@ -26,7 +26,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="ziti.png" target="images\"/>
+        <file src="ziti-v2.png" target="images"/>
         <file src="bin\x86\Release\net6.0\OpenZiti.NET.dll" target="runtimes/win-x86/lib/net6.0" />
         <file src="bin\x86\Release\net6.0\OpenZiti.NET.pdb" target="runtimes/win-x86/lib/net6.0" />
         <file src="bin\x64\Release\net6.0\OpenZiti.NET.dll" target="runtimes/win-x64/lib/net6.0" />
