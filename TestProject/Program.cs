@@ -93,10 +93,8 @@ namespace OpenZiti {
 
                 //create the service policies
                 var serviceRoles = new Roles() { $"#{testServices}" };
-                var dialRoles = new Roles() { $"#{svcName}.binders" };
-                var bindRoles = new Roles() { $"#{svcName}.dialers" };
-                //var dialRoles = new Roles() { $"#{svcName}.dialers" };
-                //var bindRoles = new Roles() { $"#{svcName}.binders" };
+                var dialRoles = new Roles() { $"#{svcName}.dialers" };
+                var bindRoles = new Roles() { $"#{svcName}.binders" };
 
                 await h.DeleteServicePolicyByNameAsync($"{svcName}.sp.dial");
                 var createServicePolicy = new ServicePolicyCreate {
@@ -157,8 +155,8 @@ namespace OpenZiti {
                 string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
                 System.IO.File.WriteAllBytes(tempFilePath, Encoding.UTF8.GetBytes(zitiId));
 
-                //Console.WriteLine("Waiting 10 seconds for router to receive the service");
-                //await Task.Delay(10000);
+                Console.WriteLine("Waiting 10 seconds for router to receive the service");
+                await Task.Delay(10000);
 
                 var c = new ZitiContext(tempFilePath);
                 var zitiSocketHandler = c.NewZitiSocketHandler(svcName);

@@ -1,0 +1,17 @@
+{
+  "profiles": {
+    "TestProject": {
+      "commandName": "Project",
+      "commandLineArgs": "args0 test weather c:\\git\\github\\openziti\\ziti-sdk-csharp\\Samples\\setup-scripts\\enroll.demo.json",
+      "environmentVariables": {
+        "ZITI_USERNAME": "admin",
+        "ZITI_PASSWORD": "cdaws8086"
+      },
+      "nativeDebugging": true
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    }
+  }
+}
