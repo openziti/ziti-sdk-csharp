@@ -83,7 +83,7 @@ namespace OpenZiti.NET.Tests {
                     }
                 };
 
-                var httpReqHandler = new OpenZiti.NET.Debugging.LoggingHandler(handler);
+                var httpReqHandler = new OpenZiti.Debugging.LoggingHandler(handler);
 
                 var nonValidatingHttpClient = new HttpClient(httpReqHandler);
                 ManagementAPI mapi = new ManagementAPI(nonValidatingHttpClient) {
@@ -186,7 +186,7 @@ namespace OpenZiti.NET.Tests {
 
                 var c = new ZitiContext(tempFilePath);
                 var zitiSocketHandler = c.NewZitiSocketHandler(svcName);
-                var client = new HttpClient(new OpenZiti.NET.Debugging.LoggingHandler(zitiSocketHandler));
+                var client = new HttpClient(new OpenZiti.Debugging.LoggingHandler(zitiSocketHandler));
                 client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
 
                 var result = await client.GetStringAsync("https://wttr.in:443");
