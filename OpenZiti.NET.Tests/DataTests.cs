@@ -70,7 +70,7 @@ namespace OpenZiti.NET.Tests {
                 OpenZiti.API.InitializeZiti();
                 //to see the logs from the Native SDK, set the log level
                 OpenZiti.API.SetLogLevel(ZitiLogLevel.DEBUG);
-                Console.Clear();
+                //Console.Clear();
 
                 Authenticate auth = new Authenticate();
                 Method method = Method.Password;
@@ -86,10 +86,9 @@ namespace OpenZiti.NET.Tests {
                     }
                 };
 
-                //var httpReqHandler = new LoggingHandler(handler);
+                var httpReqHandler = new LoggingHandler(handler);
+                var nonValidatingHttpClient = new HttpClient(httpReqHandler);
 
-                //var nonValidatingHttpClient = new HttpClient(httpReqHandler);
-                var nonValidatingHttpClient = new HttpClient(handler);
                 ManagementAPI mapi = new ManagementAPI(nonValidatingHttpClient) {
                     BaseUrl = "https://appetizer.openziti.io:8441/edge/management/v1"
                 };

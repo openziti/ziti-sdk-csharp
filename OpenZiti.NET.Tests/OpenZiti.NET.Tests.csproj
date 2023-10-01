@@ -50,6 +50,6 @@
 		</None>
 	</ItemGroup>
 	<Target Name="ShowConstants" BeforeTargets="Build">
-		<Message Text="TESTS: DefinedConstants:$(MyDefineConstants), Platform:$(Platform), Configuration:$(Configuration)" Importance="High" />
+		<Message Text="TESTS: DefinedConstants:$(DefinedConstants), Platform:$(Platform), Configuration:$(Configuration)" Importance="High" />
 	</Target>
 </Project>
