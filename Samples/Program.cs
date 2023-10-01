@@ -45,9 +45,6 @@ namespace OpenZiti.Samples {
                     case "hosted-client":
                         await HostedServiceClient.Run(args[2]);
                         break;
-                    case "test":
-                        TestBlitting.Run();
-                        break;
                     default:
                         Console.WriteLine($"Unexpected sample supplied {args[0]}.");
                         break;
