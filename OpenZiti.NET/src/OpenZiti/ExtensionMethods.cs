@@ -23,7 +23,7 @@ namespace OpenZiti {
     /// A class which provides an extension method to get a Description from an enum. The enum must be
     /// decorated with a <see cref="DescriptionAttribute"/>
     /// </summary>
-    public static class EnumHelpera {
+    public static class EnumHelper {
         public const string NO_DESC = "__NO DESCRIPTION AVAILABLE__";
 
         /// <summary>
