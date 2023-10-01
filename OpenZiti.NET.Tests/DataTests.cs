@@ -25,7 +25,7 @@ namespace OpenZiti.NET.Tests {
 #pragma warning disable IDE0060 // Remove unused parameter
         public static void ClassInitialize(TestContext context) {
             // Code to run once before all test methods in the class
-            LoggingHelper.SimpleConsoleLogging(MLog.LogLevel.Trace);
+            //LoggingHelper.SimpleConsoleLogging(MLog.LogLevel.Trace);
 
             OpenZiti.API.NativeLogger = OpenZiti.API.DefaultNativeLogFunction;
             OpenZiti.API.InitializeZiti();
@@ -86,9 +86,10 @@ namespace OpenZiti.NET.Tests {
                     }
                 };
 
-                var httpReqHandler = new LoggingHandler(handler);
+                //var httpReqHandler = new LoggingHandler(handler);
 
-                var nonValidatingHttpClient = new HttpClient(httpReqHandler);
+                //var nonValidatingHttpClient = new HttpClient(httpReqHandler);
+                var nonValidatingHttpClient = new HttpClient(handler);
                 ManagementAPI mapi = new ManagementAPI(nonValidatingHttpClient) {
                     BaseUrl = "https://appetizer.openziti.io:8441/edge/management/v1"
                 };
@@ -117,9 +118,9 @@ namespace OpenZiti.NET.Tests {
                     ConfigTypeId = cfgId,
                     Data = obj1
                 };
-                httpReqHandler.DoLogging = true;
+                //httpReqHandler.DoLogging = true;
                 var createdConfig = await mapi.CreateConfigAsync(createConfig);
-                httpReqHandler.DoLogging = false;
+                //httpReqHandler.DoLogging = false;
 
                 //create the weather service
                 await h.DeleteServiceByName(svcName);
@@ -189,7 +190,8 @@ namespace OpenZiti.NET.Tests {
 
                 var c = new ZitiContext(tempFilePath);
                 var zitiSocketHandler = c.NewZitiSocketHandler(svcName);
-                var client = new HttpClient(new LoggingHandler(zitiSocketHandler));
+                //var client = new HttpClient(new LoggingHandler(zitiSocketHandler));
+                var client = new HttpClient(handler);
                 client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
 
                 var result = await client.GetStringAsync("https://wttr.in:443");
