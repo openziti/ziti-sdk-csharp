@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      #- main
+      - main
       - 'release-*'
       - 'beta-release-*'
       
@@ -17,9 +17,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 6.x
+          cache: true
       - if: github.event_name == 'push'
         run: echo "GIT_BRANCH=$($env:GITHUB_REF.replace('refs/heads/', ''))" >> $env:GITHUB_ENV
       - if: github.event_name == 'pull_request'
