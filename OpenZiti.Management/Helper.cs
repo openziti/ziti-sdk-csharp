@@ -63,4 +63,23 @@ public class Helper
         }
         return null;
     }
+
+    public async Task<bool> WaitForTerminatorAsync(string serviceName, TimeSpan timeout) {
+        var timeoutAt = DateTime.Now + timeout;
+        var svcId = await FindServiceIdByNameAsync(serviceName);
+        if (svcId != null) {
+            while (true) {
+                if (timeoutAt < DateTime.Now) {
+                    return false;
+                }
+                var found = await mapi.ListTerminatorsAsync(null, null, $"service = \"{svcId}\"");
+                if (found.Data.Count > 0) {
+                   return true;
+                }
+                Console.WriteLine("Waiting for termintaor...");
+                await Task.Delay(100);
+            }
+        }
+        return false;
+    }
 }

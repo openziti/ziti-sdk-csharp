@@ -51,6 +51,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\OpenZiti.Management\OpenZiti.Management.csproj" />
+	  <ProjectReference Include="..\OpenZiti.NET.Tests\OpenZiti.NET.Tests.csproj" />
 	  <ProjectReference Include="..\OpenZiti.NET\OpenZiti.NET.csproj" />
 	</ItemGroup>
 
