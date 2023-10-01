@@ -26,7 +26,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="ziti-v2.png" target="images"/>
+        <file src="..\ziti-v2.png" target="images"/>
         <file src="bin\x86\Release\net6.0\OpenZiti.NET.dll" target="runtimes/win-x86/lib/net6.0" />
         <file src="bin\x86\Release\net6.0\OpenZiti.NET.pdb" target="runtimes/win-x86/lib/net6.0" />
         <file src="bin\x64\Release\net6.0\OpenZiti.NET.dll" target="runtimes/win-x64/lib/net6.0" />
