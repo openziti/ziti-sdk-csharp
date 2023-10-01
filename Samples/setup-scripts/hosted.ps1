@@ -1,27 +1,31 @@
+$svcName="hosted-svc"
+$demoServerName="${svcName}.server"
+$demoClientName="${svcName}.client"
+
 function cleanup() {
 	echo "Cleaning up..."
-	ziti edge delete config "hosted-svc.host.v1"
-	ziti edge delete config "hosted-svc.intercept.v1"
-	ziti edge delete config-type "hosted-config-type"
-	ziti edge delete service hosted-svc
-	ziti edge delete service-policy hosted-svc-dial
-	ziti edge delete service-policy hosted-svc-bind
+	ziti edge delete service "${svcName}"
+	ziti edge delete service-policy "${svcName}-dial"
+	ziti edge delete service-policy "${svcName}-bind"
+	echo "Clean up complete."
 }
+echo " "
 
 $prompt = $true
 if("$args[1]".ToLower().StartsWith("y")) {
 	$prompt=$false
 }
 
-$demoId = ziti edge list identities 'name=\"hosted.demo\"' -j | ConvertFrom-Json
-if ($demoId.data.id) {
+$demoServerId = ziti edge list identities $('name=\"' + ${demoServerName} + '\"') -j | ConvertFrom-Json
+if ($demoServerId.data.id) {
 	if($prompt) {
-		$createId = Read-Host "hosted.demo identity exists. Delete and overwrite?"
+		$createId = Read-Host "${demoServerName} identity exists. Delete and overwrite?"
 	} else {
 		$createId="yes"
 	}
 	if ("${createId}".ToLower().StartsWith("y")) {
-		ziti edge delete identity hosted.demo
+		echo "removing: ${demoServerName}"
+		ziti edge delete identity ${demoServerName}
 	}
 	else {
 		echo "Not cleaning up identity"
@@ -31,19 +35,20 @@ if ($demoId.data.id) {
 	$createId = $true;
 }
 if ($createId) {
-	echo "creating identity: hosted.demo"
-	$id = ziti edge create identity user hosted.demo -a "hosted-svc.binders" -o "${PSScriptRoot}\hosted.demo.jwt"
+	echo "creating identity: ${demoServerName}"
+	$id = ziti edge create identity ${demoServerName} -a "${svcName}.binders" -o "${PSScriptRoot}\${demoServerName}.jwt"
 }
 
-$demoId = ziti edge list identities 'name=\"hosted.demo.client\"' -j | ConvertFrom-Json
-if ($demoId.data.id) {
+$demoClientId = ziti edge list identities $('name=\"' + ${demoClientName} + '\"') -j | ConvertFrom-Json
+if ($demoClientId.data.id) {
 	if($prompt) {
-		$createId = Read-Host "hosted.demo.client identity exists. Delete and overwrite?"
+		$createId = Read-Host "${demoClientName} identity exists. Delete and overwrite?"
 	} else {
 		$createId="yes"
 	}
 	if ("${createId}".ToLower().StartsWith("y")) {
-		ziti edge delete identity hosted.demo.client
+		echo "removing: ${demoClientName}"
+		ziti edge delete identity ${demoClientName}
 	}
 	else {
 		echo "Not cleaning up identity"
@@ -53,12 +58,12 @@ if ($demoId.data.id) {
 	$createId = $true;
 }
 if ($createId) {
-	echo "creating identity: hosted.demo.client"
-	$id = ziti edge create identity user hosted.demo.client -a "hosted-svc.dialers" -o "${PSScriptRoot}\hosted.demo.client.jwt"
+	echo "creating identity: ${demoClientName}"
+	$id = ziti edge create identity ${demoClientName} -a "${svcName}.dialers" -o "${PSScriptRoot}\${demoClientName}.jwt"
 }
 
 $createServices = $true
-$service = ziti edge list identities 'name=\"hosted.demo\"' -j | ConvertFrom-Json
+$service = ziti edge list services $('name=\"' + ${svcName} + '\" limit none') -j | ConvertFrom-Json
 if($service.data.id) {
 	if($prompt) {
 		$svcCleanUp = Read-Host "Looks like the service already exists. Try to cleanup/start again?"
@@ -75,14 +80,12 @@ if($service.data.id) {
 
 if ($createServices) {
 	# create the hosted sample example
-	ziti edge create config 'hosted-svc.host.v1' host.v1 '{\"protocol\":\"tcp\", \"address\":\"hosted.demo.ziti\",\"port\":443}'
-	ziti edge create config 'hosted-svc.intercept.v1' intercept.v1 '{\"protocols\":[\"tcp\"],\"addresses\":[\"hosted.demo\"],\"portRanges\":[{\"low\":80, \"high\":443}]}'
-	ziti edge create service 'hosted-svc'--configs 'hosted-svc.intercept.v1,hosted-svc.host.v1' -a "sdk.service"
+	ziti edge create service "${svcName}" --configs '${svcName}.intercept.v1,${svcName}.host.v1' -a "sdk.service"
 
 	# authorize sdk clients to dial the sdk example services
-	ziti edge create service-policy hosted-svc-dial Dial --service-roles "@hosted-svc" --identity-roles "#hosted-svc.dialers"
+	ziti edge create service-policy ${svcName}-dial Dial --service-roles "@${svcName}" --identity-roles "#${svcName}.dialers"
 	# authorize the edge router to bind services
-	ziti edge create service-policy hosted-svc-bind Bind --service-roles "@hosted-svc" --identity-roles "#hosted-svc.binders"
+	ziti edge create service-policy ${svcName}-bind Bind --service-roles "@${svcName}" --identity-roles "#${svcName}.binders"
 }
 echo "====================================================="
 echo "Setup for hosted.svc is complete                     "

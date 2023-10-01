@@ -24,7 +24,7 @@ namespace OpenZiti {
     /// decorated with a <see cref="DescriptionAttribute"/>
     /// </summary>
     public static class EnumHelper {
-        public const string NO_DESC = "__NO DESCRIPTOIN AVAILABLE__";
+        public const string NO_DESC = "__NO DESCRIPTION AVAILABLE__";
 
         /// <summary>
         /// Extension method to return the <see cref="DescriptionAttribute"/> of the enum.

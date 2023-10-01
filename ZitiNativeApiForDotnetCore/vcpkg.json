@@ -1,0 +1,24 @@
+{
+  "name": "ziti",
+  "version-semver": "1.0.0",
+  "dependencies": [
+    "libuv",
+    "zlib",
+    "llhttp",
+    "libsodium",
+    "getopt",
+    "mbedtls"
+  ],
+  "features": {
+    "test": {
+      "description": "Dependencies for testing",
+      "dependencies": [
+        {
+          "version>=": "3.3.1",
+          "name": "catch2"
+        }
+      ]
+    }
+  },
+  "builtin-baseline": "f14984af3738e69f197bf0e647a8dca12de92996"
+}

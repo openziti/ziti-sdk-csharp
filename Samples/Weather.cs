@@ -22,19 +22,8 @@ using System.Text;
 namespace OpenZiti.Samples {
 
     public class Weather : SampleBase {
-        public static void Run(string[] args) {
-            if (args == null || args.Length < 2) {
-                throw new Exception(@"This example expects the second paramter to be an unenrolled .jwt.
-  Please login to your controller using 'ziti edge login' then run 'pwsh setup-scripts/weather.ps1'");
-            }
-            string outputPath = Directory.GetCurrentDirectory() + "/weather.demo.json";
-            try {
-                Enroll(args[1], outputPath);
-            } catch (Exception e) {
-                Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
-            }
-
-            var c = new ZitiContext(outputPath);
+        public static void Run(string identityFile) {
+            var c = new ZitiContext(identityFile);
             var zitiSocketHandler = c.NewZitiSocketHandler("weather-svc");
             var client = new HttpClient(new LoggingHandler(zitiSocketHandler));
             client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");

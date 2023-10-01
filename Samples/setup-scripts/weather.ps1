@@ -1,11 +1,14 @@
+$demoIdName="weather.demo"
+$svcName="weather-svc"
+$EdgeRouter=""
+
 function cleanup() {
 	echo "Cleaning up..."
-	ziti edge delete config "weather-svc.host.v1"
-	ziti edge delete config "weather-svc.intercept.v1"
-	ziti edge delete config-type "weather-config-type"
-	ziti edge delete service weather-svc
-	ziti edge delete service-policy weather-svc-dial
-	ziti edge delete service-policy weather-svc-bind
+	ziti edge delete config "${svcName}.host.v1"
+	ziti edge delete config "${svcName}.intercept.v1"
+	ziti edge delete service "${svcName}"
+	ziti edge delete service-policy "${svcName}-dial"
+	ziti edge delete service-policy "${svcName}-bind"
 	echo "Clean up complete."
 }
 echo " "
@@ -26,9 +29,10 @@ if (!${EdgeRouter}) {
 }
 
 echo "EdgeRouter identity: ${EdgeRouter} will be used as the router to offload traffic for the demo."
-$er=ziti edge list identities "name=`"${EdgeRouter}`" limit none" -j | ConvertFrom-Json
 
-$weatherAttr="weather-svc.binders"
+$er=ziti edge list identities $('name=\"' + ${EdgeRouter} + '\" limit none') -j | ConvertFrom-Json
+
+$weatherAttr="${svcName}.binders"
 if($er.data.id) {
 	$found=$false
 	foreach($attr in $er.data.roleAttributes) {
@@ -45,15 +49,15 @@ if($er.data.id) {
 	throw "ERROR: provided edge router identity [${EdgeRouter}] does not exist! Cannot continue."
 }
 
-$demoId = ziti edge list identities "name=`"weather.demo`"" -j | ConvertFrom-Json
+$demoId = ziti edge list identities -j -- $('name=\"' + ${demoIdName} + '\"') | ConvertFrom-Json
 if ($demoId.data.id) {
 	if($prompt) {
-		$createId = Read-Host "weather.demo identity exists. Delete and overwrite?"
+		$createId = Read-Host "${demoIdName} identity exists. Delete and overwrite?"
 	} else {
 		$createId="yes"
 	}
 	if ("${createId}".ToLower().StartsWith("y")) {
-		ziti edge delete identity weather.demo
+		ziti edge delete identity ${demoIdName}
 	}
 	else {
 		echo "Not cleaning up identity"
@@ -62,13 +66,14 @@ if ($demoId.data.id) {
 } else {
 	$createId = $true;
 }
+
 if ($createId) {
-	echo "creating identity: weather.demo"
-	$id = ziti edge create identity user weather.demo -a "weather-svc.dialers" -o "${PSScriptRoot}/weather.demo.jwt"
+	echo "creating identity: ${demoIdName}"
+	$id = ziti edge create identity ${demoIdName} -a "${svcName}.dialers" -o "${PSScriptRoot}/${demoIdName}.jwt"
 }
 
 $createServices = $true
-$service = ziti edge list services "name=`"weather-svc`" limit none" -j | ConvertFrom-Json
+$service = ziti edge list services $('name=\"' + ${svcName} + '\" limit none') -j | ConvertFrom-Json
 if($service.data.id) {
 	if($prompt) {
 		$svcCleanUp = Read-Host "Looks like the service already exists. Try to cleanup/start again?"
@@ -85,14 +90,14 @@ if($service.data.id) {
 
 if ($createServices) {
 	# create the weather sample example
-	ziti edge create config "weather-svc.host.v1" host.v1 "{`"protocol`":`"tcp`", `"address`":`"wttr.in`",`"port`":443}"
-	ziti edge create config "weather-svc.intercept.v1" intercept.v1 "{`"protocols`":[`"tcp`"],`"addresses`":[`"wttr.in`"],`"portRanges`":[{`"low`":80, `"high`":443}]}"
-	ziti edge create service "weather-svc"--configs "weather-svc.intercept.v1,weather-svc.host.v1" -a "sdk.service"
+	ziti edge create config "${svcName}.host.v1" host.v1 '{\"protocol\":\"tcp\", \"address\":\"wttr.in\",\"port\":443}'
+	ziti edge create config "${svcName}.intercept.v1" intercept.v1 '{\"protocols\":[\"tcp\"],\"addresses\":[\"wttr.in\"],\"portRanges\":[{\"low\":443, \"high\":443}]}'
+	ziti edge create service "${svcName}" --configs "${svcName}.intercept.v1,${svcName}.host.v1" -a "sdk.service"
 
 	# authorize sdk clients to dial the sdk example services
-	ziti edge create service-policy weather-svc-dial Dial --service-roles "@weather-svc" --identity-roles "#weather-svc.dialers"
+	ziti edge create service-policy ${svcName}-dial Dial --service-roles "@${svcName}" --identity-roles "#${svcName}.dialers"
 	# authorize the edge router to bind services
-	ziti edge create service-policy weather-svc-bind Bind --service-roles "@weather-svc" --identity-roles "#weather-svc.binders"
+	ziti edge create service-policy ${svcName}-bind Bind --service-roles "@${svcName}" --identity-roles "#${svcName}.binders"
 }
 echo " "
 echo "====================================================="
@@ -102,7 +107,9 @@ echo "time for the services to propegate to the router     "
 echo "before running the sample or you may receive an error"
 echo "like: no terminators exist for service               "
 echo ""
-echo "then, execute the sample using: "
-echo "  dotnet run weather setup-scripts/weather.demo.jwt "
+echo ""
+echo "after waiting 10 to 15s you can , execute the sample."
+echo "  ziti edge enroll .\setup-scripts\weather.demo.jwt  "
+echo "  dotnet run .\OpenZitiSamples.csproj weather .\setup-scripts\weather.demo.json "
 echo "====================================================="
 echo " "

@@ -7,9 +7,14 @@ on:
         description: Version of CSDK/Nuget Package
         default: _CHANGE_
         required: true
+      debugOrRelease:
+        description: Debug or Release
+        default: Release
+        required: true
        
 env:
   ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
+  ZITI_DEBUG_OR_RELEASE: ${{ github.event.inputs.debugOrRelease }}
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   BUILD_NUMBER: ${{ github.run_number }}
   BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
@@ -18,26 +23,32 @@ jobs:
   set-build-info:
     runs-on: ubuntu-latest
     outputs:
-      now: ${{ steps.isotime.outputs.val }}
-      buildnum_official: "${{ steps.buildnum_official.outputs.val }}"
-      buildnum_dev: "${{ steps.buildnum_dev.outputs.val }}"
+      now: ${{ steps.buildinfo.outputs.now }}
+      repo: ${{ steps.buildinfo.outputs.repo }}
+      branch: ${{ steps.buildinfo.outputs.branch }}
+      qualifier: ${{ steps.qualifierinfo.outputs.qualifier }}
     steps:
-      - name: Set date
-        id: isotime
-        run: echo "val=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-      - name: Set buildnum_dev
-        id: buildnum_dev
-        if: "${{ github.repository != 'openziti/ziti-sdk-csharp'}}"
-        run: echo "val=-build.$(date '+%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-      - name: Set buildnum_official
-        if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
-        id: buildnum_official
-        run: echo "val=.${{env.BUILD_NUMBER}}" >> $GITHUB_OUTPUT
+      - name: Set now, repo, branch, build num
+        id: buildinfo
+        run: |
+          echo "now=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+          if [ "${{ github.repository }}" == 'openziti/ziti-sdk-csharp' ]; then
+            echo "repo=" >> $GITHUB_OUTPUT
+          else
+            echo "repo=${{github.repository_owner}}" >> $GITHUB_OUTPUT
+          fi
+          echo "BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_ENV
+          echo "branch=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_OUTPUT
+
+      - name: Set qualifier
+        id: qualifierinfo
+        run: |
+          if [ "${BRANCH_NAME}" = "main" ]; then
+            echo "qualifier=.${BRANCH_NAME}${{github.run_number}}" >> $GITHUB_OUTPUT
+          else
+            echo "qualifier=-${BRANCH_NAME}rc${{github.run_number}}" >> $GITHUB_OUTPUT
+          fi
   native-matrix-build:
-    needs: set-build-info
-    env:
-      now: ${{needs.set-build-info.outputs.now}}
-      buildnum: ${{needs.set-build-info.outputs.buildnum_official}}${{needs.set-build-info.outputs.buildnum_dev}}
     if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' }}"
     runs-on: ${{ matrix.os }}
     strategy:
@@ -48,87 +59,116 @@ jobs:
             dist: linux
             os: ubuntu-20.04
             arch: x64
+            preset: linux-x64
           - ext: so
             prefix: lib
             dist: 'Linux-arm'
             os: ubuntu-20.04
             arch: arm
-            toolchain: 'Linux-arm'
+            preset: linux-arm
           - ext: so
             prefix: lib
             dist: 'Linux-arm64'
             os: ubuntu-20.04
             arch: arm64
-            toolchain: 'Linux-arm64'
+            preset: linux-arm64
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macOS-12
+            os: macOS-13
             arch: x64
-            toolchain: 'macOS-x86_64'
+            preset: macOS-x64
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macOS-12
+            os: macOS-13
             arch: arm64
-            toolchain: 'macOS-arm64'
+            preset: macOS-arm64
           - ext: dylib
             prefix: lib
             dist: iOS
-            os: macOS-12
+            os: macOS-13
             arch: arm64
-            toolchain: 'iOS-arm64'
+            preset: ios-arm64
           - ext: dll
-            pathext: /Release
             dist: win
-            os: windows-2019
+            os: windows-2022
             arch: x64
+            preset: win64
           - ext: dll
-            pathext: /Release
             dist: win
             arch: x86
             cmake_arch_flag: '-A Win32'
-            os: windows-2019
+            os: windows-2022
+            preset: win32
     steps:
-      - name: Echo Vars
-        run: |
-          echo "now = ${{ env.now }}"
-          echo "build number = ${{ env.buildnum }}"
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
+      - name: Install Linux pkg-config
+        if: matrix.os == 'ubuntu-20.04'
+        run: |
+          sudo apt update -y
+          sudo apt install -y pkg-config ninja-build
+          
       - name: Install Crossbuild tools
         if: matrix.os == 'ubuntu-20.04' && contains(matrix.arch, 'arm')
         run: |
           sudo apt update -y
           sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
-
-      - name: setup/build CMake
-        env:
-          TOOLCHAIN: ${{ matrix.toolchain && format('{0}/toolchains/{1}.cmake', env.BASEDIR, matrix.toolchain) || '' }}
+          
+      - name: Install MacOS Ninja
+        if: matrix.os == 'macOS-13'
         run: |
-          echo "build number = ${{ env.buildnum }}"
+          brew install ninja
+          
+      - name: Set up MSVC 2019
+        if: matrix.dist == 'win'
+        uses: microsoft/setup-msbuild@v1.1
+                    
+      - name: Restore vcpkg packages
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: vcpkg integrate install
+      
+      - name: Set VCPKG_ROOT
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'macOS-13'
+        run: echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
+      
+      - name: Set VCPKG_ROOT
+        if: matrix.dist == 'win'
+        run: echo "VCPKG_ROOT=C:/vcpkg" >> $env:GITHUB_ENV
+                
+      - name: configure / build CMake
+        working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
+        run: |
+          echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} ${{ matrix.cmake_arch_flag }} -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN}" 
-          cmake --build ${{ env.TARGETDIR }} --config Release
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }} ${{ matrix.cmake_arch_flag }}
+          cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
           
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
-          path: ${{ env.TARGETDIR }}/library${{ matrix.pathExt }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
+          path: ${{ env.TARGETDIR }}/library/${{ env.ZITI_DEBUG_OR_RELEASE }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           if-no-files-found: error
+          
   create-nuget-package:
     needs: [set-build-info, native-matrix-build]
     env:
       now: ${{needs.set-build-info.outputs.now}}
-      buildnum: ${{needs.set-build-info.outputs.buildnum_official}}${{needs.set-build-info.outputs.buildnum_dev}}
+      repo: ${{needs.set-build-info.outputs.repo}}
+      branch: ${{needs.set-build-info.outputs.branch}}
+      qualifier: ${{needs.set-build-info.outputs.qualifier}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Set resolves version to env
+        run: |
+          echo "resolvedversion=${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV  
       - run: mkdir ${{github.workspace}}/native
       - name: download all artifacts
         uses: actions/download-artifact@v3
@@ -162,19 +202,19 @@ jobs:
         with:
           dotnet-version: 6.x
       - name: Create the Nuget package
-        run: nuget pack -version ${{ env.ZITI_SDK_C_BRANCH }}${{ env.buildnum }} ${{ github.workspace }}/native-package.nuspec
+        run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}/native-package.nuspec
       - name: upload nuget package
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ github.workspace }}/OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${{ env.buildnum }}.nupkg
-          name: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${{ env.buildnum }}.nupkg
+          path: ${{ github.workspace }}/OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
+          name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
       - name: Upload OpenZiti.NET.native to job
         uses: actions/upload-artifact@v3
         with:
-          name: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${{ env.buildnum }}.nupkg
-          path: OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${{ env.buildnum }}.nupkg
+          name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
+          path: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
       - name: Publish OpenZiti.NET.native
         if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
-        run: dotnet nuget push OpenZiti.NET.native.${{ env.ZITI_SDK_C_BRANCH }}${{ env.buildnum }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push OpenZiti.NET.native.${{env.resolvedversion}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json

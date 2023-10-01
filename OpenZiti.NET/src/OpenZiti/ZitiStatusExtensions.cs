@@ -17,7 +17,7 @@ limitations under the License.
 namespace OpenZiti {
     internal static class ZitiStatusExtensions {
         public static bool Ok(this ZitiStatus s) {
-            return s == ZitiStatus.OK;
+            return s == ZitiStatus.ZITI_OK;
         }
     }
 }
