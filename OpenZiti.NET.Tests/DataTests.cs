@@ -15,21 +15,24 @@ using NLog.Config;
 using NLog.Targets;
 using NLog;
 using System.Threading;
+using OpenZiti.Debugging;
 
 namespace OpenZiti.NET.Tests {
     [TestClass]
     public class DataTests {
 
         [ClassInitialize]
+#pragma warning disable IDE0060 // Remove unused parameter
         public static void ClassInitialize(TestContext context) {
             // Code to run once before all test methods in the class
-            Logging.SimpleConsoleLogging(MLog.LogLevel.Trace);
+            LoggingHelper.SimpleConsoleLogging(MLog.LogLevel.Trace);
 
             OpenZiti.API.NativeLogger = OpenZiti.API.DefaultNativeLogFunction;
             OpenZiti.API.InitializeZiti();
             //to see the logs from the Native SDK, set the log level
             OpenZiti.API.SetLogLevel(ZitiLogLevel.TRACE);
         }
+#pragma warning restore IDE0060 // Remove unused parameter
 
         public static Logger SimpleConsoleLogging(MLog.LogLevel lvl) {
             NLog.LogLevel logLevel = NLog.LogLevel.Fatal;
