@@ -16,6 +16,7 @@ using NLog.Targets;
 using NLog;
 using System.Threading;
 using OpenZiti.Debugging;
+using System.Linq;
 
 namespace OpenZiti.NET.Tests {
     [TestClass]
@@ -60,7 +61,6 @@ namespace OpenZiti.NET.Tests {
             return LogManager.GetLogger("console");
         }
 
-
         [TestMethod]
         public async Task TestWeatherAsync() {
             try {
@@ -76,7 +76,19 @@ namespace OpenZiti.NET.Tests {
                 Method method = Method.Password;
                 auth.Username = Environment.GetEnvironmentVariable("ZITI_USERNAME");
                 auth.Password = Environment.GetEnvironmentVariable("ZITI_PASSWORD");
-
+                if (auth.Username is null or "") {
+                    auth.Username = "admin";
+                    Console.WriteLine("Using DEFAULT USERNAME (set env var ZITI_USERNAME to override): " + auth.Username);
+                }
+                if (auth.Password is null or "") {
+                    auth.Password = "admin";
+                    Console.WriteLine("Using DEFAULT PASSWORD (set env var ZITI_PASSWORD to override): " + auth.Password);
+                }
+                var baseUrl = Environment.GetEnvironmentVariable("ZITI_BASEURL");
+                if (baseUrl is null or "") {
+                    baseUrl = "localhost:1280";
+                    Console.WriteLine("Using DEFAULT url (set env var ZITI_BASEURL to override): " + baseUrl);
+                }
 
                 var handler = new HttpClientHandler {
                     ClientCertificateOptions = ClientCertificateOption.Manual,
@@ -90,12 +102,26 @@ namespace OpenZiti.NET.Tests {
                 var nonValidatingHttpClient = new HttpClient(httpReqHandler);
 
                 ManagementAPI mapi = new ManagementAPI(nonValidatingHttpClient) {
-                    BaseUrl = "https://appetizer.openziti.io:8441/edge/management/v1"
+                    BaseUrl = $"https://{baseUrl}/edge/management/v1"
                 };
 
                 CurrentApiSessionDetailEnvelope detail = await mapi.AuthenticateAsync(auth, method);
                 Console.WriteLine(detail.Data.Id);
                 nonValidatingHttpClient.DefaultRequestHeaders.Add("zt-session", detail.Data.Token); // Example header
+
+                var erp = new EdgeRouterPolicyCreate {
+                    Name = "all-erp",
+                    EdgeRouterRoles = new Roles() { "#all" },
+                    IdentityRoles = new Roles() { "#all" }
+                };
+                await mapi.CreateEdgeRouterPolicyAsync(erp);
+
+                var serp = new ServiceEdgeRouterPolicyCreate {
+                    Name = "all-serp",
+                    EdgeRouterRoles = new Roles() { "#all" },
+                    ServiceRoles = new Roles() { "#all" }
+                };
+                await mapi.CreateServiceEdgeRouterPolicyAsync(serp);
 
                 var emptyRoleFilter = new string[] { };
                 var ids = await mapi.ListIdentitiesAsync(100, 0, "name = \"test_id\"", emptyRoleFilter, "");
@@ -134,7 +160,9 @@ namespace OpenZiti.NET.Tests {
                 //create the service policies
                 var serviceRoles = new Roles() { $"#{testServices}" };
                 var dialRoles = new Roles() { $"#{svcName}.dialers" };
-                var bindRoles = new Roles() { $"#{svcName}.binders" };
+                var bindRoleName = $"{svcName}.binders";
+                var bindRole = $"#{bindRoleName}";
+                var bindRoles = new Roles() { $"{bindRole}" };
 
                 await h.DeleteServicePolicyByNameAsync($"{svcName}.sp.dial");
                 var createServicePolicy = new ServicePolicyCreate {
@@ -159,7 +187,25 @@ namespace OpenZiti.NET.Tests {
                 string routerId = "";
                 if (ers.Count == 1) {
                     // expected to have 1 router
-                    routerId = ers[0].Id;
+                    var r = ers[0];
+                    routerId = r.Id;
+
+                    var routerIdentityId = await h.FindIdentityByNameAsync(r.Name);
+                    var routerIdentityEnv = await mapi.DetailIdentityAsync(routerIdentityId);
+                    var routerIdentity = routerIdentityEnv.Data;
+
+                    var idAttrs = new Attributes();
+                    if (routerIdentity.RoleAttributes != null && routerIdentity.RoleAttributes.Contains($"{bindRoleName}")) {
+                        Console.WriteLine($"Router identity already has bind attribute: #{bindRoleName}");
+                    } else {
+                        IdentityPatch patch = new IdentityPatch();
+                        patch.RoleAttributes = new Attributes();
+                        foreach (var attr in routerIdentity?.RoleAttributes ?? Enumerable.Empty<string>()) {
+                            patch.RoleAttributes.Add(attr);
+                        }
+                        patch.RoleAttributes.Add(bindRoleName);
+                        await mapi.PatchIdentityAsync(patch, routerId);
+                    }
                 } else {
                     throw new Exception("too many routers defined. expected 1");
                 }

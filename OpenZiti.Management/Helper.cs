@@ -82,4 +82,12 @@ public class Helper
         }
         return false;
     }
+
+    public async Task<string?> FindIdentityByNameAsync(string name) {
+        var found = await mapi.ListIdentitiesAsync(null, null, $"name = \"{name}\"", null, null);
+        if (found != null && found.Data.Count > 0) {
+            return found.Data[0].Id;
+        }
+        return null;
+    }
 }
