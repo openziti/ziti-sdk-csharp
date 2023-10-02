@@ -16,8 +16,10 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+[assembly: InternalsVisibleTo("UnitTests")]
 namespace OpenZiti.Native {
 
     //typedef void (*ziti_service_cb)(ziti_context ztx, ziti_service*, int status, void* data);
@@ -66,6 +68,8 @@ namespace OpenZiti.Native {
     [UnmanagedFunctionPointer(API.CALL_CONVENTION)] public delegate void uv_close_cb(IntPtr handle);
 
     internal class MarshalUtils<T> {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         internal static List<T> convertPointerToList(IntPtr arrayPointer) {
             IntPtr currentArrLoc;
             var result = new List<T>();
@@ -79,9 +83,11 @@ namespace OpenZiti.Native {
                     objectT = Marshal.PtrToStructure<T>(currentArrLoc);
                 } else {
                     // marshal operations for other types can be added here
-                    throw new ZitiException("Marshalling is not yet supported for " + typeof(T));
+                    throw new Exception("Marshalling is not yet supported for " + typeof(T));
                 }
+#pragma warning disable CS8604 // Possible null reference argument.
                 result.Add(objectT);
+#pragma warning restore CS8604 // Possible null reference argument.
                 arrayPointer = IntPtr.Add(arrayPointer, sizeOfPointer);
             }
             return result;
@@ -99,5 +105,7 @@ namespace OpenZiti.Native {
             }
             return result;
         }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
     }
 }

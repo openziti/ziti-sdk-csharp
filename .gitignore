@@ -19,3 +19,8 @@ Samples/**/*.json
 *.snupkg
 
 weather.demo.json
+**/*.user
+
+TestResults
+launchSettings.json
+.runsettings

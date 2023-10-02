@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using OpenZiti.Native;
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -105,23 +104,26 @@ namespace OpenZiti {
             nAPI.Ziti_lib_init();
         }
 
-        public static void InitializeZiti(Logging.ZitiLogLevel level) {
+        public static void InitializeZiti(ZitiLogLevel level) {
             InitializeZiti();
             SetLogLevel(level);
         }
 
-        public static void SetLogLevel(Logging.ZitiLogLevel level) {
+        public static void SetLogLevel(ZitiLogLevel level) {
             nAPI.ziti_log_set_level((int)level, null);
         }
-
 
         public static int LastError() {
             return nAPI.Ziti_last_error();
         }
 
-        public static string EnrollIdentity(string jwtFile) {
+        public static string EnrollIdentityFile(string jwtFile) {
             var t = File.ReadAllBytes(jwtFile);
             return EnrollIdentity(t, null, null);
+        }
+
+        public static string EnrollIdentity(byte[] jwt) {
+            return EnrollIdentity(jwt, null, null);
         }
 
         public static string EnrollIdentity(byte[] jwt, string key, string cert) {
@@ -213,5 +215,15 @@ namespace OpenZiti {
         public static void Shutdown() {
             nAPI.Ziti_lib_shutdown();
         }
+    }
+
+    public enum ZitiLogLevel {
+        FATAL = 0,
+        ERROR = 1,
+        WARN = 2,
+        INFO = 3,
+        DEBUG = 4,
+        VERBOSE = 5,
+        TRACE = 6,
     }
 }

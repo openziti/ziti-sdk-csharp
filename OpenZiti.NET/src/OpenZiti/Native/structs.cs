@@ -14,30 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Runtime.InteropServices;
 using System;
-using System.Runtime.ConstrainedExecution;
-using System.Diagnostics;
-using System.Threading;
-using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Xml.Linq;
 using System.Net.Sockets;
 using System.Net;
-using System.Collections.Generic;
-using System.Security.Principal;
-using NLog.Fluent;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("OpenZiti.NET.Tests")]
 namespace OpenZiti.Native {
 #pragma warning disable 0649
 #pragma warning disable 0169
 
-    internal class TestBlitting {
-        internal const int ZITI_EVENT_UNION_SIZE = TestBlitting.ptr * 5;
-#if ZITI_X64
-        internal const int ptr = 8;
+    public class TestBlitting {
+        public const int ZITI_EVENT_UNION_SIZE = TestBlitting.ptr * 5;
+#if ZITI_64BIT
+        public const int ptr = 8;
 #else
-        internal const int ptr = 4;
+        public const int ptr = 4;
 #endif
         //Z4D_API ziti_types_t* z4d_struct_test();
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_struct_test", CallingConvention = API.CALL_CONVENTION)]
@@ -50,8 +44,8 @@ namespace OpenZiti.Native {
             IntPtr testData = z4d_struct_test();
             ziti_types native_structs = Marshal.PtrToStructure<ziti_types>(testData);
 
-            byte[] managedArray = new byte[native_structs.total_size];
-            Marshal.Copy(testData, managedArray, 0, (int)native_structs.total_size);
+            byte[] managedArray = new byte[native_structs.info.total_size];
+            Marshal.Copy(testData, managedArray, 0, (int)native_structs.info.total_size);
 
             //IntPtr q = z4d_ziti_posture_query();
             //ziti_posture_query pq = Marshal.PtrToStructure<ziti_posture_query>(q);
@@ -66,7 +60,6 @@ namespace OpenZiti.Native {
         }
 
 
-
         public static T ToContextEvent<T>(T desired, IntPtr /*byte[] input*/ input) {
             int size = Marshal.SizeOf(desired);
             IntPtr ptr = IntPtr.Zero;
@@ -76,17 +69,23 @@ namespace OpenZiti.Native {
                 Marshal.Copy(input, destination, 0, size);
                 Marshal.Copy(destination, 0, ptr, size);
 
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 desired = (T)Marshal.PtrToStructure(ptr, desired.GetType());
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             } finally {
                 Marshal.FreeHGlobal(ptr);
             }
 
+#pragma warning disable CS8603 // Possible null reference return.
             return desired;
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 
     public struct size_t {
-#if ZITI_X64
+#if ZITI_64BIT
         public long val;
 #else
         public int val;
@@ -94,122 +93,127 @@ namespace OpenZiti.Native {
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    internal struct AlignmentCheck {
+    public struct AlignmentCheck {
 
         [FieldOffset(0 * TestBlitting.ptr)]
-        internal string checksum;
+        public string checksum;
         [FieldOffset(TestBlitting.ptr)]
-        internal UInt32 size;
+        public uint size;
         [FieldOffset(TestBlitting.ptr + 4)]
-        internal UInt32 offset;
+        public uint offset;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ziti_types_info {
+        public uint total_size;
+        public string total_size_check;
+        public uint total_size_size;
+        public uint total_size_offset;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_types {
-        internal UInt32 total_size;
-        internal string total_size_check;
-        internal UInt32 total_size_size;
-        internal UInt32 total_size_offset;
-        
-        internal ziti_auth_query_mfa f01_ziti_auth_query_mfa;
-        internal AlignmentCheck f01_check;
-        
-        internal ziti_id_cfg f02_ziti_id_cfg;
-        internal AlignmentCheck f02_check;
-        
-        internal ziti_config f03_ziti_config;
-        internal AlignmentCheck f03_check;
-        
-        internal ziti_api_path f04_api_path;
-        internal AlignmentCheck f04_check;
-        
-        internal ziti_api_versions f05_ziti_api_versions;
-        internal AlignmentCheck f05_check;
-        
-        internal ziti_version f06_ziti_version;
-        internal AlignmentCheck f06_check;
-        
-        internal ziti_identity f07_ziti_identity;
-        internal AlignmentCheck f07_check;
-        
-        internal ziti_process f08_ziti_process;
-        internal AlignmentCheck f08_check;
-        
-        internal ziti_posture_query f09_ziti_posture_query;
-        internal AlignmentCheck f09_check;
-        
-        internal ziti_posture_query_set f10_ziti_posture_query_set;
-        internal AlignmentCheck f10_check;
-        
-        internal ziti_session_type f11_ziti_session_type;
-        internal AlignmentCheck f11_check;
-        
-        internal ziti_service f12_ziti_service;
-        internal AlignmentCheck f12_check;
-        
-        internal ziti_address f13_ziti_address_host;
-        internal AlignmentCheck f13_check;
-        
-        internal ziti_address f14_ziti_address_cidr;
-        internal AlignmentCheck f14_check;
-        
-        internal ziti_client_cfg_v1 f15_ziti_client_cfg_v1;
-        internal AlignmentCheck f15_check;
+        public ziti_types_info info;
 
-        internal ziti_intercept_cfg_v1 f16_ziti_intercept_cfg_v1;
-        internal AlignmentCheck f16_check;
+        public ziti_auth_query_mfa f01_ziti_auth_query_mfa;
+        public AlignmentCheck f01_check;
 
-        internal ziti_server_cfg_v1 f17_ziti_server_cfg_v1;
-        internal AlignmentCheck f17_check;
+        public ziti_id_cfg f02_ziti_id_cfg;
+        public AlignmentCheck f02_check;
 
-        internal ziti_listen_options f18_ziti_listen_options;
-        internal AlignmentCheck f18_check;
+        public ziti_config f03_ziti_config;
+        public AlignmentCheck f03_check;
 
-        internal ziti_host_cfg_v1 f19_ziti_host_cfg_v1;
-        internal AlignmentCheck f19_check;
+        public ziti_api_path f04_api_path;
+        public AlignmentCheck f04_check;
 
-        internal ziti_host_cfg_v2 f20_ziti_host_cfg_v2;
-        internal AlignmentCheck f20_check;
+        public ziti_api_versions f05_ziti_api_versions;
+        public AlignmentCheck f05_check;
 
-        internal ziti_mfa_enrollment f21_ziti_mfa_enrollment;
-        internal AlignmentCheck f21_check;
+        public ziti_version f06_ziti_version;
+        public AlignmentCheck f06_check;
 
-        internal ziti_port_range f22_ziti_port_range;
-        internal AlignmentCheck f22_check;
+        public ziti_identity f07_ziti_identity;
+        public AlignmentCheck f07_check;
 
-        internal ziti_options f23_ziti_options;
-        internal AlignmentCheck f23_check;
+        public ziti_process f08_ziti_process;
+        public AlignmentCheck f08_check;
 
-        internal ziti_context_event f24_ziti_context_event;
-        internal AlignmentCheck f24_check;
+        public ziti_posture_query f09_ziti_posture_query;
+        public AlignmentCheck f09_check;
 
-        internal ziti_router_event f25_ziti_router_event;
-        internal AlignmentCheck f25_check;
+        public ziti_posture_query_set f10_ziti_posture_query_set;
+        public AlignmentCheck f10_check;
 
-        internal ziti_service_event f26_ziti_service_event;
-        internal AlignmentCheck f26_check;
+        public ziti_session_type f11_ziti_session_type;
+        public AlignmentCheck f11_check;
 
-        internal ziti_mfa_auth_event f27_ziti_mfa_auth_event;
-        internal AlignmentCheck f27_check;
+        public ziti_service f12_ziti_service;
+        public AlignmentCheck f12_check;
 
-        internal ziti_api_event f28_ziti_api_event;
-        internal AlignmentCheck f28_check;
+        public ziti_address f13_ziti_address_host;
+        public AlignmentCheck f13_check;
+
+        public ziti_address f14_ziti_address_cidr;
+        public AlignmentCheck f14_check;
+
+        public ziti_client_cfg_v1 f15_ziti_client_cfg_v1;
+        public AlignmentCheck f15_check;
+
+        public ziti_intercept_cfg_v1 f16_ziti_intercept_cfg_v1;
+        public AlignmentCheck f16_check;
+
+        public ziti_server_cfg_v1 f17_ziti_server_cfg_v1;
+        public AlignmentCheck f17_check;
+
+        public ziti_listen_options f18_ziti_listen_options;
+        public AlignmentCheck f18_check;
+
+        public ziti_host_cfg_v1 f19_ziti_host_cfg_v1;
+        public AlignmentCheck f19_check;
+
+        public ziti_host_cfg_v2 f20_ziti_host_cfg_v2;
+        public AlignmentCheck f20_check;
+
+        public ziti_mfa_enrollment f21_ziti_mfa_enrollment;
+        public AlignmentCheck f21_check;
+
+        public ziti_port_range f22_ziti_port_range;
+        public AlignmentCheck f22_check;
+
+        public ziti_options f23_ziti_options;
+        public AlignmentCheck f23_check;
+
+        public ziti_context_event f24_ziti_context_event;
+        public AlignmentCheck f24_check;
+
+        public ziti_router_event f25_ziti_router_event;
+        public AlignmentCheck f25_check;
+
+        public ziti_service_event f26_ziti_service_event;
+        public AlignmentCheck f26_check;
+
+        public ziti_mfa_auth_event f27_ziti_mfa_auth_event;
+        public AlignmentCheck f27_check;
+
+        public ziti_api_event f28_ziti_api_event;
+        public AlignmentCheck f28_check;
     }
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
     public struct ziti_context_event {
         [FieldOffset(0 * TestBlitting.ptr)]
-        internal ziti_event_type ziti_event_type;
+        public ziti_event_type ziti_event_type;
         [FieldOffset(1 * TestBlitting.ptr)]
-        internal int ctrl_status;
+        public int ctrl_status;
         [FieldOffset(2 * TestBlitting.ptr)]
-        internal string err;
+        public string err;
 
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        //internal byte[] _union;
+        //public byte[] _union;
     }
 
-    internal enum ziti_router_status {
+    public enum ziti_router_status {
         EdgeRouterAdded,
         EdgeRouterConnected,
         EdgeRouterDisconnected,
@@ -218,25 +222,25 @@ namespace OpenZiti.Native {
     }
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
-    internal struct ziti_api_event {
+    public struct ziti_api_event {
         [FieldOffset(0 * TestBlitting.ptr)]
-        internal ziti_event_type ziti_event_type;
+        public ziti_event_type ziti_event_type;
         [FieldOffset(1 * TestBlitting.ptr)]
         public string new_ctrl_address;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
-    internal struct ziti_mfa_auth_event {
+    public struct ziti_mfa_auth_event {
         [FieldOffset(0 * TestBlitting.ptr)]
-        internal ziti_event_type ziti_event_type;
+        public ziti_event_type ziti_event_type;
         [FieldOffset(1 * TestBlitting.ptr)]
-        internal IntPtr ziti_auth_query_mfa;
+        public IntPtr ziti_auth_query_mfa;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
-    internal struct ziti_service_event {
+    public struct ziti_service_event {
         [FieldOffset(0 * TestBlitting.ptr)]
-        internal ziti_event_type ziti_event_type;
+        public ziti_event_type ziti_event_type;
         [FieldOffset(1 * TestBlitting.ptr)]
         public IntPtr removed;
         [FieldOffset(2 * TestBlitting.ptr)]
@@ -246,21 +250,21 @@ namespace OpenZiti.Native {
     }
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
-    struct ziti_router_event {
+    public struct ziti_router_event {
         [FieldOffset(0 * TestBlitting.ptr)]
-        internal ziti_event_type ziti_event_type;
+        public ziti_event_type ziti_event_type;
         [FieldOffset(1 * TestBlitting.ptr)]
-        internal ziti_router_status status;
+        public ziti_router_status status;
         [FieldOffset(2 * TestBlitting.ptr)]
-        internal string name;
+        public string name;
         [FieldOffset(3 * TestBlitting.ptr)]
-        internal string address;
+        public string address;
         [FieldOffset(4 * TestBlitting.ptr)]
-        internal string version;
+        public string version;
     }
 
     //old..[StructLayout(LayoutKind.Sequential)]
-    //old..internal struct ziti_context_event {
+    //old..public struct ziti_context_event {
     //old..    public int ctrl_status;
     //old..    public IntPtr err;
     //old..};
@@ -271,7 +275,7 @@ namespace OpenZiti.Native {
         ZitiMfaAuthEvent = 1 << 3,
         ZitiAPIEvent = 1 << 4,
     }
-    
+
 
     public enum ziti_metric_type {
         EWMA_1m,
@@ -291,22 +295,22 @@ namespace OpenZiti.Native {
         public bool disabled;
         public IntPtr /*public char**/ config_types;
         public uint api_page_size;
-#if ZITI_X64
+#if ZITI_64BIT
                 public UInt32 refresh_interval; //the duration in seconds between checking for updates from the controller
 #else
-                public int refresh_interval; //the duration in seconds between checking for updates from the controller
+        public int refresh_interval; //the duration in seconds between checking for updates from the controller
 #endif
         public ziti_metric_type metrics_type; //an enum describing the metrics to collect
         public int router_keepalive;
-        
+
         //posture query cbs
         public ziti_pq_mac_cb pq_mac_cb;
         public ziti_pq_os_cb pq_os_cb;
         public ziti_pq_process_cb pq_process_cb;
         public ziti_pq_domain_cb pq_domain_cb;
-        
+
         public IntPtr app_ctx;
-        
+
         public uint events;
 
         public ziti_event_cb event_cb;
@@ -323,8 +327,8 @@ namespace OpenZiti.Native {
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_port_range {
-        internal int low; //, int, none, low, __VA_ARGS__) \
-        internal int high; //, int, none, high, __VA_ARGS__)
+        public int low; //, int, none, low, __VA_ARGS__) \
+        public int high; //, int, none, high, __VA_ARGS__)
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -336,56 +340,56 @@ namespace OpenZiti.Native {
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_host_cfg_v2 {
-        internal IntPtr terminators;//, ziti_host_cfg_v1, list, terminators, __VA_ARGS__)
+        public IntPtr terminators;//, ziti_host_cfg_v1, list, terminators, __VA_ARGS__)
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_host_cfg_v1 {
-        internal string protocol;
-        internal bool forward_protocol;
-        internal IntPtr allowed_protocols;
-        internal string address;
-        internal bool forward_address;
-        internal IntPtr allowed_addresses;
-        internal int port;
-        internal bool forward_port;
-        internal IntPtr allowed_port_ranges;//, ziti_port_range, array, allowedPortRanges, __VA_ARGS__) \
-        internal IntPtr allowed_source_addresses;//, ziti_address, array, allowedSourceAddresses, __VA_ARGS__) \
-        internal IntPtr listen_options;//, ziti_listen_options, ptr, listenOptions, __VA_ARGS__)
+        public string protocol;
+        public bool forward_protocol;
+        public IntPtr allowed_protocols;
+        public string address;
+        public bool forward_address;
+        public IntPtr allowed_addresses;
+        public int port;
+        public bool forward_port;
+        public IntPtr allowed_port_ranges;//, ziti_port_range, array, allowedPortRanges, __VA_ARGS__) \
+        public IntPtr allowed_source_addresses;//, ziti_address, array, allowedSourceAddresses, __VA_ARGS__) \
+        public IntPtr listen_options;//, ziti_listen_options, ptr, listenOptions, __VA_ARGS__)
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_listen_options {
-        internal bool bind_with_identity;
-        internal UInt64 connect_timeout;
-        internal int connect_timeout_seconds;
-        internal int cost;
-        internal string identity;
-        internal int max_connections;
-        internal string precedence;
+        public bool bind_with_identity;
+        public ulong connect_timeout;
+        public int connect_timeout_seconds;
+        public int cost;
+        public string identity;
+        public int max_connections;
+        public string precedence;
 
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_server_cfg_v1 {
-        internal string protocol;
-        internal string hostname;
-        internal int port;
+        public string protocol;
+        public string hostname;
+        public int port;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_intercept_cfg_v1 {
-        internal IntPtr protocols;
-        internal IntPtr addresses;
-        internal IntPtr port_ranges;
-        internal IntPtr dial_options_map;
-        internal string source_ip;
+        public IntPtr protocols;
+        public IntPtr addresses;
+        public IntPtr port_ranges;
+        public IntPtr dial_options_map;
+        public string source_ip;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_client_cfg_v1 {
-        internal ziti_address hostname;
-        internal int port;
+        public ziti_address hostname;
+        public int port;
     }
     public enum ziti_address_type {
         Host = 0,
@@ -396,7 +400,7 @@ namespace OpenZiti.Native {
     public struct ziti_address {
         private int address_type;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        internal byte[] _union;
+        public byte[] _union;
 
         public ziti_address_type Type {
             get {
@@ -413,20 +417,20 @@ namespace OpenZiti.Native {
 
         public AddressFamily AF {
             get {
-                return (AddressFamily)BitConverter.ToInt32(new ReadOnlySpan<byte>(_union, 0, 4));
+                return (AddressFamily)BitConverter.ToInt32(new ReadOnlySpan<byte>(_union, 0, 4).ToArray(), 0);
             }
         }
 
         public int Bits {
             get {
-                return BitConverter.ToInt32(new ReadOnlySpan<byte>(_union, 4, 4));
+                return BitConverter.ToInt32(new ReadOnlySpan<byte>(_union, 4, 4).ToArray(), 0);
             }
         }
 
         public IPAddress IP {
             get {
                 ReadOnlySpan<byte> ipb = new ReadOnlySpan<byte>(_union, 8, 4);
-                IPAddress ip = new IPAddress(ipb);
+                IPAddress ip = new IPAddress(ipb.ToArray());
                 return ip;
             }
         }
@@ -440,10 +444,10 @@ namespace OpenZiti.Native {
         public string name;
         [FieldOffset(2 * TestBlitting.ptr)]
         public IntPtr permissions;
-#if ZITI_X64
+#if ZITI_64BIT
         [FieldOffset(3 * TestBlitting.ptr)]
         public bool encryption;
-        [FieldOffset(3 * TestBlitting.ptr + 4)]
+        [FieldOffset((3 * TestBlitting.ptr) + 4)]
         public int perm_flags;
         [FieldOffset(4 * TestBlitting.ptr)]
         public IntPtr config;
@@ -451,7 +455,7 @@ namespace OpenZiti.Native {
         public IntPtr /** posture_query_set[] **/ posture_query_set;
         [FieldOffset(6 * TestBlitting.ptr)]
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        //internal byte[] _union;
+        //public byte[] _union;
         public IntPtr /** Dictionary<string, posture_query_set> **/ posture_query_map;
         [FieldOffset(7 * TestBlitting.ptr)]
         public string updated_at;
@@ -466,13 +470,13 @@ namespace OpenZiti.Native {
         public IntPtr /* posture_query_set[] */ posture_query_set;
         [FieldOffset(7 * TestBlitting.ptr)]
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        //internal byte[] _union;
+        //public byte[] _union;
         public IntPtr /*Dictionary<string, posture_query_set> */ posture_query_map;
         [FieldOffset(8 * TestBlitting.ptr)]
         public string updated_at;
 #endif
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        //internal byte[] _union2;
+        //public byte[] _union2;
     }
     public enum ziti_session_type {
         Bind = 1,
@@ -525,63 +529,63 @@ namespace OpenZiti.Native {
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_version {
-        internal string version;
-        internal string revision;
-        internal string build_date;
-        internal IntPtr api_versions;
+        public string version;
+        public string revision;
+        public string build_date;
+        public IntPtr api_versions;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_api_versions {
-        internal IntPtr api_path_map;
+        public IntPtr api_path_map;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_api_path {
-        internal string path;
+        public string path;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_config {
-        internal string controller_url;
-        internal ziti_id_cfg id;
+        public string controller_url;
+        public ziti_id_cfg id;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_id_cfg {
-        internal string cert;
-        internal string key;
-        internal string ca;
+        public string cert;
+        public string key;
+        public string ca;
     }
 
-#if ZITI_X64
+#if ZITI_64BIT
     [StructLayout(LayoutKind.Explicit, Size = (TestBlitting.ptr * 5))]
 #else
     [StructLayout(LayoutKind.Explicit, Size = (TestBlitting.ptr * 6))]
 #endif
     public struct ziti_auth_query_mfa {
         [FieldOffset(0 * TestBlitting.ptr)]
-        internal string type_id;
+        public string type_id;
         [FieldOffset(1 * TestBlitting.ptr)]
-        internal string provider;
+        public string provider;
         [FieldOffset(2 * TestBlitting.ptr)]
-        internal string http_method;
+        public string http_method;
         [FieldOffset(3 * TestBlitting.ptr)]
-        internal string http_url;
-#if ZITI_X64
+        public string http_url;
+#if ZITI_64BIT
         [FieldOffset(4 * TestBlitting.ptr)]
-        internal int min_length;
-        [FieldOffset(4 * TestBlitting.ptr + 4)]
-        internal int max_length;
+        public int min_length;
+        [FieldOffset((4 * TestBlitting.ptr) + 4)]
+        public int max_length;
         [FieldOffset(5 * TestBlitting.ptr)]
-        internal string format;
+        public string format;
 #else
         [FieldOffset(4 * TestBlitting.ptr)]
-        internal int min_length;
+        public int min_length;
         [FieldOffset(5 * TestBlitting.ptr)]
-        internal int max_length;
+        public int max_length;
         [FieldOffset(6 * TestBlitting.ptr)]
-        internal string format;
+        public string format;
 #endif
     }
 
@@ -598,10 +602,10 @@ namespace OpenZiti.Native {
     [StructLayout(LayoutKind.Sequential)]
     public struct model_map_entry {
         public IntPtr key;
-        internal char key_pad1;
-        internal char key_pad2;
+        public char key_pad1;
+        public char key_pad2;
         public size_t key_len;
-        public UInt32 key_hash;
+        public uint key_hash;
         public IntPtr value;
         public IntPtr _next;
         public IntPtr _tnext;
@@ -622,15 +626,15 @@ namespace OpenZiti.Native {
         private readonly IntPtr app_data;
         private size_t app_data_sz;
     }
-    
+
     public struct ziti_listen_opts {
-        bool bind_with_identity;//, bool, none, bindUsingEdgeIdentity, __VA_ARGS__) \
-        UInt64 connect_timeout;//, duration, none, connectTimeout, __VA_ARGS__)       \
-        int connect_timeout_seconds;//, int, none, connectTimeoutSeconds, __VA_ARGS__) \
-        int cost;//, int, none, cost, __VA_ARGS__) \
-        string identity;//, string, none, identity, __VA_ARGS__) \
-        int max_connections;//, int, none, maxConnections, __VA_ARGS__)\
-        string precendence;//, string, none, precendence, __VA_ARGS__)
+        public bool bind_with_identity;//, bool, none, bindUsingEdgeIdentity, __VA_ARGS__) \
+        public ulong connect_timeout;//, duration, none, connectTimeout, __VA_ARGS__)       \
+        public int connect_timeout_seconds;//, int, none, connectTimeoutSeconds, __VA_ARGS__) \
+        public int cost;//, int, none, cost, __VA_ARGS__) \
+        public string identity;//, string, none, identity, __VA_ARGS__) \
+        public int max_connections;//, int, none, maxConnections, __VA_ARGS__)\
+        public string precendence;//, string, none, precendence, __VA_ARGS__)
     }
 
 

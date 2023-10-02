@@ -16,13 +16,19 @@ limitations under the License.
 
 using System;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+[assembly: InternalsVisibleTo("UnitTests")]
 namespace OpenZiti.Native {
     public class API {
         public const CallingConvention CALL_CONVENTION = CallingConvention.Cdecl;
 
         public const string Z4D_DLL_PATH = @"ziti4dotnet";
+
+        public static string GetZitiPath() {
+            return Z4D_DLL_PATH;
+        }
 
         #region //ziti.h - functions exported from the ziti-sdk-c project from ziti.h
 
