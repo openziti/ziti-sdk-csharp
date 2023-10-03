@@ -65,7 +65,7 @@ namespace OpenZiti.NET.Tests {
         public async Task TestWeatherAsync() {
             try {
                 var h = new Helper();
-                var mapi = await h.NewManagementApi();
+                var mapi = h.ManagementApi;
                 var l = SimpleConsoleLogging(MLog.LogLevel.Trace);
 
                 OpenZiti.API.NativeLogger = OpenZiti.API.DefaultNativeLogFunction;
@@ -73,20 +73,24 @@ namespace OpenZiti.NET.Tests {
                 //to see the logs from the Native SDK, set the log level
                 OpenZiti.API.SetLogLevel(ZitiLogLevel.DEBUG);
                 //Console.Clear();
+                
+                if (await h.FindEdgeRouterPolicyByNameAsync("all-endpoints-public-routers") == null) {
+                    var erp = new EdgeRouterPolicyCreate {
+                        Name = "all-erp",
+                        EdgeRouterRoles = new Roles() { "#all" },
+                        IdentityRoles = new Roles() { "#all" }
+                    };
+                    await mapi.CreateEdgeRouterPolicyAsync(erp);
+                }
 
-                var erp = new EdgeRouterPolicyCreate {
-                    Name = "all-erp",
-                    EdgeRouterRoles = new Roles() { "#all" },
-                    IdentityRoles = new Roles() { "#all" }
-                };
-                await mapi.CreateEdgeRouterPolicyAsync(erp);
-
-                var serp = new ServiceEdgeRouterPolicyCreate {
-                    Name = "all-serp",
-                    EdgeRouterRoles = new Roles() { "#all" },
-                    ServiceRoles = new Roles() { "#all" }
-                };
-                await mapi.CreateServiceEdgeRouterPolicyAsync(serp);
+                if (await h.FindServiceEdgeRouterPolicyByNameAsync("all-routers-all-services") == null) {
+                    var serp = new ServiceEdgeRouterPolicyCreate {
+                        Name = "all-serp",
+                        EdgeRouterRoles = new Roles() { "#all" },
+                        ServiceRoles = new Roles() { "#all" }
+                    };
+                    await mapi.CreateServiceEdgeRouterPolicyAsync(serp);
+                }
 
                 var emptyRoleFilter = new string[] { };
                 var ids = await mapi.ListIdentitiesAsync(100, 0, "name = \"test_id\"", emptyRoleFilter, "");
