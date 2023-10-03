@@ -1,6 +1,23 @@
+/*
+Copyright NetFoundry Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 using System;
 
 using OpenZiti;
+using System.Reflection;
 using System.Threading.Tasks;
 using MLog = Microsoft.Extensions.Logging;
 
@@ -8,7 +25,7 @@ namespace OpenZiti.NET.Samples {
     public class Program {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
-        static async Task Main(string[] args) {
+        private static async Task Main(string[] args) {
             try {
                 Debugging.LoggingHelper.SimpleConsoleLogging(MLog.LogLevel.Trace);
 
@@ -18,33 +35,30 @@ namespace OpenZiti.NET.Samples {
                 API.SetLogLevel(ZitiLogLevel.INFO);
                 Console.Clear();
 
-                if (args == null || args.Length < 3) {
-                    Console.WriteLine("These samples expect at least two params to be supplied:");
-                    Console.WriteLine(" param1: the sample to run: {exampleToRun=weather|enroll|hosted|hosted-client}");
-                    Console.WriteLine(" param2: the jwt to use: {path-to-identity-file}");
-                    Console.WriteLine(" then, any other params needed");
+                var currentAssembly = Assembly.GetExecutingAssembly();
+                if (args == null || args.Length < 1) {
+                    Console.WriteLine("These samples expect a parameter indicating which sample to run.");
+                    Console.WriteLine("Available options are:");
+                    
+                    foreach (var type in currentAssembly.GetTypes())
+                        if (Attribute.IsDefined(type, typeof(Sample)))
+                        {
+                            var sample = (Sample)Attribute.GetCustomAttribute(type, typeof(Sample));
+                            Console.WriteLine("  - " + sample?.Name);
+                        }
                     return;
                 }
-
-                // reminder to devs that these examples are intended to run from the command line. that means args[0]
-                // will be the name of the executing assembly. if you "debug" these samples, make sure to add an args[0]
-                switch (args[1].ToLower()) {
-                    case "weather":
-                        Weather.Run(args[2]);
-                        break;
-                    case "enroll":
-                        Enrollment.Run(args[2]);
-                        break;
-                    case "hosted":
-                        await HostedService.Run(args[2]);
-                        break;
-                    case "hosted-client":
-                        await HostedServiceClient.Run(args[2]);
-                        break;
-                    default:
-                        Console.WriteLine($"Unexpected sample supplied {args[0]}.");
-                        break;
-                }
+                
+                foreach (var type in currentAssembly.GetTypes())
+                    if (Attribute.IsDefined(type, typeof(Sample)))
+                    {
+                        var attr = (Sample)Attribute.GetCustomAttribute(type, typeof(Sample));
+                        if (attr?.Name == args[0]) {
+                            var sample = (SampleBase)Activator.CreateInstance(type);
+                            await sample.RunAsync(args);
+                        }
+                    }
+                
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("Sample execution completed successfully");
                 Console.WriteLine("==============================================================");

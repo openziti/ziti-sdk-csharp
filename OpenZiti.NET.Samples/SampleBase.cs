@@ -1,6 +1,23 @@
+/*
+Copyright NetFoundry Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenZiti.NET.Samples {
 
@@ -9,6 +26,19 @@ namespace OpenZiti.NET.Samples {
             var strongIdentity = API.EnrollIdentityFile(pathToEnrollmentToken);
             File.WriteAllBytes($"{outputPath}", Encoding.UTF8.GetBytes(strongIdentity));
             Console.WriteLine($"Strong identity enrolled successfully. File saved to: {outputPath}");
+        }
+
+        public abstract Task RunAsync(string[] args);
+    }
+    
+    [AttributeUsage(AttributeTargets.Class)]
+    public class Sample : Attribute
+    {
+        public string Name { get; }
+
+        public Sample(string name)
+        {
+            Name = name;
         }
     }
 }

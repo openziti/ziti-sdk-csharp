@@ -18,11 +18,14 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenZiti.NET.Samples {
 
+    [Sample("weather")]
     public class Weather : SampleBase {
-        public static void Run(string identityFile) {
+        public override async Task RunAsync(string[] args) {
+            var identityFile = "";
             var c = new ZitiContext(identityFile);
             var zitiSocketHandler = c.NewZitiSocketHandler("weather-svc");
             var client = new HttpClient(new OpenZiti.Debugging.LoggingHandler(zitiSocketHandler));

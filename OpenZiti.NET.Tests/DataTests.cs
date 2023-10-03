@@ -64,6 +64,8 @@ namespace OpenZiti.NET.Tests {
         [TestMethod]
         public async Task TestWeatherAsync() {
             try {
+                var h = new Helper();
+                var mapi = await h.NewManagementApi();
                 var l = SimpleConsoleLogging(MLog.LogLevel.Trace);
 
                 OpenZiti.API.NativeLogger = OpenZiti.API.DefaultNativeLogFunction;
@@ -71,43 +73,6 @@ namespace OpenZiti.NET.Tests {
                 //to see the logs from the Native SDK, set the log level
                 OpenZiti.API.SetLogLevel(ZitiLogLevel.DEBUG);
                 //Console.Clear();
-
-                Authenticate auth = new Authenticate();
-                Method method = Method.Password;
-                auth.Username = Environment.GetEnvironmentVariable("ZITI_USERNAME");
-                auth.Password = Environment.GetEnvironmentVariable("ZITI_PASSWORD");
-                if (auth.Username is null or "") {
-                    auth.Username = "admin";
-                    Console.WriteLine("Using DEFAULT USERNAME (set env var ZITI_USERNAME to override): " + auth.Username);
-                }
-                if (auth.Password is null or "") {
-                    auth.Password = "admin";
-                    Console.WriteLine("Using DEFAULT PASSWORD (set env var ZITI_PASSWORD to override): " + auth.Password);
-                }
-                var baseUrl = Environment.GetEnvironmentVariable("ZITI_BASEURL");
-                if (baseUrl is null or "") {
-                    baseUrl = "localhost:1280";
-                    Console.WriteLine("Using DEFAULT url (set env var ZITI_BASEURL to override): " + baseUrl);
-                }
-
-                var handler = new HttpClientHandler {
-                    ClientCertificateOptions = ClientCertificateOption.Manual,
-                    ServerCertificateCustomValidationCallback =
-                    (httpRequestMessage, cert, cetChain, policyErrors) => {
-                        return true;
-                    }
-                };
-
-                var httpReqHandler = new LoggingHandler(handler);
-                var nonValidatingHttpClient = new HttpClient(httpReqHandler);
-
-                ManagementAPI mapi = new ManagementAPI(nonValidatingHttpClient) {
-                    BaseUrl = $"https://{baseUrl}/edge/management/v1"
-                };
-
-                CurrentApiSessionDetailEnvelope detail = await mapi.AuthenticateAsync(auth, method);
-                Console.WriteLine(detail.Data.Id);
-                nonValidatingHttpClient.DefaultRequestHeaders.Add("zt-session", detail.Data.Token); // Example header
 
                 var erp = new EdgeRouterPolicyCreate {
                     Name = "all-erp",
@@ -126,12 +91,10 @@ namespace OpenZiti.NET.Tests {
                 var emptyRoleFilter = new string[] { };
                 var ids = await mapi.ListIdentitiesAsync(100, 0, "name = \"test_id\"", emptyRoleFilter, "");
                 foreach (var id in ids.Data) {
-                    Console.WriteLine(id.Name);
                     await mapi.DeleteIdentityAsync(id.Id);
                 }
 
-                var h = new Helper(mapi);
-                var obj1 = JsonConvert.DeserializeObject("{'protocol':'tcp', 'address':'wttr.in','port':443}");
+                var obj1 = JsonConvert.DeserializeObject("{\"protocol\":\"tcp\", \"address\":\"wttr.in\",\"port\":443}");
 
                 var svcName = $"test-weather-svc";
                 var testServices = "test-services-role";
@@ -235,8 +198,7 @@ namespace OpenZiti.NET.Tests {
 
                 var c = new ZitiContext(tempFilePath);
                 var zitiSocketHandler = c.NewZitiSocketHandler(svcName);
-                //var client = new HttpClient(new LoggingHandler(zitiSocketHandler));
-                var client = new HttpClient(handler);
+                var client = new HttpClient(new LoggingHandler(zitiSocketHandler));
                 client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
 
                 var result = await client.GetStringAsync("https://wttr.in:443");

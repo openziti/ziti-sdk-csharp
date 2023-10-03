@@ -18,11 +18,18 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenZiti.NET.Samples {
+    [Sample("enroll")]
 
     public class Enrollment : SampleBase {
-        public static void Run(string jwt) {
+        public override async Task RunAsync(string[] args) {
+            if (args.Length < 2) {
+                Console.WriteLine("This example requires an extra parameter of the jwt you want to enroll.");
+                return;
+            }
+            var jwt = "";
             Console.WriteLine("Enrolling the first time. This is expected to succeed");
             Enroll(jwt, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json");
 
@@ -34,7 +41,7 @@ namespace OpenZiti.NET.Samples {
             try {
                 Enroll(jwt, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json");
             } catch (Exception ex) {
-                Console.WriteLine($"    EXPECTED ERROR: JWT not accepted by controller");
+                Console.WriteLine( "    EXPECTED ERROR: JWT not accepted by controller");
                 Console.WriteLine($"    ERROR RECEIVED: {ex.Message}");
                 Console.WriteLine();
             }
