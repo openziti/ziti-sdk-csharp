@@ -4,7 +4,7 @@ using OpenZiti;
 using System.Threading.Tasks;
 using MLog = Microsoft.Extensions.Logging;
 
-namespace OpenZiti.Samples {
+namespace OpenZiti.NET.Samples {
     public class Program {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 

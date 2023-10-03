@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenZiti.Samples {
+namespace OpenZiti.NET.Samples {
     public class HostedServiceClient : SampleBase {
         public static async Task Run(string clientJwt) {
             string outputPath = "";

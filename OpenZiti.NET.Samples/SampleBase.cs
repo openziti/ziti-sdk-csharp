@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace OpenZiti.Samples {
+namespace OpenZiti.NET.Samples {
 
     public abstract class SampleBase {
         public static void Enroll(string pathToEnrollmentToken, string outputPath) {

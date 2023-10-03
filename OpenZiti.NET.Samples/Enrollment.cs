@@ -19,7 +19,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 
-namespace OpenZiti.Samples {
+namespace OpenZiti.NET.Samples {
 
     public class Enrollment : SampleBase {
         public static void Run(string jwt) {
