@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenZiti.NET" Version="0.9.23274.4363" />
+    <ProjectReference Include="C:\git\github\openziti\ziti-sdk-csharp\OpenZiti.NET\OpenZiti.NET.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,8 @@
 using System;
 
 using OpenZiti;
-using System.Runtime.InteropServices;
-using NLog;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using NLog.Fluent;
-using OpenZiti.Native;
+using MLog = Microsoft.Extensions.Logging;
 
 namespace OpenZiti.Samples {
     public class Program {
@@ -14,12 +10,12 @@ namespace OpenZiti.Samples {
 
         static async Task Main(string[] args) {
             try {
-                OpenZiti.Logging.SimpleConsoleLogging(LogLevel.Trace);
+                Debugging.LoggingHelper.SimpleConsoleLogging(MLog.LogLevel.Trace);
 
-                OpenZiti.API.NativeLogger = OpenZiti.API.DefaultNativeLogFunction;
-                OpenZiti.API.InitializeZiti();
+                API.NativeLogger = API.DefaultNativeLogFunction;
+                API.InitializeZiti();
                 //to see the logs from the Native SDK, set the log level
-                OpenZiti.API.SetLogLevel(Logging.ZitiLogLevel.INFO);
+                API.SetLogLevel(ZitiLogLevel.INFO);
                 Console.Clear();
 
                 if (args == null || args.Length < 3) {

@@ -6,7 +6,7 @@ namespace OpenZiti.Samples {
 
     public abstract class SampleBase {
         public static void Enroll(string pathToEnrollmentToken, string outputPath) {
-            var strongIdentity = API.EnrollIdentity(pathToEnrollmentToken);
+            var strongIdentity = API.EnrollIdentityFile(pathToEnrollmentToken);
             File.WriteAllBytes($"{outputPath}", Encoding.UTF8.GetBytes(strongIdentity));
             Console.WriteLine($"Strong identity enrolled successfully. File saved to: {outputPath}");
         }
