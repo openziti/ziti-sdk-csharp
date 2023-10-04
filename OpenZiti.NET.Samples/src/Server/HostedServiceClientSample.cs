@@ -24,7 +24,7 @@ using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples {
     [Sample("hosted-client")]
-    public class HostedServiceClient : SampleBase {
+    public class HostedServiceClientSample : SampleBase {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<object> RunAsync() {
             //to see the logs from the Native SDK, set the log level

@@ -20,6 +20,7 @@ using OpenZiti.Management;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,6 +35,20 @@ namespace OpenZiti.NET.Samples.Common {
         }
         public SampleSetup(ManagementApiHelper h) {
             this.h = h;
+        }
+
+        private void HandleApiException(ApiException<ApiErrorEnvelope> e) {
+            Log.Info($"{e.Result.Error.Code}");
+            Log.Info($"{e.Result.Error.Message}");
+            Log.Info($"{e.Result.Error.Cause.Reason}");
+            Log.Info($"{e.Message}");
+        }
+
+        private void HandleApiException(ApiException e) {
+            Log.Info($"{e.Message}");
+            if (e.InnerException != null) {
+                Log.Info($"{e.InnerException.Message}");
+            }
         }
         
         public async Task<IdentityDetail> BootstrapSampleIdentityAsync(string name, Attributes roles) {
@@ -190,16 +205,10 @@ namespace OpenZiti.NET.Samples.Common {
 
                 return rtn;
             } catch (ApiException<ApiErrorEnvelope> e) {
-                Log.Info($"{e.Result.Error.Code}");
-                Log.Info($"{e.Result.Error.Message}");
-                Log.Info($"{e.Result.Error.Cause.Reason}");
-                Log.Info($"{e.Message}");
+                HandleApiException(e);
                 throw;
             } catch (ApiException e) {
-                Log.Info($"{e.Message}");
-                if (e.InnerException != null) {
-                    Log.Info($"{e.InnerException.Message}");
-                }
+                HandleApiException(e);
                 throw;
             }
         }
@@ -256,16 +265,10 @@ namespace OpenZiti.NET.Samples.Common {
                 #endregion
                 return rtn;
             } catch (ApiException<ApiErrorEnvelope> e) {
-                Log.Info($"{e.Result.Error.Code}");
-                Log.Info($"{e.Result.Error.Message}");
-                Log.Info($"{e.Result.Error.Cause.Reason}");
-                Log.Info($"{e.Message}");
+                HandleApiException(e);
                 throw;
             } catch (ApiException e) {
-                Log.Info($"{e.Message}");
-                if (e.InnerException != null) {
-                    Log.Info($"{e.InnerException.Message}");
-                }
+                HandleApiException(e);
                 throw;
             }
         }
@@ -283,16 +286,126 @@ namespace OpenZiti.NET.Samples.Common {
 
                 return rtn;
             } catch (ApiException<ApiErrorEnvelope> e) {
-                Log.Info($"{e.Result.Error.Code}");
-                Log.Info($"{e.Result.Error.Message}");
-                Log.Info($"{e.Result.Error.Cause.Reason}");
-                Log.Info($"{e.Message}");
+                HandleApiException(e);
                 throw;
             } catch (ApiException e) {
-                Log.Info($"{e.Message}");
-                if (e.InnerException != null) {
-                    Log.Info($"{e.InnerException.Message}");
+                HandleApiException(e);
+                throw;
+            }
+        }
+
+        public async Task<string> SetupPetStoreExample(string svcName, string intercept, string petstoreAddress, int petstorePort) {
+            try {
+                var svcRole = $"{svcName}.service.role";
+                var clientIdentityName = $"{svcName}-client";
+                var svcBindRole = $"{svcName}.binders";
+                var svcDialRole = $"{svcName}.dialers";
+
+                #region BootstrapClientIdentity
+                // create weather client identity
+                await h.DeleteIdentityByName(clientIdentityName);
+                var rtn = await BootstrapAndEnrollIdentityAsync(clientIdentityName, new Attributes() { svcDialRole });
+                #endregion
+
+                #region CreateHostV1Config
+                // create the host config if needed
+                var hostV1ConfigName = $"{svcName}.config.host.v1";
+                var hostV1ConfigTypeId = await h.FindConfigTypeByNameAsync("host.v1");
+                var hostV1Config = JsonConvert.DeserializeObject("{\"protocol\":\"tcp\", \"address\":\"" + petstoreAddress + "\",\"port\":" + petstorePort + "}");
+                var foundHostV1ConfigId = await h.FindConfigIdByNameAsync(hostV1ConfigName);
+                if (foundHostV1ConfigId == null) {
+                    var createConfig = new ConfigCreate {
+                        Name = hostV1ConfigName,
+                        ConfigTypeId = hostV1ConfigTypeId,
+                        Data = hostV1Config
+                    };
+                    //httpReqHandler.DoLogging = true;
+                    var hostConfig = await h.ManagementApi.CreateConfigAsync(createConfig);
+                    foundHostV1ConfigId = hostConfig.Data.Id;
                 }
+                #endregion
+
+                #region CreateInterceptV1Config
+                // create an intercept config if needed - not used in the weather example but useful from tunneler clients
+                var interceptV1ConfigName = $"{svcName}.config.intercept.v1";
+                var interceptConfigTypeId = await h.FindConfigTypeByNameAsync("intercept.v1");
+                var interceptV1Config = JsonConvert.DeserializeObject(
+                    "{\"protocols\":[\"tcp\"],\"addresses\":[\""+ intercept + "\"],\"portRanges\":[{\"low\":" + petstorePort + ", \"high\":" + petstorePort + "}]}");
+                var foundInterceptConfigId = await h.FindConfigIdByNameAsync(interceptV1ConfigName);
+                if (foundInterceptConfigId == null) {
+                    var createConfig = new ConfigCreate {
+                        Name = interceptV1ConfigName,
+                        ConfigTypeId = interceptConfigTypeId,
+                        Data = interceptV1Config
+                    };
+                    //httpReqHandler.DoLogging = true;
+                    var interceptConfig = await h.ManagementApi.CreateConfigAsync(createConfig);
+                    foundInterceptConfigId = interceptConfig.Data.Id;
+                }
+                #endregion
+
+                #region CreateWeatherService
+                //create the weather service
+                await h.DeleteServiceByName(svcName);
+                var createService = new ServiceCreate {
+                    Name = svcName,
+                    RoleAttributes = new string[] { svcRole },
+                    Configs = new string[] { foundHostV1ConfigId, foundInterceptConfigId },
+                    EncryptionRequired = true
+                };
+                await h.ManagementApi.CreateServiceAsync(createService);
+                #endregion
+
+                #region CreateDialPolicy
+                // create the dial service policy
+                var svcDialPolicyName = $"{svcName}.sp.dial";
+                await h.DeleteServicePolicyByNameAsync(svcDialPolicyName);
+                var createServicePolicy = new ServicePolicyCreate {
+                    Name = svcDialPolicyName,
+                    Type = DialBind.Dial,
+                    IdentityRoles = new Roles() { $"#{svcDialRole}" },
+                    ServiceRoles = new Roles() { $"#{svcRole}" }
+                };
+                await h.ManagementApi.CreateServicePolicyAsync(createServicePolicy);
+                #endregion
+
+                #region CreateBindPolicy
+                // create the bind service policy
+                var svcBindPolicyName = $"{svcName}.sp.bind";
+                await h.DeleteServicePolicyByNameAsync($"{svcBindPolicyName}");
+                createServicePolicy = new ServicePolicyCreate {
+                    Name = svcBindPolicyName,
+                    Type = DialBind.Bind,
+                    IdentityRoles = new Roles() { $"#{svcBindRole}" },
+                    ServiceRoles = new Roles() { $"#{svcRole}" }
+                };
+                await h.ManagementApi.CreateServicePolicyAsync(createServicePolicy);
+                #endregion
+
+                #region AssignBindRoleToRouterIdentity
+                // assign the bind roleAttribute to the bind identity
+                var erse = await h.ManagementApi.ListEdgeRoutersAsync(null, null, null, null, null);
+                var ers = erse.Data;
+                if (ers.Count == 1) {
+                    // expected to have 1 router
+                    var router = await h.FindIdentityByNameAsync(ers[0].Name);
+                    await h.AddAndPatchIdentity(router, svcBindRole);
+                } else {
+                    throw new Exception("too many or too few routers defined. expected 1, found: " + ers.Count);
+                }
+                #endregion
+
+                //now just wait and make sure the terminator exists before allowing the program to continue
+                if (!await h.WaitForTerminatorAsync(svcName, TimeSpan.FromSeconds(20))) {
+                    throw new Exception("Error while waiting for terminator");
+                }
+
+                return rtn;
+            } catch (ApiException<ApiErrorEnvelope> e) {
+                HandleApiException(e);
+                throw;
+            } catch (ApiException e) {
+                HandleApiException(e);
                 throw;
             }
         }

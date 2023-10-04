@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="C:\git\github\openziti\ziti-sdk-csharp\OpenZiti.Management\OpenZiti.Management.csproj" />
+    <ProjectReference Include="C:\git\github\openziti\ziti-sdk-csharp\OpenZiti.NET.Samples.Petstore\OpenZiti.NET.Samples.Petstore.csproj" />
     <ProjectReference Include="C:\git\github\openziti\ziti-sdk-csharp\OpenZiti.NET\OpenZiti.NET.csproj" />
   </ItemGroup>
 

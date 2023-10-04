@@ -26,7 +26,7 @@ using OpenZiti.NET.Samples.Common;
 namespace OpenZiti.NET.Samples.Weather {
 
     [Sample("weather")]
-    public class Weather : SampleBase {
+    public class WeatherSample : SampleBase {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         
         public override async Task<object> RunAsync() {

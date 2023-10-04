@@ -26,14 +26,14 @@ namespace OpenZiti.Debugging {
     public class LoggingHandler : DelegatingHandler {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
-        public bool DoLogging { get; set; }
+        public bool LogHttpRequestResponse { get; set; }
 
         public LoggingHandler(HttpMessageHandler innerHandler)
             : base(innerHandler) {
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
-            if (DoLogging) {
+            if (LogHttpRequestResponse) {
                 Log.Info("Request:");
                 Log.Info(request.ToString());
                 if (request.Content != null) {
@@ -41,7 +41,7 @@ namespace OpenZiti.Debugging {
                 }
             }
             HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
-            if (DoLogging) {
+            if (LogHttpRequestResponse) {
                 Log.Info("Response:");
                 Log.Info(response.ToString());
                 if (response.Content != null) {

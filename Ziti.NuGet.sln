@@ -31,7 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenZiti.NET.Tests", "OpenZ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenZiti.Management", "OpenZiti.Management\OpenZiti.Management.csproj", "{19B86F48-FD61-4863-80E3-AE8E092BBBB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenZiti.NET.Samples", "V:\work\git\github\openziti\ziti-sdk-csharp\OpenZiti.NET.Samples\OpenZiti.NET.Samples.csproj", "{79435AB8-84F6-44FF-AC5D-374CDC097769}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenZiti.NET.Samples", "OpenZiti.NET.Samples\OpenZiti.NET.Samples.csproj", "{79435AB8-84F6-44FF-AC5D-374CDC097769}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenZiti.NET.Samples.Petstore", "OpenZiti.NET.Samples.Petstore\OpenZiti.NET.Samples.Petstore.csproj", "{8095ABCD-02C7-4354-810D-3CAD590EAB5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +129,26 @@ Global
 		{79435AB8-84F6-44FF-AC5D-374CDC097769}.Release|x64.Build.0 = Release|Any CPU
 		{79435AB8-84F6-44FF-AC5D-374CDC097769}.Release|x86.ActiveCfg = Release|Any CPU
 		{79435AB8-84F6-44FF-AC5D-374CDC097769}.Release|x86.Build.0 = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|x64.Build.0 = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Debug|x86.Build.0 = Debug|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|ARM.Build.0 = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|ARM64.Build.0 = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|x64.ActiveCfg = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|x64.Build.0 = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|x86.ActiveCfg = Release|Any CPU
+		{8095ABCD-02C7-4354-810D-3CAD590EAB5B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -27,7 +27,7 @@ namespace OpenZiti.NET.Tests {
         [TestMethod]
         public async Task TestWeatherAsync() {
             try {
-                Weather w = new Weather();
+                var w = new WeatherSample();
                 var result = (string)await w.RunAsync();
                 StringAssert.Contains(result, "Weather report"); //verify the test succeeds
 
