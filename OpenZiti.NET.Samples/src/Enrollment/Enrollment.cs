@@ -16,25 +16,27 @@ limitations under the License.
 
 using System;
 using System.IO;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+
+using OpenZiti.Management;
+using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples {
     [Sample("enroll")]
 
-    public class Enrollment : SampleBase {
-        public override async Task RunAsync(string[] args) {
-            if (args.Length < 2) {
-                Console.WriteLine("This example requires an extra parameter of the jwt you want to enroll.");
-                return;
-            }
-            var jwt = "";
+    public class EnrollmentSample : SampleBase {
+        public override async Task<object> RunAsync() {
+            var enrollDemoIdentityName = "enroll-demo";
+            var s = new SampleSetup();
+            var id = await s.BootstrapSampleIdentityAsync(enrollDemoIdentityName, null);
+            var jwt = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            File.WriteAllBytes(jwt, Encoding.UTF8.GetBytes(id.Enrollment.Ott.Jwt));
+            
             Console.WriteLine("Enrolling the first time. This is expected to succeed");
             Enroll(jwt, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json");
 
             //now enroll the same exact token again and expect an error
-            Console.WriteLine();
             Console.WriteLine("Enrolling the _second_ time. This is __expected__ to fail to");
             Console.WriteLine("    illustrate that enrollment may fail");
             Console.WriteLine();
@@ -45,6 +47,8 @@ namespace OpenZiti.NET.Samples {
                 Console.WriteLine($"    ERROR RECEIVED: {ex.Message}");
                 Console.WriteLine();
             }
+
+            return null;
         }
     }
 }

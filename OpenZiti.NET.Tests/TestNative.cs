@@ -7,10 +7,11 @@ using OpenZiti.Native;
 namespace OpenZiti.NET.Tests {
     [TestClass]
     public class NativeCodeAlignmentChecker {
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
         private static void verifyFieldCheck(AlignmentCheck check, string expectedChecksum, uint expectedOffset, uint expectedSize) {
             Assert.AreEqual(expectedChecksum, check.checksum);
-            Console.WriteLine($"{check.checksum}, {check.offset},  {check.size}");
+            Log.Info($"{check.checksum}, {check.offset},  {check.size}");
 
             Assert.AreEqual(expectedOffset, check.offset);
             Assert.AreEqual(expectedSize, check.size);
@@ -18,14 +19,14 @@ namespace OpenZiti.NET.Tests {
 
         [TestMethod]
         public void TestCSDKStructAlignments() {
-            Console.WriteLine("test begins with: " + Native.API.GetZitiPath());
+            Log.Info("test begins with: " + Native.API.GetZitiPath());
 
             IntPtr testData = TestBlitting.z4d_struct_test();
             ziti_types native_structs = Marshal.PtrToStructure<ziti_types>(testData);
             byte[] managedArray = new byte[native_structs.info.total_size];
             Marshal.Copy(testData, managedArray, 0, (int)native_structs.info.total_size);
 
-            Console.WriteLine("----");
+            Log.Info("----");
 #if ZITI_64BIT
             verifyFieldCheck(native_structs.f01_check, "ziti_auth_query_mfa", 24,  48);
             verifyFieldCheck(native_structs.f02_check, "ziti_id_cfg", 88,  24);
@@ -248,7 +249,7 @@ namespace OpenZiti.NET.Tests {
 
             Assert.AreEqual(ziti_event_type.ZitiAPIEvent, native_structs.f28_ziti_api_event.ziti_event_type);
 
-            Console.WriteLine("test complete");
+            Log.Info("test complete");
         }
     }
 }

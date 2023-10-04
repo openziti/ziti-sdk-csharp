@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 
 namespace OpenZiti.Debugging {
     public class LoggingHandler : DelegatingHandler {
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
         public bool DoLogging { get; set; }
 
@@ -33,23 +34,20 @@ namespace OpenZiti.Debugging {
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             if (DoLogging) {
-                Console.WriteLine("Request:");
-                Console.WriteLine(request.ToString());
+                Log.Info("Request:");
+                Log.Info(request.ToString());
                 if (request.Content != null) {
-                    Console.WriteLine(await request.Content.ReadAsStringAsync());
+                    Log.Info(await request.Content.ReadAsStringAsync());
                 }
-                Console.WriteLine();
             }
             HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
             if (DoLogging) {
-                Console.WriteLine("Response:");
-                Console.WriteLine(response.ToString());
+                Log.Info("Response:");
+                Log.Info(response.ToString());
                 if (response.Content != null) {
-                    Console.WriteLine(await response.Content.ReadAsStringAsync());
+                    Log.Info(await response.Content.ReadAsStringAsync());
                 }
-                Console.WriteLine();
-                Console.WriteLine("===============================================================================================");
-                Console.WriteLine();
+                Log.Info("===============================================================================================");
             }
             return response;
         }

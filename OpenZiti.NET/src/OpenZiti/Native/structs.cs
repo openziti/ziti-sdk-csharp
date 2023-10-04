@@ -27,6 +27,7 @@ namespace OpenZiti.Native {
 #pragma warning disable 0169
 
     public class TestBlitting {
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public const int ZITI_EVENT_UNION_SIZE = TestBlitting.ptr * 5;
 #if ZITI_64BIT
         public const int ptr = 8;
@@ -50,12 +51,12 @@ namespace OpenZiti.Native {
             //IntPtr q = z4d_ziti_posture_query();
             //ziti_posture_query pq = Marshal.PtrToStructure<ziti_posture_query>(q);
 
-            Console.WriteLine("----");
+            Log.Info("----");
             //IntPtr p = native_structs.f13_ziti_address_host.c;
             //string s = Marshal.PtrToStringUTF8(native_structs.f13_ziti_address_host.c);
 
-            //Console.WriteLine(native_structs.f15_ziti_client_cfg_v1.hostname.Hostname + ":");
-            //Console.WriteLine(native_structs.f15_ziti_client_cfg_v1.hostname.Hostname + ":");
+            //Log.Info(native_structs.f15_ziti_client_cfg_v1.hostname.Hostname + ":");
+            //Log.Info(native_structs.f15_ziti_client_cfg_v1.hostname.Hostname + ":");
 
         }
 

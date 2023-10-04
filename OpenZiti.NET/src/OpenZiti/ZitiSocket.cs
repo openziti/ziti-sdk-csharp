@@ -28,7 +28,7 @@ using nAPI = OpenZiti.Native.API;
 namespace OpenZiti {
     public class ZitiSocket : IDisposable {
         static ZitiSocket() {
-            nAPI.Ziti_lib_init();
+            API.InitializeZiti();
         }
 
         internal IntPtr NativeSocket { get; } = IntPtr.Zero;

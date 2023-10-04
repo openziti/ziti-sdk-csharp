@@ -32,7 +32,7 @@ namespace OpenZiti {
         internal IntPtr NativeContext = IntPtr.Zero;
 
         static ZitiContext() {
-            nAPI.Ziti_lib_init();
+            API.InitializeZiti();
         }
 
         internal ZitiContext(IntPtr ptr) {

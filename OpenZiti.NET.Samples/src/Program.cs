@@ -15,11 +15,11 @@ limitations under the License.
 */
 
 using System;
-
-using OpenZiti;
 using System.Reflection;
 using System.Threading.Tasks;
 using MLog = Microsoft.Extensions.Logging;
+
+using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples {
     public class Program {
@@ -27,24 +27,20 @@ namespace OpenZiti.NET.Samples {
 
         private static async Task Main(string[] args) {
             try {
-                Debugging.LoggingHelper.SimpleConsoleLogging(MLog.LogLevel.Trace);
-
+                try { Console.Clear(); } catch (Exception) { /*ignore exceptions*/ }
+                Debugging.LoggingHelper.LogToConsole(MLog.LogLevel.Trace);
                 API.NativeLogger = API.DefaultNativeLogFunction;
-                API.InitializeZiti();
-                //to see the logs from the Native SDK, set the log level
-                API.SetLogLevel(ZitiLogLevel.INFO);
-                Console.Clear();
 
                 var currentAssembly = Assembly.GetExecutingAssembly();
                 if (args == null || args.Length < 1) {
-                    Console.WriteLine("These samples expect a parameter indicating which sample to run.");
-                    Console.WriteLine("Available options are:");
+                    Log.Info("These samples expect a parameter indicating which sample to run.");
+                    Log.Info("Available options are:");
                     
                     foreach (var type in currentAssembly.GetTypes())
                         if (Attribute.IsDefined(type, typeof(Sample)))
                         {
                             var sample = (Sample)Attribute.GetCustomAttribute(type, typeof(Sample));
-                            Console.WriteLine("  - " + sample?.Name);
+                            Log.Info("  - " + sample?.Name);
                         }
                     return;
                 }
@@ -55,19 +51,19 @@ namespace OpenZiti.NET.Samples {
                         var attr = (Sample)Attribute.GetCustomAttribute(type, typeof(Sample));
                         if (attr?.Name == args[0]) {
                             var sample = (SampleBase)Activator.CreateInstance(type);
-                            await sample.RunAsync(args);
+                            await sample.RunAsync();
                         }
                     }
                 
-                Console.WriteLine("==============================================================");
-                Console.WriteLine("Sample execution completed successfully");
-                Console.WriteLine("==============================================================");
+                Log.Info("==============================================================");
+                Log.Info("Sample execution completed successfully");
+                Log.Info("==============================================================");
             } catch (Exception e) {
-                Console.WriteLine("==============================================================");
-                Console.WriteLine("Sample failed to execute: " + e.Message);
-                Console.WriteLine("");
-                Console.WriteLine(e.StackTrace);
-                Console.WriteLine("==============================================================");
+                Log.Info("==============================================================");
+                Log.Info("Sample failed to execute: " + e.Message);
+                Log.Info("");
+                Log.Info(e.StackTrace);
+                Log.Info("==============================================================");
             }
         }
     }

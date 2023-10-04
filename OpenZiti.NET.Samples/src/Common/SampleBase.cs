@@ -19,16 +19,16 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenZiti.NET.Samples {
-
+namespace OpenZiti.NET.Samples.Common {
     public abstract class SampleBase {
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static void Enroll(string pathToEnrollmentToken, string outputPath) {
             var strongIdentity = API.EnrollIdentityFile(pathToEnrollmentToken);
             File.WriteAllBytes($"{outputPath}", Encoding.UTF8.GetBytes(strongIdentity));
-            Console.WriteLine($"Strong identity enrolled successfully. File saved to: {outputPath}");
+            Log.Info($"Strong identity enrolled successfully. File saved to: {outputPath}");
         }
 
-        public abstract Task RunAsync(string[] args);
+        public abstract Task<object> RunAsync();
     }
     
     [AttributeUsage(AttributeTargets.Class)]

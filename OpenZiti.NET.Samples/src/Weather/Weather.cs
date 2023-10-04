@@ -14,24 +14,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using OpenZiti.Management;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenZiti.NET.Samples {
+using OpenZiti.NET.Samples.Common;
+
+namespace OpenZiti.NET.Samples.Weather {
 
     [Sample("weather")]
     public class Weather : SampleBase {
-        public override async Task RunAsync(string[] args) {
-            var identityFile = "";
-            var c = new ZitiContext(identityFile);
-            var zitiSocketHandler = c.NewZitiSocketHandler("weather-svc");
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        
+        public override async Task<object> RunAsync() {
+            var svcName = "weather-demo-svc";
+            var setupResult = await new SampleSetup(new()).SetupWeatherExample(svcName);
+            
+            var c = new ZitiContext(setupResult);
+            var zitiSocketHandler = c.NewZitiSocketHandler(svcName);
             var client = new HttpClient(new OpenZiti.Debugging.LoggingHandler(zitiSocketHandler));
             client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
 
             var result = client.GetStringAsync("https://wttr.in:443").Result;
+            Console.Write(result);
+            return result;
         }
     }
 }

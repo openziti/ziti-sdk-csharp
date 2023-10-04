@@ -17,34 +17,41 @@ limitations under the License.
 using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
+
+using OpenZiti.Management;
+using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples {
     [Sample("hosted-client")]
     public class HostedServiceClient : SampleBase {
-        public override async Task RunAsync(string[] args) {
-            var clientJwt = "";
-            string outputPath = "";
-            if (clientJwt.EndsWith(".jwt")) {
-                outputPath = clientJwt.Replace(".jwt", ".json");
-            } else {
-                Console.WriteLine("Please provide a file that ends with .jwt");
-                return;
-            }
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        public override async Task<object> RunAsync() {
+            //to see the logs from the Native SDK, set the log level
+            API.SetLogLevel(ZitiLogLevel.DEBUG);
+            
+            var svcName = "hosted-demo-svc";
+            var setupResult = await new SampleSetup(new()).SetupHostedClientExample(svcName);
+            //var clientJwt = "";
+            //string outputPath = "";
+            //if (clientJwt.EndsWith(".jwt")) {
+            //    outputPath = clientJwt.Replace(".jwt", ".json");
+            //} else {
+            //    Console.WriteLine("Please provide a file that ends with .jwt");
+            //    return null;
+            //}
+//
+            //try {
+            //    Enroll(clientJwt, outputPath);
+            //} catch(Exception e) {
+            //    Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
+            //}
 
-            try {
-                Enroll(clientJwt, outputPath);
-            } catch(Exception e) {
-                Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
-            }
-
-            ZitiContext ctx = new ZitiContext(outputPath);
-            string svc = "hosted-svc";
+            ZitiContext ctx = new ZitiContext(setupResult);
             string terminator = "";
 
             ZitiSocket socketa = new ZitiSocket(SocketType.Stream);
-            ZitiSocket socketb = API.Connect(socketa, ctx, svc, terminator);
+            ZitiSocket socketb = API.Connect(socketa, ctx, svcName, terminator);
             using (var s = socketb.ToNetworkStream())
             using (var r = new StreamReader(s))
             using (var w = new StreamWriter(s)) {
@@ -59,6 +66,7 @@ namespace OpenZiti.NET.Samples {
                     Console.WriteLine($"Read:\n{read}");
                 }
             }
+            return null;
         }
     }
 }

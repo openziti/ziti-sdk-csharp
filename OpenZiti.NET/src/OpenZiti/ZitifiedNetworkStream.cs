@@ -30,6 +30,9 @@ using nAPI = OpenZiti.Native.API;
 
 namespace OpenZiti {
     public class ZitifiedNetworkStream : NetworkStream {
+        static ZitifiedNetworkStream() {
+            API.InitializeZiti();
+        }
         private SafeSocketHandle nativeSocket = null;
         private Socket socket = null;
 
