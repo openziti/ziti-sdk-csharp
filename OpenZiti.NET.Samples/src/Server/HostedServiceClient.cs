@@ -28,24 +28,10 @@ namespace OpenZiti.NET.Samples {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<object> RunAsync() {
             //to see the logs from the Native SDK, set the log level
-            API.SetLogLevel(ZitiLogLevel.DEBUG);
+            API.SetLogLevel(ZitiLogLevel.INFO);
             
             var svcName = "hosted-demo-svc";
             var setupResult = await new SampleSetup(new()).SetupHostedClientExample(svcName);
-            //var clientJwt = "";
-            //string outputPath = "";
-            //if (clientJwt.EndsWith(".jwt")) {
-            //    outputPath = clientJwt.Replace(".jwt", ".json");
-            //} else {
-            //    Console.WriteLine("Please provide a file that ends with .jwt");
-            //    return null;
-            //}
-//
-            //try {
-            //    Enroll(clientJwt, outputPath);
-            //} catch(Exception e) {
-            //    Console.WriteLine($"WARN: the jwt was not enrolled properly: {e.Message}");
-            //}
 
             ZitiContext ctx = new ZitiContext(setupResult);
             string terminator = "";
