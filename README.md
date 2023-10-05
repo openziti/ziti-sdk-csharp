@@ -77,7 +77,8 @@ target. You will find that target declared in the project file and pushes to wha
 with the `/p:NUGET_SOURCE=`. Building this package with this process should be very straightforward.
 
 The task will use the [OpenZiti.NET.nuspec](./OpenZiti.NET/OpenZiti.NET.nuspec) to build the package. This means updates
-to references really should be done in that file.
+to references MUST be reflected in that file. An automated process occurs when the OpenZiti.NET project completes a 
+successful build which will emit an updated .nuspec file in that folder. If this file changes, you **must** commit it.
 
 #### Testing Changes
 
