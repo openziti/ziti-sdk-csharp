@@ -25,4 +25,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenZiti.NET\OpenZiti.NET.csproj" />
+  </ItemGroup>
 </Project>

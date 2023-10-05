@@ -42,6 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OpenZiti.Management\OpenZiti.Management.csproj" />
     <ProjectReference Include="..\OpenZiti.NET\OpenZiti.NET.csproj" />
+    <ProjectReference Include="..\OpenZiti.NET.Samples\OpenZiti.NET.Samples.csproj" />
   </ItemGroup>
 
   <ItemGroup>

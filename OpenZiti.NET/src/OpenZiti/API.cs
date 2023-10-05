@@ -25,6 +25,7 @@ using nAPI = OpenZiti.Native.API;
 
 namespace OpenZiti {
     public class API {
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static readonly string[] AllConfigs = new string[] { "all" };
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public static nAPI.log_writer NativeLogger = NoopNativeLogFunction;
@@ -62,40 +63,37 @@ namespace OpenZiti {
 
             switch (level) {
                 case 0:
-                    Console.WriteLine("SDK_: level 0 should not be logged, please report: {0}", msg); break;
+                    Log.Info("SDK_: level 0 should not be logged, please report: {0}", msg); break;
                 case 1:
-                    Console.WriteLine("SDKe: {0}\t{1}", loc, msg);
+                    Log.Info("SDKe: {0}\t{1}", loc, msg);
                     break;
                 case 2:
-                    Console.WriteLine("SDKw: {0}\t{1}", loc, msg);
+                    Log.Info("SDKw: {0}\t{1}", loc, msg);
                     break;
                 case 3:
-                    Console.WriteLine("SDKi: {0}\t{1}", loc, msg);
+                    Log.Info("SDKi: {0}\t{1}", loc, msg);
                     break;
                 case 4:
-                    Console.WriteLine("SDKd: {0}\t{1}", loc, msg);
+                    Log.Info("SDKd: {0}\t{1}", loc, msg);
                     break;
                 case 5:
                     //VERBOSE:5
-                    Console.WriteLine("SDKv: {0}\t{1}", loc, msg);
+                    Log.Info("SDKv: {0}\t{1}", loc, msg);
                     break;
                 case 6:
                     //TRACE:6
-                    Console.WriteLine("SDKt: {0}\t{1}", loc, msg);
+                    Log.Info("SDKt: {0}\t{1}", loc, msg);
                     break;
                 default:
-                    Console.WriteLine("SDK_: level [%d] NOT recognized: {1}", level, msg);
+                    Log.Info("SDK_: level [%d] NOT recognized: {1}", level, msg);
                     break;
             }
         }
 
-
         private const int MaxCallerLen = 256;
 
         static API() {
-            var fp = Marshal.GetFunctionPointerForDelegate(API.NativeLogger);
-            nAPI.ziti_log_set_logger(fp);
-            nAPI.Ziti_lib_init();
+            InitializeZiti();
         }
 
         public static void InitializeZiti() {
