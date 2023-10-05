@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		BUILDING.md = BUILDING.md
-		ZitiNativeApiForDotnetCore\compile-all.bat = ZitiNativeApiForDotnetCore\compile-all.bat
 		create-nuget-package.bat = create-nuget-package.bat
 		ZitiNativeApiForDotnetCore\defgen.bat = ZitiNativeApiForDotnetCore\defgen.bat
 		dev-build-native.bat = dev-build-native.bat
 		ZitiNativeApiForDotnetCore\msvc-build.bat = ZitiNativeApiForDotnetCore\msvc-build.bat
 		native-package.nuspec = native-package.nuspec
 		README.md = README.md
+		V:\work\git\github\openziti\ziti-sdk-csharp\update-nuspec.ps1 = V:\work\git\github\openziti\ziti-sdk-csharp\update-nuspec.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{FB27A74E-C1A6-4392-857B-3290DA4EFBF8}"

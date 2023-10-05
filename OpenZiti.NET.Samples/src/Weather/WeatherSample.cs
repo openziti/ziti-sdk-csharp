@@ -35,7 +35,7 @@ namespace OpenZiti.NET.Samples.Weather {
             
             var c = new ZitiContext(setupResult);
             var zitiSocketHandler = c.NewZitiSocketHandler(svcName);
-            var client = new HttpClient(new OpenZiti.Debugging.LoggingHandler(zitiSocketHandler));
+            var client = new HttpClient(new Debugging.LoggingHandler(zitiSocketHandler));
             client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
 
             var result = client.GetStringAsync("https://wttr.in:443").Result;

@@ -19,7 +19,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace OpenZiti.Samples {
+namespace OpenZiti.NET.Samples {
     public class ConsoleHelper {
         // credit for most of this code to https://gist.github.com/tomzorz/6142d69852f831fb5393654c90a1f22e
         private const int STD_OUTPUT_HANDLE = -11;

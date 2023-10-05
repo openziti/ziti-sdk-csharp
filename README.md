@@ -32,44 +32,77 @@ are not required for executing the samples:
 * Using and loading an [Identity](https://openziti.io/docs/learn/core-concepts/identities/overview/) to create a [ZitiContext](OpenZiti.NET/src/OpenZiti/ZitiContext.cs)
 * Dialing and Binding
 
+The samples do not reference [the OpenZiti.NET NuGet package](https://www.nuget.org/packages/OpenZiti.NET/). Instead,
+they reference the [OpenZiti.NET](./OpenZiti.NET/OpenZiti.NET.csproj) project in this repository. When you want to
+add OpenZiti to your dotnet project, you would instead choose to reference and use 
+[the OpenZiti.NET NuGet package](https://www.nuget.org/packages/OpenZiti.NET/). 
+
 ## Running the Samples
 
 The samples included in this repo are designed to allow you to explore this SDK and explore OpenZiti without fully
-understanding these concepts. You will of course need to learn them to make the most of the SDK, but to get started
-you won't need to.
+understanding these concepts. You will of course eventually need to understand these terms to make the most of the SDK, 
+but to get started you won't need to. See [the official documentation](https://openziti.io) for more info and engage with our community
+[on Discourse](https://openziti.discourse.group/).
 
-Running the samples 
+Running the samples are designed to be self-bootstrapping. They will use 
+[the OpenZiti Management API](https://openziti.io/docs/reference/developer/api/#edge-management-api) to create all the
+required configuration inside the OpenZiti overlay network that is necessary. This means the samples can be run over and
+over without worrying the sample will fail, but it also means they setup the sample every time. This will become
+important as you progress with your OpenZiti journey and try to reuse the configuration created by the sample.
 
+There are currently four different samples you can run, each of which outlining a different principle of OpenZiti.
+Find a sample that seems interesting, and follow the readme to that sample to learn how to run it.
 
+| Sample                                                            | Description                                                                                                      |
+|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| [OpenAPI PetStore](./OpenZiti.NET.Samples/src/PetStore/README.md) | The closest 'real-world' example. Illustrates how to invoke an HTTP-based API securely                           |
+| [Weather](./OpenZiti.NET.Samples/src/Weather/README.md)           | Illustrates how to make an http-based request and output the content to the screen using wttr.in                 |
+| [Sample](./OpenZiti.NET.Samples/src/Server/README.md)             | Illustrates how to use OpenZiti as a server __AND__ a client. Demonstrates true application-embedded zero trust! |
+| [Enrollment](./OpenZiti.NET.Samples/src/Enrollment/README.md)     | A simple sample demonstrating how to enroll an OpenZiti Identity                                                 |
 
+## For Contributors
 
+If you are looking to contribute to the project you will need to understand what it is and what it and how the pieces
+all come together. This project provides two nuget packages, designed to make it easy to include OpenZiti into any
+dotnet project.
+* Idiomatic dotnet SDK - [OpenZiti.NET on nuget.org](https://www.nuget.org/packages/OpenZiti.NET/)
+* Native NuGet package - [OpenZiti.NET.native on nuget.org](https://www.nuget.org/packages/OpenZiti.NET.native/)
 
+### Idiomatic dotnet SDK - OpenZiti.NET
 
+This NuGet package provides the idiomatic SDK implementation. It is built and published to NuGet 
+[using this GitHub workflow](.github/workflows/dotnet-sdk-publish.yml). The workflow itself is straightforward and
+boils down to invoking `dotnet build` on the [OpenZiti.NET](./OpenZiti.NET/OpenZiti.NET.csproj), calling the "NugetPush"
+target. You will find that target declared in the project file and pushes to whatever source you pass to `dotnet build`
+with the `/p:NUGET_SOURCE=`. Building this package with this process should be very straightforward.
 
+The task will use the [OpenZiti.NET.nuspec](./OpenZiti.NET/OpenZiti.NET.nuspec) to build the package. This means updates
+to references really should be done in that file.
 
----
-## OLDER STUFFS
-This project is dedicated to creating an idiomatic dotnet SDK for OpenZiti to add secure
-communications to your application, quickly and easily.
+#### Testing Changes
 
-The project is written in C# and exposes the native OpenZiti 
-[C SDK](https://github.com/openziti/ziti-sdk-c) in a way that is meant to be portable and
-easy to consume by by other dotnet applications.
+To test changes to the code, it's usually easiest to make a new sample that exercises the functionality you want to 
+change/update and run that sample. This will also set us up for success when trying to illustrate/document the sample
+to consumers of the package.
 
-You can read more about OpenZiti on the official docs site: [https://openziti.io](https://openziti.io).
+#### Native Logging
 
+It's often __vital__ to enable a deeper loglevel for the native C SDK (provided by the 
+[OpenZiti.NET.native package](https://www.nuget.org/packages/OpenZiti.NET.native/). You do this by invoking `SetLogLevel`:
+```
+API.SetLogLevel(ZitiLogLevel.INFO);
+```
 
+#### HTTP Logging
 
+Some of the samples are based around HTTP. A convenience handler exists to make logging the HTTP request/response easy.
+See `OpenZiti.Debugging.LoggingHandler` and how it is used it samples. You will need to enable the logging before it
+produces output by setting:
+```
+loggingHttpHandler.LogHttpRequestResponse = true;
+```
 
- 
-
-## Overview
-
-This project provides two nuget packages. 
-* Native NuGet package - [available on nuget.org](https://www.nuget.org/packages/OpenZiti.NET.native/)
-* Idiomatic dotnet SDK - [available on nuget.org](https://www.nuget.org/packages/OpenZiti.NET/)
-
-### Native NuGet Package
+### Native NuGet Package - OpenZiti.NET.native
 
 The Native NuGet package is built and published by GitHub actions. It currently supports the following
 architectures:
@@ -81,28 +114,30 @@ architectures:
 * linux - arm64
 * linux - arm
 
-Building the native library is somewhat complex if you're unfamiliar with cmake. The native libraries 
-are built built using a [cmake](https://cmake.org/) project found in the ZitiNativeApiForDotnetCore directory.
+By far, the most complex part of dealing with the dotnet sdk is building the native library. The native library provides
+a few helper functions, writting in C that are vital to the dotnet SDK. Building the native library is somewhat complex.
+If you're unfamiliar with [cmake](https://cmake.org/), you'll need to learn a fair bit about what `cmake` is and how it works. Also,
+the C SDK now uses [vcpkg](https://github.com/microsoft/vcpkg) which is also somewhat complex for a new learner. We
+leverage a [CMakePresets.json](./ZitiNativeApiForDotnetCore/CMakePresets.json) which you'll need to learn about. The 
+`cmake` [CMakeLists.txt](./ZitiNativeApiForDotnetCore/CMakeLists.txt) is located in the `ZitiNativeApiForDotnetCore`.
 
-This project 
+If you are interested in learning how the native library is built, see the 
+github action file](.github/workflows/native-nuget-publish.yml). For more information about the 
+`ZitiNativeApiForDotnetCore`, go to [the readme in the project folder](./ZitiNativeApiForDotnetCore/README.md).
+
+Once the the native library is published to NuGet, the idiomatic SDK references the NuGet package to provide the single,
+cross-platform, idiomatic dotnet NuGet package for easy downstream inclusion in projects.
 
 
 
-If you are interested in learning
-how the native library is built, see the [github action file](.github/workflows/native-nuget-publish.yml) or
+
+
+
+
+
+
 look at the file [msvc-build.bat](./ZitiNativeApiForDotnetCore/msvc-build.bat).  You can look through
 that project and [read the readme](./ZitiNativeApiForDotnetCore/README.md) for more detailed information.
-Building a cross-platform .NET library, using a native C library is somewhat complicated.
-
-The Native library is then wrapped by the .NET nuget package for idiomatic consumption.
-
-
-
-
-
-
-
-
 
 
 One NuGet package is simply a packaging of the 
@@ -112,16 +147,6 @@ the native NuGet package and exposes a more idomatic dotnet API. The second pack
 
 
 
-### NuGet Package for .NET SDK
-
-The project provides [a solution file](./Ziti.NuGet.sln) which is used to create the actual dependency 
-most people will use add as a dependency to their projects. This is the idiomatic .NET wrapper around the
-native nuget package for use in other .NET projects.
-
-### Samples
-
-The project provides [a solution file](./Ziti.Samples.sln) which contains a suite of samples which can
-inspected and draw inspiration from. This project will consume the idiomatic, NuGet package for .NET.
 
 
 ## For Project Contributors
@@ -141,8 +166,6 @@ Things you should do/understand:
   checkout root named: `dev-build-native.bat`. It is designed for Windows/Visual Studio development.
 * With the Native NuGet package built
 
-
-1
 
 
 
