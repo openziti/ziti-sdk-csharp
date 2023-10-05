@@ -7,7 +7,7 @@
         <authors>openziti.org</authors>
         <owners>OpenZiti Maintainers</owners>
         <license type="expression">Apache-2.0</license>
-        <projectUrl>https://openziti.github.io/ziti-sdk-csharp</projectUrl>
+        <projectUrl>https://github.com/openziti/ziti-sdk-csharp</projectUrl>
         <icon>ziti-v2.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <summary>A nuget package which wraps the native ziti C SDK into a package easily consumable from .NET</summary>
