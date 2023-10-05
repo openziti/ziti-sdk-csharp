@@ -7,11 +7,13 @@
   },
   "configurePresets": [
     {
+      "binaryDir": "${sourceDir}/build",
       "name": "common-settings",
       "hidden": true,
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "TLSUV_TLSLIB": "mbedtls",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "CMAKE_C_EXTENSIONS": "ON",
         "CMAKE_C_STANDARD": "99",
         "CMAKE_C_STANDARD_REQUIRED": "ON",
@@ -38,7 +40,6 @@
     },
     {
       "name": "macOS-x64",
-      "binaryDir": "${sourceDir}/build/macOS-x64",
       "inherits": [
         "common-settings",
         "common-unix"
@@ -46,7 +47,6 @@
     },
     {
       "name": "macOS-arm64",
-      "binaryDir": "${sourceDir}/build/macOS-arm64",
       "inherits": [
         "common-settings",
         "common-unix"
@@ -59,7 +59,6 @@
     },
     {
       "name": "ios-arm64",
-      "binaryDir": "${sourceDir}/build/ios-arm64",
       "inherits": [
         "common-settings",
         "common-unix"
@@ -72,7 +71,6 @@
     },
     {
       "name": "linux-x64",
-      "binaryDir": "${sourceDir}/build/linux-x64",
       "inherits": [
         "common-settings",
         "common-unix"
@@ -80,7 +78,6 @@
     },
     {
       "name": "linux-arm64",
-      "binaryDir": "${sourceDir}/build/linux-arm64",
       "inherits": [
         "common-settings",
         "common-unix"
@@ -92,7 +89,6 @@
     },
     {
       "name": "linux-arm",
-      "binaryDir": "${sourceDir}/build/linux-arm",
       "inherits": [
         "common-settings",
         "common-unix"
@@ -114,7 +110,6 @@
     },
     {
       "name": "win64",
-      "binaryDir": "${sourceDir}/build/win64",
       "inherits": [
         "common-settings",
         "common-windows"
@@ -125,7 +120,6 @@
     },
     {
       "name": "win32",
-      "binaryDir": "${sourceDir}/build/win32",
       "inherits": [
         "common-settings",
         "common-windows"
@@ -136,7 +130,6 @@
     },
     {
       "name": "ci-windows-arm64",
-      "binaryDir": "${sourceDir}/build/win-arm64",
       "inherits": [
         "common-settings",
         "common-windows"
