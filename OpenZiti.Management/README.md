@@ -1,13 +1,6 @@
-dotnet tool install -g Microsoft.dotnet-openapi
+# OpenZiti.Management
 
-
-dotnet openapi remove --updateProject OpenZiti.Management.csproj mgmt.yml
-
-dotnet openapi add file .\mgmt.yml
-dotnet openapi add url https://get.openziti.io/spec/management.yml
-
-dotnet openapi add url https://get.openziti.io/spec/management.yml --updateProject OpenZiti.Management.csproj --code-generator NSwagCSharp --output-file management.yml
-
-
-good luck with refreshing the service. just generate it, open it and edit it.... sigh
+This project exists as a C# implementation of the OpenZiti management API spec. Open the .csproj to see how it works.
+It basically runs a powershell command to pull down the spec from a predefined url, caching it. You can run that
+msbuild target with something like `dotnet build /t:DownloadMgmtYaml` to refresh the spec.
 
