@@ -137,42 +137,6 @@ cross-platform, idiomatic dotnet NuGet package for easy downstream inclusion in 
 
 
 
-look at the file [msvc-build.bat](./ZitiNativeApiForDotnetCore/msvc-build.bat).  You can look through
-that project and [read the readme](./ZitiNativeApiForDotnetCore/README.md) for more detailed information.
-
-
-One NuGet package is simply a packaging of the 
-OpenZiti [C SDK](https://github.com/openziti/ziti-sdk-c) to expose the native C SDK in a
-way easily consumed by .NET projects. The second package is a dotnet library that wraps
-the native NuGet package and exposes a more idomatic dotnet API. The second package
-
-
-
-
-
-## For Project Contributors
-
-If you're cloning this package with the intention to make a fix or to update the C SDK used, here's a
-quick punchlist of things you will want to review and understand before really digging in. This will 
-take you through just the bullet points of what you need to do to make sure you can develop/test/debug. 
-
-Things you should do/understand:
-
-* Build the native project for x64
-* **If** you're using Windows, also build the native project for x86 (win32)
-* Package the native dlls into a native nuget package. This boils down to putting the dll for YOUR operating 
-  system into the proper location, edit [the nuspec](./native-package.nuspec) and hack out the lines 
-  you don't want (or better copy that nuspec to a different one you don't end up committing). then package 
-  it, and publish it to a **local** NuGet repo path and use it locally. A convinience script exists at the
-  checkout root named: `dev-build-native.bat`. It is designed for Windows/Visual Studio development.
-* With the Native NuGet package built
-
-
-
-
-
-
-
 
 
 

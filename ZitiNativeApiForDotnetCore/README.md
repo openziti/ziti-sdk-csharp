@@ -1,35 +1,33 @@
 # Native NuGet Package
 
-As mentioned in [the base README](../README.md), this project is responsible for creating a nuget package which
-exposes the [ziti-sdk-c](https://github.com/openziti/ziti-sdk-c) functions in an easy-to-consume way.
+As mentioned in [the base README](../README.md), this project is responsible for creating a nuget package which exposes 
+the [ziti-sdk-c](https://github.com/openziti/ziti-sdk-c) functions in an easy-to-consume and cross-architecture way.
 
-This project does nothing but build the C libraries on the various platforms using [cmake](https://cmake.org/)
-and then it produces a [NuGet package](https://www.nuget.org/packages/OpenZiti.NET.native) which is expected
-to be included as dependency to another, [idiomatic donet (C#) SDK](../OpenZiti.NET) in this project.
-
+This project does nothing but build the C SDK libraries on the various platforms using [cmake](https://cmake.org/)
+and then it produces a [NuGet package](https://www.nuget.org/packages/OpenZiti.NET.native) which is expected to be included as dependency in the main,
+[idiomatic dotnet (C#) SDK](../OpenZiti.NET) in this project.
 
 ## Publishing the NuGet Package
 
 Generally, this project is only built from GitHub via the [native-nuget-publish.yml](../.github/actions/native-nuget-publish.yml) action.
 
-The action willl only push to NuGet when it's run from the project named `openziti/ziti-sdk-csharp` but it does
-not verify the branch is main.  It's designed to be 
+The action will only push to NuGet when it's run from the organization/project of `openziti/ziti-sdk-csharp` and does
+not verify the branch is main.  It's designed to be runnable from any branch at this time. 
 
-This project is build
-
-
-
-
-, but it also layers on helper functions as needed. Often these additional functions will be to do things
+This project also layers on helper functions as needed. Often these additional functions will be to do things
 which dotnet doesn't seem to support, or we haven't discovered how to support it yet. Generally things like 
 iterating a pointer or var args usage.
 
 This is a project based on [cmake](https://cmake.org/) which will compile the given C SDK into the native 
-nuget package. It also now requires [VCPKG](https://github.com/microsoft/vcpkg) in order to build the C SDK.
+nuget package. It also now requires [vcpkg](https://github.com/microsoft/vcpkg) in order to build. We make use of CMakePresets.json so if you're
+confused where the preset values come from, look in there.
 
-The package should be consumable on Windows AMD x86/x64, AMD MacOS x64 and AMD linux x64 architectures. It
-does not currently have ARM versions. We currently **do not** support every RID. If your favorite dotnet 
-arch is not covered by the ones mentioned, we'd love help it getting it working for your specific environment.
+The package should be consumable on Windows (32 and 64 bit), MacOS x86_64 and linux x86_64 architectures. It
+has ARM/ARM64 binaries too but those are untested. If you can test those, please let us know if it works and if you
+read this doc, maybe add a PR to update this section of doc. 
+
+The project **does not** support every arch, ever RID. If your favorite dotnet arch is not covered by the ones 
+mentioned, we'd love help it getting it working for your specific environment.
 
 ## Building
 If you're considering building this project, you are almost certainly trying to develop the actual dotnet SDK
@@ -54,28 +52,8 @@ When the build completes (shown here using the Windows x64 preset) you'll have t
 %TARGETDIR%/library/Release/ziti4dotnet.dll
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-By far, the easiest way to learn is to go read
-[the helper bat file](../dev-build-native.bat). Assuming you have the project checked out and the needed dependencies 
-on the path:
-* C compiler (Visual Studio 2019/2022 currently)
-* cmake
-* dotnet
-* nuget
-* [incomplete list, others might be needed]
- 
-this bat file _should_ just work.
+Inspect the [native-nuget-publish.yml](../.github/actions/native-nuget-publish.yml) action to see the exact set of steps performed, but really you will 
+probably (hopefully) never need to learn how to build this project.  
 
 ### C SDK Version
 The version of the C SDK is controlled in two ways. The first way is by setting an environment variable 
@@ -153,3 +131,44 @@ cl /C /EP /I %TARGETDIR%/_deps/ziti-sdk-c-src/includes /c library/sharp-errors.c
 gcc -nostdinc -E -CC -P -I%TARGETDIR%/_deps/ziti-sdk-c-src/includes library/sharp-errors.c > ../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## For Project Contributors
+
+If you're cloning this package with the intention to make a fix or to update the C SDK used, here's a
+quick punchlist of things you will want to review and understand before really digging in. This will
+take you through just the bullet points of what you need to do to make sure you can develop/test/debug.
+
+Things you should do/understand:
+
+* Build the native project for x64
+* **If** you're using Windows, also build the native project for x86 (win32)
+* Package the native dlls into a native nuget package. This boils down to putting the dll for YOUR operating
+  system into the proper location, edit [the nuspec](./native-package.nuspec) and hack out the lines
+  you don't want (or better copy that nuspec to a different one you don't end up committing). then package
+  it, and publish it to a **local** NuGet repo path and use it locally. A convinience script exists at the
+  checkout root named: `dev-build-native.bat`. It is designed for Windows/Visual Studio development.
+* With the Native NuGet package built

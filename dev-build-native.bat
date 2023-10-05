@@ -1,5 +1,5 @@
 @echo off
-REM this bat file is a convinience script for local development. It is meant to build an entire
+REM this bat file is a convenience script for local development. It is meant to build an entire
 REM local native nuget package for use while testing/local dev. It's frequently necessary to add
 REM functions around the C SDK for helping dotnet with something that's better done in C or for
 REM testing the blitting of types when structs change. This script should build both x86 and x64
