@@ -64,6 +64,15 @@ the action is invoked (manually).
 
 ## Upgrading the C SDK library
 
+### The Quick Punchlist
+
+* change CMakeLists.txt: `set(ZITI_SDK_C_BRANCH_DEFAULT "0.35.0")`
+* configure cmake: `cmake --preset win64 .`
+* add the files: `git add CMakeLists.txt library/ziti.def`
+* push to GitHub
+* manually trigger [the GitHub Workflow](https://github.com/openziti/ziti-sdk-csharp/actions/workflows/native-nuget-publish.yml)
+  with the new SDK version.
+
 If you're updating the C SDK and it's not a major change, you probably can just update the the version and it'll
 be fine. Sometimes new functions show up which are exported from the C SDK but when you try to use them the functions
 will not be available inside the dotnet runtime. This is _usually_ because the function was not exported
@@ -76,12 +85,17 @@ NOTE!
 If you explore the CMakeLists.txt file you will see there is a ziti.def file referenced. This file is **REQUIRED** for 
 Windows library builds. It is also imperative that it is kept up to date. A 
 [.bat file named defgen.bat](./defgen.bat) exists in this folder which _should_ create this def file properly. As of
-October 2023, the process was automated during cmake configuration using `FetchContent_Declare` and `URL`. See the
-CMakeLists.txt file for how it's done, it invokes `defgen.bat`. Make sure you commit the file.
+October 2023, the process was added as a part of the cmake configuration step. It will use `FetchContent_Declare` 
+and `URL`. See the CMakeLists.txt file for how it's done.
 
-After you run defgen (or it runs automatically), there will be three extraneous files: ziti-exports.txt, ziti.dll, 
-ziti.exp left behind. defgen leaves these files behind in case you need to do deubgging on the process but these files
-should not be checked in (they are .gitignore'ed).
+**IF YOU UPDATE THE LIBRARY, YOU MUST RUN CMAKE AND MAKE SURE THE .DEFGEN STEP**
+
+To run the defgen step, when configuring cmake pass: -DZITI_RUN_DEFGEN. It will then invoke `defgen.bat` during the
+configuration step. If the file changes, **make sure you commit the file**.
+
+After it runs, defgen leaves behind three extraneous files: ziti-exports.txt, ziti.dll, ziti.exp. It leaves these 
+files behind in case you need to do deubgging on the process but these files should not be checked in
+(they are .gitignore'ed).
 
 #### Seeing What Changed
 You can see the delta between what was checked in and what defgen generated with this manual process/flow:
