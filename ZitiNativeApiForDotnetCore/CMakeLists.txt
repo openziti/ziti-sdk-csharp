@@ -48,21 +48,24 @@ if("${generate_csharp_enum}" STREQUAL "yes")
 endif()
 
 include(FetchContent)
-FetchContent_Declare(
-        ziti-sdk-c-archive
-        URL "https://github.com/openziti/ziti-sdk-c/releases/download/${ZITI_SDK_C_BRANCH}/ziti-sdk-${ZITI_SDK_C_BRANCH}-Windows-AMD64.zip"
-        DOWNLOAD_NO_EXTRACT false
-        DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_MakeAvailable(ziti-sdk-c-archive)
-
-message("Generating .def file from downloaded archive at: ${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll")
-
-# Specify the path to your .bat file
-set(batch_file_path "defgen.bat")
-
-execute_process(
-        COMMAND "defgen.bat" "64" "${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        RESULT_VARIABLE result
-)
+string(TOLOWER "${ZITI_RUN_DEFGEN}" ziti_run_defgen)
+if("${ziti_run_defgen}" STREQUAL "yes")
+    FetchContent_Declare(
+            ziti-sdk-c-archive
+            URL "https://github.com/openziti/ziti-sdk-c/releases/download/${ZITI_SDK_C_BRANCH}/ziti-sdk-${ZITI_SDK_C_BRANCH}-Windows-AMD64.zip"
+            DOWNLOAD_NO_EXTRACT false
+            DOWNLOAD_EXTRACT_TIMESTAMP true
+    )
+    FetchContent_MakeAvailable(ziti-sdk-c-archive)
+    
+    message("Generating .def file from downloaded archive at: ${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll")
+    
+    # Specify the path to your .bat file
+    set(batch_file_path "defgen.bat")
+    
+    execute_process(
+            COMMAND "defgen.bat" "64" "${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            RESULT_VARIABLE result
+    )
+endif()
