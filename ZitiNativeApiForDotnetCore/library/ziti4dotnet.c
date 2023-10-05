@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include <ziti/ziti.h>
 #include <uv.h>
@@ -84,7 +85,7 @@ char* ziti_context_event_err(const ziti_event_t *e) {
         return NULL;
     }
 }
-int ziti_context_event_status(const ziti_event_t* e) {
+const char* ziti_context_event_status(const ziti_event_t* e) {
     if (e) {
         return e->event.ctx.err;
     }
@@ -414,9 +415,6 @@ ziti_types_t* z4d_struct_test() {
     BYTEALIGNCHECK(ziti_port_range);
 
     rtn->ziti_options.config = "config";
-    rtn->ziti_options.controller = "controller";
-    rtn->ziti_options.tls = NULL;
-    SUBOFFSET(ziti_options, tls);
     rtn->ziti_options.disabled = true;
     SUBOFFSET(ziti_options, disabled);
     char** cfgs = calloc(sizeof(char*), 2);
