@@ -20,12 +20,10 @@
 extern "C" {
 #endif
 
-#define FIELD_WITH_CHECK(FIELD_TYPE, FIELD_NAME)        \
-                    uint32_t FIELD_NAME##_offset;       \
-                    uint32_t FIELD_NAME##_size;         \
-                    const char* FIELD_NAME##_checksum;  \
-                    FIELD_TYPE FIELD_NAME;
-
+#define FIELD_WITH_CHECK(FIELD_TYPE, FIELD_NAME) uint32_t FIELD_NAME##_offset; \
+                    uint32_t FIELD_NAME##_size;                                \
+                    const char* FIELD_NAME##_checksum;                         \
+                    FIELD_TYPE FIELD_NAME
 typedef struct ziti_types_s {
     FIELD_WITH_CHECK(uint32_t, total_size);
 
