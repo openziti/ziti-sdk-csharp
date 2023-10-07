@@ -28,6 +28,22 @@ namespace OpenZiti.NET.Samples.Common {
     public class SampleSetup {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         
+        public static bool Initialize { get; set; }
+
+        private static string _idFile;
+        public static string IdentityFile {
+            get {
+                if (Initialize) { return null; }
+                if (!File.Exists(_idFile)) {
+                    throw new Exception("Could not find specified identity file: " + _idFile);
+                }
+                return _idFile;                
+            }
+            set {
+                _idFile = value;
+            }
+        }
+
         internal ManagementApiHelper h = null;
 
         public SampleSetup() : this(new()){
@@ -95,15 +111,21 @@ namespace OpenZiti.NET.Samples.Common {
                 await h.ManagementApi.CreateServiceEdgeRouterPolicyAsync(serp);
             }
         }
-        
+
         public async Task<string> SetupWeatherExample(string svcName) {
+            if (!Initialize) {
+                Log.Info("skipping overlay initialization");
+                return IdentityFile;
+            }
             try {
                 var svcRole = $"{svcName}.service.role";
                 var clientIdentityName = $"{svcName}-client";
                 var svcBindRole = $"{svcName}.binders";
                 var svcDialRole = $"{svcName}.dialers";
 
+                Log.Info("Configuring overlay");
                 #region BootstrapClientIdentity
+                Log.Info("recreating identity");
                 // create weather client identity
                 await h.DeleteIdentityByName(clientIdentityName);
                 var rtn = await BootstrapAndEnrollIdentityAsync(clientIdentityName, new Attributes() { svcDialRole });
@@ -112,6 +134,7 @@ namespace OpenZiti.NET.Samples.Common {
                 #region CreateHostV1Config
                 // create the host config if needed
                 var hostV1ConfigName = $"{svcName}.config.host.v1";
+                Log.Info($"creating host.v1 config: {hostV1ConfigName}");
                 var hostV1ConfigTypeId = await h.FindConfigTypeByNameAsync("host.v1");
                 var hostV1Config =
                     JsonConvert.DeserializeObject("{\"protocol\":\"tcp\", \"address\":\"wttr.in\",\"port\":443}");
@@ -129,8 +152,8 @@ namespace OpenZiti.NET.Samples.Common {
                 #endregion
 
                 #region CreateInterceptV1Config
-                // create an intercept config if needed - not used in the weather example but useful from tunneler clients
                 var interceptV1ConfigName = $"{svcName}.config.intercept.v1";
+                Log.Info($"creating host.v1 config: {interceptV1ConfigName}");
                 var interceptConfigTypeId = await h.FindConfigTypeByNameAsync("intercept.v1");
                 var interceptV1Config = JsonConvert.DeserializeObject(
                     "{\"protocols\":[\"tcp\"],\"addresses\":[\"wttr.in\"],\"portRanges\":[{\"low\":443, \"high\":443}]}");
@@ -148,7 +171,7 @@ namespace OpenZiti.NET.Samples.Common {
                 #endregion
 
                 #region CreateWeatherService
-                //create the weather service
+                Log.Info($"creating service {svcName}");
                 await h.DeleteServiceByName(svcName);
                 var createService = new ServiceCreate {
                     Name = svcName,
@@ -160,8 +183,8 @@ namespace OpenZiti.NET.Samples.Common {
                 #endregion
 
                 #region CreateDialPolicy
-                // create the dial service policy
                 var svcDialPolicyName = $"{svcName}.sp.dial";
+                Log.Info($"creating dial service policy {svcDialPolicyName}");
                 await h.DeleteServicePolicyByNameAsync(svcDialPolicyName);
                 var createServicePolicy = new ServicePolicyCreate {
                     Name = svcDialPolicyName,
@@ -173,8 +196,8 @@ namespace OpenZiti.NET.Samples.Common {
                 #endregion
 
                 #region CreateBindPolicy
-                // create the bind service policy
                 var svcBindPolicyName = $"{svcName}.sp.bind";
+                Log.Info($"creating bind service policy {svcBindPolicyName}");
                 await h.DeleteServicePolicyByNameAsync($"{svcBindPolicyName}");
                 createServicePolicy = new ServicePolicyCreate {
                     Name = svcBindPolicyName,
@@ -186,7 +209,7 @@ namespace OpenZiti.NET.Samples.Common {
                 #endregion
 
                 #region AssignBindRoleToRouterIdentity
-                // assign the bind roleAttribute to the bind identity
+                Log.Info($"finding and assigning the bind role to the router");
                 var erse = await h.ManagementApi.ListEdgeRoutersAsync(null, null, null, null, null);
                 var ers = erse.Data;
                 if (ers.Count == 1) {
@@ -214,6 +237,10 @@ namespace OpenZiti.NET.Samples.Common {
         }
         
         public async Task<string> SetupHostedExample(string svcName) {
+            if (!Initialize) {
+                Log.Info("skipping overlay initialization");
+                return IdentityFile;
+            }
             try {
                 var svcRole = $"{svcName}.service.role";
                 var serverIdentityName = $"{svcName}-server";
@@ -274,6 +301,10 @@ namespace OpenZiti.NET.Samples.Common {
         }
 
         public async Task<string> SetupHostedClientExample(string svcName) {
+            if (!Initialize) {
+                Log.Info("skipping overlay initialization");
+                return IdentityFile;
+            }
             try {
                 var clientIdentityName = $"{svcName}-client";
                 var svcDialRole = $"{svcName}.dialers";
@@ -295,6 +326,10 @@ namespace OpenZiti.NET.Samples.Common {
         }
 
         public async Task<string> SetupPetStoreExample(string svcName, string intercept, string petstoreAddress, int petstorePort) {
+            if (!Initialize) {
+                Log.Info("skipping overlay initialization");
+                return IdentityFile;
+            }
             try {
                 var svcRole = $"{svcName}.service.role";
                 var clientIdentityName = $"{svcName}-client";

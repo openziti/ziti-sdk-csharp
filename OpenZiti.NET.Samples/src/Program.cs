@@ -50,6 +50,20 @@ namespace OpenZiti.NET.Samples {
                         }
                     return;
                 }
+
+                if (args.Length > 1) {
+                    SampleSetup.Initialize = (args[1]?.ToLower().Trim() != "noinit");
+                    if (args.Length > 2) {
+                        SampleSetup.IdentityFile = args[2];
+                    } else {
+                        throw new Exception(
+                                @"when using 'noint', you must supply an identity file to use as the third parameter
+    Example:
+      dotnet run --project OpenZiti.NET.Samples/OpenZiti.NET.Samples.csproj weather noinit /my/identity.file");
+                    }
+                } else {
+                    SampleSetup.Initialize = true;
+                }
                 
                 foreach (var type in currentAssembly.GetTypes())
                     if (Attribute.IsDefined(type, typeof(Sample)))
