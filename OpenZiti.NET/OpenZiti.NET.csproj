@@ -96,9 +96,9 @@
         <Exec Command="dotnet build $(MSBuildProjectFullPath) --configuration Release /p:PackageVersion=$(PackageVersion)"></Exec>
     </Target>
 
-    <Target Name="UpdateNuspe" AfterTargets="Build">
+    <Target Name="UpdateNuspec" AfterTargets="Build">
         <Message Text="Updating nuspec file after successful build." Importance="high" />
-        <Exec Command="powershell -Command ./update-nuspec.ps1 OpenZiti.NET.csproj OpenZiti.NET.nuspec" />
+        <Exec Command="pwsh -Command ./update-nuspec.ps1 OpenZiti.NET.csproj OpenZiti.NET.nuspec" />
         <Message Text="Updating nuspec file after successful build complete." Importance="high" />
     </Target>
 </Project>
