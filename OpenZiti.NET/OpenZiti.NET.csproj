@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net6.0</TargetFrameworks>
+        <Platforms>AnyCPU;x86;x64;ARM64;ARM</Platforms>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <CurrentYear>$([System.DateTime]::UtcNow.Year.ToString().Substring(2,2))</CurrentYear>
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>

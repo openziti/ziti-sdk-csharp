@@ -27,8 +27,8 @@ using System.Threading.Tasks;
 namespace OpenZiti.NET.Samples.Common {
     public class SampleSetup {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        
-        public static bool Initialize { get; set; }
+
+        public static bool Initialize { get; set; } = true;
 
         private static string _idFile;
         public static string IdentityFile {

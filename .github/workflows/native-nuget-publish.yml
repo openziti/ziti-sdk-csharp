@@ -98,7 +98,6 @@ jobs:
           - ext: dll
             dist: win
             arch: x86
-            cmake_arch_flag: '-A Win32'
             os: windows-2022
             preset: win32
     steps:
@@ -144,7 +143,7 @@ jobs:
         run: |
           echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
-          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }} ${{ matrix.cmake_arch_flag }}
+          cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }}
           cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
           
       - name: upload artifacts
