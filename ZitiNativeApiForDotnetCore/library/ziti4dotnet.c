@@ -181,7 +181,7 @@ typedef struct c_t {
 } c_s;
 
 ziti_types_v2* z4d_struct_test() {
-    ziti_types_v2* rtn = calloc(sizeof(ziti_types_t) + 1, 1);
+    ziti_types_v2* rtn = calloc(sizeof(ziti_types_v2) + 1, 1);
     rtn->size = sizeof(ziti_types_v2);
 
     OFFSET(ziti_auth_query_mfa);
