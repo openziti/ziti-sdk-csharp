@@ -93,6 +93,11 @@ and `URL`. See the CMakeLists.txt file for how it's done.
 To run the defgen step, when configuring cmake pass: -DZITI_RUN_DEFGEN. It will then invoke `defgen.bat` during the
 configuration step. If the file changes, **make sure you commit the file**.
 
+Example command to run defgen during the `cmake` configuration step:
+```
+cmake --preset win64 -S . -DZITI_RUN_DEFGEN=yes
+```
+
 After it runs, defgen leaves behind three extraneous files: ziti-exports.txt, ziti.dll, ziti.exp. It leaves these 
 files behind in case you need to do deubgging on the process but these files should not be checked in
 (they are .gitignore'ed).

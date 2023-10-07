@@ -26,3 +26,5 @@ launchSettings.json
 .runsettings
 Samples/Properties
 TestProject/Properties
+.run
+ZitiNativeApiForDotnetCore/Testing/
