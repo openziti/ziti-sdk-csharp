@@ -32,6 +32,7 @@ message("cross-compiling: ${CMAKE_CROSSCOMPILING}")
 #    message(STATUS "CMAKE_ENV: ${_variableName}=${${_variableName}}")
 #endforeach()
 
+include(FetchContent)
 add_subdirectory(cmake_deps)
 add_subdirectory(library)
 #add_subdirectory(programs)
@@ -47,7 +48,6 @@ if("${generate_csharp_enum}" STREQUAL "yes")
     message("sharp-errors output to: ${OUTPUT_FILE}")
 endif()
 
-include(FetchContent)
 string(TOLOWER "${ZITI_RUN_DEFGEN}" ziti_run_defgen)
 if("${ziti_run_defgen}" STREQUAL "yes")
     FetchContent_Declare(
