@@ -81,7 +81,7 @@ namespace OpenZiti.Native {
     public struct AlignmentCheck {
         [FieldOffset(0)] public uint offset;
         [FieldOffset(4)] public uint size;
-        [FieldOffset(TestBlitting.ptr)] public string checksum;
+        [FieldOffset(8)] public string checksum;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -96,10 +96,6 @@ namespace OpenZiti.Native {
         {
             return intPtr != IntPtr.Zero;
         }
-    }
-
-    public struct AlignmentChecka {
-        
     }
 
     [StructLayout(LayoutKind.Sequential)]
