@@ -27,11 +27,13 @@ namespace OpenZiti.NET.Samples {
     public class HostedServiceClientSample : SampleBase {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<object> RunAsync() {
+            Log.Info("HostedServiceClientSample starts");
             //to see the logs from the Native SDK, set the log level
             API.SetLogLevel(ZitiLogLevel.INFO);
             
             var svcName = "hosted-demo-svc";
             var setupResult = await new SampleSetup(new()).SetupHostedClientExample(svcName);
+            Log.Info("Identity file located at: " + setupResult);
 
             ZitiContext ctx = new ZitiContext(setupResult);
             string terminator = "";

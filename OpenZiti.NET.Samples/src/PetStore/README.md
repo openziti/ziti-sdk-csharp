@@ -21,7 +21,11 @@ allow the sample to configure itself. To configure, set these environment variab
 * `ZITI_PASSWORD` - the password to use. Default: `admin`
 * `ZITI_BASEURL` - the url of the controller to authenticate to.  Default: `localhost:1280`
 
-The setup requires a petstore application to be running.
+### Petstore Endpoint
+
+The setup requires a petstore application to be running. It is available as a docker container and also available
+online if you prefer to not have to host it yourself. By default, the sample expects you are running it adjacent to
+your router (available to the router at `localhost:20080`).
 
 ## Running the Sample With Automatic Configuration
 
@@ -31,7 +35,7 @@ username/password.
 
 Example:
 ```
-dotnet run --project OpenZiti.NET.Samples/OpenZiti.NET.Samples.csproj weather
+dotnet run --project OpenZiti.NET.Samples/OpenZiti.NET.Samples.csproj petstore
 ```
 
 ## Running the Sample Without Configuring
@@ -40,5 +44,5 @@ You can run the sample without allowing the sample to configure the overlay. To 
 identity that has access to a service named `weather-demo-svc` or you will need to modify the sample code and change
 the referenced service name. Then, when executing the service, pass `noinit` and pass the identity file as shown:
 ```
-dotnet run --project OpenZiti.NET.Samples/OpenZiti.NET.Samples.csproj weather noinit /some/path/to/an/identity
+dotnet run --project OpenZiti.NET.Samples/OpenZiti.NET.Samples.csproj petstore noinit /some/path/to/an/identity
 ```

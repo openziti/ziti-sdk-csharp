@@ -30,6 +30,7 @@ namespace OpenZiti.NET.Samples.Weather {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         
         public override async Task<object> RunAsync() {
+            Log.Info("WeatherSample starts");
             var svcName = "weather-demo-svc";
             var setupResult = await new SampleSetup(new()).SetupWeatherExample(svcName);
             Log.Info("Identity file located at: " + setupResult);

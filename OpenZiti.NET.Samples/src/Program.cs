@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using NLog.Fluent;
 using OpenZiti.Debugging;
 using System;
 using System.Reflection;
@@ -24,6 +25,7 @@ using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples {
     public class Program {
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static async Task Main(string[] args) {
             try {
                 //try { Console.Clear(); } catch (Exception) { /*ignore exceptions*/ }
