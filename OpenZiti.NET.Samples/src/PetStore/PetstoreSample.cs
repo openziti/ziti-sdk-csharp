@@ -36,7 +36,7 @@ namespace OpenZiti.NET.Samples.Weather {
             var svcName = "petstore-demo-svc";
             var desiredIntercept = "my.petstore";
             var port = 20080;
-            var interceptAddress = $"http://{desiredIntercept}:{port}/v2"; //entirely ficticious domain name!
+            var interceptAddress = $"http://{desiredIntercept}:{port}/v2"; //entirely fictitious domain name!
             var setupResult = await new SampleSetup(new()).SetupPetStoreExample(svcName, desiredIntercept, "127.0.0.1", port);
             
             var c = new ZitiContext(setupResult);

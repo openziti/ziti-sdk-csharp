@@ -1,14 +1,14 @@
-﻿# Pet Store - Consuming an HTTP-based API
+# Weather - HTTP Requests
 
-This sample demonstrates how to invoke a web request exiting from private networking space towards an HTTP-based
-API. This sample will use the swagger "pet store" application and represents consuming an HTTP-based API.
+This sample demonstrates how to invoke a web request exiting from private networking space towards some http-based
+resource. In this case, we've chose to use the wonderful website returning weather information https://wttr.in.
 
 ## OpenZiti Concepts Demonstrated
 
 This sample demonstrates some key OpenZiti concepts:
 
-* Offloading traffic from an identity. OpenZiti allows you to configure a tunneler to offload traffic towards another.
-  This sample offloads traffic from our router to https://localhost:20080 using a `host.v1` config.
+* Offloading traffic from an identity. OpenZiti allows you to configure a tunneler to offload traffic towards another. 
+  This sample offloads traffic from a router to https://wttr.in using a `host.v1` config.
 * Using an `intercept.v1` to specify a URL should be intercepted by the application.
 * Creating a service to combine two configs (the intercept and the host).
 * Service Policies to authorize identities to perform `dial` or `bind`.
@@ -19,9 +19,7 @@ Assuming you have sufficient access to the controller to modify it, you can set 
 allow the sample to configure itself. To configure, set these environment variables:
 * `ZITI_USERNAME` - the username to use. Default: `admin`
 * `ZITI_PASSWORD` - the password to use. Default: `admin`
-* `ZITI_BASEURL` - the url of the controller to authenticate to.  Default: `localhost:1280`
-
-The setup requires a petstore application to be running.
+* `ZITI_BASEURL` - the url of the controller to authenticate to.  Default: `localhost:1280` 
 
 ## Running the Sample With Automatic Configuration
 

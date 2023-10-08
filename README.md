@@ -53,12 +53,22 @@ important as you progress with your OpenZiti journey and try to reuse the config
 There are currently four different samples you can run, each of which outlining a different principle of OpenZiti.
 Find a sample that seems interesting, and follow the readme to that sample to learn how to run it.
 
-| Sample                                                            | Description                                                                                                      |
-|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| [OpenAPI PetStore](./OpenZiti.NET.Samples/src/PetStore/README.md) | The closest 'real-world' example. Illustrates how to invoke an HTTP-based API securely                           |
-| [Weather](./OpenZiti.NET.Samples/src/Weather/README.md)           | Illustrates how to make an http-based request and output the content to the screen using wttr.in                 |
-| [Sample](./OpenZiti.NET.Samples/src/Server/README.md)             | Illustrates how to use OpenZiti as a server __AND__ a client. Demonstrates true application-embedded zero trust! |
-| [Enrollment](./OpenZiti.NET.Samples/src/Enrollment/README.md)     | A simple sample demonstrating how to enroll an OpenZiti Identity                                                 |
+| Sample                                                            | Description                                                                                                        |
+|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| [OpenAPI PetStore](./OpenZiti.NET.Samples/src/PetStore/README.md) | Illustrates how to invoke an HTTP-based API securely |
+| [Weather](./OpenZiti.NET.Samples/src/Weather/README.md)           | Illustrates how to make an http-based request and output the content to the screen using wttr.in                   |
+| [Sample](./OpenZiti.NET.Samples/src/Server/README.md)             | Illustrates how to use OpenZiti as a server __AND__ a client. Demonstrates true application-embedded zero trust!   |
+| [Enrollment](./OpenZiti.NET.Samples/src/Enrollment/README.md)     | A simple sample demonstrating how to enroll an OpenZiti Identity                                                   |
+
+## The `ziti` CLI
+
+The `ziti` CLI tool is a convinient way to access the OpenZiti overlay network via a command line, instead of by API.
+You'll likely want to have the `ziti` CLI available at times as it's handy to use for exploring the OpenZiti
+configuration. If you do not have the `ziti` CLI, but wish to install it, you can quickly install it by running a single
+powershell command (as always, read the script before executing):
+```
+iex(iwr -Uri https://get.openziti.io/quick/getZiti.ps1)
+```
 
 ## For Contributors
 
@@ -128,76 +138,3 @@ github action file](.github/workflows/native-nuget-publish.yml). For more inform
 
 Once the the native library is published to NuGet, the idiomatic SDK references the NuGet package to provide the single,
 cross-platform, idiomatic dotnet NuGet package for easy downstream inclusion in projects.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  * Once you're ready and you think the native project is "correct" - you should push just the relevant 
-    changes and let [the GitHub Action](https://github.com/openziti/ziti-sdk-csharp/actions/workflows/native-nuget-publish.yml) 
-    publish the latest native nuget package. 
-  * Pull and use the latest native nuget package
-* Assuming you have 'the latest' nuget package - adapt the C# SDK code and write **IDIOMATIC** C# for the API.
-* Once the **IDIOMATIC** C# API exists, publish the OpenZiti.NET version to your **LOCAL** NuGet repo.
-  * Run `dotnet build` to build and publish the project. Make sure you supply the variable named "NUGET_SOURCE". It is used to control
-    where you push to. It can be either your **LOCAL** nuget repo or https://api.nuget.org/v3/index.json. This build will **ALSO** 
-    build both x86 and x64 for you.
-    ```
-    SET LOCAL_NUGET_PACKAGES=%CD%\local-nuget-packages
-    SET APP_KEY=_local_
-    mkdir %LOCAL_NUGET_PACKAGES%
-    dotnet build OpenZiti.NET\OpenZiti.NET.csproj /t:NugetPush /p:Configuration=Release;NUGET_SOURCE=%LOCAL_NUGET_PACKAGES%
-    ```
-* Open Ziti.Samples.sln and update the OpenZiti.NET version to use your latest version from local
-* Develop one or more samples which illustrate the usage of the SDK. 
-* Once happy with the samples, push back to GitHub, merge to a release branch/tag/main and let GitHub publish the package to NuGet central
-* Once verified and published on NuGet, update the Ziti.Samples.sln with the **ACTUAL** deployed value for OpenZiti.NET
-* Test on Windows x86, x64, linux, MacOS - or hopefully we write (wrote?) automated tests to do this
-
-### Build and Package the NuGet Native Project
-
-See [the readme](./ZitiNativeApiForDotnetCore/README.md) for details on how to build the native NuGet package. You need to be able
-to deploy a local version of the native NuGet package if you want to verify your code will work before trying to push fixes.
-
-### Package the .NET Project Locally
-
-The [project](./OpenZiti.NET/) has a target within it which should make it trivial for you to build the dotnet NuGet package. To do so
-simply issue
-```
-SET LOCAL_NUGET_PACKAGES=%CD%\local-nuget-packages
-SET APP_KEY=_local_
-mkdir %LOCAL_NUGET_PACKAGES%
-dotnet build OpenZiti.NET\OpenZiti.NET.csproj /t:NugetPush /p:Configuration=Release;NUGET_SOURCE=%LOCAL_NUGET_PACKAGES%
-```
-
-This will subsequently issue `dotnet build` commands to build the project as x86, x64, as well as "Any CPU". It will then issue `nuget push`
-and will push your freshly built .nupkg into the location specified by the properly `NUGET_SOURCE=`.
-
-### TestProject
-
-Another project is included in the [Ziti.NuGet.sln](./Ziti.NuGet.sln) is [TestProject](./TestProject). This project **should** contain
-**linked** .cs files from the [OpenZiti.NET](./OpenZiti.NET) project. Any new .cs files should be part of the project that 
-produces the nuget package and only **linked** in TestProject.  TestProject is then able to be a playground to verify your changes
-are functioning as expected.

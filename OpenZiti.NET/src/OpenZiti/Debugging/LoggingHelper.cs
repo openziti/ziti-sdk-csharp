@@ -27,7 +27,6 @@ using MLog = Microsoft.Extensions.Logging;
 namespace OpenZiti.Debugging;
 public class LoggingHelper {
     public static void LogToConsole(MLog.LogLevel lvl) {
-
         NLog.LogLevel logLevel = NLog.LogLevel.Fatal;
         logLevel = lvl switch {
             MLog.LogLevel.Trace => NLog.LogLevel.Trace,
