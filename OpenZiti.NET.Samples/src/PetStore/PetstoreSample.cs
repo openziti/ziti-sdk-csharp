@@ -16,11 +16,8 @@ limitations under the License.
 
 using OpenZiti.Debugging;
 using OpenZiti.Generated.Petstore;
-using OpenZiti.Management;
 using System;
-using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 using OpenZiti.NET.Samples.Common;

@@ -19,7 +19,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-using OpenZiti.Management;
 using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples {
