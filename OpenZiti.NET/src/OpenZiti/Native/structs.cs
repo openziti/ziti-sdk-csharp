@@ -41,26 +41,6 @@ namespace OpenZiti.Native {
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_ziti_posture_query", CallingConvention = API.CALL_CONVENTION)]
         public static extern IntPtr z4d_ziti_posture_query();
 
-        public static void Run() {
-            IntPtr testData = z4d_struct_test();
-            ziti_types native_structs = Marshal.PtrToStructure<ziti_types>(testData);
-
-            byte[] managedArray = new byte[native_structs.info.total_size];
-            Marshal.Copy(testData, managedArray, 0, (int)native_structs.info.total_size);
-
-            //IntPtr q = z4d_ziti_posture_query();
-            //ziti_posture_query pq = Marshal.PtrToStructure<ziti_posture_query>(q);
-
-            Log.Info("----");
-            //IntPtr p = native_structs.f13_ziti_address_host.c;
-            //string s = Marshal.PtrToStringUTF8(native_structs.f13_ziti_address_host.c);
-
-            //Log.Info(native_structs.f15_ziti_client_cfg_v1.hostname.Hostname + ":");
-            //Log.Info(native_structs.f15_ziti_client_cfg_v1.hostname.Hostname + ":");
-
-        }
-
-
         public static T ToContextEvent<T>(T desired, IntPtr /*byte[] input*/ input) {
             int size = Marshal.SizeOf(desired);
             IntPtr ptr = IntPtr.Zero;
@@ -95,110 +75,84 @@ namespace OpenZiti.Native {
 
     [StructLayout(LayoutKind.Explicit)]
     public struct AlignmentCheck {
-
-        [FieldOffset(0 * TestBlitting.ptr)]
-        public string checksum;
-        [FieldOffset(TestBlitting.ptr)]
-        public uint size;
-        [FieldOffset(TestBlitting.ptr + 4)]
-        public uint offset;
+        [FieldOffset(0)] public uint offset;
+        [FieldOffset(4)] public uint size;
+        [FieldOffset(8)] public string checksum;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_types_info {
         public uint total_size;
-        public string total_size_check;
-        public uint total_size_size;
-        public uint total_size_offset;
+        public string checksum;
     }
+
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_types {
-        public ziti_types_info info;
+        public IntPtr size;
+        public AlignmentCheck /*ziti_auth_query_mfa*/ f01_ziti_auth_query_mfa;
+        public AlignmentCheck /*ziti_id_cfg*/ f02_ziti_id_cfg;
+        public AlignmentCheck /*ziti_config*/ f03_ziti_config;
+        public AlignmentCheck /*api_path*/ f04_api_path;
+        public AlignmentCheck /*ziti_api_versions*/ f05_ziti_api_versions;
+        public AlignmentCheck /*ziti_version*/ f06_ziti_version;
+        public AlignmentCheck /*ziti_identity*/ f07_ziti_identity;
+        public AlignmentCheck /*ziti_process*/ f08_ziti_process;
+        public AlignmentCheck /*ziti_posture_query*/ f09_ziti_posture_query;
+        public AlignmentCheck /*ziti_posture_query_set*/ f10_ziti_posture_query_set;
+        public AlignmentCheck /*ziti_session_type*/ f11_ziti_session_type;
+        public AlignmentCheck /*ziti_service*/ f12_ziti_service;
+        public AlignmentCheck /*ziti_address*/ f13_ziti_address_host;
+        public AlignmentCheck /*ziti_address*/ f14_ziti_address_cidr;
+        public AlignmentCheck /*ziti_client_cfg_v1*/ f15_ziti_client_cfg_v1;
+        public AlignmentCheck /*ziti_intercept_cfg_v1*/ f16_ziti_intercept_cfg_v1;
+        public AlignmentCheck /*ziti_server_cfg_v1*/ f17_ziti_server_cfg_v1;
+        public AlignmentCheck /*ziti_listen_options*/ f18_ziti_listen_options;
+        public AlignmentCheck /*ziti_host_cfg_v1*/ f19_ziti_host_cfg_v1;
+        public AlignmentCheck /*ziti_host_cfg_v2*/ f20_ziti_host_cfg_v2;
+        public AlignmentCheck /*ziti_mfa_enrollment*/ f21_ziti_mfa_enrollment;
+        public AlignmentCheck /*ziti_port_range*/ f22_ziti_port_range;
+        public AlignmentCheck /*ziti_options*/ f23_ziti_options;
 
-        public ziti_auth_query_mfa f01_ziti_auth_query_mfa;
-        public AlignmentCheck f01_check;
+        //events
+        public AlignmentCheck /*ziti_event_t*/ f24_ziti_context_event;
+        public AlignmentCheck /*ziti_event_t*/ f25_ziti_router_event;
+        public AlignmentCheck /*ziti_event_t*/ f26_ziti_service_event;
+        public AlignmentCheck /*ziti_event_t*/ f27_ziti_mfa_auth_event;
+        public AlignmentCheck /*ziti_event_t*/ f28_ziti_api_event;
+    }
 
-        public ziti_id_cfg f02_ziti_id_cfg;
-        public AlignmentCheck f02_check;
-
-        public ziti_config f03_ziti_config;
-        public AlignmentCheck f03_check;
-
-        public ziti_api_path f04_api_path;
-        public AlignmentCheck f04_check;
-
-        public ziti_api_versions f05_ziti_api_versions;
-        public AlignmentCheck f05_check;
-
-        public ziti_version f06_ziti_version;
-        public AlignmentCheck f06_check;
-
-        public ziti_identity f07_ziti_identity;
-        public AlignmentCheck f07_check;
-
-        public ziti_process f08_ziti_process;
-        public AlignmentCheck f08_check;
-
-        public ziti_posture_query f09_ziti_posture_query;
-        public AlignmentCheck f09_check;
-
-        public ziti_posture_query_set f10_ziti_posture_query_set;
-        public AlignmentCheck f10_check;
-
-        public ziti_session_type f11_ziti_session_type;
-        public AlignmentCheck f11_check;
-
-        public ziti_service f12_ziti_service;
-        public AlignmentCheck f12_check;
-
-        public ziti_address f13_ziti_address_host;
-        public AlignmentCheck f13_check;
-
-        public ziti_address f14_ziti_address_cidr;
-        public AlignmentCheck f14_check;
-
-        public ziti_client_cfg_v1 f15_ziti_client_cfg_v1;
-        public AlignmentCheck f15_check;
-
-        public ziti_intercept_cfg_v1 f16_ziti_intercept_cfg_v1;
-        public AlignmentCheck f16_check;
-
-        public ziti_server_cfg_v1 f17_ziti_server_cfg_v1;
-        public AlignmentCheck f17_check;
-
-        public ziti_listen_options f18_ziti_listen_options;
-        public AlignmentCheck f18_check;
-
-        public ziti_host_cfg_v1 f19_ziti_host_cfg_v1;
-        public AlignmentCheck f19_check;
-
-        public ziti_host_cfg_v2 f20_ziti_host_cfg_v2;
-        public AlignmentCheck f20_check;
-
-        public ziti_mfa_enrollment f21_ziti_mfa_enrollment;
-        public AlignmentCheck f21_check;
-
-        public ziti_port_range f22_ziti_port_range;
-        public AlignmentCheck f22_check;
-
-        public ziti_options f23_ziti_options;
-        public AlignmentCheck f23_check;
-
-        public ziti_context_event f24_ziti_context_event;
-        public AlignmentCheck f24_check;
-
-        public ziti_router_event f25_ziti_router_event;
-        public AlignmentCheck f25_check;
-
-        public ziti_service_event f26_ziti_service_event;
-        public AlignmentCheck f26_check;
-
-        public ziti_mfa_auth_event f27_ziti_mfa_auth_event;
-        public AlignmentCheck f27_check;
-
-        public ziti_api_event f28_ziti_api_event;
-        public AlignmentCheck f28_check;
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ziti_types_with_values {
+        public ziti_types types;
+        public ziti_auth_query_mfa ziti_auth_query_mfa;
+        public ziti_id_cfg ziti_id_cfg;
+        public ziti_config ziti_config;
+        public ziti_api_path ziti_api_path;
+        public ziti_api_versions ziti_api_versions;
+        public ziti_version ziti_version;
+        public ziti_identity ziti_identity;
+        public ziti_process ziti_process;
+        public ziti_posture_query ziti_posture_query;
+        public ziti_posture_query_set ziti_posture_query_set;
+        public ziti_session_type ziti_session_type;
+        public ziti_service ziti_service;
+        public ziti_address ziti_address_host;
+        public ziti_address ziti_address_cidr;
+        public ziti_client_cfg_v1 ziti_client_cfg_v1;
+        public ziti_intercept_cfg_v1 ziti_intercept_cfg_v1;
+        public ziti_server_cfg_v1 ziti_server_cfg_v1;
+        public ziti_listen_options ziti_listen_options;
+        public ziti_host_cfg_v1 ziti_host_cfg_v1;
+        public ziti_host_cfg_v2 ziti_host_cfg_v2;
+        public ziti_mfa_enrollment ziti_mfa_enrollment;
+        public ziti_port_range ziti_port_range;
+        public ziti_options ziti_options;
+        public ziti_context_event ziti_context_event;
+        public ziti_router_event ziti_router_event;
+        public ziti_service_event ziti_service_event;
+        public ziti_mfa_auth_event ziti_mfa_auth_event;
+        public ziti_api_event ziti_api_event;
     }
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
@@ -228,6 +182,8 @@ namespace OpenZiti.Native {
         public ziti_event_type ziti_event_type;
         [FieldOffset(1 * TestBlitting.ptr)]
         public string new_ctrl_address;
+        [FieldOffset(2 * TestBlitting.ptr)]
+        public string new_ca_bundle;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
@@ -291,8 +247,6 @@ namespace OpenZiti.Native {
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_options {
         public string config;
-        public string controller;
-        public IntPtr tls;
         public bool disabled;
         public IntPtr /*public char**/ config_types;
         public uint api_page_size;
@@ -550,6 +504,7 @@ namespace OpenZiti.Native {
     public struct ziti_config {
         public string controller_url;
         public ziti_id_cfg id;
+        public string cfg_source;
     }
 
     [StructLayout(LayoutKind.Sequential)]

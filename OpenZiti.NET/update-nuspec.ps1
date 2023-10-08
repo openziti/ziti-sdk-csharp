@@ -53,9 +53,10 @@ $settings = New-Object System.Xml.XmlWriterSettings
 $settings.OmitXmlDeclaration = $true
 $settings.Indent = $true
 $settings.NewLineOnAttributes = $false
+$Settings.NewLineChars = "`r`n";
 
 # Create a StreamWriter to write the XML to a file
-$filePath = "${PSScriptRoot}\${OutputFile}"
+$filePath = "${PSScriptRoot}/${OutputFile}"
 $absolutePath = [System.IO.Path]::GetFullPath($filePath)
 $streamWriter = [System.IO.StreamWriter]::new($absolutePath)
 $xmlWriter = [System.Xml.XmlWriter]::Create($streamWriter, $settings)

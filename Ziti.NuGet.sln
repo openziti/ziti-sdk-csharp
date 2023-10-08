@@ -27,13 +27,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\native-nuget-publish.yml = .github\workflows\native-nuget-publish.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenZiti.NET.Tests", "OpenZiti.NET.Tests\OpenZiti.NET.Tests.csproj", "{21CA250B-37F2-4011-8E12-502D46BAB355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenZiti.NET.Tests", "OpenZiti.NET.Tests/OpenZiti.NET.Tests.csproj", "{21CA250B-37F2-4011-8E12-502D46BAB355}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenZiti.Management", "OpenZiti.Management\OpenZiti.Management.csproj", "{19B86F48-FD61-4863-80E3-AE8E092BBBB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenZiti.Management", "OpenZiti.Management/OpenZiti.Management.csproj", "{19B86F48-FD61-4863-80E3-AE8E092BBBB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenZiti.NET.Samples", "OpenZiti.NET.Samples\OpenZiti.NET.Samples.csproj", "{79435AB8-84F6-44FF-AC5D-374CDC097769}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenZiti.NET.Samples", "OpenZiti.NET.Samples/OpenZiti.NET.Samples.csproj", "{79435AB8-84F6-44FF-AC5D-374CDC097769}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenZiti.NET.Samples.Petstore", "OpenZiti.NET.Samples.Petstore\OpenZiti.NET.Samples.Petstore.csproj", "{8095ABCD-02C7-4354-810D-3CAD590EAB5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenZiti.NET.Samples.Petstore", "OpenZiti.NET.Samples.Petstore/OpenZiti.NET.Samples.Petstore.csproj", "{8095ABCD-02C7-4354-810D-3CAD590EAB5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

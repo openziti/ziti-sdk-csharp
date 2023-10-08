@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net6.0</TargetFrameworks>
+        <Platforms>AnyCPU;x86;x64;ARM64;ARM</Platforms>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <CurrentYear>$([System.DateTime]::UtcNow.Year.ToString().Substring(2,2))</CurrentYear>
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
@@ -53,7 +54,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
         <PackageReference Include="NLog" Version="5.0.4" />
-        <PackageReference Include="OpenZiti.NET.native" Version="0.35.0.168" />
+        <PackageReference Include="OpenZiti.NET.native" Version="0.35.0.174" />
         <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="System.Text.Json" Version="6.0.6" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -95,9 +96,9 @@
         <Exec Command="dotnet build $(MSBuildProjectFullPath) --configuration Release /p:PackageVersion=$(PackageVersion)"></Exec>
     </Target>
 
-    <Target Name="UpdateNuspe" AfterTargets="Build">
+    <Target Name="UpdateNuspec" AfterTargets="Build">
         <Message Text="Updating nuspec file after successful build." Importance="high" />
-        <Exec Command="powershell -Command ./update-nuspec.ps1 OpenZiti.NET.csproj OpenZiti.NET.nuspec" />
+        <Exec Command="pwsh -Command ./update-nuspec.ps1 OpenZiti.NET.csproj OpenZiti.NET.nuspec" />
         <Message Text="Updating nuspec file after successful build complete." Importance="high" />
     </Target>
 </Project>

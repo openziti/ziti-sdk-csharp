@@ -32,7 +32,7 @@ namespace OpenZiti.NET.Samples.Weather {
         public override async Task<object> RunAsync() {
             var svcName = "weather-demo-svc";
             var setupResult = await new SampleSetup(new()).SetupWeatherExample(svcName);
-            
+            Log.Info("Identity file located at: " + setupResult);
             var c = new ZitiContext(setupResult);
             var zitiSocketHandler = c.NewZitiSocketHandler(svcName);
             var client = new HttpClient(new Debugging.LoggingHandler(zitiSocketHandler));

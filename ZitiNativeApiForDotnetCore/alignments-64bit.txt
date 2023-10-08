@@ -1,0 +1,215 @@
+
+offset output begins
+
+offset of ziti_types_v2.ziti_auth_query_mfa.ziti_auth_query_mfa: 8 size: 48
+offset of ziti_types_v2.ziti_id_cfg.ziti_id_cfg: 24 size: 24
+offset of ziti_types_v2.ziti_config.ziti_config: 40 size: 40
+offset of ziti_types_v2.api_path.api_path: 56 size: 8
+offset of ziti_types_v2.ziti_api_versions.ziti_api_versions: 72 size: 8
+offset of ziti_types_v2.ziti_version.ziti_version: 88 size: 32
+offset of ziti_types_v2.ziti_identity.ziti_identity: 104 size: 24
+offset of ziti_types_v2.ziti_process.ziti_process: 120 size: 8
+offset of ziti_types_v2.ziti_posture_query.ziti_posture_query: 136 size: 64
+offset of ziti_types_v2.ziti_posture_query_set.ziti_posture_query_set: 152 size: 32
+offset of ziti_types_v2.ziti_session_type.ziti_session_type: 168 size: 4
+offset of ziti_types_v2.ziti_service.ziti_service: 184 size: 64
+offset of ziti_types_v2.ziti_address.ziti_address_host: 200 size: 260
+offset of ziti_types_v2.ziti_address.ziti_address_cidr: 216 size: 260
+offset of ziti_types_v2.ziti_client_cfg_v1.ziti_client_cfg_v1: 232 size: 264
+offset of ziti_types_v2.ziti_intercept_cfg_v1.ziti_intercept_cfg_v1: 248 size: 40
+offset of ziti_types_v2.ziti_server_cfg_v1.ziti_server_cfg_v1: 264 size: 24
+offset of ziti_types_v2.ziti_listen_options.ziti_listen_options: 280 size: 48
+offset of ziti_types_v2.ziti_host_cfg_v1.ziti_host_cfg_v1: 296 size: 80
+offset of ziti_types_v2.ziti_host_cfg_v2.ziti_host_cfg_v2: 312 size: 8
+offset of ziti_types_v2.ziti_mfa_enrollment.ziti_mfa_enrollment: 328 size: 24
+offset of ziti_types_v2.ziti_port_range.ziti_port_range: 344 size: 8
+offset of ziti_types_v2.ziti_options.ziti_options: 360 size: 96
+offset of ziti_types_v2.ziti_event_t.ziti_context_event: 376 size: 40
+offset of ziti_types_v2.ziti_event_t.ziti_router_event: 392 size: 40
+offset of ziti_types_v2.ziti_event_t.ziti_service_event: 408 size: 40
+offset of ziti_types_v2.ziti_event_t.ziti_mfa_auth_event: 424 size: 40
+offset of ziti_types_v2.ziti_event_t.ziti_api_event: 440 size: 40
+
+---------------- suboffsets begin ----------------
+offset of ziti_types_v2.ziti_posture_query_set.policy_id
+  position in ziti_types_v2: 152
+                 in struct : 0
+                      size : 32
+offset of ziti_types_v2.ziti_posture_query_set.is_passing
+  position in ziti_types_v2: 160
+                 in struct : 8
+                      size : 32
+offset of ziti_types_v2.ziti_posture_query_set.policy_type
+  position in ziti_types_v2: 168
+                 in struct : 16
+                      size : 32
+offset of ziti_types_v2.ziti_posture_query_set.posture_queries
+  position in ziti_types_v2: 176
+                 in struct : 24
+                      size : 32
+offset of ziti_types_v2.ziti_posture_query.id
+  position in ziti_types_v2: 136
+                 in struct : 0
+                      size : 64
+offset of ziti_types_v2.ziti_address_host.type
+  position in ziti_types_v2: 200
+                 in struct : 0
+                      size : 260
+offset of ziti_types_v2.ziti_address_host.addr.hostname
+  position in ziti_types_v2: 204
+                 in struct : 4
+                      size : 260
+offset of ziti_types_v2.ziti_address_cidr.type
+  position in ziti_types_v2: 216
+                 in struct : 0
+                      size : 260
+offset of ziti_types_v2.ziti_address_cidr.addr.cidr.af
+  position in ziti_types_v2: 220
+                 in struct : 4
+                      size : 260
+offset of ziti_types_v2.ziti_address_cidr.addr.cidr.bits
+  position in ziti_types_v2: 224
+                 in struct : 8
+                      size : 260
+offset of ziti_types_v2.ziti_address_cidr.addr.cidr.ip
+  position in ziti_types_v2: 228
+                 in struct : 12
+                      size : 260
+offset of ziti_types_v2.ziti_service.id
+  position in ziti_types_v2: 184
+                 in struct : 0
+                      size : 64
+offset of ziti_types_v2.ziti_service.name
+  position in ziti_types_v2: 192
+                 in struct : 8
+                      size : 64
+offset of ziti_types_v2.ziti_service.permissions
+  position in ziti_types_v2: 200
+                 in struct : 16
+                      size : 64
+offset of ziti_types_v2.ziti_service.encryption
+  position in ziti_types_v2: 208
+                 in struct : 24
+                      size : 64
+offset of ziti_types_v2.ziti_service.perm_flags
+  position in ziti_types_v2: 212
+                 in struct : 28
+                      size : 64
+offset of ziti_types_v2.ziti_service.config
+  position in ziti_types_v2: 216
+                 in struct : 32
+                      size : 64
+offset of ziti_types_v2.ziti_service.posture_query_set
+  position in ziti_types_v2: 224
+                 in struct : 40
+                      size : 64
+offset of ziti_types_v2.ziti_service.posture_query_map
+  position in ziti_types_v2: 232
+                 in struct : 48
+                      size : 64
+offset of ziti_types_v2.ziti_service.updated_at
+  position in ziti_types_v2: 240
+                 in struct : 56
+                      size : 64
+offset of ziti_types_v2.ziti_options.disabled
+  position in ziti_types_v2: 368
+                 in struct : 8
+                      size : 96
+offset of ziti_types_v2.ziti_options.config_types
+  position in ziti_types_v2: 376
+                 in struct : 16
+                      size : 96
+offset of ziti_types_v2.ziti_options.api_page_size
+  position in ziti_types_v2: 384
+                 in struct : 24
+                      size : 96
+offset of ziti_types_v2.ziti_options.refresh_interval
+  position in ziti_types_v2: 388
+                 in struct : 28
+                      size : 96
+offset of ziti_types_v2.ziti_options.metrics_type
+  position in ziti_types_v2: 392
+                 in struct : 32
+                      size : 96
+offset of ziti_types_v2.ziti_options.router_keepalive
+  position in ziti_types_v2: 396
+                 in struct : 36
+                      size : 96
+offset of ziti_types_v2.ziti_options.app_ctx
+  position in ziti_types_v2: 432
+                 in struct : 72
+                      size : 96
+offset of ziti_types_v2.ziti_options.events
+  position in ziti_types_v2: 440
+                 in struct : 80
+                      size : 96
+offset of ziti_types_v2.ziti_context_event.type
+  position in ziti_types_v2: 376
+                 in struct : 0
+                      size : 40
+offset of ziti_types_v2.ziti_context_event.event.ctx.ctrl_status
+  position in ziti_types_v2: 384
+                 in struct : 8
+                      size : 40
+offset of ziti_types_v2.ziti_context_event.event.ctx.err
+  position in ziti_types_v2: 392
+                 in struct : 16
+                      size : 40
+offset of ziti_types_v2.ziti_router_event.type
+  position in ziti_types_v2: 392
+                 in struct : 0
+                      size : 40
+offset of ziti_types_v2.ziti_router_event.event.router.status
+  position in ziti_types_v2: 400
+                 in struct : 8
+                      size : 40
+offset of ziti_types_v2.ziti_router_event.event.router.name
+  position in ziti_types_v2: 408
+                 in struct : 16
+                      size : 40
+offset of ziti_types_v2.ziti_router_event.event.router.address
+  position in ziti_types_v2: 416
+                 in struct : 24
+                      size : 40
+offset of ziti_types_v2.ziti_router_event.event.router.version
+  position in ziti_types_v2: 424
+                 in struct : 32
+                      size : 40
+offset of ziti_types_v2.ziti_service_event.type
+  position in ziti_types_v2: 408
+                 in struct : 0
+                      size : 40
+offset of ziti_types_v2.ziti_service_event.event.service.added
+  position in ziti_types_v2: 432
+                 in struct : 24
+                      size : 40
+offset of ziti_types_v2.ziti_service_event.event.service.changed
+  position in ziti_types_v2: 424
+                 in struct : 16
+                      size : 40
+offset of ziti_types_v2.ziti_service_event.event.service.removed
+  position in ziti_types_v2: 416
+                 in struct : 8
+                      size : 40
+offset of ziti_types_v2.ziti_mfa_auth_event.type
+  position in ziti_types_v2: 424
+                 in struct : 0
+                      size : 40
+offset of ziti_types_v2.ziti_mfa_auth_event.event.mfa_auth_event.auth_query_mfa
+  position in ziti_types_v2: 432
+                 in struct : 8
+                      size : 40
+offset of ziti_types_v2.ziti_api_event.type
+  position in ziti_types_v2: 440
+                 in struct : 0
+                      size : 40
+offset of ziti_types_v2.ziti_api_event.event.api.new_ctrl_address
+  position in ziti_types_v2: 448
+                 in struct : 8
+                      size : 40
+offset of ziti_types_v2.ziti_api_event.event.api.new_ca_bundle
+  position in ziti_types_v2: 456
+                 in struct : 16
+                      size : 40
+offset output complete
+

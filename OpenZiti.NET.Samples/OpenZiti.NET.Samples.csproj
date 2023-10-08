@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <Platforms>AnyCPU;x86;x64;ARM64;ARM</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,9 +18,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="C:\git\github\openziti\ziti-sdk-csharp\OpenZiti.Management\OpenZiti.Management.csproj" />
-    <ProjectReference Include="C:\git\github\openziti\ziti-sdk-csharp\OpenZiti.NET.Samples.Petstore\OpenZiti.NET.Samples.Petstore.csproj" />
-    <ProjectReference Include="C:\git\github\openziti\ziti-sdk-csharp\OpenZiti.NET\OpenZiti.NET.csproj" />
+    <PackageReference Include="NLog" Version="5.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenZiti.Management\OpenZiti.Management.csproj" />
+    <ProjectReference Include="..\OpenZiti.NET.Samples.Petstore\OpenZiti.NET.Samples.Petstore.csproj" />
+    <ProjectReference Include="..\OpenZiti.NET\OpenZiti.NET.csproj" />
   </ItemGroup>
 
 </Project>
