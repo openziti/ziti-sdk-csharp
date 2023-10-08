@@ -41,10 +41,6 @@ namespace OpenZiti.Native {
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_ziti_posture_query", CallingConvention = API.CALL_CONVENTION)]
         public static extern IntPtr z4d_ziti_posture_query();
 
-        public static void Run() {
-        }
-
-
         public static T ToContextEvent<T>(T desired, IntPtr /*byte[] input*/ input) {
             int size = Marshal.SizeOf(desired);
             IntPtr ptr = IntPtr.Zero;
@@ -90,13 +86,6 @@ namespace OpenZiti.Native {
         public string checksum;
     }
 
-    public static class IntPtrExtensions
-    {
-        public static bool Check(this IntPtr intPtr)
-        {
-            return intPtr != IntPtr.Zero;
-        }
-    }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_types {

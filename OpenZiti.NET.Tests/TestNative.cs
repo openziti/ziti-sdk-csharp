@@ -10,30 +10,18 @@ namespace OpenZiti.NET.Tests {
     public class NativeCodeAlignmentChecker {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private void verifyFieldCheck<T>(AlignmentCheck check, string expectedChecksum, uint expectedOffset, uint expectedSize) {
-            Log.Info($"{check.checksum}, {check.offset},  {check.size}");
-            //advance the curOffset by the size of the AlignmentCheck
-            Log.Info($"{check.checksum}, {check.offset},  {check.size}");
             Assert.AreEqual(expectedChecksum, check.checksum);
             Assert.AreEqual((int)expectedOffset, (int)check.offset);
             Assert.AreEqual(expectedSize, check.size);
-            Log.Info($"{check.checksum}, {check.offset},  {check.size}");
         }
-
-        public const CallingConvention CALL_CONVENTION = CallingConvention.Cdecl;
-        public const string Z4D_DLL_PATH = @"C:\git\github\openziti\ziti-sdk-csharp\ZitiNativeApiForDotnetCore\build\library\Debug\ziti4dotnet.dll";
-        
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "z4d_struct_test_ziti_auth_query_mfa", CallingConvention = CALL_CONVENTION)]
-        public static extern IntPtr z4d_struct_test_ziti_auth_query_mfa();
 
         [TestMethod]
         public void TestCSDKStructAlignments() {
             Log.Info("test begins with: " + Native.API.GetZitiPath());
-            
             IntPtr testData = TestBlitting.z4d_struct_test();
             uint size = Marshal.PtrToStructure<uint>(testData);
             byte[] managedArray = new byte[size];
             Marshal.Copy(testData, managedArray, 0, (int)size);
-            
             ziti_types native_structs = Marshal.PtrToStructure<ziti_types>(testData);
             
             // as of 0.35.0, run ./build/library/Debug/zitistructalignment.exe and capture the output
