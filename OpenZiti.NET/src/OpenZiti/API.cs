@@ -99,7 +99,6 @@ namespace OpenZiti {
         public static void InitializeZiti() {
             var fp = Marshal.GetFunctionPointerForDelegate(NativeLogger);
             nAPI.ziti_log_set_logger(fp);
-            nAPI.Ziti_lib_init();
         }
 
         public static void InitializeZiti(ZitiLogLevel level) {

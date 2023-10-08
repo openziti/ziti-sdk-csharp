@@ -16,11 +16,8 @@ limitations under the License.
 
 using OpenZiti.Debugging;
 using OpenZiti.Generated.Petstore;
-using OpenZiti.Management;
 using System;
-using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 using OpenZiti.NET.Samples.Common;
@@ -33,11 +30,13 @@ namespace OpenZiti.NET.Samples.Weather {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         
         public override async Task<object> RunAsync() {
+            Log.Info("PetstoreSample starts");
             var svcName = "petstore-demo-svc";
             var desiredIntercept = "my.petstore";
             var port = 20080;
-            var interceptAddress = $"http://{desiredIntercept}:{port}/v2"; //entirely ficticious domain name!
+            var interceptAddress = $"http://{desiredIntercept}:{port}/v2"; //entirely fictitious domain name!
             var setupResult = await new SampleSetup(new()).SetupPetStoreExample(svcName, desiredIntercept, "127.0.0.1", port);
+            Log.Info("Identity file located at: " + setupResult);
             
             var c = new ZitiContext(setupResult);
             var zitiSocketHandler = c.NewZitiSocketHandler(svcName);
@@ -49,7 +48,7 @@ namespace OpenZiti.NET.Samples.Weather {
             };
             var anon = new List<Anonymous>();
             anon.Add(Anonymous.Available);
-            httpHandler.LogHttpRequestResponse = true;
+            // uncomment to see http request/response httpHandler.LogHttpRequestResponse = true;
             var pets = await pc.FindPetsByStatusAsync(anon);
             foreach (var pet in pets) {
                 Console.WriteLine(pet.Name);

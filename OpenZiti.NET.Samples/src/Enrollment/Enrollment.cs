@@ -19,14 +19,15 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-using OpenZiti.Management;
 using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples {
     [Sample("enroll")]
 
     public class EnrollmentSample : SampleBase {
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<object> RunAsync() {
+            Log.Info("EnrollmentSample starts");
             var enrollDemoIdentityName = "enroll-demo";
             var s = new SampleSetup();
             var id = await s.BootstrapSampleIdentityAsync(enrollDemoIdentityName, null);

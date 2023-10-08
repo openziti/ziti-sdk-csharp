@@ -15,24 +15,20 @@ limitations under the License.
 */
 
 using OpenZiti.Debugging;
-using OpenZiti.Generated.Petstore;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using MLog = Microsoft.Extensions.Logging;
 
 using OpenZiti.NET.Samples.Common;
-using System.Collections.Generic;
-using System.Net.Http;
 
 namespace OpenZiti.NET.Samples {
     public class Program {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
-
         private static async Task Main(string[] args) {
             try {
-                try { Console.Clear(); } catch (Exception) { /*ignore exceptions*/ }
-                Debugging.LoggingHelper.LogToConsole(MLog.LogLevel.Trace);
+                //try { Console.Clear(); } catch (Exception) { /*ignore exceptions*/ }
+                LoggingHelper.LogToConsole(MLog.LogLevel.Trace);
                 API.NativeLogger = API.DefaultNativeLogFunction;
 
                 var currentAssembly = Assembly.GetExecutingAssembly();

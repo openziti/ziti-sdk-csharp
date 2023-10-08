@@ -1,18 +1,18 @@
-﻿# Pet Store - Consuming an HTTP-based API
+# Enrollment - Enrolling an Identity
 
-This sample demonstrates how to invoke a web request exiting from private networking space towards an HTTP-based
-API. This sample will use the swagger "pet store" application and represents consuming an HTTP-based API.
+This sample demonstrates how to enroll a token to produce a strong identity. The strong identity is what enables
+a client to authenticate to an OpenZiti overlay network. 
+
+When creating an identity, you can specify the "Enrollment" type. This sample makes a "one time token" (OTT). This
+token will be in the form of a JWT. After creating the identity with an OTT enrollment, you can fetch the identity
+details and write this OTT to a file. That is what this file demonstrates.
+
+If you have administrative access to the controller, you can create the identity in the controller and then enroll it.
+If not, you can just use this sample to enroll the identity.
 
 ## OpenZiti Concepts Demonstrated
 
-This sample demonstrates some key OpenZiti concepts:
-
-* Application-embedded zero trust client.
-* Offloading traffic from an identity. OpenZiti allows you to configure a tunneler to offload traffic towards another.
-  This sample offloads traffic from our router to https://localhost:20080 using a `host.v1` config.
-* Using an `intercept.v1` to specify a URL should be intercepted by the application.
-* Creating a service to combine two configs (the intercept and the host).
-* Service Policies to authorize identities to perform `dial` or `bind`.
+This sample really only demonstrates a single key OpenZiti concepts: enrollment.
 
 ## Setup
 
@@ -21,12 +21,6 @@ allow the sample to configure itself. To configure, set these environment variab
 * `ZITI_USERNAME` - the username to use. Default: `admin`
 * `ZITI_PASSWORD` - the password to use. Default: `admin`
 * `ZITI_BASEURL` - the url of the controller to authenticate to.  Default: `localhost:1280`
-
-### Petstore Endpoint
-
-The setup requires a petstore application to be running. It is available as a docker container and also available
-online if you prefer to not have to host it yourself. By default, the sample expects you are running it adjacent to
-your router (available to the router at `localhost:20080`).
 
 ## Running the Sample With Automatic Configuration
 

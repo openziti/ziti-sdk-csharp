@@ -22,6 +22,10 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("UnitTests")]
 namespace OpenZiti.Native {
     public class API {
+        static API() {
+            Ziti_lib_init(); //this __always__ needs to happen
+        }
+        
         public const CallingConvention CALL_CONVENTION = CallingConvention.Cdecl;
 
         public const string Z4D_DLL_PATH = @"ziti4dotnet";
