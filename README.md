@@ -53,12 +53,12 @@ important as you progress with your OpenZiti journey and try to reuse the config
 There are currently four different samples you can run, each of which outlining a different principle of OpenZiti.
 Find a sample that seems interesting, and follow the readme to that sample to learn how to run it.
 
-| Sample                                                            | Description                                                                                                        |
-|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
-| [OpenAPI PetStore](./OpenZiti.NET.Samples/src/PetStore/README.md) | Illustrates how to invoke an HTTP-based API securely |
-| [Weather](./OpenZiti.NET.Samples/src/Weather/README.md)           | Illustrates how to make an http-based request and output the content to the screen using wttr.in                   |
-| [Sample](./OpenZiti.NET.Samples/src/Server/README.md)             | Illustrates how to use OpenZiti as a server __AND__ a client. Demonstrates true application-embedded zero trust!   |
-| [Enrollment](./OpenZiti.NET.Samples/src/Enrollment/README.md)     | A simple sample demonstrating how to enroll an OpenZiti Identity                                                   |
+| Sample                                                                                                      | Description                                                                                                          |
+|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| [OpenAPI PetStore](https://github.com/openziti/ziti-sdk-csharp/blob/main/OpenZiti.NET.Samples/src/PetStore/README.md) | Illustrates how to invoke an HTTP-based API securely                                                                 |
+| [Weather](https://github.com/openziti/ziti-sdk-csharp/blob/main/OpenZiti.NET.Samples/src/Weather/README.md)                                                     | Illustrates how to make an http-based request and output the content to the screen using wttr.in                     |
+| [Sample](https://github.com/openziti/ziti-sdk-csharp/blob/main/OpenZiti.NET.Samples/src/Server/README.md)                                                       | Illustrates how to use OpenZiti as a server __AND__ a client. Demonstrates true application-embedded zero trust!     |
+| [Enrollment](https://github.com/openziti/ziti-sdk-csharp/blob/main/OpenZiti.NET.Samples/src/Enrollment/README.md)                                               | A simple sample demonstrating how to enroll an OpenZiti Identity                                                     |
 
 ## The `ziti` CLI
 
