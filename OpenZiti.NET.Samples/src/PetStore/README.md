@@ -7,6 +7,7 @@ API. This sample will use the swagger "pet store" application and represents con
 
 This sample demonstrates some key OpenZiti concepts:
 
+* Application-embedded zero trust client.
 * Offloading traffic from an identity. OpenZiti allows you to configure a tunneler to offload traffic towards another.
   This sample offloads traffic from our router to https://localhost:20080 using a `host.v1` config.
 * Using an `intercept.v1` to specify a URL should be intercepted by the application.

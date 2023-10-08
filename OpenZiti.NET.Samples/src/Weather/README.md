@@ -7,10 +7,11 @@ resource. In this case, we've chose to use the wonderful website returning weath
 
 This sample demonstrates some key OpenZiti concepts:
 
+* Application-embedded zero trust client.
 * Offloading traffic from an identity. OpenZiti allows you to configure a tunneler to offload traffic towards another. 
   This sample offloads traffic from a router to https://wttr.in using a `host.v1` config.
 * Using an `intercept.v1` to specify a URL should be intercepted by the application.
-* Creating a service to combine two configs (the intercept and the host).
+* Creating a service and adding two configs to configure the service (the intercept and the host).
 * Service Policies to authorize identities to perform `dial` or `bind`.
 
 ## Setup

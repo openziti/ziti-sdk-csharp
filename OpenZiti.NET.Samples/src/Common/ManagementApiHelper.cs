@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 
 using OpenZiti.Generated;
 using OpenZiti.Debugging;
+using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.Management;
 
@@ -53,6 +54,9 @@ public class ManagementApiHelper
     }
 
     private async Task setManagementApi() {
+        if (!SampleSetup.Initialize) {
+            return;
+        }
         Authenticate auth = new Authenticate();
         Method method = Method.Password;
         auth.Username = Environment.GetEnvironmentVariable("ZITI_USERNAME");

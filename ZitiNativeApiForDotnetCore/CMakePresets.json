@@ -127,10 +127,7 @@
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x86-windows-static-md"
       },
-      "architecture": {
-          "strategy": "set",
-           "value": "Win32"
-      }
+      "architecture": "Win32"
     },
     {
       "name": "ci-windows-arm64",
