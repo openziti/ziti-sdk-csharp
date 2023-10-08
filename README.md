@@ -60,7 +60,14 @@ Find a sample that seems interesting, and follow the readme to that sample to le
 | [Sample](https://github.com/openziti/ziti-sdk-csharp/blob/main/OpenZiti.NET.Samples/src/Server/README.md)                                                       | Illustrates how to use OpenZiti as a server __AND__ a client. Demonstrates true application-embedded zero trust!     |
 | [Enrollment](https://github.com/openziti/ziti-sdk-csharp/blob/main/OpenZiti.NET.Samples/src/Enrollment/README.md)                                               | A simple sample demonstrating how to enroll an OpenZiti Identity                                                     |
 
-## The `ziti` CLI
+## An Overlay to Test With
+
+The latest versions of the `ziti` CLI contains a command called `ziti edge quickstart`. This command can be used with
+all of the samples to easily setup an environment to test with. You can also run the samples with an overlay generated
+by [following one of the quickstarts](https://openziti.io/docs/category/network) and also works with CloudZiti when
+supplying the "noint" parameter to the samples.
+
+### Getting the `ziti` CLI
 
 The `ziti` CLI tool is a convinient way to access the OpenZiti overlay network via a command line, instead of by API.
 You'll likely want to have the `ziti` CLI available at times as it's handy to use for exploring the OpenZiti
