@@ -145,3 +145,28 @@ github action file](.github/workflows/native-nuget-publish.yml). For more inform
 
 Once the the native library is published to NuGet, the idiomatic SDK references the NuGet package to provide the single,
 cross-platform, idiomatic dotnet NuGet package for easy downstream inclusion in projects.
+
+## Rotating the NuGet API Key
+Here's a short set of instructions for how to rotate the NuGet API key for pushing updates
+
+* go to https://www.nuget.org/account/ApiKeys
+  ```
+  Key Name:
+    Expires In: 365 days
+    Package Owner: OpenZiti
+  
+  Select Scopes:
+    Push (checked)
+      Push new packages and package versions (selected)
+	  Push only new package versions (unselected)
+	Unlist package (unchecked)
+  Glob Pattern: OpenZiti.*
+  
+  Select Packages:
+    Available Packages:
+      OpenZiti.NET
+      OpenZiti.NET.native
+  ```
+
+* go to https://github.com/organizations/openziti/settings/secrets/actions
+* find/update: NUGET_API_KEY with the key made above
