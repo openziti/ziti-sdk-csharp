@@ -303,7 +303,7 @@ namespace OpenZiti.Native {
 
         //ziti_context Ziti_load_context(const char *identity);
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "Ziti_load_context", CallingConvention = API.CALL_CONVENTION)]
-        public static extern IntPtr /*ziti_context*/ Ziti_load_context(string identityPath);
+        public static extern IntPtr /*ziti_context*/ Ziti_load_context(byte[] identityPath);
 
         // ziti_socket_t Ziti_socket(int type);
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "Ziti_socket", CallingConvention = API.CALL_CONVENTION)]

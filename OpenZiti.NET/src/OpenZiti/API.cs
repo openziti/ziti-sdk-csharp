@@ -134,7 +134,7 @@ namespace OpenZiti {
         }
 
         public static ZitiContext LoadContext(string identity) {
-            return new ZitiContext(nAPI.Ziti_load_context(identity));
+            return new ZitiContext(identity);
         }
 
         public static ZitiSocket CreateSocket(SocketType type) {
