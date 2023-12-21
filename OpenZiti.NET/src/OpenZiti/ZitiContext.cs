@@ -16,10 +16,12 @@ limitations under the License.
 
 using OpenZiti.Native;
 using System;
+using System.Collections;
 using System.IO;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 
 using nAPI = OpenZiti.Native.API;
@@ -39,8 +41,12 @@ namespace OpenZiti {
             NativeContext = ptr;
         }
 
+        public ZitiContext(byte[] identity) {
+            NativeContext = nAPI.Ziti_load_context(identity);
+        }
+
         public ZitiContext(string identityFile) {
-            NativeContext = nAPI.Ziti_load_context(identityFile);
+            NativeContext = nAPI.Ziti_load_context(Encoding.UTF8.GetBytes(identityFile));
         }
 
         /*
