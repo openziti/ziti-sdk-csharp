@@ -17,6 +17,7 @@ See the README files in the subdirectories of the [src](./src) directory for mor
 | [Weather](./src/Weather/README.md)           | Illustrates how to make an http-based request and output the content to the screen using wttr.in                                                          |
 | ["reflect" server](./src/Server/README.md)   | Illustrates how to use OpenZiti as a server __AND__ a client. Demonstrates true application-embedded zero trust! Starts a server that responds to clients |
 | [Enrollment](./src/Enrollment/README.md)     | A simple sample demonstrating how to enroll an OpenZiti Identity                                                                                          |
+| [Appetizer](./src/Appetizer/README.md)       | A sample that works with the https://appetizer.openziti.io demo site. Demonstrates application-embedded zero trust client to a golang server deployed "somewhere" |
 
 ## Sample Setup
 
