@@ -43,13 +43,9 @@ namespace OpenZiti.NET.Samples.Appetizer {
             while (true) {
                 Console.Write("Enter some text to send: ");
                 var input = Console.ReadLine();
-
-                // Send the input to the server
                 await writer.WriteAsync(input);
                 await writer.FlushAsync();
-
-                // Receive and print the server's response
-                var response = reader.ReadLine();
+                var response = await reader.ReadLineAsync();
                 Console.WriteLine($"Received: {response}");
             } //this just loops forever and c# is smart enough not to need a 'return' -- neat
         }
