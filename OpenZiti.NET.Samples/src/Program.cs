@@ -51,11 +51,6 @@ namespace OpenZiti.NET.Samples {
                     SampleSetup.Initialize = (args[1]?.ToLower().Trim() != "noinit");
                     if (args.Length > 2) {
                         SampleSetup.IdentityFile = args[2];
-                    } else {
-                        throw new Exception(
-                                @"when using 'noint', you must supply an identity file to use as the third parameter
-    Example:
-      dotnet run --project OpenZiti.NET.Samples/OpenZiti.NET.Samples.csproj weather noinit /my/identity.file");
                     }
                 } else {
                     SampleSetup.Initialize = true;
@@ -67,7 +62,7 @@ namespace OpenZiti.NET.Samples {
                         var attr = (Sample)Attribute.GetCustomAttribute(type, typeof(Sample));
                         if (attr?.Name == args[0]) {
                             var sample = (SampleBase)Activator.CreateInstance(type);
-                            await sample.RunAsync();
+                            await sample.RunAsync(args);
                         }
                     }
                 
