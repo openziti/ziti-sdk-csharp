@@ -26,7 +26,7 @@ namespace OpenZiti.NET.Samples {
 
     public class EnrollmentSample : SampleBase {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        public override async Task<object> RunAsync() {
+        public override async Task<object> RunAsync(string[] args) {
             Log.Info("EnrollmentSample starts");
             var enrollDemoIdentityName = "enroll-demo";
             var s = new SampleSetup();

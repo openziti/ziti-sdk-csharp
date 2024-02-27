@@ -29,7 +29,7 @@ namespace OpenZiti.NET.Samples.Weather {
     public class PetstoreSample : SampleBase {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         
-        public override async Task<object> RunAsync() {
+        public override async Task<object> RunAsync(string[] args) {
             Log.Info("PetstoreSample starts");
             var svcName = "petstore-demo-svc";
             var desiredIntercept = "my.petstore";

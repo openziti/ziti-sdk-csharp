@@ -28,7 +28,10 @@ namespace OpenZiti.NET.Samples.Common {
             Log.Info($"Strong identity enrolled successfully. File saved to: {outputPath}");
         }
 
-        public abstract Task<object> RunAsync();
+        public virtual Task<object> RunAsync() {
+            return RunAsync(null);
+        }
+        public abstract Task<object> RunAsync(string[] args);
     }
     
     [AttributeUsage(AttributeTargets.Class)]
