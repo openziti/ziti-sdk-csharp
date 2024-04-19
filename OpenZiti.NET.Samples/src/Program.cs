@@ -16,6 +16,7 @@ limitations under the License.
 
 using OpenZiti.Debugging;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using MLog = Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace OpenZiti.NET.Samples {
                 //try { Console.Clear(); } catch (Exception) { /*ignore exceptions*/ }
                 LoggingHelper.LogToConsole(MLog.LogLevel.Trace);
                 API.NativeLogger = API.DefaultNativeLogFunction;
-
+                
                 var currentAssembly = Assembly.GetExecutingAssembly();
                 if (args == null || args.Length < 1) {
                     Console.WriteLine("These samples expect a parameter indicating which sample to run.");
@@ -45,6 +46,13 @@ namespace OpenZiti.NET.Samples {
                             Console.WriteLine("  - " + sample?.Name);
                         }
                     return;
+                }
+
+                if ( args[0].Contains(AppDomain.CurrentDomain.FriendlyName )) {
+                    Console.WriteLine("args[0] contains the AppDomain.CurrentDomain.FriendlyName, must be using dotnet run.");
+                    args = args.Skip(1).ToArray();
+                } else {
+                    Console.WriteLine(AppDomain.CurrentDomain.FriendlyName);
                 }
 
                 if (args.Length > 1) {
