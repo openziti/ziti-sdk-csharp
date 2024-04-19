@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <Target Name="DownloadMgmtYaml" BeforeTargets="Never">
-    <Exec Command="pwsh -Command iwr https://get.openziti.io/spec/management.yml -OutFile ./mgmt.yml" />
+    <Exec Command="pwsh -Command iwr $(ManagementSpecUrl) -OutFile ./management.yml -SkipCertificateCheck" />
   </Target>
   <ItemGroup>
     <None Remove="management.yml" />

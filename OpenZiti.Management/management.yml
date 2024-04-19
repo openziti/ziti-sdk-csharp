@@ -13920,6 +13920,7 @@ definitions:
     enum:
     - Dial
     - Bind
+    - Invalid
   dialBindArray:
     type: array
     items:
