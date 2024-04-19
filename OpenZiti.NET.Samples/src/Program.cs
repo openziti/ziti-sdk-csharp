@@ -51,8 +51,6 @@ namespace OpenZiti.NET.Samples {
                 if ( args[0].Contains(AppDomain.CurrentDomain.FriendlyName )) {
                     Console.WriteLine("args[0] contains the AppDomain.CurrentDomain.FriendlyName, must be using dotnet run.");
                     args = args.Skip(1).ToArray();
-                } else {
-                    Console.WriteLine(AppDomain.CurrentDomain.FriendlyName);
                 }
 
                 if (args.Length > 1) {

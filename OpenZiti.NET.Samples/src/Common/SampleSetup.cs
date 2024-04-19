@@ -29,6 +29,7 @@ namespace OpenZiti.NET.Samples.Common {
         public static bool Initialize { get; set; } = true;
 
         private static string _idFile;
+
         public static string IdentityFile {
             get {
                 if (Initialize) { return null; }
