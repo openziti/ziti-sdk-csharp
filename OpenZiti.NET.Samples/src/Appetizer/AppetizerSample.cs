@@ -36,6 +36,9 @@ namespace OpenZiti.NET.Samples.Appetizer {
 
         public override async Task<object> RunAsync(string[] args) {
             Log.Info("Appetizer reflect demo starts");
+            if (args.Length < 2) {
+                throw new Exception("sample expects two params: <sample to execute> <identity file to use>");
+            }
             var zitiContext = AppetizerSetup.ContextFromFile(args[1]);
             using Stream stream = ZitifiedNetworkStream.NewStream(zitiContext, REFLECT_SERVICE_NAME, null);
             using var reader = new StreamReader(stream, Encoding.ASCII);
