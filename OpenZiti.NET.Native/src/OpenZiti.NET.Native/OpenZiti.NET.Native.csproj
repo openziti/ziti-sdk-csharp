@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Import version.props -->
+	<Import Project="$(MSBuildProjectDirectory)/../../version.props" />
+
+	<PropertyGroup>
+		<Version>$(Version)</Version>
+		<!-- Use the Version from version.props -->
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<PackageId>OpenZiti.NET.Native</PackageId>
+		<Authors>OpenZiti</Authors>
+		<Description>Native ziti-sdk-c binaries for .NET (multi-RID).</Description>
+		<PackageTags>native;ziti;openziti;interop</PackageTags>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/openziti/ziti-sdk-c</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/openziti/ziti-sdk-c</PackageProjectUrl>
+		<ReadmeFile>README.md</ReadmeFile>
+		<PackageIcon>ziti-v2.png</PackageIcon>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<IsPackable>true</IsPackable>
+		<Deterministic>true</Deterministic>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<NoPackageAnalysis>true</NoPackageAnalysis>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="**\*.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="" />
+		<None Include="ziti-v2.png" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\third_party\ziti-sdk-c\$(Version)\runtimes\**\*.*">
+			<Pack>true</Pack>
+			<PackagePath>runtimes</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<Target Name="FetchNativeBinaries" BeforeTargets="Pack">
+		<Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\..\getNative.ps1&quot;"
+			  ConsoleToMSBuild="true" />
+	</Target>
+
+</Project>

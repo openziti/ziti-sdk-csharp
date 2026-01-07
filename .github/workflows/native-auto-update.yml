@@ -1,0 +1,236 @@
+name: Auto-update Native Ziti SDK
+
+on:
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  check-and-publish:
+    runs-on: windows-latest
+    # Only run on the main openziti repository
+    if: github.repository_owner == 'openziti'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Use a PAT to allow the workflow to trigger other workflows
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Get latest ziti-sdk-c release
+        id: latest_release
+        shell: pwsh
+        run: |
+          $response = Invoke-RestMethod -Uri "https://api.github.com/repos/openziti/ziti-sdk-c/releases/latest"
+          $latestVersion = $response.tag_name
+          Write-Output "Latest version: $latestVersion"
+          echo "version=$latestVersion" >> $env:GITHUB_OUTPUT
+          echo "release_url=$($response.html_url)" >> $env:GITHUB_OUTPUT
+          echo "release_notes<<EOF" >> $env:GITHUB_OUTPUT
+          echo $response.body >> $env:GITHUB_OUTPUT
+          echo "EOF" >> $env:GITHUB_OUTPUT
+
+      - name: Get current version
+        id: current_version
+        shell: pwsh
+        working-directory: OpenZiti.NET.Native
+        run: |
+          [xml]$versionFile = Get-Content version.props
+          $currentVersion = $versionFile.Project.PropertyGroup.Version
+          Write-Output "Current version: $currentVersion"
+          echo "version=$currentVersion" >> $env:GITHUB_OUTPUT
+
+      - name: Compare versions
+        id: compare
+        shell: pwsh
+        run: |
+          $latest = "${{ steps.latest_release.outputs.version }}"
+          $current = "${{ steps.current_version.outputs.version }}"
+
+          if ($latest -ne $current) {
+            Write-Output "Update needed: $current -> $latest"
+            echo "update_needed=true" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Output "Already up to date: $current"
+            echo "update_needed=false" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Update version.props
+        if: steps.compare.outputs.update_needed == 'true'
+        shell: pwsh
+        working-directory: OpenZiti.NET.Native
+        run: |
+          $newVersion = "${{ steps.latest_release.outputs.version }}"
+          [xml]$versionFile = Get-Content version.props
+          $versionFile.Project.PropertyGroup.Version = $newVersion
+          $versionFile.Save("$PWD/version.props")
+          Write-Output "Updated version.props to $newVersion"
+
+      - name: Fetch native binaries
+        if: steps.compare.outputs.update_needed == 'true'
+        shell: pwsh
+        working-directory: OpenZiti.NET.Native
+        run: |
+          Write-Output "Fetching native binaries for version ${{ steps.latest_release.outputs.version }}"
+          .\getNative.ps1
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to fetch native binaries"
+            exit 1
+          }
+
+      - name: Verify binaries downloaded
+        if: steps.compare.outputs.update_needed == 'true'
+        shell: pwsh
+        working-directory: OpenZiti.NET.Native
+        run: |
+          $version = "${{ steps.latest_release.outputs.version }}"
+          $expectedPlatforms = @(
+            "win-x86", "win-x64", "win-arm64",
+            "linux-x64", "linux-arm", "linux-arm64",
+            "osx-x64", "osx-arm64"
+          )
+
+          $missing = @()
+          foreach ($platform in $expectedPlatforms) {
+            $path = "third_party/ziti-sdk-c/$version/runtimes/$platform/native"
+            if (-not (Test-Path $path)) {
+              $missing += $platform
+              Write-Warning "Missing binaries for $platform at $path"
+            } else {
+              $files = Get-ChildItem $path -File
+              Write-Output "Found $($files.Count) file(s) for $platform"
+            }
+          }
+
+          if ($missing.Count -gt 0) {
+            Write-Error "Missing binaries for platforms: $($missing -join ', ')"
+            exit 1
+          }
+
+          Write-Output "All platform binaries verified successfully"
+
+      - name: Build NuGet package
+        if: steps.compare.outputs.update_needed == 'true'
+        shell: pwsh
+        working-directory: OpenZiti.NET.Native
+        run: |
+          dotnet pack src/OpenZiti.NET.Native/OpenZiti.NET.Native.csproj -c Release -o ./nupkg
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Package build failed"
+            exit 1
+          }
+
+          # List the created packages
+          Get-ChildItem ./nupkg -Filter *.nupkg
+
+      - name: Test NuGet package contents
+        if: steps.compare.outputs.update_needed == 'true'
+        shell: pwsh
+        working-directory: OpenZiti.NET.Native
+        run: |
+          $version = "${{ steps.latest_release.outputs.version }}"
+          $package = Get-ChildItem ./nupkg -Filter "OpenZiti.NET.Native.$version.nupkg" | Select-Object -First 1
+
+          if (-not $package) {
+            Write-Error "Package file not found: OpenZiti.NET.Native.$version.nupkg"
+            exit 1
+          }
+
+          Write-Output "Testing package: $($package.Name)"
+
+          # Rename to .zip and extract to inspect contents
+          $testDir = "./nupkg/test"
+          New-Item -ItemType Directory -Force -Path $testDir | Out-Null
+          Expand-Archive -Path $package.FullName -DestinationPath $testDir -Force
+
+          # Verify runtime folders exist
+          $runtimesPath = Join-Path $testDir "runtimes"
+          if (-not (Test-Path $runtimesPath)) {
+            Write-Error "Package does not contain runtimes folder"
+            exit 1
+          }
+
+          # List contents
+          Write-Output "`nPackage contents:"
+          Get-ChildItem $runtimesPath -Recurse | ForEach-Object {
+            Write-Output "  $($_.FullName.Replace($testDir, ''))"
+          }
+
+          Write-Output "`nPackage validation successful"
+
+      - name: Publish to NuGet.org
+        if: steps.compare.outputs.update_needed == 'true'
+        shell: pwsh
+        working-directory: OpenZiti.NET.Native
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          $version = "${{ steps.latest_release.outputs.version }}"
+          $package = Get-ChildItem ./nupkg -Filter "OpenZiti.NET.Native.$version.nupkg" | Select-Object -First 1
+
+          Write-Output "Publishing $($package.Name) to NuGet.org"
+          dotnet nuget push $package.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "NuGet publish failed"
+            exit 1
+          }
+
+          Write-Output "Successfully published OpenZiti.NET.Native $version to NuGet.org"
+
+      - name: Commit version update
+        if: steps.compare.outputs.update_needed == 'true'
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          cd OpenZiti.NET.Native
+          git add version.props
+          git commit -m "Auto-update ziti-sdk-c to ${{ steps.latest_release.outputs.version }}
+
+          Published OpenZiti.NET.Native ${{ steps.latest_release.outputs.version }} to NuGet.org
+
+          Release notes: ${{ steps.latest_release.outputs.release_url }}"
+
+          git push
+
+      - name: Create GitHub release
+        if: steps.compare.outputs.update_needed == 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: native-${{ steps.latest_release.outputs.version }}
+          release_name: OpenZiti.NET.Native ${{ steps.latest_release.outputs.version }}
+          body: |
+            Auto-published OpenZiti.NET.Native ${{ steps.latest_release.outputs.version }} to NuGet.org
+
+            This release includes native binaries from ziti-sdk-c ${{ steps.latest_release.outputs.version }}
+
+            **Upstream Release:** ${{ steps.latest_release.outputs.release_url }}
+
+            **NuGet Package:** https://www.nuget.org/packages/OpenZiti.NET.Native/${{ steps.latest_release.outputs.version }}
+
+            ## Upstream Release Notes
+            ${{ steps.latest_release.outputs.release_notes }}
+          draft: false
+          prerelease: false
+
+      - name: Report status
+        if: always()
+        shell: pwsh
+        run: |
+          if ("${{ steps.compare.outputs.update_needed }}" -eq "true") {
+            Write-Output "✅ Successfully updated and published OpenZiti.NET.Native to ${{ steps.latest_release.outputs.version }}"
+          } else {
+            Write-Output "ℹ️ No update needed - already at latest version ${{ steps.current_version.outputs.version }}"
+          }

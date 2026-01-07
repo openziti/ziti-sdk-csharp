@@ -9,6 +9,7 @@ dotnet-install.sh
 docfx/metadata
 docfx/api
 local-nuget-packages/
+local-nuget/
 runtimes/
 
 cmake-build-debug-mingw/
@@ -28,3 +29,10 @@ Samples/Properties
 TestProject/Properties
 .run
 ZitiNativeApiForDotnetCore/Testing/
+# OpenZiti.NET.Native local artifacts
+artifacts/
+**/bin/
+**/obj/
+incoming/
+
+third_party
