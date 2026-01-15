@@ -30,20 +30,51 @@ IF "%ZITI_DEBUG%"=="" (
 
 cmake -E make_directory %BUILDFOLDER%
 
+setlocal
+
+set TARGET=%1
+
+if "%TARGET%"=="" goto build_both
+if /I "%TARGET%"=="nothing" goto build_both
+if /I "%TARGET%"=="x86" goto build_x86
+if /I "%TARGET%"=="x64" goto build_x64
+
+goto end
+
+pushd "%NATIVE_CODE_DIR%"
+
+:build_x86
 echo.
 echo.
 echo "Building 32-bit"
-cmake --preset win32 -S %NATIVE_CODE_DIR% -B %BUILDFOLDER%\win32 -A Win32
+cmake --preset win32 ^
+      -S %NATIVE_CODE_DIR% ^
+      -B %BUILDFOLDER%\win32 ^
+      -A Win32
 cmake --build %BUILDFOLDER%\win32
 cmake --build %BUILDFOLDER%\win32 --config Release
+goto end
 
+:build_x64
 echo.
 echo.
 echo "Building 64-bit"
-cmake --preset win64 -S %NATIVE_CODE_DIR% -B %BUILDFOLDER%\win64
+cmake --preset win64 ^
+      -S %NATIVE_CODE_DIR% ^
+      -B %BUILDFOLDER%\win64
 cmake --build %BUILDFOLDER%\win64
 cmake --build %BUILDFOLDER%\win64 --config Release
+
+popd
+
 goto end
+
+:build_both
+call "%~f0" x86
+call "%~f0" x64
+goto end
+
+endlocal
 
 :print_help
 echo.

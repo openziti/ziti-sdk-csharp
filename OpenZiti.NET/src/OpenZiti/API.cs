@@ -20,6 +20,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using MLog = Microsoft.Extensions.Logging;
 
 using nAPI = OpenZiti.Native.API;
 
@@ -29,7 +30,9 @@ namespace OpenZiti {
         public static readonly string[] AllConfigs = new string[] { "all" };
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public static nAPI.log_writer NativeLogger = NoopNativeLogFunction;
-        public static void NoopNativeLogFunction(int level, string loc, string msg, uint msglen) { }
+        public static void NoopNativeLogFunction(int level, string loc, string msg, uint msglen) {
+            // intentionally empty
+        }
         public static void DefaultNativeLogFunction(int level, string loc, string msg, uint msglen) {
             switch (level) {
                 case 0:
@@ -97,16 +100,22 @@ namespace OpenZiti {
         }
 
         public static void InitializeZiti() {
-            var fp = Marshal.GetFunctionPointerForDelegate(NativeLogger);
+            nAPI.Ziti_lib_init();
+            //var fp = Marshal.GetFunctionPointerForDelegate(NativeLogger);
+            //nAPI.ziti_log_set_logger(fp);
+        }
+
+        public static void SetLoggerFunc(nAPI.log_writer logFunc) {
+            var fp = Marshal.GetFunctionPointerForDelegate(logFunc);
             nAPI.ziti_log_set_logger(fp);
         }
 
-        public static void InitializeZiti(ZitiLogLevel level) {
+        public static void InitializeZiti(MLog.LogLevel level) {
             InitializeZiti();
             SetLogLevel(level);
         }
 
-        public static void SetLogLevel(ZitiLogLevel level) {
+        public static void SetLogLevel(MLog.LogLevel level) {
             nAPI.ziti_log_set_level((int)level, null);
         }
 

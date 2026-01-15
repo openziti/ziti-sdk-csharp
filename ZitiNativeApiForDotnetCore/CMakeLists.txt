@@ -6,7 +6,7 @@ set( CMAKE_SUPPORT_WINDOWS_EXPORT_ALL_SYMBOLS 1 )
 set(WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(USING_ZITI_SHARED ON)
 set(BUILDING_ZITI_SHARED ON)
-set(ZITI_SDK_C_BRANCH_DEFAULT "0.35.0")
+set(ZITI_SDK_C_BRANCH_DEFAULT "1.10.4")
 
 if ("$ENV{ZITI_SDK_C_BRANCH}" STREQUAL "")
     #allow using a different branch of the CSDK easily
@@ -19,6 +19,33 @@ endif()
 message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
 
 file (STRINGS "../version" BUILD_NUMBER)
+
+
+include(FetchContent)
+option(ZITI_RUN_DEFGEN "Enable to run defgen" OFF)
+
+if(ZITI_RUN_DEFGEN)
+    FetchContent_Declare(
+            ziti-sdk-c-archive
+            URL "https://github.com/openziti/ziti-sdk-c/releases/download/${ZITI_SDK_C_BRANCH}/ziti-sdk-Windows-AMD64.zip"
+            DOWNLOAD_NO_EXTRACT false
+            DOWNLOAD_EXTRACT_TIMESTAMP true
+    )
+    FetchContent_MakeAvailable(ziti-sdk-c-archive)
+
+    message("Generating .def file from downloaded archive at: ${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll")
+    
+    # Specify the path to your .bat file
+    set(batch_file_path "defgen.bat")
+    
+    execute_process(
+            COMMAND "defgen.bat" "64" "${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            RESULT_VARIABLE result
+    )
+    return()
+endif()
+
 
 project(ziti4dotnet VERSION ${BUILD_NUMBER} LANGUAGES C CXX)
 
@@ -33,12 +60,21 @@ message("cross-compiling: ${CMAKE_CROSSCOMPILING}")
 #endforeach()
 
 include(FetchContent)
-add_subdirectory(cmake_deps)
+
+FetchContent_Declare(ziti-sdk-c
+        GIT_REPOSITORY https://github.com/openziti/ziti-sdk-c.git
+        GIT_TAG ${ZITI_SDK_C_BRANCH}
+        )
+set(ZITI_BUILD_TESTS off)
+set(ZITI_BUILD_PROGRAMS off)
+set(BUILDING_ZITI_SHARED 1)
+FetchContent_MakeAvailable(ziti-sdk-c)
+# REMOVING target_compile_definitions(ziti PRIVATE PROTOBUF_C_USE_SHARED_LIB=1)
+
+
 add_subdirectory(library)
-#add_subdirectory(programs)
 
 string(TOLOWER "${GENERATE_ZITI_STATUS}" generate_csharp_enum)
-    FetchContent_MakeAvailable(ziti-sdk-c)
 if("${generate_csharp_enum}" STREQUAL "yes")
     set(SourceErrorsFile "${ziti-sdk-c_SOURCE_DIR}/includes/ziti/errors.h")
     set(OUTPUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs")
@@ -46,26 +82,4 @@ if("${generate_csharp_enum}" STREQUAL "yes")
         COMMAND powershell -File "${CMAKE_CURRENT_SOURCE_DIR}/generateDotnetStatus.ps1" -SourceFile "${SourceErrorsFile}" -OutputPath ${OUTPUT_FILE}
     )
     message("sharp-errors output to: ${OUTPUT_FILE}")
-endif()
-
-string(TOLOWER "${ZITI_RUN_DEFGEN}" ziti_run_defgen)
-if("${ziti_run_defgen}" STREQUAL "yes")
-    FetchContent_Declare(
-            ziti-sdk-c-archive
-            URL "https://github.com/openziti/ziti-sdk-c/releases/download/${ZITI_SDK_C_BRANCH}/ziti-sdk-${ZITI_SDK_C_BRANCH}-Windows-AMD64.zip"
-            DOWNLOAD_NO_EXTRACT false
-            DOWNLOAD_EXTRACT_TIMESTAMP true
-    )
-    FetchContent_MakeAvailable(ziti-sdk-c-archive)
-    
-    message("Generating .def file from downloaded archive at: ${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll")
-    
-    # Specify the path to your .bat file
-    set(batch_file_path "defgen.bat")
-    
-    execute_process(
-            COMMAND "defgen.bat" "64" "${ziti-sdk-c-archive_SOURCE_DIR}/lib/ziti.dll"
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            RESULT_VARIABLE result
-    )
 endif()

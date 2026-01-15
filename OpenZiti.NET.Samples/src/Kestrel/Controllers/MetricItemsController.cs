@@ -1,13 +1,12 @@
-﻿using System;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OpenZiti.Samples.Kestrel.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ZitiRestServerCSharp.Models;
 
-namespace ZitiRestServerCSharp.Controllers
+namespace OpenZiti.Samples.Kestrel.Controllers
 {
     [Route("api/MetricItemsController")]
     [ApiController]
@@ -24,10 +23,10 @@ namespace ZitiRestServerCSharp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MetricItem>>> GetMetricItems()
         {
-          if (_context.MetricItems == null)
-          {
-              return NotFound();
-          }
+            if (_context.MetricItems == null)
+            {
+                return NotFound();
+            }
             return await _context.MetricItems.ToListAsync();
         }
 
@@ -35,7 +34,7 @@ namespace ZitiRestServerCSharp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MetricItem>> GetMetricItem(long id)
         {
-            Console.WriteLine("Starting Metrics -> Get -> id: " + id);
+            Console.WriteLine($"Getting MetricItem with id: {id}");
             if (_context.MetricItems == null)
             {
                 return NotFound();
@@ -46,7 +45,7 @@ namespace ZitiRestServerCSharp.Controllers
             {
                 return NotFound();
             }
-            Console.WriteLine("Ending Metrics -> Get -> id: " + id);
+            Console.WriteLine($"Found MetricItem: {metricItem.Name}");
             return metricItem;
         }
 
@@ -86,15 +85,15 @@ namespace ZitiRestServerCSharp.Controllers
         [HttpPost]
         public async Task<ActionResult<MetricItem>> PostMetricItem(MetricItem metricItem)
         {
-            Console.WriteLine("Starting Add MetricItem with values" + metricItem);
+            Console.WriteLine($"Starting Add MetricItem: {metricItem.Name}");
             if (_context.MetricItems == null)
-          {
-              return Problem("Entity set 'MetricContext.MetricItems'  is null.");
-          }
+            {
+                return Problem("Entity set 'MetricContext.MetricItems' is null.");
+            }
             _context.MetricItems.Add(metricItem);
             await _context.SaveChangesAsync();
 
-            Console.WriteLine("Creating values" + metricItem);
+            Console.WriteLine($"Created MetricItem with Id: {metricItem.Id}");
             return CreatedAtAction(nameof(GetMetricItem), new { id = metricItem.Id }, metricItem);
         }
 

@@ -6,6 +6,7 @@ using MLog=Microsoft.Extensions.Logging;
 using OpenZiti.NET.Samples.Weather;
 using OpenZiti.Generated;
 
+[assembly: Parallelize(Workers = 0, Scope = ExecutionScope.MethodLevel)]
 namespace OpenZiti.NET.Tests {
     [TestClass]
     public class DataTests {
@@ -20,7 +21,7 @@ namespace OpenZiti.NET.Tests {
             OpenZiti.API.NativeLogger = OpenZiti.API.DefaultNativeLogFunction;
             OpenZiti.API.InitializeZiti();
             //to see the logs from the Native SDK, set the log level
-            OpenZiti.API.SetLogLevel(ZitiLogLevel.TRACE);
+            OpenZiti.API.SetLogLevel(MLog.LogLevel.Debug);
         }
 #pragma warning restore IDE0060 // Remove unused parameter
 

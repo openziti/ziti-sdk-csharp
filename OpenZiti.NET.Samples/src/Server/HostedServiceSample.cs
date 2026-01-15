@@ -27,8 +27,6 @@ namespace OpenZiti.NET.Samples.Server {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<object> RunAsync(string[] args) {
             Log.Info("HostedServiceClientSample starts");
-            //to see the logs from the Native SDK, set the log level
-            API.SetLogLevel(ZitiLogLevel.INFO);
             var svcName = "hosted-demo-svc";
             var setupResult = await new SampleSetup(new()).SetupHostedExample(svcName);
             Log.Info("Identity file located at: " + setupResult);
@@ -40,24 +38,24 @@ namespace OpenZiti.NET.Samples.Server {
             API.Bind(socket, ctx, svcName, terminator);
             API.Listen(socket, 100);
 
-            Console.WriteLine("Beginning accept loop...");
+            Log.Info("Beginning accept loop...");
             while (true) {
                 ZitiSocket client = API.Accept(socket, out var caller);
                 using (var s = client.ToNetworkStream())
                 using (var r = new StreamReader(s))
                 using (var w = new StreamWriter(s)) {
                     w.AutoFlush = true;
-                    Console.WriteLine($"receiving connection from {caller}");
+                    Log.Info($"receiving connection from {caller}");
                     string read = await r.ReadLineAsync();
                     while (read != "EOL") {
-                        Console.WriteLine($"{caller} sent {read}");
+                        Log.Info($"{caller} sent {read}");
                         string resp = $"Hi {caller}. Thanks for sending me: {read}";
                         await w.WriteLineAsync(resp);
-                        Console.WriteLine($"replied to {caller}");
+                        Log.Info($"replied to {caller}");
                         read = r.ReadLine();
                     }
                     await w.WriteLineAsync("disconnecting...");
-                    Console.WriteLine($"{caller} disconnected");
+                    Log.Info($"{caller} disconnected");
                 }
             }
         }

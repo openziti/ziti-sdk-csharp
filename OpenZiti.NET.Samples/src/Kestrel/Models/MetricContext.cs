@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ZitiRestServerCSharp.Models;
+namespace OpenZiti.Samples.Kestrel.Models;
 
 public class MetricContext : DbContext
 {
