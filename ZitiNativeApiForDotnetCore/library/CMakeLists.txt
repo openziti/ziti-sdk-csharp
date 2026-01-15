@@ -26,14 +26,15 @@ target_compile_definitions(ziti4dotnet
         PRIVATE ZITI_LOG_PREFIX=${PROJECT_NAME}
         )
 
+find_package(protobuf-c CONFIG REQUIRED)
+
 target_link_libraries(ziti4dotnet
         PUBLIC ziti
         )
+# USE WHEN DEBUGGING - target_link_options(ziti4dotnet PRIVATE "/VERBOSE:LIB")
 
+add_executable(zitistructalignment ${ZITI_4_DOTNET_HEADERS} ${PROJECT_SOURCE_DIR}/library/zitistructalignment.c)
 
-
-
-add_executable(zitistructalignment ${ZITI_4_DOTNET_SOURCE} ${ZITI_4_DOTNET_HEADERS} ${PROJECT_SOURCE_DIR}/library/zitistructalignment.c)
 target_include_directories(zitistructalignment
         PUBLIC ${CMAKE_HOME_DIRECTORY}/includes
         )
@@ -41,6 +42,5 @@ target_include_directories(zitistructalignment
 set_property(TARGET zitistructalignment PROPERTY C_STANDARD 11)
 
 target_link_libraries(zitistructalignment
-        PUBLIC ziti
         PUBLIC ziti4dotnet
         )

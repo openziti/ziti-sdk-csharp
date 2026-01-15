@@ -10,7 +10,7 @@ public static class WebHostBuilderExtensions {
     public static IWebHostBuilder UseZitiTransport(this IWebHostBuilder hostBuilder, string identity, string service) {
         var endpoint = new ZitiEndPoint(identity: identity, serviceName: service);
         hostBuilder.ConfigureServices(services => {
-            services.AddSingleton<IConnectionListenerFactory, ZitiConnectionListenerFactoryFixed>();
+            services.AddSingleton<IConnectionListenerFactory, ZitiConnectionListenerFactory>();
         });
         hostBuilder.ConfigureKestrel(o => {
             // Clear any URLs configured by UseUrls to avoid conflicts
@@ -29,7 +29,7 @@ public static class WebHostBuilderExtensions {
         var zitiEndpoint = new ZitiEndPoint(identity: identity, serviceName: service);
 
         hostBuilder.ConfigureServices(services => {
-            services.AddSingleton<IConnectionListenerFactory, ZitiConnectionListenerFactoryFixed>();
+            services.AddSingleton<IConnectionListenerFactory, ZitiConnectionListenerFactory>();
         });
 
         hostBuilder.ConfigureKestrel(o => {

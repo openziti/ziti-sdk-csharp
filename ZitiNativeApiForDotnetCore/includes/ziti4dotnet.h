@@ -26,10 +26,10 @@ typedef struct ziti_alignment_check_##FIELD_TYPE##_s {       \
                     uint32_t size;                          \
                     const char* checksum;                   \
 } ziti_alignment_check_##FIELD_TYPE
+
 #define ALIGNMENT_FIELD(FIELD_TYPE, FIELD_NAME) \
   ziti_alignment_check_##FIELD_TYPE FIELD_NAME
 
-ALIGNMENT_CHECK(ziti_auth_query_mfa);
 ALIGNMENT_CHECK(ziti_id_cfg);
 ALIGNMENT_CHECK(ziti_config);
 ALIGNMENT_CHECK(api_path);
@@ -58,8 +58,7 @@ ALIGNMENT_CHECK(ziti_event_t);
 
 typedef struct ziti_types_v2_s {
     uint32_t size; //declare as a pointer but use as a value
-    // declare all the alignements: offset, size, checksum
-    ALIGNMENT_FIELD(ziti_auth_query_mfa, ziti_auth_query_mfa);
+    // declare all the alignments: offset, size, checksum
     ALIGNMENT_FIELD(ziti_id_cfg, ziti_id_cfg);
     ALIGNMENT_FIELD(ziti_config, ziti_config);
     ALIGNMENT_FIELD(api_path, api_path);
@@ -89,7 +88,6 @@ typedef struct ziti_types_v2_s {
     ALIGNMENT_FIELD(ziti_event_t, ziti_api_event);
 
     // now declare "_data" elemnets - the __ACTUAL__ structs
-    ALIGNMENT_DATA(ziti_auth_query_mfa, ziti_auth_query_mfa);
     ALIGNMENT_DATA(ziti_id_cfg, ziti_id_cfg);
     ALIGNMENT_DATA(ziti_config, ziti_config);
     ALIGNMENT_DATA(api_path, api_path);
@@ -125,7 +123,7 @@ Z4D_API void* z4d_new_loop();
 Z4D_API const char** z4d_all_config_types();
 Z4D_API uv_loop_t* z4d_default_loop();
 Z4D_API void* z4d_registerUVTimer(uv_loop_t* loop, uv_timer_cb timer_cb, uint64_t iterations, uint64_t delay);
-Z4D_API void* z4d_stop_uv_timer(uv_timer_t* t);
+Z4D_API int z4d_stop_uv_timer(uv_timer_t* t);
 Z4D_API int z4d_event_type_from_pointer(const ziti_event_t *event);
 Z4D_API ziti_service* z4d_service_array_get(ziti_service_array arr, int idx);
 

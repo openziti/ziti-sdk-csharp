@@ -34,6 +34,9 @@ namespace OpenZiti.Samples.Kestrel {
 
             var builder = WebApplication.CreateBuilder();
 
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
+
             // Option 1: Listen on BOTH Ziti and TCP
             builder.WebHost.UseZitiTransportAndUrls(identityFile, svcName, "http://127.0.0.1:80");
 
