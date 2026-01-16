@@ -130,11 +130,15 @@ jobs:
         working-directory: ${{env.GITHUB_WORKSPACE}}
         run: vcpkg integrate install
       
-      - name: Set VCPKG_ROOT
-        if: matrix.os == 'ubuntu-22.04' || matrix.os == 'macos-14'
+      - name: Set VCPKG_ROOT (Linux)
+        if: matrix.os == 'ubuntu-22.04'
         run: echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
-      
-      - name: Set VCPKG_ROOT
+
+      - name: Set VCPKG_ROOT (macOS ARM64)
+        if: matrix.os == 'macos-14'
+        run: echo "VCPKG_ROOT=/opt/homebrew/share/vcpkg" >> $GITHUB_ENV
+
+      - name: Set VCPKG_ROOT (Windows)
         if: matrix.dist == 'win'
         run: echo "VCPKG_ROOT=C:/vcpkg" >> $env:GITHUB_ENV
                 
