@@ -57,37 +57,37 @@ jobs:
           - ext: so
             prefix: lib
             dist: linux
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             arch: x64
             preset: linux-x64
           - ext: so
             prefix: lib
             dist: 'Linux-arm'
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             arch: arm
             preset: linux-arm
           - ext: so
             prefix: lib
             dist: 'Linux-arm64'
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             arch: arm64
             preset: linux-arm64
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macOS-13
+            os: macos-14
             arch: x64
             preset: macOS-x64
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macOS-13
+            os: macos-14
             arch: arm64
             preset: macOS-arm64
           - ext: dylib
             prefix: lib
             dist: iOS
-            os: macOS-13
+            os: macos-14
             arch: arm64
             preset: ios-arm64
           - ext: dll
@@ -101,24 +101,24 @@ jobs:
             os: windows-2022
             preset: win32
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Install Linux pkg-config
-        if: matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt update -y
           sudo apt install -y pkg-config ninja-build
           
       - name: Install Crossbuild tools
-        if: matrix.os == 'ubuntu-20.04' && contains(matrix.arch, 'arm')
+        if: matrix.os == 'ubuntu-22.04' && contains(matrix.arch, 'arm')
         run: |
           sudo apt update -y
           sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
           
       - name: Install MacOS Ninja
-        if: matrix.os == 'macOS-13'
+        if: matrix.os == 'macos-14'
         run: |
           brew install ninja
           
@@ -131,7 +131,7 @@ jobs:
         run: vcpkg integrate install
       
       - name: Set VCPKG_ROOT
-        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'macOS-13'
+        if: matrix.os == 'ubuntu-22.04' || matrix.os == 'macos-14'
         run: echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
       
       - name: Set VCPKG_ROOT
@@ -147,7 +147,7 @@ jobs:
           cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
           
       - name: upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           path: ${{ env.TARGETDIR }}/library/${{ env.ZITI_DEBUG_OR_RELEASE }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
@@ -162,7 +162,7 @@ jobs:
       qualifier: ${{needs.set-build-info.outputs.qualifier}}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set resolves version to env
@@ -170,7 +170,7 @@ jobs:
           echo "resolvedversion=${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV  
       - run: mkdir ${{github.workspace}}/native
       - name: download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ${{github.workspace}}/native
       - name: move files to expected locations
@@ -197,19 +197,19 @@ jobs:
           mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native
 
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 6.x
       - name: Create the Nuget package
         run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}/native-package.nuspec
       - name: upload nuget package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ github.workspace }}/OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
       - name: Upload OpenZiti.NET.native to job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           path: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
