@@ -108,8 +108,7 @@
         "common-windows"
       ],
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md",
-        "VCPKG_INSTALLED_DIR": "$env{VCPKG_INSTALLED_DIR_MUST_BE_SET}"
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
       }
     },
     {
@@ -119,8 +118,7 @@
         "common-windows"
       ],
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x86-windows-static-md",
-        "VCPKG_INSTALLED_DIR": "$env{VCPKG_INSTALLED_DIR_MUST_BE_SET}"
+        "VCPKG_TARGET_TRIPLET": "x86-windows-static-md"
       },
       "architecture": "Win32"
     },

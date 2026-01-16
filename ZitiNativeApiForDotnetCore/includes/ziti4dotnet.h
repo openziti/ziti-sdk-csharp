@@ -110,11 +110,11 @@ typedef struct ziti_types_v2_s {
     ALIGNMENT_DATA(ziti_mfa_enrollment, ziti_mfa_enrollment);
     ALIGNMENT_DATA(ziti_port_range, ziti_port_range);
     ALIGNMENT_DATA(ziti_options, ziti_options);
-    ALIGNMENT_DATA(ziti_event_t, ziti_context_event);
-    ALIGNMENT_DATA(ziti_event_t, ziti_router_event);
-    ALIGNMENT_DATA(ziti_event_t, ziti_service_event);
-    ALIGNMENT_DATA(ziti_event_t, ziti_mfa_auth_event);
-    ALIGNMENT_DATA(ziti_event_t, ziti_api_event);
+    ALIGNMENT_DATA(struct ziti_context_event, ziti_context_event);
+    ALIGNMENT_DATA(struct ziti_router_event, ziti_router_event);
+    ALIGNMENT_DATA(struct ziti_service_event, ziti_service_event);
+    ALIGNMENT_DATA(struct ziti_auth_event, ziti_auth_event);
+    ALIGNMENT_DATA(struct ziti_config_event, ziti_config_event);
 } ziti_types_v2;
 
 Z4D_API int z4d_ziti_close(ziti_connection con);

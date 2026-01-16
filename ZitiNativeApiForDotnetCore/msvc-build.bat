@@ -33,40 +33,45 @@ cmake -E make_directory %BUILDFOLDER%
 setlocal
 
 set TARGET=%1
+echo NATIVE_CODE_DIR: %NATIVE_CODE_DIR%
+echo BUILDFOLDER    : %BUILDFOLDER%
+echo TARGET         : %TARGET%
 
-if "%TARGET%"=="" goto build_both
-if /I "%TARGET%"=="nothing" goto build_both
+pushd "%NATIVE_CODE_DIR%"
+
+if "%TARGET%"=="" goto build_x86
 if /I "%TARGET%"=="x86" goto build_x86
 if /I "%TARGET%"=="x64" goto build_x64
 
-goto end
+goto print_help
 
-pushd "%NATIVE_CODE_DIR%"
+:cmake_build
+REM %1=preset  %2=platarg  %3=platval  %4=archdir  %5=config
+cmake --preset %1 ^
+      -S %NATIVE_CODE_DIR% ^
+      -B %BUILDFOLDER%\%4\%5 ^
+      %2 %3
+cmake --build %BUILDFOLDER%\%4\%5 --config %5
+exit /b 0
 
 :build_x86
 echo.
 echo.
 echo "Building 32-bit"
-cmake --preset win32 ^
-      -S %NATIVE_CODE_DIR% ^
-      -B %BUILDFOLDER%\win32 ^
-      -A Win32
-cmake --build %BUILDFOLDER%\win32
-cmake --build %BUILDFOLDER%\win32 --config Release
+call :cmake_build win32 -A Win32 win32 Debug
+call :cmake_build win32 -A Win32 win32 Release
+
+if "%TARGET%"=="" goto build_x64
 goto end
 
 :build_x64
 echo.
 echo.
 echo "Building 64-bit"
-cmake --preset win64 ^
-      -S %NATIVE_CODE_DIR% ^
-      -B %BUILDFOLDER%\win64
-cmake --build %BUILDFOLDER%\win64
-cmake --build %BUILDFOLDER%\win64 --config Release
+call :cmake_build win64 "" "" win64 Debug
+call :cmake_build win64 "" "" win64 Release
 
 popd
-
 goto end
 
 :build_both
@@ -108,4 +113,3 @@ goto end
 echo TERMINATED UNEXPECTEDLY
 
 :end
-

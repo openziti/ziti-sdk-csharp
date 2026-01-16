@@ -12,19 +12,18 @@ target_include_directories(ziti4dotnet
         PUBLIC ${CMAKE_HOME_DIRECTORY}/includes
 )
 
-target_compile_definitions(ziti4dotnet PUBLIC
-        BUILD_DATE=${BUILD_DATE}
-        GIT_BRANCH=${GIT_BRANCH}
-        GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
-        PRIVATE BUILDING_ZITI_SHARED=1
+target_compile_definitions(ziti4dotnet
+        PUBLIC
+                BUILD_DATE=${BUILD_DATE}
+                GIT_BRANCH=${GIT_BRANCH}
+                GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
+        PRIVATE
+                BUILDING_ZITI_SHARED=1
+                GIT_VERSION=${GIT_VERSION}
+                ZITI_LOG_PREFIX=${PROJECT_NAME}
 )
 
 set_property(TARGET ziti4dotnet PROPERTY C_STANDARD 11)
-
-target_compile_definitions(ziti4dotnet
-        PRIVATE GIT_VERSION=${GIT_VERSION}
-        PRIVATE ZITI_LOG_PREFIX=${PROJECT_NAME}
-        )
 
 find_package(protobuf-c CONFIG REQUIRED)
 
@@ -44,3 +43,4 @@ set_property(TARGET zitistructalignment PROPERTY C_STANDARD 11)
 target_link_libraries(zitistructalignment
         PUBLIC ziti4dotnet
         )
+# USE WHEN DEBUGGING - target_link_options(zitistructalignment PRIVATE "/VERBOSE:LIB")
