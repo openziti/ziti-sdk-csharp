@@ -1,13 +1,23 @@
 {
   "name": "ziti",
   "version-semver": "1.0.0",
+  "description": [
+    "using vcpkg baseline: 2025.10.17"
+  ],
+  "builtin-baseline": "74e6536215718009aae747d86d84b78376bf9e09",
   "dependencies": [
     "libuv",
+    {
+      "name": "openssl",
+      "platform": "!windows & !mingw",
+      "$comment": "use windows crypto on windows platforms"
+    },
     "zlib",
     "llhttp",
     "libsodium",
-    "getopt",
-    "mbedtls"
+    "json-c",
+    "stc",
+    "protobuf-c"
   ],
   "features": {
     "test": {
@@ -18,7 +28,23 @@
           "name": "catch2"
         }
       ]
+    },
+    "samples": {
+      "description": "Dependencies for samples",
+      "dependencies": [
+        {
+          "name": "cli11"
+        }
+      ]
+    },
+    "dev-features": {
+      "description": "features for development",
+      "dependencies": [
+        {
+          "name": "ziti",
+          "features": [ "test", "samples" ]
+        }
+      ]
     }
-  },
-  "builtin-baseline": "f14984af3738e69f197bf0e647a8dca12de92996"
+  }
 }

@@ -51,7 +51,7 @@ namespace OpenZiti.NET.Samples.Weather {
             // uncomment to see http request/response httpHandler.LogHttpRequestResponse = true;
             var pets = await pc.FindPetsByStatusAsync(anon);
             foreach (var pet in pets) {
-                Console.WriteLine(pet.Name);
+                Log.Info(pet.Name);
             }
             
             return null;

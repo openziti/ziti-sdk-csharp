@@ -15,13 +15,14 @@ limitations under the License.
 */
 
 using OpenZiti.Management;
+using OpenZiti.Native;
+using OpenZiti.NET.Samples.Common;
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-
-using OpenZiti.NET.Samples.Common;
 
 namespace OpenZiti.NET.Samples.Weather {
 

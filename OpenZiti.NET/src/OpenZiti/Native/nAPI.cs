@@ -301,9 +301,9 @@ namespace OpenZiti.Native {
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "Ziti_enroll_identity", CallingConvention = API.CALL_CONVENTION)]
         public static extern int Ziti_enroll_identity(byte[] jwt, string key, string cert, out IntPtr id_json, out UInt32 id_json_len);
 
-        //ziti_context Ziti_load_context(const char *identity);
+        //int Ziti_load_context(ziti_handle_t *h, const char *identity) {
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "Ziti_load_context", CallingConvention = API.CALL_CONVENTION)]
-        public static extern IntPtr /*ziti_context*/ Ziti_load_context(byte[] identityPath);
+        public static extern int Ziti_load_context(out nint h, byte[] identity);
 
         // ziti_socket_t Ziti_socket(int type);
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "Ziti_socket", CallingConvention = API.CALL_CONVENTION)]

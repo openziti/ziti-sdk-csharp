@@ -32,8 +32,7 @@ namespace OpenZiti.NET.Tests {
             // to debug
             Log.Info("----");
 #if ZITI_64BIT
-            Assert.AreEqual((int)2128, (int)native_structs.size);
-            verifyFieldCheck<ziti_auth_query_mfa>(native_structs.f01_ziti_auth_query_mfa, "ziti_auth_query_mfa", 8, 48);
+            Assert.AreEqual((int)2224, (int)native_structs.size);
             verifyFieldCheck<ziti_id_cfg>(native_structs.f02_ziti_id_cfg, "ziti_id_cfg",  24, 24);
             verifyFieldCheck<ziti_config>(native_structs.f03_ziti_config, "ziti_config",  40, 40);
             verifyFieldCheck<ziti_api_path>(native_structs.f04_api_path, "api_path",  56, 8);
@@ -62,7 +61,6 @@ namespace OpenZiti.NET.Tests {
             verifyFieldCheck<ziti_api_event>(native_structs.f28_ziti_api_event, "ziti_api_event", 440,  40);
 #else
             Assert.AreEqual((int)1608, (int)native_structs.size);
-            verifyFieldCheck<ziti_auth_query_mfa>(native_structs.f01_ziti_auth_query_mfa, "ziti_auth_query_mfa", 4, 28);
             verifyFieldCheck<ziti_id_cfg>(native_structs.f02_ziti_id_cfg, "ziti_id_cfg", 16, 12);
             verifyFieldCheck<ziti_config>(native_structs.f03_ziti_config, "ziti_config", 28, 20);
             verifyFieldCheck<ziti_api_path>(native_structs.f04_api_path, "api_path", 40, 4);
@@ -91,13 +89,6 @@ namespace OpenZiti.NET.Tests {
             verifyFieldCheck<ziti_api_event>(native_structs.f28_ziti_api_event, "ziti_api_event", 328, 20);
 #endif
             ziti_types_with_values values = Marshal.PtrToStructure<ziti_types_with_values>(testData);
-            Assert.AreEqual("type", values.ziti_auth_query_mfa.type_id);
-            Assert.AreEqual("provider", values.ziti_auth_query_mfa.provider);
-            Assert.AreEqual("http_method", values.ziti_auth_query_mfa.http_method);
-            Assert.AreEqual("http_url", values.ziti_auth_query_mfa.http_url);
-            Assert.AreEqual(81, values.ziti_auth_query_mfa.min_length);
-            Assert.AreEqual(92, values.ziti_auth_query_mfa.max_length);
-            Assert.AreEqual("format", values.ziti_auth_query_mfa.format);
             
             Assert.AreEqual("cert", values.ziti_id_cfg.cert);
             Assert.AreEqual("key", values.ziti_id_cfg.key);
@@ -124,18 +115,18 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual("path", values.ziti_process.path);
             
             Assert.AreEqual("id", values.ziti_posture_query.id);
-            Assert.AreEqual(true, values.ziti_posture_query.is_passing);
+            Assert.IsTrue(values.ziti_posture_query.is_passing);
             Assert.AreEqual("query_type", values.ziti_posture_query.query_type);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_posture_query.process);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_posture_query.processes);
             Assert.AreEqual(10, values.ziti_posture_query.timeout);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_posture_query.timeoutRemaining);
             int tor = Marshal.ReadInt32(values.ziti_posture_query.timeoutRemaining);
-            Assert.AreEqual(tor, 20);
+            Assert.AreEqual(20, tor);
             Assert.AreEqual("updated_at", values.ziti_posture_query.updated_at);
             
             Assert.AreEqual("policy_id", values.ziti_posture_query_set.policy_id);
-            Assert.AreEqual(true, values.ziti_posture_query_set.is_passing);
+            Assert.IsTrue(values.ziti_posture_query_set.is_passing);
             Assert.AreEqual("policy_type", values.ziti_posture_query_set.policy_type);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_posture_query_set.posture_queries);
             
@@ -144,7 +135,7 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual("elem1id", values.ziti_service.id);
             Assert.AreEqual("elem1", values.ziti_service.name);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_service.permissions);
-            Assert.AreEqual(true, values.ziti_service.encryption);
+            Assert.IsTrue(values.ziti_service.encryption);
             Assert.AreEqual(111, values.ziti_service.perm_flags);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_service.config);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_service.posture_query_set);
@@ -173,7 +164,7 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual("hostname", values.ziti_server_cfg_v1.hostname);
             Assert.AreEqual(443, values.ziti_server_cfg_v1.port);
             
-            Assert.AreEqual(true, values.ziti_listen_options.bind_with_identity);
+            Assert.IsTrue(values.ziti_listen_options.bind_with_identity);
             Assert.AreEqual((ulong)1000000, values.ziti_listen_options.connect_timeout);
             Assert.AreEqual(100, values.ziti_listen_options.connect_timeout_seconds);
             Assert.AreEqual(9, values.ziti_listen_options.cost);
@@ -182,20 +173,20 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual("precedence", values.ziti_listen_options.precedence);
             
             Assert.AreEqual("protocol", values.ziti_host_cfg_v1.protocol);
-            Assert.AreEqual(true, values.ziti_host_cfg_v1.forward_protocol);
+            Assert.IsTrue(values.ziti_host_cfg_v1.forward_protocol);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_host_cfg_v1.allowed_protocols);
             Assert.AreEqual("address", values.ziti_host_cfg_v1.address);
-            Assert.AreEqual(true, values.ziti_host_cfg_v1.forward_address);
+            Assert.IsTrue(values.ziti_host_cfg_v1.forward_address);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_host_cfg_v1.allowed_addresses);
             Assert.AreEqual(1090, values.ziti_host_cfg_v1.port);
-            Assert.AreEqual(true, values.ziti_host_cfg_v1.forward_port);
+            Assert.IsTrue(values.ziti_host_cfg_v1.forward_port);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_host_cfg_v1.allowed_port_ranges);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_host_cfg_v1.allowed_source_addresses);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_host_cfg_v1.listen_options);
             
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_host_cfg_v2.terminators);
             
-            Assert.AreEqual(true, values.ziti_mfa_enrollment.is_verified);
+            Assert.IsTrue(values.ziti_mfa_enrollment.is_verified);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_mfa_enrollment.recovery_codes);
             Assert.AreEqual("provisioningUrl", values.ziti_mfa_enrollment.provisioning_url);
             
@@ -203,7 +194,7 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual(443, values.ziti_port_range.high);
             
             Assert.AreEqual("config", values.ziti_options.config);
-            Assert.AreEqual(true, values.ziti_options.disabled);
+            Assert.IsTrue(values.ziti_options.disabled);
             Assert.AreNotEqual(IntPtr.Zero, values.ziti_options.config_types);
             Assert.AreEqual((uint)232323, values.ziti_options.api_page_size);
             Assert.AreEqual((int)3322, (int)values.ziti_options.refresh_interval);
@@ -242,19 +233,7 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual("elem2id", removed2.id);
             Assert.AreEqual(111, removed1.perm_flags);
             Assert.AreEqual(222, removed2.perm_flags);
-            
-            ziti_mfa_auth_event mfaae = values.ziti_mfa_auth_event;
-            Assert.AreEqual(ziti_event_type.ZitiMfaAuthEvent, values.ziti_mfa_auth_event.ziti_event_type);
-            Assert.AreNotEqual(IntPtr.Zero, mfaae.ziti_auth_query_mfa);
-            ziti_auth_query_mfa mfa = Marshal.PtrToStructure<ziti_auth_query_mfa>(mfaae.ziti_auth_query_mfa);
-            Assert.AreEqual("type", mfa.type_id);
-            Assert.AreEqual("provider", mfa.provider);
-            Assert.AreEqual("http_method", mfa.http_method);
-            Assert.AreEqual("http_url", mfa.http_url);
-            Assert.AreEqual(81, mfa.min_length);
-            Assert.AreEqual(92, mfa.max_length);
-            Assert.AreEqual("format", mfa.format);
-            
+                        
             ziti_api_event apie = values.ziti_api_event;
             Assert.AreEqual(ziti_event_type.ZitiAPIEvent, values.ziti_api_event.ziti_event_type);
             Assert.AreEqual("new_ctrl_address", apie.new_ctrl_address);

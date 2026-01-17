@@ -443,5 +443,124 @@ namespace OpenZiti.NET.Samples.Common {
                 throw;
             }
         }
+
+        public async Task<string> SetupKestrelExample(string svcName) {
+            if (!Initialize) {
+                Log.Info("skipping overlay initialization");
+                return IdentityFile;
+            }
+            try {
+                var svcRole = $"{svcName}.service.role";
+                var clientIdentityName = $"{svcName}-client";
+                var serverIdentityName = $"{svcName}-server";
+                var svcBindRole = $"{svcName}.binders";
+                var svcDialRole = $"{svcName}.dialers";
+
+                Log.Info("Configuring overlay");
+                #region BootstrapClientIdentity
+                Log.Info("recreating identity");
+                // create kestrel client identity
+                await h.DeleteIdentityByName(serverIdentityName);
+                var serverId = await BootstrapAndEnrollIdentityAsync(serverIdentityName, new Attributes() { svcBindRole });
+                #endregion
+
+                #region CreateHostV1Config
+                // this example binds the service with the sdk - there's no host.v1 required!
+                #endregion
+
+                #region CreateInterceptV1Config
+                var interceptV1ConfigName = $"{svcName}.config.intercept.v1";
+                Log.Info($"creating host.v1 config: {interceptV1ConfigName}");
+                var interceptConfigTypeId = await h.FindConfigTypeByNameAsync("intercept.v1");
+                var interceptV1Config = JsonConvert.DeserializeObject(
+                    "{\"protocols\":[\"tcp\"],\"addresses\":[\"kestrel.sample\"],\"portRanges\":[{\"low\":443, \"high\":443}]}");
+                var foundInterceptConfigId = await h.FindConfigIdByNameAsync(interceptV1ConfigName);
+                if (foundInterceptConfigId == null) {
+                    var createConfig = new ConfigCreate {
+                        Name = interceptV1ConfigName,
+                        ConfigTypeId = interceptConfigTypeId,
+                        Data = interceptV1Config
+                    };
+                    //httpReqHandler.DoLogging = true;
+                    var interceptConfig = await h.ManagementApi.CreateConfigAsync(createConfig);
+                    foundInterceptConfigId = interceptConfig.Data.Id;
+                }
+                #endregion
+
+                #region CreateKestrelService
+                Log.Info($"creating service {svcName}");
+                await h.DeleteServiceByName(svcName);
+                var createService = new ServiceCreate {
+                    Name = svcName,
+                    RoleAttributes = new string[] { svcRole },
+                    Configs = new string[] { foundInterceptConfigId },
+                    EncryptionRequired = true
+                };
+                await h.ManagementApi.CreateServiceAsync(createService);
+                #endregion
+
+                #region CreateDialPolicy
+                var svcDialPolicyName = $"{svcName}.sp.dial";
+                Log.Info($"creating dial service policy {svcDialPolicyName}");
+                await h.DeleteServicePolicyByNameAsync(svcDialPolicyName);
+                var createServicePolicy = new ServicePolicyCreate {
+                    Name = svcDialPolicyName,
+                    Type = DialBind.Dial,
+                    IdentityRoles = new Roles() { $"#{svcDialRole}" },
+                    ServiceRoles = new Roles() { $"#{svcRole}" }
+                };
+                await h.ManagementApi.CreateServicePolicyAsync(createServicePolicy);
+                #endregion
+
+                #region CreateBindPolicy
+                var svcBindPolicyName = $"{svcName}.sp.bind";
+                Log.Info($"creating bind service policy {svcBindPolicyName}");
+                await h.DeleteServicePolicyByNameAsync($"{svcBindPolicyName}");
+                createServicePolicy = new ServicePolicyCreate {
+                    Name = svcBindPolicyName,
+                    Type = DialBind.Bind,
+                    IdentityRoles = new Roles() { $"#{svcBindRole}" },
+                    ServiceRoles = new Roles() { $"#{svcRole}" }
+                };
+                await h.ManagementApi.CreateServicePolicyAsync(createServicePolicy);
+                #endregion
+
+                return serverId;
+            } catch (ApiException<ApiErrorEnvelope> e) {
+                HandleApiException(e);
+                throw;
+            } catch (ApiException e) {
+                HandleApiException(e);
+                throw;
+            }
+        }
+
+        public async Task<string> SetupKestrelClientExample(string svcName) {
+            if (!Initialize) {
+                Log.Info("skipping overlay initialization");
+                return IdentityFile;
+            }
+            try {
+                var svcRole = $"{svcName}.service.role";
+                var clientIdentityName = $"{svcName}-client";
+                var svcDialRole = $"{svcName}.dialers";
+
+                Log.Info("Configuring overlay");
+                #region BootstrapClientIdentity
+                Log.Info("recreating identity");
+                // create kestrel client identity
+                await h.DeleteIdentityByName(clientIdentityName);
+                var clientid = await BootstrapAndEnrollIdentityAsync(clientIdentityName, new Attributes() { svcDialRole });
+                #endregion
+
+                return clientid;
+            } catch (ApiException<ApiErrorEnvelope> e) {
+                HandleApiException(e);
+                throw;
+            } catch (ApiException e) {
+                HandleApiException(e);
+                throw;
+            }
+        }
     }
 }

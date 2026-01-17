@@ -8,3 +8,4 @@ library/ZitiStatus.cs
 ziti-exports.txt
 ziti.dll
 ziti.exp
+CMakeUserPresets.json

@@ -90,7 +90,6 @@ namespace OpenZiti.Native {
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_types {
         public IntPtr size;
-        public AlignmentCheck /*ziti_auth_query_mfa*/ f01_ziti_auth_query_mfa;
         public AlignmentCheck /*ziti_id_cfg*/ f02_ziti_id_cfg;
         public AlignmentCheck /*ziti_config*/ f03_ziti_config;
         public AlignmentCheck /*api_path*/ f04_api_path;
@@ -125,7 +124,6 @@ namespace OpenZiti.Native {
     [StructLayout(LayoutKind.Sequential)]
     public struct ziti_types_with_values {
         public ziti_types types;
-        public ziti_auth_query_mfa ziti_auth_query_mfa;
         public ziti_id_cfg ziti_id_cfg;
         public ziti_config ziti_config;
         public ziti_api_path ziti_api_path;
@@ -190,8 +188,6 @@ namespace OpenZiti.Native {
     public struct ziti_mfa_auth_event {
         [FieldOffset(0 * TestBlitting.ptr)]
         public ziti_event_type ziti_event_type;
-        [FieldOffset(1 * TestBlitting.ptr)]
-        public IntPtr ziti_auth_query_mfa;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = TestBlitting.ZITI_EVENT_UNION_SIZE)]
@@ -513,38 +509,6 @@ namespace OpenZiti.Native {
         public string key;
         public string ca;
     }
-
-#if ZITI_64BIT
-    [StructLayout(LayoutKind.Explicit, Size = (TestBlitting.ptr * 5))]
-#else
-    [StructLayout(LayoutKind.Explicit, Size = (TestBlitting.ptr * 6))]
-#endif
-    public struct ziti_auth_query_mfa {
-        [FieldOffset(0 * TestBlitting.ptr)]
-        public string type_id;
-        [FieldOffset(1 * TestBlitting.ptr)]
-        public string provider;
-        [FieldOffset(2 * TestBlitting.ptr)]
-        public string http_method;
-        [FieldOffset(3 * TestBlitting.ptr)]
-        public string http_url;
-#if ZITI_64BIT
-        [FieldOffset(4 * TestBlitting.ptr)]
-        public int min_length;
-        [FieldOffset((4 * TestBlitting.ptr) + 4)]
-        public int max_length;
-        [FieldOffset(5 * TestBlitting.ptr)]
-        public string format;
-#else
-        [FieldOffset(4 * TestBlitting.ptr)]
-        public int min_length;
-        [FieldOffset(5 * TestBlitting.ptr)]
-        public int max_length;
-        [FieldOffset(6 * TestBlitting.ptr)]
-        public string format;
-#endif
-    }
-
 
 
 
