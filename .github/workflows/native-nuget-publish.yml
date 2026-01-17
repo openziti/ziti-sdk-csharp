@@ -154,6 +154,22 @@ jobs:
           path: ${{ env.TARGETDIR }}/library/${{ env.ZITI_DEBUG_OR_RELEASE }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           if-no-files-found: error
 
+      - name: Upload cmake/vcpkg logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs.${{ matrix.dist }}.${{ matrix.arch }}
+          if-no-files-found: warn
+          path: |
+            ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build/vcpkg-manifest-install.log
+            ${{ github.workspace }}/vcpkg/buildtrees/detect_compiler/**/*.log
+            ${{ github.workspace }}/vcpkg/buildtrees/**/config-*-out.log
+            ${{ github.workspace }}/vcpkg/buildtrees/**/config-*-err.log
+            ${{ github.workspace }}/vcpkg/buildtrees/**/CMakeCache.txt.log
+            ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build/CMakeFiles/**/*.log
+            ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build/**/CMakeCache.txt
+
+
   create-nuget-package:
     needs: [set-build-info, native-matrix-build]
     env:
