@@ -124,7 +124,7 @@ jobs:
 
       - name: Install Ninja (macOS)
         if: runner.os == 'macOS'
-        run: brew install ninja
+        run: brew install ninja autoconf autoconf-archive automake pkg-config libtool
 
       - uses: lukka/run-vcpkg@v11
 
