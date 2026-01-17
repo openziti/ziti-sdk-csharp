@@ -54,7 +54,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' }}"
     runs-on: ${{ matrix.os }}
     env:
-      VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
+      VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-bincache,readwrite"
       VCPKG_FEATURE_FLAGS: "manifests,binarycaching"
     strategy:
       matrix:
@@ -109,6 +109,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Cache vcpkg binary cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/vcpkg-bincache
+          key: vcpkg-bincache-${{ runner.os }}-${{ matrix.arch }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}
 
       - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
