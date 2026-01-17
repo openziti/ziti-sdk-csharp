@@ -58,7 +58,7 @@
       ],
       "cacheVariables": {
         "VCPKG_TARGET_ARCHITECTURE": "arm64",
-        "VCPKG_TARGET_TRIPLET": "arm64-osx",
+        "VCPKG_TARGET_TRIPLET": "arm64-ios",
         "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/toolchains/iOS-arm64.cmake"
       }
     },

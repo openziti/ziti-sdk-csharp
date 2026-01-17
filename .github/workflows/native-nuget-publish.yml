@@ -89,12 +89,12 @@ jobs:
             os: macos-14
             arch: arm64
             preset: macOS-arm64
-          # - ext: dylib
-          #   prefix: lib
-          #   dist: iOS
-          #   os: macos-14
-          #   arch: arm64
-          #   preset: ios-arm64
+          - ext: dylib
+            prefix: lib
+            dist: iOS
+            os: macos-14
+            arch: arm64
+            preset: ios-arm64
           - ext: dll
             dist: win
             os: windows-2022
