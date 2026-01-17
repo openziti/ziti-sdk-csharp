@@ -1,0 +1,24 @@
+- copy vcpkg.json from ziti-sdk-c to ZitiNativeApiForDotnetCore
+- copy toolchains/* from ziti-sdk-c to ZitiNativeApiForDotnetCore/toolchains
+- update `set(ZITI_SDK_C_BRANCH_DEFAULT "1.10.4")`
+- update ziti.def by running `cmake -DZITI_RUN_DEFGEN=ON --preset cwdvs`
+- generate build files: `cmake -DZITI_RUN_DEFGEN=OFF --preset cwdvs` make sure `-DZITI_RUN_DEFGEN=OFF` is set
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
