@@ -136,6 +136,11 @@ jobs:
         working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
         run: |
           echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
+          echo "PATH=$PATH"
+          echo "which ninja -> $(command -v ninja || echo NOT_FOUND)"
+          if command -v ninja >/dev/null 2>&1; then
+            "$(command -v ninja)" --version
+          fi
           cmake -E make_directory ${{ env.TARGETDIR }}
           cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }}
           cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
