@@ -11,7 +11,7 @@ on:
         description: Debug or Release
         default: Release
         required: true
-       
+
 env:
   ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
   ZITI_DEBUG_OR_RELEASE: ${{ github.event.inputs.debugOrRelease }}
@@ -19,6 +19,7 @@ env:
   BUILD_NUMBER: ${{ github.run_number }}
   BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
   TARGETDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build
+
 jobs:
   set-build-info:
     runs-on: ubuntu-latest
@@ -48,6 +49,7 @@ jobs:
           else
             echo "qualifier=-${BRANCH_NAME}rc${{github.run_number}}" >> $GITHUB_OUTPUT
           fi
+
   native-matrix-build:
     if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' }}"
     runs-on: ${{ matrix.os }}
@@ -105,58 +107,42 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Linux pkg-config
+      - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt update -y
           sudo apt install -y pkg-config ninja-build
-          
-      - name: Install Crossbuild tools
+
+      - name: Install Linux crossbuild tools
         if: matrix.os == 'ubuntu-22.04' && contains(matrix.arch, 'arm')
         run: |
-          sudo apt update -y
           sudo apt install -y crossbuild-essential-armhf crossbuild-essential-arm64
-          
-      - name: Install MacOS Ninja
-        if: matrix.os == 'macos-14'
-        run: |
-          brew install ninja
-          
-      - name: Set up MSVC 2019
-        if: matrix.dist == 'win'
-        uses: microsoft/setup-msbuild@v1.1
-                    
-      - name: Restore vcpkg packages
-        working-directory: ${{env.GITHUB_WORKSPACE}}
-        run: vcpkg integrate install
-      
-      - name: Set VCPKG_ROOT (Linux)
-        if: matrix.os == 'ubuntu-22.04'
-        run: echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
 
-      - name: Set VCPKG_ROOT (macOS ARM64)
-        if: matrix.os == 'macos-14'
-        run: echo "VCPKG_ROOT=/opt/homebrew/share/vcpkg" >> $GITHUB_ENV
+      - name: install contemporary cmake
+        if: runner.os != 'Linux'
+        uses: lukka/get-cmake@v3.27.7
 
-      - name: Set VCPKG_ROOT (Windows)
+      - uses: lukka/run-vcpkg@v11
+
+      - name: Set up MSVC
         if: matrix.dist == 'win'
-        run: echo "VCPKG_ROOT=C:/vcpkg" >> $env:GITHUB_ENV
-                
-      - name: configure / build CMake
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Configure and build
         working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
         run: |
           echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
           cmake -S ${{ env.BASEDIR }} -B ${{ env.TARGETDIR }} --preset ${{ matrix.preset }}
           cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
-          
-      - name: upload artifacts
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           path: ${{ env.TARGETDIR }}/library/${{ env.ZITI_DEBUG_OR_RELEASE }}/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           if-no-files-found: error
-          
+
   create-nuget-package:
     needs: [set-build-info, native-matrix-build]
     env:
@@ -169,15 +155,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set resolves version to env
+
+      - name: Set resolved version
         run: |
-          echo "resolvedversion=${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV  
+          echo "resolvedversion=${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV
+
       - run: mkdir ${{github.workspace}}/native
-      - name: download all artifacts
+
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: ${{github.workspace}}/native
-      - name: move files to expected locations
+
+      - name: Move files to expected locations
         run: |
           echo "locating all the built libraries:"
           find . -name "*ziti4dotnet.*"
@@ -200,24 +190,21 @@ jobs:
           mv ${{github.workspace}}/native/win.x64.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x64/native
           mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native
 
-      - name: Setup .NET Core
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.x
+          dotnet-version: 8.x
+
       - name: Create the Nuget package
         run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}/native-package.nuspec
-      - name: upload nuget package
+
+      - name: Upload nuget package
         uses: actions/upload-artifact@v4
         with:
           path: ${{ github.workspace }}/OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
-      - name: Upload OpenZiti.NET.native to job
-        uses: actions/upload-artifact@v4
-        with:
-          name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
-          path: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
-          if-no-files-found: error
+
       - name: Publish OpenZiti.NET.native
         if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
         run: dotnet nuget push OpenZiti.NET.native.${{env.resolvedversion}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
