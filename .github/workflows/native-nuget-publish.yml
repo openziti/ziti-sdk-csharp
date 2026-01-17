@@ -122,6 +122,10 @@ jobs:
         if: runner.os != 'Linux'
         uses: lukka/get-cmake@v3.27.7
 
+      - name: Install Ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
       - uses: lukka/run-vcpkg@v11
 
       - name: Set up MSVC
