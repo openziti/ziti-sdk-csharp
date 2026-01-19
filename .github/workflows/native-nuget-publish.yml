@@ -149,9 +149,11 @@ jobs:
           echo "PATH=$PATH"
           echo "which ninja -> $(which ninja || echo NOT_FOUND)"
 
-      - name: Force vcpkg triplet (iOS)
+      - name: Force vcpkg triplet/toolchain (iOS)
         if: matrix.dist == 'iOS'
-        run: echo "VCPKG_TARGET_TRIPLET=arm64-ios" >> $GITHUB_ENV
+        run: |
+          echo "VCPKG_TARGET_TRIPLET=arm64-ios" >> $GITHUB_ENV
+          echo "VCPKG_CHAINLOAD_TOOLCHAIN_FILE=${{ github.workspace }}/ZitiNativeApiForDotnetCore/toolchains/iOS-arm64.cmake" >> $GITHUB_ENV
 
       - name: Configure and build
         working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
