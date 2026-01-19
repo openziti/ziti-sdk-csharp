@@ -194,9 +194,10 @@ jobs:
           fetch-depth: 0
 
       - name: Set resolved version
+        shell: pwsh
         run: |
-          echo "resolvedversion=${{ env.ZITI_SDK_C_BRANCH }}${repo}${qualifier}" >> $GITHUB_ENV
-
+          "resolvedversion=${env:ZITI_SDK_C_BRANCH}${env:repo}${env:qualifier}" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          
       - run: mkdir ${{github.workspace}}/native
 
       - name: Download all artifacts
