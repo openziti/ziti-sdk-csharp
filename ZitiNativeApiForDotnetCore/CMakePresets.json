@@ -29,7 +29,7 @@
       "inherits": [
         "flags-unix"
       ],
-      "generator": "Ninja Multi-Config"
+      "generator": "Ninja"
     },
     {
       "name": "macOS-x64",
