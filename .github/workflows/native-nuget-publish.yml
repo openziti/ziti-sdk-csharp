@@ -115,7 +115,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/vcpkg-bincache
-          key: vcpkg-bincache-${{ runner.os }}-${{ matrix.arch }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}
+          key: vcpkg-bincache-${{ runner.os }}-${{ matrix.preset }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}
 
       - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
