@@ -121,7 +121,7 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt update -y
-          sudo apt install -y pkg-config ninja-build
+          sudo apt install -y pkg-config ninja-build nuget
 
       - name: Install Linux crossbuild tools
         if: matrix.os == 'ubuntu-22.04' && contains(matrix.arch, 'arm')
@@ -231,9 +231,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
-
-      - name: Install nuget
-        run: dotnet tool install -g NuGet.CommandLine
 
       - name: Create the Nuget package
         run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}/native-package.nuspec
