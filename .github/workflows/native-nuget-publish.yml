@@ -205,28 +205,30 @@ jobs:
           path: ${{github.workspace}}/native
 
       - name: Move files to expected locations
-        shell: bash
         run: |
-          echo "locating all the built libraries:"
-          find . -name "*ziti4dotnet.*"
-          echo "creating the RIDs"
-          mkdir -p ${{github.workspace}}/runtimes/osx-x64/native
-          mkdir -p ${{github.workspace}}/runtimes/osx-arm64/native
-          mkdir -p ${{github.workspace}}/runtimes/ios-arm64/native
-          mkdir -p ${{github.workspace}}/runtimes/linux-arm/native
-          mkdir -p ${{github.workspace}}/runtimes/linux-arm64/native
-          mkdir -p ${{github.workspace}}/runtimes/linux-x64/native
-          mkdir -p ${{github.workspace}}/runtimes/win-x86/native
-          mkdir -p ${{github.workspace}}/runtimes/win-x64/native
-          echo "moving the build libraries to the RIDs"
-          mv ${{github.workspace}}/native/macos.x64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-x64/native
-          mv ${{github.workspace}}/native/macos.arm64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/osx-arm64/native
-          mv ${{github.workspace}}/native/iOS.arm64.libziti4dotnet.dylib/libziti4dotnet.dylib ${{github.workspace}}/runtimes/ios-arm64/native
-          mv ${{github.workspace}}/native/Linux-arm64.arm64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm64/native
-          mv ${{github.workspace}}/native/Linux-arm.arm.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm/native
-          mv ${{github.workspace}}/native/linux.x64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-x64/native
-          mv ${{github.workspace}}/native/win.x64.ziti4dotnet.dll/${{ env.ZITI_DEBUG_OR_RELEASE }}/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x64/native
-          mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/${{ env.ZITI_DEBUG_OR_RELEASE }}/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native
+          Write-Host "locating all the built libraries:"
+          Get-ChildItem -Recurse *ziti4dotnet*
+
+          Write-Host "creating the RIDs"
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\osx-x64\native
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\osx-arm64\native
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\ios-arm64\native
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\linux-arm\native
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\linux-arm64\native
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\linux-x64\native
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\win-x86\native
+          New-Item -ItemType Directory -Force ${{ github.workspace }}\runtimes\win-x64\native
+
+          Write-Host "moving the build libraries to the RIDs"
+          Move-Item ${{ github.workspace }}\native\macos.x64.libziti4dotnet.dylib\libziti4dotnet.dylib ${{ github.workspace }}\runtimes\osx-x64\native
+          Move-Item ${{ github.workspace }}\native\macos.arm64.libziti4dotnet.dylib\libziti4dotnet.dylib ${{ github.workspace }}\runtimes\osx-arm64\native
+          Move-Item ${{ github.workspace }}\native\iOS.arm64.libziti4dotnet.dylib\libziti4dotnet.dylib ${{ github.workspace }}\runtimes\ios-arm64\native
+          Move-Item ${{ github.workspace }}\native\Linux-arm64.arm64.libziti4dotnet.so\libziti4dotnet.so ${{ github.workspace }}\runtimes\linux-arm64\native
+          Move-Item ${{ github.workspace }}\native\Linux-arm.arm.libziti4dotnet.so\libziti4dotnet.so ${{ github.workspace }}\runtimes\linux-arm\native
+          Move-Item ${{ github.workspace }}\native\linux.x64.libziti4dotnet.so\libziti4dotnet.so ${{ github.workspace }}\runtimes\linux-x64\native
+          Move-Item ${{ github.workspace }}\native\win.x64.ziti4dotnet.dll\${{ env.ZITI_DEBUG_OR_RELEASE }}\ziti4dotnet.dll ${{ github.workspace }}\runtimes\win-x64\native
+          Move-Item ${{ github.workspace }}\native\win.x86.ziti4dotnet.dll\${{ env.ZITI_DEBUG_OR_RELEASE }}\ziti4dotnet.dll ${{ github.workspace }}\runtimes\win-x86\native
+
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
