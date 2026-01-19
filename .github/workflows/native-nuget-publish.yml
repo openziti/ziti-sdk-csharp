@@ -149,6 +149,15 @@ jobs:
           echo "PATH=$PATH"
           echo "which ninja -> $(which ninja || echo NOT_FOUND)"
 
+      - name: Clean build dir
+        if: runner.os != 'Windows'
+        run: rm -rf "${{ env.TARGETDIR }}"
+
+      - name: Clean build dir (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Remove-Item -Recurse -Force "${env:TARGETDIR}" -ErrorAction SilentlyContinue
+
       - name: Configure and build
         working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
         run: |
