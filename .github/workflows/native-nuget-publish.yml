@@ -155,6 +155,11 @@ jobs:
           echo "VCPKG_TARGET_TRIPLET=arm64-ios" >> $GITHUB_ENV
           echo "VCPKG_CHAINLOAD_TOOLCHAIN_FILE=${{ github.workspace }}/ZitiNativeApiForDotnetCore/toolchains/iOS-arm64.cmake" >> $GITHUB_ENV
 
+      - name: Inspect build dir
+        run: |
+          echo "TARGETDIR=${{ env.TARGETDIR }}"
+          ls -la "${{ env.TARGETDIR }}" 2>&1 || true
+
       - name: Configure and build
         working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
         run: |
