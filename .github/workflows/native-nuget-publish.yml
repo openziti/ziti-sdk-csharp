@@ -233,7 +233,7 @@ jobs:
           dotnet-version: 8.x
 
       - name: Create the Nuget package
-        run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}/native-package.nuspec
+        run: dotnet nuget pack ${{ github.workspace }}/native-package.nuspec -p:PackageVersion=${{env.resolvedversion}}
 
       - name: Upload nuget package
         uses: actions/upload-artifact@v4
