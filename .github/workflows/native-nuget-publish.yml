@@ -224,8 +224,8 @@ jobs:
           mv ${{github.workspace}}/native/Linux-arm64.arm64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm64/native
           mv ${{github.workspace}}/native/Linux-arm.arm.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-arm/native
           mv ${{github.workspace}}/native/linux.x64.libziti4dotnet.so/libziti4dotnet.so ${{github.workspace}}/runtimes/linux-x64/native
-          mv ${{github.workspace}}/native/win.x64.ziti4dotnet.dll/Release/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x64/native
-          mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/Release/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native
+          mv ${{github.workspace}}/native/win.x64.ziti4dotnet.dll/${{ env.ZITI_DEBUG_OR_RELEASE }}/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x64/native
+          mv ${{github.workspace}}/native/win.x86.ziti4dotnet.dll/${{ env.ZITI_DEBUG_OR_RELEASE }}/ziti4dotnet.dll ${{github.workspace}}/runtimes/win-x86/native
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
