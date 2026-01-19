@@ -121,7 +121,7 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt update -y
-          sudo apt install -y pkg-config ninja-build nuget
+          sudo apt install -y pkg-config ninja-build
 
       - name: Install Linux crossbuild tools
         if: matrix.os == 'ubuntu-22.04' && contains(matrix.arch, 'arm')
@@ -187,7 +187,7 @@ jobs:
       repo: ${{needs.set-build-info.outputs.repo}}
       branch: ${{needs.set-build-info.outputs.branch}}
       qualifier: ${{needs.set-build-info.outputs.qualifier}}
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
         with:
@@ -205,6 +205,7 @@ jobs:
           path: ${{github.workspace}}/native
 
       - name: Move files to expected locations
+        shell: bash
         run: |
           echo "locating all the built libraries:"
           find . -name "*ziti4dotnet.*"
@@ -233,12 +234,12 @@ jobs:
           dotnet-version: 8.x
 
       - name: Create the Nuget package
-        run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}/native-package.nuspec
+        run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}\native-package.nuspec
 
       - name: Upload nuget package
         uses: actions/upload-artifact@v4
         with:
-          path: ${{ github.workspace }}/OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
+          path: ${{ github.workspace }}\OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
 
