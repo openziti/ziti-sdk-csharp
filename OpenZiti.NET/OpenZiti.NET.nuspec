@@ -22,7 +22,7 @@
         <dependency id="Microsoft.Extensions.Logging" version="10.0.2" exclude="Build,Analyzers" xmlns="" />
         <dependency id="Newtonsoft.Json" version="13.0.4" exclude="Build,Analyzers" xmlns="" />
         <dependency id="NLog" version="6.0.7" exclude="Build,Analyzers" xmlns="" />
-        <dependency id="OpenZiti.NET.native" version="2026.1.12.1502" exclude="Build,Analyzers" xmlns="" />
+        <dependency id="OpenZiti.NET.native" version="1.10.4-csdk-updaterc212" exclude="Build,Analyzers" xmlns="" />
         <dependency id="System.Memory" version="4.6.3" exclude="Build,Analyzers" xmlns="" />
         <dependency id="System.Text.Json" version="10.0.2" exclude="Build,Analyzers" xmlns="" />
       </group>
