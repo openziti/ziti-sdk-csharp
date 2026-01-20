@@ -1,31 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <Platforms>AnyCPU;x86;x64;ARM64;ARM</Platforms>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-    <Target Name="DownloadPetstoreV2Json" BeforeTargets="Never">
-        <Exec Command="powershell -Command iwr https://petstore.swagger.io/v2/swagger.json -OutFile $(ProjectDir)/petstorev2.json" />
-    </Target>
-    <ItemGroup>
-        <None Remove="petstorev2.json" />
-    </ItemGroup>
-    <ItemGroup>
-        <OpenApiReference Include="petstorev2.json" ClassName="Client" CodeGenerator="NSwagCSharp" Namespace="OpenZiti.Generated.Petstore" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="NSwag.ApiDescription.Client" Version="13.20.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\OpenZiti.NET\OpenZiti.NET.csproj" />
-    </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Platforms>AnyCPU;x86;x64;ARM64;ARM</Platforms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<NoWarn>$(NoWarn);ASPDEPR001</NoWarn>
+	</PropertyGroup>
+	<Target Name="DownloadPetstoreV2Json" BeforeTargets="Never">
+		<Exec Command="powershell -Command iwr https://petstore.swagger.io/v2/swagger.json -OutFile $(ProjectDir)/petstorev2.json" />
+	</Target>
+	<ItemGroup>
+		<None Remove="petstorev2.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<OpenApiReference Include="petstorev2.json" ClassName="Client" CodeGenerator="NSwagCSharp" Namespace="OpenZiti.Generated.Petstore" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="NSwag.ApiDescription.Client" Version="14.6.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\OpenZiti.NET\OpenZiti.NET.csproj" />
+	</ItemGroup>
 </Project>

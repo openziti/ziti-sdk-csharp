@@ -42,11 +42,16 @@ namespace OpenZiti {
         }
 
         public ZitiContext(byte[] identity) {
-            NativeContext = nAPI.Ziti_load_context(identity);
+            nAPI.Ziti_load_context(out NativeContext, identity);
         }
 
         public ZitiContext(string identityFile) {
-            NativeContext = nAPI.Ziti_load_context(Encoding.UTF8.GetBytes(identityFile));
+            int rc = nAPI.Ziti_load_context(out NativeContext, Encoding.UTF8.GetBytes(identityFile));
+            if (rc != 0) {
+                var err = API.LastError();
+                string s = Marshal.PtrToStringAnsi(nAPI.ziti_errorstr(err));
+                throw new ZitiException(s);
+            }
         }
 
         /*

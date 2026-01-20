@@ -1,0 +1,1 @@
+This folder exists for locally published nuget packages and nothing more

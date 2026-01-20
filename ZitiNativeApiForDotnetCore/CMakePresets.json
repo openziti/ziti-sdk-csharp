@@ -12,14 +12,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "TLSUV_TLSLIB": "mbedtls",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "CMAKE_C_EXTENSIONS": "ON",
-        "CMAKE_C_STANDARD": "99",
-        "CMAKE_C_STANDARD_REQUIRED": "ON",
-        "CMAKE_CXX_EXTENSIONS": "OFF",
-        "CMAKE_CXX_STANDARD": "11",
-        "CMAKE_CXX_STANDARD_REQUIRED": "ON"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -36,7 +29,7 @@
       "inherits": [
         "flags-unix"
       ],
-      "generator": "Ninja Multi-Config"
+      "generator": "Ninja"
     },
     {
       "name": "macOS-x64",
@@ -65,7 +58,7 @@
       ],
       "cacheVariables": {
         "VCPKG_TARGET_ARCHITECTURE": "arm64",
-        "VCPKG_TARGET_TRIPLET": "arm64-osx",
+        "VCPKG_TARGET_TRIPLET": "arm64-ios",
         "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/toolchains/iOS-arm64.cmake"
       }
     },

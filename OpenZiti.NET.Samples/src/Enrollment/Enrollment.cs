@@ -14,16 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using NLog;
+using OpenZiti.NET.Samples.Common;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-using OpenZiti.NET.Samples.Common;
-
 namespace OpenZiti.NET.Samples {
-    [Sample("enroll")]
 
+    [Sample("enroll")]
     public class EnrollmentSample : SampleBase {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<object> RunAsync(string[] args) {
@@ -33,20 +33,22 @@ namespace OpenZiti.NET.Samples {
             var id = await s.BootstrapSampleIdentityAsync(enrollDemoIdentityName, null);
             var jwt = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             File.WriteAllBytes(jwt, Encoding.UTF8.GetBytes(id.Enrollment.Ott.Jwt));
-            
-            Console.WriteLine("Enrolling the first time. This is expected to succeed");
-            Enroll(jwt, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json");
+
+            Log.Info("Enrolling the first time. This is expected to succeed");
+            var outputFile = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json";
+            Enroll(jwt, outputFile);
+            Log.Info("Identity file written to: " + outputFile);
 
             //now enroll the same exact token again and expect an error
-            Console.WriteLine("Enrolling the _second_ time. This is __expected__ to fail to");
-            Console.WriteLine("    illustrate that enrollment may fail");
-            Console.WriteLine();
+            Log.Info("Enrolling the _second_ time. This is __expected__ to fail to");
+            Log.Info("    illustrate that enrollment may fail");
+            Log.Info("");
             try {
-                Enroll(jwt, Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "enroll.demo.json");
+                Enroll(jwt, outputFile);
             } catch (Exception ex) {
-                Console.WriteLine( "    EXPECTED ERROR: JWT not accepted by controller");
-                Console.WriteLine($"    ERROR RECEIVED: {ex.Message}");
-                Console.WriteLine();
+                Log.Info( "    EXPECTED ERROR: JWT not accepted by controller");
+                Log.Info($"    ERROR RECEIVED: {ex.Message}");
+                Log.Info("");
             }
 
             return null;

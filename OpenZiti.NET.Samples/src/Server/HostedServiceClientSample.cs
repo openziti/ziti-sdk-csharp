@@ -27,8 +27,6 @@ namespace OpenZiti.NET.Samples {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<object> RunAsync(string[] args) {
             Log.Info("HostedServiceClientSample starts");
-            //to see the logs from the Native SDK, set the log level
-            API.SetLogLevel(ZitiLogLevel.INFO);
             
             var svcName = "hosted-demo-svc";
             var setupResult = await new SampleSetup(new()).SetupHostedClientExample(svcName);
@@ -47,7 +45,7 @@ namespace OpenZiti.NET.Samples {
                     line = Console.ReadLine();
                     await w.WriteLineAsync(line);
                     w.AutoFlush = true;
-                    Console.WriteLine("done sending. moving to read response");
+                    Log.Info("done sending. moving to read response");
 
                     string read = await r.ReadLineAsync();
                     Console.WriteLine($"Read:\n{read}");

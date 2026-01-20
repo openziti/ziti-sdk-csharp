@@ -16,8 +16,7 @@
 #define MAXBUFFERLEN 4096 * 4096
 
 int z4d_ziti_close(ziti_connection con) {
-    return 0;
-    //return ziti_close(&con);
+    return ziti_close(con, NULL);
 }
 
 int z4d_uv_run(void* loop) {
@@ -45,8 +44,8 @@ void* z4d_registerUVTimer(uv_loop_t * loop, uv_timer_cb timer_cb, uint64_t delay
     return uvt;
 }
 
-void* z4d_stop_uv_timer(uv_timer_t* t) {
-    uv_timer_stop(t);
+int z4d_stop_uv_timer(uv_timer_t* t) {
+    return uv_timer_stop(t);
 }
 
 void* z4d_new_loop() {
@@ -81,15 +80,17 @@ void z4d_free_char_array(char **a, int size) {
 typedef int (*printer)(void* arg, const char* fmt, ...);
 
 static int ziti_dump_to_log_op(void* stringsBuilder, const char* fmt, ...) {
-    static char line[MAXBUFFERLEN];
+    char* dst = (char*)stringsBuilder;
+    size_t used = strlen(dst);
+    size_t cap = MAXBUFFERLEN;
+
+    if (used >= cap - 1) return 0;
 
     va_list vargs;
     va_start(vargs, fmt);
-    vsnprintf(line, sizeof(line), fmt, vargs);
+    vsnprintf(dst + used, cap - used, fmt, vargs);
     va_end(vargs);
 
-    // write/append to the buffer
-    strncat(stringsBuilder, line, sizeof(line));
     return 0;
 }
 
@@ -125,7 +126,8 @@ void z4d_ziti_dump_file(ziti_context ztx, const char* outputFile) {
     uv_gettimeofday(&dump_time);
 
     char time_str[32];
-    struct tm* start_tm = gmtime(&dump_time.tv_sec);
+    time_t t = (time_t)dump_time.tv_sec;
+    struct tm* start_tm = gmtime(&t);
     strftime(time_str, sizeof(time_str), "%a %b %d %Y, %X %p", start_tm);
 
     fprintf(fp, "Ziti Dump starting: %s\n", time_str);
@@ -176,14 +178,12 @@ void z4d_callback_on_loop(uv_loop_t* loop, void* context, z4d_cb cb) {
                                                    rtn->FIELDNAME.size = sizeof(FIELDTYPE)
 typedef struct c_t {
     uint32_t size;
-    ziti_alignment_check_ziti_auth_query_mfa ziti_auth_query_mfa;
 } c_s;
 
 ziti_types_v2* z4d_struct_test() {
     ziti_types_v2* rtn = calloc(sizeof(ziti_types_v2) + 1, 1);
     rtn->size = sizeof(ziti_types_v2);
 
-    OFFSET(ziti_auth_query_mfa);
     OFFSET(ziti_id_cfg);
     OFFSET(ziti_config);
     OFFSET(api_path);
@@ -211,15 +211,6 @@ ziti_types_v2* z4d_struct_test() {
     OFFSETNAMED(ziti_event_t, ziti_service_event);
     OFFSETNAMED(ziti_event_t, ziti_mfa_auth_event);
     OFFSETNAMED(ziti_event_t, ziti_api_event);
-
-    rtn->ziti_auth_query_mfa_data.type_id = "type";
-    rtn->ziti_auth_query_mfa_data.provider = "provider";
-    rtn->ziti_auth_query_mfa_data.http_method = "http_method";
-    rtn->ziti_auth_query_mfa_data.http_url = "http_url";
-    rtn->ziti_auth_query_mfa_data.min_length = 81;
-    rtn->ziti_auth_query_mfa_data.max_length = 92;
-    rtn->ziti_auth_query_mfa_data.format = "format";
-    BYTEALIGNCHECK(ziti_auth_query_mfa);
 
     rtn->ziti_id_cfg_data.cert = "cert";
     rtn->ziti_id_cfg_data.key = "key";
@@ -254,15 +245,15 @@ ziti_types_v2* z4d_struct_test() {
 
     rtn->ziti_posture_query_data.id = "id";
     rtn->ziti_posture_query_data.is_passing = true;
-    rtn->ziti_posture_query_data.query_type = "query_type";
+    rtn->ziti_posture_query_data.query_type = ziti_posture_query_type_PC_Domain;
     rtn->ziti_posture_query_data.process = &rtn->ziti_process_data;
     ziti_process_array zpa = calloc(sizeof(ziti_process), 2);
     zpa[0] = &rtn->ziti_process_data;
     rtn->ziti_posture_query_data.processes = zpa;
     rtn->ziti_posture_query_data.timeout = 10;
-    int* time_remain = calloc(sizeof(int), 1);
-    *time_remain = 20;
-    rtn->ziti_posture_query_data.timeoutRemaining = time_remain;
+    model_number time_remain = {0};
+    time_remain = (int64_t)20;
+    rtn->ziti_posture_query_data.timeoutRemaining = &time_remain;
     rtn->ziti_posture_query_data.updated_at = "updated_at";
     BYTEALIGNCHECK(ziti_posture_query);
 
@@ -344,7 +335,7 @@ ziti_types_v2* z4d_struct_test() {
 
     rtn->ziti_host_cfg_v1_data.protocol = "protocol";
     rtn->ziti_host_cfg_v1_data.forward_protocol = true;
-    string_array apa = calloc(sizeof(char*), 3);
+    model_string_array apa = calloc(sizeof(char*), 3);
     apa[0] = "proto1";
     apa[1] = "proto2";
     rtn->ziti_host_cfg_v1_data.allowed_protocols = apa;
@@ -366,7 +357,7 @@ ziti_types_v2* z4d_struct_test() {
     BYTEALIGNCHECK(ziti_host_cfg_v2);
 
     rtn->ziti_mfa_enrollment_data.is_verified = true;
-    string_array codes = calloc(sizeof(char*), 2);
+    model_string_array codes = calloc(sizeof(char*), 2);
     codes[0] = "code1";
     rtn->ziti_mfa_enrollment_data.recovery_codes = codes;
     rtn->ziti_mfa_enrollment_data.provisioning_url = "provisioningUrl";
@@ -374,7 +365,6 @@ ziti_types_v2* z4d_struct_test() {
 
     BYTEALIGNCHECK(ziti_port_range);
 
-    rtn->ziti_options_data.config = "config";
     rtn->ziti_options_data.disabled = true;
     char** cfgs = calloc(sizeof(char*), 2);
     cfgs[0] = strdup("config1");
@@ -383,25 +373,21 @@ ziti_types_v2* z4d_struct_test() {
     rtn->ziti_options_data.api_page_size = 232323;
     rtn->ziti_options_data.refresh_interval = 3322;
     rtn->ziti_options_data.metrics_type = EWMA_15m;
-    rtn->ziti_options_data.router_keepalive = 111;
     rtn->ziti_options_data.app_ctx = strdup("ctxhere");
     rtn->ziti_options_data.events = 98;
     BYTEALIGNCHECK(ziti_options);
 
     /*type is a ziti_event_type*/
-    rtn->ziti_context_event_data.type = ZitiContextEvent;
-    rtn->ziti_context_event_data.event.ctx.ctrl_status = 245;
-    rtn->ziti_context_event_data.event.ctx.err = "ziti_context_event_err_0__";
+    rtn->ziti_context_event_data.ctrl_status = 245;
+    rtn->ziti_context_event_data.err = "ziti_context_event_err_0__";
     BYTEALIGNCHECKBYTYPE(ziti_context_event, ziti_event_t);
 
-    rtn->ziti_router_event_data.type = ZitiRouterEvent;
-    rtn->ziti_router_event_data.event.router.status = EdgeRouterConnected;
-    rtn->ziti_router_event_data.event.router.name = "ere_name";
-    rtn->ziti_router_event_data.event.router.address = "ere_address";
-    rtn->ziti_router_event_data.event.router.version = "ere_version";
+    rtn->ziti_router_event_data.status = EdgeRouterConnected;
+    rtn->ziti_router_event_data.name = "ere_name";
+    rtn->ziti_router_event_data.address = "ere_address";
+    rtn->ziti_router_event_data.version = "ere_version";
     BYTEALIGNCHECKBYTYPE(ziti_router_event, ziti_event_t);
 
-    rtn->ziti_service_event_data.type = ZitiServiceEvent;
     ziti_service_array list_of_services = calloc(sizeof(ziti_service*), 3);
     list_of_services[0] = &rtn->ziti_service_data;
     ziti_service* elem2 = calloc(sizeof(ziti_service), 1);
@@ -412,18 +398,18 @@ ziti_types_v2* z4d_struct_test() {
     elem2->id = strdup("elem2id");
     elem2->perm_flags = 222;
     list_of_services[1] = elem2; //&rtn->ziti_service_data;
-    rtn->ziti_service_event_data.event.service.added = list_of_services;
-    rtn->ziti_service_event_data.event.service.changed = list_of_services;
-    rtn->ziti_service_event_data.event.service.removed = list_of_services;
+    rtn->ziti_service_event_data.added = list_of_services;
+    rtn->ziti_service_event_data.changed = list_of_services;
+    rtn->ziti_service_event_data.removed = list_of_services;
     BYTEALIGNCHECKBYTYPE(ziti_service_event, ziti_event_t);
 
-    rtn->ziti_mfa_auth_event_data.type = ZitiMfaAuthEvent;
-    rtn->ziti_mfa_auth_event_data.event.mfa_auth_event.auth_query_mfa = &rtn->ziti_auth_query_mfa_data;
+    rtn->ziti_auth_event_data = rtn->ziti_auth_event_data;
     BYTEALIGNCHECKBYTYPE(ziti_mfa_auth_event, ziti_event_t);
 
-    rtn->ziti_api_event_data.type = ZitiAPIEvent;
-    rtn->ziti_api_event_data.event.api.new_ctrl_address = "new_ctrl_address";
-    rtn->ziti_api_event_data.event.api.new_ca_bundle = "new_ca_bundle";
+    rtn->ziti_config_event_data.identity_name = "new_ctrl_address";
+    ziti_config zc = {0};
+    zc.controller_url = "ctrlurl";
+    rtn->ziti_config_event_data.config = &zc;
     BYTEALIGNCHECKBYTYPE(ziti_api_event, ziti_event_t);
 
     printf("\n\n---------------- suboffsets begin ----------------");
@@ -452,26 +438,24 @@ ziti_types_v2* z4d_struct_test() {
     SUBOFFSET(ziti_options, api_page_size);
     SUBOFFSET(ziti_options, refresh_interval);
     SUBOFFSET(ziti_options, metrics_type);
-    SUBOFFSET(ziti_options, router_keepalive);
     SUBOFFSET(ziti_options, app_ctx);
     SUBOFFSET(ziti_options, events);
-    SUBOFFSETNAMED(ziti_event_t, ziti_context_event, type);
-    SUBOFFSETNAMED(ziti_event_t, ziti_context_event, event.ctx.ctrl_status);
-    SUBOFFSETNAMED(ziti_event_t, ziti_context_event, event.ctx.err);
-    SUBOFFSETNAMED(ziti_event_t, ziti_router_event, type);
-    SUBOFFSETNAMED(ziti_event_t, ziti_router_event, event.router.status);
-    SUBOFFSETNAMED(ziti_event_t, ziti_router_event, event.router.name);
-    SUBOFFSETNAMED(ziti_event_t, ziti_router_event, event.router.address);
-    SUBOFFSETNAMED(ziti_event_t, ziti_router_event, event.router.version);
-    SUBOFFSETNAMED(ziti_event_t, ziti_service_event, type);
-    SUBOFFSETNAMED(ziti_event_t, ziti_service_event, event.service.added);
-    SUBOFFSETNAMED(ziti_event_t, ziti_service_event, event.service.changed);
-    SUBOFFSETNAMED(ziti_event_t, ziti_service_event, event.service.removed);
-    SUBOFFSETNAMED(ziti_event_t, ziti_mfa_auth_event, type);
-    SUBOFFSETNAMED(ziti_event_t, ziti_mfa_auth_event, event.mfa_auth_event.auth_query_mfa);
-    SUBOFFSETNAMED(ziti_event_t, ziti_api_event, type);
-    SUBOFFSETNAMED(ziti_event_t, ziti_api_event, event.api.new_ctrl_address);
-    SUBOFFSETNAMED(ziti_event_t, ziti_api_event, event.api.new_ca_bundle);
+    SUBOFFSETNAMED(struct ziti_context_event, ziti_context_event_data, ctrl_status);
+    SUBOFFSETNAMED(struct ziti_context_event, ziti_context_event_data, err);
+
+    SUBOFFSETNAMED(struct ziti_router_event, ziti_router_event_data, status);
+    SUBOFFSETNAMED(struct ziti_router_event, ziti_router_event_data, name);
+    SUBOFFSETNAMED(struct ziti_router_event, ziti_router_event_data, address);
+    SUBOFFSETNAMED(struct ziti_router_event, ziti_router_event_data, version);
+
+    SUBOFFSETNAMED(struct ziti_service_event, ziti_service_event_data, added);
+    SUBOFFSETNAMED(struct ziti_service_event, ziti_service_event_data, changed);
+    SUBOFFSETNAMED(struct ziti_service_event, ziti_service_event_data, removed);
+
+    SUBOFFSETNAMED(struct ziti_auth_event, ziti_auth_event_data, action);
+
+    SUBOFFSETNAMED(struct ziti_config_event, ziti_config_event_data, identity_name);
+    SUBOFFSETNAMED(struct ziti_config_event, ziti_config_event_data, config);
 
     return rtn;
 }
@@ -480,7 +464,7 @@ ziti_posture_query* z4d_ziti_posture_query() {
     ziti_posture_query* q = calloc(sizeof(ziti_posture_query), 1);
     q->id = "id";
     q->is_passing = true;
-    q->query_type = "query_type";
+    q->query_type = ziti_posture_query_type_PC_Domain;
     printf("rtn->ziti_posture_query.query_type memory location: %p\n", &q->query_type);
 
     return q;
@@ -490,7 +474,7 @@ void useUnusedFuncs() {
     //TODO: temporary hack to get the linker to emit 'unused' symbols
     ziti_enroll(NULL, NULL, NULL, NULL);
     ziti_conn_bridge(NULL, NULL, NULL);
-    ziti_conn_bridge_fds(NULL, NULL, NULL, NULL, NULL);
+    ziti_conn_bridge_fds(NULL, 0, 0, NULL, NULL);
     Ziti_lib_init();
 }
 
