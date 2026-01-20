@@ -39,7 +39,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="OpenZiti.NET.native" Version="1.10.4-csdk-updaterc212" />
+    <PackageReference Include="OpenZiti.NET.native" Version="1.10.4.213" />
   </ItemGroup>
 
   <ItemGroup>

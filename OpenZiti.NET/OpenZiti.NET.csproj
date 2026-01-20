@@ -6,8 +6,8 @@
         <CurrentYear>$([System.DateTime]::UtcNow.Year.ToString().Substring(2,2))</CurrentYear>
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
         <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds), 2).ToString('F0'))</UtcSecondsOfDay>
-        <major>0</major>
-        <minor>9</minor>
+        <major>1</major>
+        <minor>0</minor>
         <Version>$(major).$(minor).$(CurrentYear)$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
         <Authors>OpenZiti</Authors>
         <Company>NetFoundry</Company>
@@ -54,7 +54,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.2" />
         <PackageReference Include="NLog" Version="6.0.7" />
-        <PackageReference Include="OpenZiti.NET.native" Version="1.10.4-csdk-updaterc212" />
+        <PackageReference Include="OpenZiti.NET.native" Version="1.10.4.213" />
         <PackageReference Include="System.Memory" Version="4.6.3" />
         <PackageReference Include="System.Text.Json" Version="10.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
