@@ -127,32 +127,6 @@ internal sealed class OverlaySetup
         });
     }
 
-    // Create a service plus dial+bind policies bound to a SINGLE identity that holds both roles, returning that
-    // one enrolled identity file. Mirrors the C sample's one-context-per-process model: bind and dial happen on
-    // the same loaded context, which avoids running two contexts in one process.
-    public async Task<string> SetupServiceSingleIdentityAsync(string svcName)
-    {
-        var svcRole = $"{svcName}.service.role";
-        var bindRole = $"{svcName}.binders";
-        var dialRole = $"{svcName}.dialers";
-
-        var idFile = await BootstrapAndEnrollAsync($"{svcName}-both", bindRole, dialRole);
-
-        await DeleteServiceByNameAsync(svcName);
-        await _mapi.CreateServiceAsync(new ServiceCreate
-        {
-            Name = svcName,
-            RoleAttributes = new[] { svcRole },
-            Configs = Array.Empty<string>(),
-            EncryptionRequired = true,
-        });
-
-        await RecreatePolicyAsync($"{svcName}.sp.dial", DialBind.Dial, dialRole, svcRole);
-        await RecreatePolicyAsync($"{svcName}.sp.bind", DialBind.Bind, bindRole, svcRole);
-
-        return idFile;
-    }
-
     private async Task<string> BootstrapAndEnrollAsync(string name, params string[] roles)
     {
         var existingId = await FindAsync(n => _mapi.ListIdentitiesAsync(null, null, n, null, null), name);

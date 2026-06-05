@@ -18,6 +18,7 @@ using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace E2ETest;
 
@@ -82,6 +83,31 @@ internal static class ZitiNative
     [DllImport("ws2_32.dll", EntryPoint = "socket", SetLastError = true)]
     private static extern nint win_socket(int af, int type, int protocol);
 
+    [DllImport("libc", SetLastError = true)]
+    private static extern int fcntl(int fd, int cmd, int arg);
+
+    [DllImport("ws2_32.dll", SetLastError = true)]
+    private static extern int ioctlsocket(nint s, int cmd, ref uint argp);
+
+    private const int F_GETFL = 3;
+    private const int F_SETFL = 4;
+
+    // Force a socket into blocking mode. ziti's zl_is_blocking() is (fcntl(F_GETFL) & O_NONBLOCK)==0 on posix;
+    // when the server socket is blocking, Ziti_accept waits and the SDK hands a dialing client off directly
+    // instead of dropping it into a backlog. O_NONBLOCK differs by platform (macOS 0x4, linux 0x800).
+    private static void SetBlocking(nint fd)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            uint blocking = 0; // FIONBIO arg 0 => blocking
+            ioctlsocket(fd, unchecked((int)0x8004667E), ref blocking);
+            return;
+        }
+        int oNonBlock = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? 0x0004 : 0x0800;
+        int flags = fcntl((int)fd, F_GETFL, 0);
+        if (flags >= 0) fcntl((int)fd, F_SETFL, flags & ~oNonBlock);
+    }
+
     private static nint NewOsSocket()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -101,16 +127,22 @@ internal static class ZitiNative
 
     // Kept alive for the process so the native side can call back.
     private static LogWriter _logWriter;
+    private static readonly object _logLock = new();
 
-    // Route the native ziti SDK log to stderr at DEBUG, so a dial/connect failure prints its real cause
-    // (the WARN line and rc from do_ziti_connect), which CI captures.
+    private static readonly string NativeLogPath = Environment.GetEnvironmentVariable("ZITI_NATIVE_LOG");
+
+    // Opt-in (set ZITI_NATIVE_LOG=/path): route the native ziti SDK log to that file at DEBUG so a dial/connect
+    // failure records its real cause (the WARN line and rc from do_ziti_connect). A file, not Console, avoids
+    // MSTest swallowing per-test stderr. No-op when the env var is unset, so normal runs pay nothing.
     public static void EnableNativeLogging()
     {
+        if (string.IsNullOrEmpty(NativeLogPath)) return;
         _logWriter = (level, loc, msg, len) =>
         {
             var l = Marshal.PtrToStringUTF8(loc) ?? "";
             var m = Marshal.PtrToStringUTF8(msg) ?? "";
-            Console.Error.WriteLine($"[ziti:{level}] {l}\t{m}");
+            try { lock (_logLock) { System.IO.File.AppendAllText(NativeLogPath, $"[ziti:{level}] {l}\t{m}\n"); } }
+            catch { /* logging must never break the test */ }
         };
         ziti_log_set_logger(Marshal.GetFunctionPointerForDelegate(_logWriter));
         ziti_log_set_level(4, null); // DEBUG
@@ -146,18 +178,38 @@ internal static class ZitiNative
         if (rc != 0) throw new InvalidOperationException($"Ziti_bind failed: {ErrStr(Ziti_last_error())}");
         rc = Ziti_listen(srv, backlog);
         if (rc != 0) throw new InvalidOperationException($"Ziti_listen failed: {ErrStr(Ziti_last_error())}");
+        // Block on accept so the SDK hands a dialing client off directly (see SetBlocking).
+        SetBlocking(srv);
         return srv;
     }
 
-    // Server side: block until a ziti client connects; returns the accepted client fd.
+    // EAGAIN/EWOULDBLOCK across linux (11), macOS (35) and Windows WSAEWOULDBLOCK (10035).
+    private static bool IsWouldBlock(int err) => err == 11 || err == 35 || err == 10035;
+
+    // Server side: poll until a ziti client connects, then return the accepted client fd. Ziti_accept is
+    // non-blocking (it resolves with EAGAIN when no client is pending), so the C sample loops on EWOULDBLOCK;
+    // we do the same. A real error (e.g. the server socket closed on shutdown) is not would-block, so we throw
+    // and let the caller stop. The overall test timeout bounds the wait.
     public static nint Accept(nint server, out string caller)
     {
         var buf = new byte[256];
-        var clt = Ziti_accept(server, buf, buf.Length);
-        if (clt == -1 || (clt.ToInt64() < 0)) throw new InvalidOperationException($"Ziti_accept failed: {ErrStr(Ziti_last_error())}");
-        int z = Array.IndexOf(buf, (byte)0);
-        caller = Encoding.UTF8.GetString(buf, 0, z < 0 ? buf.Length : z);
-        return clt;
+        while (true)
+        {
+            Array.Clear(buf);
+            var clt = Ziti_accept(server, buf, buf.Length);
+            if (clt != -1 && clt.ToInt64() >= 0)
+            {
+                int z = Array.IndexOf(buf, (byte)0);
+                caller = Encoding.UTF8.GetString(buf, 0, z < 0 ? buf.Length : z);
+                return clt;
+            }
+            int err = Ziti_last_error();
+            if (!IsWouldBlock(err))
+            {
+                throw new InvalidOperationException($"Ziti_accept failed: {ErrStr(err)} (errno {err})");
+            }
+            Thread.Sleep(50);
+        }
     }
 
     // Client side: plain socket -> Ziti_connect by service name on the explicit dialer context. Returns the
