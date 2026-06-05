@@ -42,6 +42,9 @@ env:
   BASEDIR: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
   TARGETDIR: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build
 
+permissions:
+  contents: read
+
 jobs:
   set-build-info:
     runs-on: ubuntu-latest
