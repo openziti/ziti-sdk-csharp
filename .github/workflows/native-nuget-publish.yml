@@ -192,6 +192,13 @@ jobs:
           echo "PATH=$PATH"
           echo "which ninja -> $(which ninja || echo NOT_FOUND)"
 
+      # Regenerate library/ziti.def from THIS C SDK version's actual exports so it never goes stale. All
+      # logic lives in the script so it is runnable locally; Windows only (the .def is a Windows artifact).
+      - name: Regenerate ziti.def from the C SDK release (Windows)
+        if: matrix.dist == 'win'
+        shell: pwsh
+        run: ./scripts/regenerate-ziti-def.ps1 -Version "${{ inputs.version }}"
+
       - name: Configure and build
         working-directory: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
         run: |
