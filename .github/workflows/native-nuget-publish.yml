@@ -93,7 +93,13 @@ jobs:
     # Skip everything when already published (preflight) or when triggered by dependabot.
     if: needs.preflight.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      packages: write
     env:
+      # Layered binary cache: vcpkg tries the Actions cache (files) first, then the GitHub Packages NuGet feed.
+      # setup-vcpkg-nuget-cache.ps1 appends the nuget source to this value, so restore order is files then ghpr.
+      # Both are readwrite, but vcpkg only pushes packages it actually builds (cache misses), never re-pushes hits.
       VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-bincache,readwrite"
       VCPKG_FEATURE_FLAGS: "manifests,binarycaching"
     strategy:
@@ -180,6 +186,12 @@ jobs:
         run: brew install ninja autoconf autoconf-archive automake pkg-config libtool
 
       - uses: lukka/run-vcpkg@v11
+
+      # Point vcpkg at the GitHub Packages NuGet feed for binary caching (build once, push, pull). All logic
+      # is in the script so it is runnable locally. Runs after vcpkg is bootstrapped (needs VCPKG_ROOT).
+      - name: Set up vcpkg binary cache (GitHub Packages)
+        shell: pwsh
+        run: ./scripts/setup-vcpkg-nuget-cache.ps1 -Owner "${{ github.repository_owner }}" -Token "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Set up MSVC
         if: matrix.dist == 'win'
