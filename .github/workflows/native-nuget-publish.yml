@@ -405,9 +405,10 @@ jobs:
       - name: Publish OpenZiti.NET.native
         run: dotnet nuget push "${{ github.workspace }}/artifacts/OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
-  # Failure-only notification, mirroring .github/workflows/mattermost-ziti-webhook.yml (same action and
-  # inputs). Depends on the hard-gate jobs only, so the soft e2e does not trigger it. A clean "already
-  # published" skip is not a failure, so it stays quiet then too.
+  # Failure-only notification over the mattermost ziti webhook. The action has no free-text message input, it
+  # formats from the event JSON, so we feed it a crafted event with NO inputs (which is what produced the ugly
+  # JSON dump) and a concise failure line plus the run URL instead. Depends on the hard-gate jobs only, so the
+  # soft e2e does not trigger it, and a clean "already published" skip is not a failure so it stays quiet.
   notify-failure:
     needs: [preflight, set-build-info, native-matrix-build, create-nuget-package, smoke-test, publish]
     if: ${{ failure() && github.repository_owner == 'openziti' }}
@@ -418,6 +419,6 @@ jobs:
         with:
           zitiId: ${{ secrets.ZITI_MATTERMOST_IDENTITY }}
           webhookUrl: ${{ secrets.ZHOOK_URL }}
-          eventJson: ${{ toJson(github.event) }}
+          eventJson: '{"repository":{"full_name":"${{ github.repository }}","html_url":"${{ github.server_url }}/${{ github.repository }}"},"sender":{"login":"GitHubZ","avatar_url":"https://github.com/fluidicon.png","html_url":"${{ github.server_url }}/${{ github.repository }}"},"workflow":"native-nuget-publish FAILED for ziti-sdk-c ${{ inputs.version }}. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
           senderUsername: "GitHubZ"
           destChannel: "dev-notifications"
