@@ -230,7 +230,9 @@ jobs:
             ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/**/CMakeCache.txt
 
       - name: Save vcpkg binary cache
-        if: always()
+        # Save on success or a real build failure (deps are still worth caching), but NOT on cancel,
+        # which would store an empty cache.
+        if: ${{ success() || failure() }}
         uses: actions/cache/save@v4
         with:
           path: ${{ github.workspace }}/vcpkg-bincache
