@@ -34,24 +34,24 @@ $repoRoot = Split-Path $PSScriptRoot -Parent
 $project = Join-Path $repoRoot 'native/smoke-test/SmokeTest.csproj'
 $source = (Resolve-Path $PackageDir).Path
 
-# Running an x86 test makes dotnet test spawn an x86 testhost, which needs the x86 .NET runtime. Hosted
-# runners (and most dev boxes) only have x64, so the x86 testhost fails to load hostfxr (HRESULT 0x800700C1).
-# Install the x86 runtime and point DOTNET_ROOT(x86) at it so the testhost resolves it. No-op if already there.
+# dotnet test runs the test process in the SDK's own architecture. To probe the x86 native lib the test must
+# itself be x86, but hosted runners ship only the x64 SDK. So for win-x86 install an x86 .NET SDK and use its
+# dotnet.exe for the whole build+test. No-op if already present. Other RIDs use the runner's dotnet.
+$dotnet = 'dotnet'
 if ($Rid -eq 'win-x86') {
     $x86Root = Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet-x86'
-    if (-not (Test-Path (Join-Path $x86Root 'host\fxr'))) {
-        Write-Host "Installing the x86 .NET runtime for the win-x86 testhost ..."
+    $dotnet = Join-Path $x86Root 'dotnet.exe'
+    if (-not (Test-Path $dotnet)) {
+        Write-Host "Installing an x86 .NET SDK so the win-x86 test runs as x86 ..."
         $installer = Join-Path ([System.IO.Path]::GetTempPath()) 'dotnet-install.ps1'
         Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1' -OutFile $installer
-        & $installer -Architecture x86 -Runtime dotnet -Channel 8.0 -InstallDir $x86Root
+        & $installer -Architecture x86 -Channel 8.0 -InstallDir $x86Root
     }
-    [Environment]::SetEnvironmentVariable('DOTNET_ROOT(x86)', $x86Root)
-    Write-Host "DOTNET_ROOT(x86)=$x86Root"
 }
 
-Write-Host "Smoke test: RID=$Rid version=$PackageVersion source=$source"
+Write-Host "Smoke test: RID=$Rid version=$PackageVersion source=$source (dotnet: $dotnet)"
 
-dotnet test $project `
+& $dotnet test $project `
     -p:RuntimeIdentifier=$Rid `
     -p:ZitiNativeVersion=$PackageVersion `
     -p:RestoreAdditionalProjectSources=$source
