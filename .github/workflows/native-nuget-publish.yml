@@ -338,8 +338,6 @@ jobs:
             os: windows-2022
           - rid: win-x86
             os: windows-2022
-          - rid: osx-x64
-            os: macos-13
           - rid: osx-arm64
             os: macos-14
     runs-on: ${{ matrix.os }}
@@ -352,7 +350,7 @@ jobs:
           dotnet-version: 8.x
       - name: Note un-smoke-tested RIDs
         shell: bash
-        run: 'echo "NOT smoke-tested on hosted runners (cross-compiled, not runnable): linux-arm, linux-arm64, ios-arm64"'
+        run: 'echo "NOT smoke-tested on hosted runners (cross-compiled or scarce Intel-mac runner): linux-arm, linux-arm64, osx-x64, ios-arm64"'
       - name: Download packed nupkg
         uses: actions/download-artifact@v4
         with:
@@ -378,7 +376,6 @@ jobs:
         target:
           - { rid: linux-x64, os: ubuntu-latest }
           - { rid: win-x64, os: windows-2022 }
-          - { rid: osx-x64, os: macos-13 }
           - { rid: osx-arm64, os: macos-14 }
     runs-on: ${{ matrix.target.os }}
     env:
