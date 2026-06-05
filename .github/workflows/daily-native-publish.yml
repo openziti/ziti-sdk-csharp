@@ -66,6 +66,10 @@ jobs:
 
   publish:
     needs: check
+    # Reusable-workflow permissions are capped by this calling job, and the native build needs contents:write
+    # to push the per-RID cache tarballs to the rolling release.
+    permissions:
+      contents: write
     # Only build+publish when there is something new AND this is not a dry run.
     if: >-
       needs.check.outputs.shouldPublish == 'true' &&
