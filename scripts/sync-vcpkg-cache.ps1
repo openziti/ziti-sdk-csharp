@@ -67,7 +67,10 @@ $downloadBase = "https://github.com/$Repo/releases/download/$Tag"
 function Get-AssetText {
     param([string] $Name)
     try {
-        return (Invoke-WebRequest -Uri "$downloadBase/$Name" -UseBasicParsing).Content
+        # GitHub serves release assets as octet-stream, so .Content comes back as byte[]; decode to text.
+        $content = (Invoke-WebRequest -Uri "$downloadBase/$Name" -UseBasicParsing).Content
+        if ($content -is [byte[]]) { return [System.Text.Encoding]::UTF8.GetString($content) }
+        return $content
     }
     catch {
         if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) { return $null }
