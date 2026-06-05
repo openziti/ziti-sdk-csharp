@@ -16,19 +16,17 @@ limitations under the License.
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using OpenZiti;
-
 namespace E2ETest;
 
-// Raise the native ziti SDK log level so dial/connect failures print their real cause to stderr (which CI
-// captures). API.SetLogLevel forwards the raw int to ziti_log_set_level, and ziti DEBUG == 4, while the
-// Microsoft.Extensions.Logging.LogLevel passed in does not line up numerically, so we cast 4 directly.
+// Initialize the native ziti library once and route its log to stderr at DEBUG, so any dial/connect failure
+// prints its real cause (the C SDK's own WARN line + rc), which CI captures.
 [TestClass]
 public static class E2eDebugInit
 {
     [AssemblyInitialize]
     public static void Init(TestContext _)
     {
-        API.SetLogLevel((Microsoft.Extensions.Logging.LogLevel)4);
+        ZitiNative.LibInit();
+        ZitiNative.EnableNativeLogging();
     }
 }
