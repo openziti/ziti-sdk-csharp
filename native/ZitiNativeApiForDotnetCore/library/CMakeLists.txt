@@ -27,9 +27,16 @@ set_property(TARGET ziti4dotnet PROPERTY C_STANDARD 11)
 
 find_package(protobuf-c CONFIG REQUIRED)
 
-target_link_libraries(ziti4dotnet
-        PUBLIC ziti
-        )
+# ziti is a STATIC lib that exports its public API via ZITI_FUNC (default visibility). Because it is static, the
+# linker keeps only the object files the shim directly references and drops the rest, taking real exports with
+# them. On linux/mac that silently dropped zl_connect.o, so Ziti_connect/Ziti_connect_addr were missing from the
+# .so/.dylib and any P/Invoke to them failed (Windows kept them via ziti.def). WHOLE_ARCHIVE forces every ziti
+# object into ziti4dotnet so the full public API is exported on non-Windows too. Windows keeps using ziti.def.
+if (WIN32)
+    target_link_libraries(ziti4dotnet PUBLIC ziti)
+else()
+    target_link_libraries(ziti4dotnet PUBLIC "$<LINK_LIBRARY:WHOLE_ARCHIVE,ziti>")
+endif()
 # USE WHEN DEBUGGING - target_link_options(ziti4dotnet PRIVATE "/VERBOSE:LIB")
 
 add_executable(zitistructalignment ${ZITI_4_DOTNET_HEADERS} ${PROJECT_SOURCE_DIR}/library/zitistructalignment.c)
