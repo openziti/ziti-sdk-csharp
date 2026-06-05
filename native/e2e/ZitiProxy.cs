@@ -21,38 +21,33 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-using OpenZiti;
-
 namespace E2ETest;
 
-// A managed recreation of ziti-sdk-c's ziti-prox-c sample (programs/ziti-prox-c/proxy.c), the most
-// commonly used C sample. prox-c is a bidirectional bridge with two modes; this class implements both
-// on top of the OpenZiti.NET blocking socket API:
+// A managed recreation of ziti-sdk-c's ziti-prox-c sample, built on the same zitilib calls the C SDK's own
+// samples use (plain OS socket + Ziti_bind / Ziti_accept / Ziti_connect, via ZitiNative). Two modes:
 //
 //   * Host (bind) mode  -- prox-c "-b service:host:port": binds/hosts a ziti service, and for each ziti
 //                          client connects to a backend TCP host:port and bridges bytes both ways.
 //   * Intercept (dial)  -- prox-c "-i service:port": opens a plain local TCP listener and for each local
 //                          connection dials the ziti service and bridges bytes both ways.
 //
-// The C SDK bridges with ziti_conn_bridge(); here a "bridge" is simply two Stream.CopyToAsync pumps,
-// one per direction, between a plain System.Net NetworkStream and a ziti NetworkStream.
-//
-// The OpenZiti.NET socket API (Bind/Listen/Accept/Connect) is blocking, so each accept loop runs on a
-// background task and is stopped by cancelling the token (which disposes the listening socket).
+// The C SDK bridges with ziti_conn_bridge(); here a "bridge" is two Stream.CopyToAsync pumps, one per
+// direction, between a plain System.Net NetworkStream and the ziti socket's NetworkStream. The zitilib
+// accept/connect calls are blocking, so each accept loop runs on a background task; cancelling the token
+// closes the server socket to unblock a pending Ziti_accept.
 internal sealed class ZitiProxy : IAsyncDisposable
 {
     private readonly CancellationTokenSource _cts = new();
     private readonly Task _loop;
 
-    // The loop factory receives this instance's cancellation token, so DisposeAsync stops the loop.
     private ZitiProxy(Func<CancellationToken, Task> loopFactory) => _loop = Task.Run(() => loopFactory(_cts.Token));
 
     // Host (bind) side: bind the service, accept ziti clients, dial the backend, bridge.
-    public static ZitiProxy StartHost(ZitiContext ctx, string service, string backendHost, int backendPort)
+    public static ZitiProxy StartHost(nint ctx, string service, string backendHost, int backendPort)
         => new(ct => HostLoop(ctx, service, backendHost, backendPort, ct));
 
     // Intercept (dial) side: listen on a local TCP port, dial the service per connection, bridge.
-    public static ZitiProxy StartIntercept(ZitiContext ctx, string service, int localPort)
+    public static ZitiProxy StartIntercept(nint ctx, string service, int localPort)
         => new(ct => InterceptLoop(ctx, service, localPort, ct));
 
     private static readonly string LogPath =
@@ -67,20 +62,18 @@ internal sealed class ZitiProxy : IAsyncDisposable
         lock (LogLock) { File.AppendAllText(LogPath, line + Environment.NewLine); }
     }
 
-    private static async Task HostLoop(ZitiContext ctx, string service, string backendHost, int backendPort, CancellationToken ct)
+    private static async Task HostLoop(nint ctx, string service, string backendHost, int backendPort, CancellationToken ct)
     {
-        var listener = new ZitiSocket(SocketType.Stream);
-        API.Bind(listener, ctx, service, "");
-        API.Listen(listener, 16);
+        var listener = ZitiNative.BindListen(ctx, service, "", 16);
         Log($"host: bound+listening on service '{service}'");
-        using var reg = ct.Register(listener.Dispose);
+        using var reg = ct.Register(() => ZitiNative.Close(listener));
 
         while (!ct.IsCancellationRequested)
         {
-            ZitiSocket zitiClient;
+            nint zitiClient;
             try
             {
-                zitiClient = API.Accept(listener, out var caller); // blocking; throws when disposed on cancel
+                zitiClient = ZitiNative.Accept(listener, out var caller); // blocking; errors when closed on cancel
                 Log($"host: accepted ziti client from '{caller}'");
             }
             catch when (ct.IsCancellationRequested)
@@ -96,17 +89,16 @@ internal sealed class ZitiProxy : IAsyncDisposable
             // For each ziti client, open a TCP connection to the backend and bridge both ways.
             _ = Task.Run(async () =>
             {
-                using var zsock = zitiClient;
                 using var backend = new TcpClient();
                 await backend.ConnectAsync(backendHost, backendPort, ct);
                 Log($"host: connected to backend {backendHost}:{backendPort}, bridging");
-                await BridgeAsync(zsock.ToNetworkStream(), backend.GetStream(), ct);
+                await BridgeAsync(ZitiNative.ToStream(zitiClient), backend.GetStream(), ct);
                 Log("host: bridge ended");
             }, ct);
         }
     }
 
-    private static async Task InterceptLoop(ZitiContext ctx, string service, int localPort, CancellationToken ct)
+    private static async Task InterceptLoop(nint ctx, string service, int localPort, CancellationToken ct)
     {
         var listener = new TcpListener(IPAddress.Loopback, localPort);
         listener.Start();
@@ -130,10 +122,10 @@ internal sealed class ZitiProxy : IAsyncDisposable
             _ = Task.Run(async () =>
             {
                 using var tcp = local;
-                using var zsock = new ZitiSocket(SocketType.Stream);
+                nint zfd;
                 try
                 {
-                    API.Connect(zsock, ctx, service, "");
+                    zfd = ZitiNative.Connect(ctx, service, "");
                     Log($"intercept: dialed service '{service}', bridging");
                 }
                 catch (Exception ex)
@@ -141,7 +133,7 @@ internal sealed class ZitiProxy : IAsyncDisposable
                     Log($"intercept: dial failed: {ex.Message}");
                     return;
                 }
-                await BridgeAsync(tcp.GetStream(), zsock.ToNetworkStream(), ct);
+                await BridgeAsync(tcp.GetStream(), ZitiNative.ToStream(zfd), ct);
                 Log("intercept: bridge ended");
             }, ct);
         }

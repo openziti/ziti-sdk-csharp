@@ -53,11 +53,11 @@ public class ProxyBridgeTest
         var (binderIdFile, dialerIdFile) = await setup.SetupServiceAsync(SvcName);
 
         // Host proxy hosts the service and forwards to the loopback echo backend (prox-c "-b").
-        var hostCtx = new ZitiContext(binderIdFile);
+        var hostCtx = ZitiNative.LoadContext(binderIdFile);
         await using var hostProxy = ZitiProxy.StartHost(hostCtx, SvcName, "127.0.0.1", backendPort);
 
         // Intercept proxy exposes the service as a local TCP port (prox-c "-i").
-        var dialCtx = new ZitiContext(dialerIdFile);
+        var dialCtx = ZitiNative.LoadContext(dialerIdFile);
         await using var interceptProxy = ZitiProxy.StartIntercept(dialCtx, SvcName, interceptPort);
 
         // Only drive traffic once the host proxy's bind terminator exists, so the dial succeeds promptly.

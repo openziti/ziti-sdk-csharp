@@ -16,19 +16,18 @@ limitations under the License.
 
 using System;
 using System.IO;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using OpenZiti;
-
 namespace E2ETest;
 
-// Simplest traffic proof: an in-process server BINDS a ziti service and echoes a line back to a client
-// that DIALS it. No plain-TCP backend, no proxy bridge -- just SDK bind/dial through the fresh native
-// lib. Complements the heavier prox-c ProxyBridgeTest.
+// Simplest traffic proof, built call-for-call on the C SDK's own zitilib samples
+// (programs/zitilib-samples/server.c hosts; ziti-http-get.c dials): a server BINDS a ziti service with a
+// plain OS socket and echoes a line; a client DIALS the same service with a plain OS socket. All ziti calls
+// go through ZitiNative (raw P/Invoke into ziti4dotnet), not the managed wrapper, so this exercises the same
+// code path the C samples do.
 [TestClass]
 public class HostedEchoTest
 {
@@ -45,17 +44,14 @@ public class HostedEchoTest
 
         using var serverCancel = new CancellationTokenSource();
 
-        // Server: bind + accept one client, echo the single line it sends.
-        var serverCtx = new ZitiContext(binderIdFile);
+        // Server: load the binder identity (blocking, like the C sample's init_context), bind+listen on a
+        // plain OS socket, accept one client, echo the single line it sends.
+        var serverCtx = ZitiNative.LoadContext(binderIdFile);
+        var serverSock = ZitiNative.BindListen(serverCtx, SvcName, "", 16);
         var serverTask = Task.Run(() =>
         {
-            var listen = new ZitiSocket(SocketType.Stream);
-            API.Bind(listen, serverCtx, SvcName, "");
-            API.Listen(listen, 16);
-            using var reg = serverCancel.Token.Register(listen.Dispose);
-
-            var client = API.Accept(listen, out var caller);
-            using var s = client.ToNetworkStream();
+            var clt = ZitiNative.Accept(serverSock, out _);
+            using var s = ZitiNative.ToStream(clt);
             using var r = new StreamReader(s);
             using var w = new StreamWriter(s) { AutoFlush = true };
             var line = r.ReadLine();
@@ -66,17 +62,18 @@ public class HostedEchoTest
         Assert.IsTrue(await setup.WaitForTerminatorAsync(SvcName, TimeSpan.FromSeconds(10)),
             "Server never registered a terminator; the bind did not come up.");
 
-        // Client: dial + send a line, read the echo.
-        var clientCtx = new ZitiContext(dialerIdFile);
+        // Client: load the dialer identity, dial the service on a plain OS socket, send a line, read the echo.
+        var clientCtx = ZitiNative.LoadContext(dialerIdFile);
         var response = await DialSendReceiveWithRetryAsync(clientCtx, "hello-ziti", TimeSpan.FromSeconds(8));
 
         serverCancel.Cancel();
+        ZitiNative.Close(serverSock);
         try { await serverTask; } catch { /* torn down on cancel */ }
 
         Assert.AreEqual("echo:hello-ziti", response, "Did not receive the expected echo over the overlay.");
     }
 
-    private static async Task<string> DialSendReceiveWithRetryAsync(ZitiContext ctx, string message, TimeSpan timeout)
+    private static async Task<string> DialSendReceiveWithRetryAsync(nint ctx, string message, TimeSpan timeout)
     {
         var deadline = DateTime.UtcNow + timeout;
         Exception last = null;
@@ -84,9 +81,7 @@ public class HostedEchoTest
         {
             try
             {
-                using var sock = new ZitiSocket(SocketType.Stream);
-                API.Connect(sock, ctx, SvcName, "");
-                using var s = sock.ToNetworkStream();
+                using var s = ZitiNative.ToStream(ZitiNative.Connect(ctx, SvcName, ""));
                 using var r = new StreamReader(s);
                 using var w = new StreamWriter(s) { AutoFlush = true };
                 w.WriteLine(message);
