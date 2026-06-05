@@ -40,14 +40,16 @@ public class HostedEchoTest
     {
         var setup = await OverlaySetup.ConnectAsync();
         await setup.EnsureRouterPoliciesAsync();
-        var (binderIdFile, dialerIdFile) = await setup.SetupServiceAsync(SvcName);
+        // One identity with both bind+dial roles, one loaded context for both sides (like the C sample, which
+        // runs a single context per process). This isolates whether two-contexts-in-one-process was the issue.
+        var idFile = await setup.SetupServiceSingleIdentityAsync(SvcName);
 
         using var serverCancel = new CancellationTokenSource();
 
-        // Server: load the binder identity (blocking, like the C sample's init_context), bind+listen on a
-        // plain OS socket, accept one client, echo the single line it sends.
-        var serverCtx = ZitiNative.LoadContext(binderIdFile);
-        var serverSock = ZitiNative.BindListen(serverCtx, SvcName, "", 16);
+        // Server: load the identity (blocking, like the C sample's init_context), bind+listen on a plain OS
+        // socket, accept one client, echo the single line it sends.
+        var ctx = ZitiNative.LoadContext(idFile);
+        var serverSock = ZitiNative.BindListen(ctx, SvcName, "", 16);
         var serverTask = Task.Run(() =>
         {
             var clt = ZitiNative.Accept(serverSock, out _);
@@ -62,9 +64,8 @@ public class HostedEchoTest
         Assert.IsTrue(await setup.WaitForTerminatorAsync(SvcName, TimeSpan.FromSeconds(10)),
             "Server never registered a terminator; the bind did not come up.");
 
-        // Client: load the dialer identity, dial the service on a plain OS socket, send a line, read the echo.
-        var clientCtx = ZitiNative.LoadContext(dialerIdFile);
-        var response = await DialSendReceiveWithRetryAsync(clientCtx, "hello-ziti", TimeSpan.FromSeconds(8));
+        // Client: dial the service on the SAME context, on a plain OS socket, send a line, read the echo.
+        var response = await DialSendReceiveWithRetryAsync(ctx, "hello-ziti", TimeSpan.FromSeconds(8));
 
         serverCancel.Cancel();
         ZitiNative.Close(serverSock);
