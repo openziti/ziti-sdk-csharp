@@ -184,16 +184,6 @@ jobs:
         shell: pwsh
         run: ./scripts/sync-vcpkg-cache.ps1 -Action restore -Rid ${{ matrix.rid }} -Version "${{ inputs.version }}" -CacheDir "${{ github.workspace }}/vcpkg-bincache"
 
-      # TRANSITION ONLY: harvest the deps already cached in Actions cache (from the last nuget-era run) so the
-      # first release-store run does not cold-build. Delete this step once the release holds all RID tarballs.
-      - name: Restore vcpkg binary cache (Actions cache, transition)
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{ github.workspace }}/vcpkg-bincache
-          key: vcpkg-bincache-${{ runner.os }}-${{ matrix.preset }}-${{ inputs.version }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}-${{ github.run_id }}
-          restore-keys: |
-            vcpkg-bincache-${{ runner.os }}-${{ matrix.preset }}-${{ inputs.version }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}-
-
       - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
         run: |
@@ -383,18 +373,15 @@ jobs:
         shell: pwsh
         run: ./scripts/run-smoke-test.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}" -Rid ${{ matrix.rid }}
 
-  # Soft gate (for now): prove real traffic flows through the fresh lib via a quickstart overlay and the
-  # prox-c recreation. continue-on-error keeps a flaky overlay from blocking a release until it is trusted,
-  # and publish does NOT depend on this job. Flip to a hard gate (add to publish.needs, drop
-  # continue-on-error) once it has proven stable.
+  # HARD gate: real traffic must flow through the fresh lib via a quickstart overlay and the prox-c
+  # recreation, on every natively-runnable desktop RID and both ziti lines, before publish. A failure here
+  # blocks the push (publish depends on this job, no continue-on-error).
   e2e-test:
     needs: [create-nuget-package]
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
-        # Exercise BOTH ziti lines (1.6.x and 2.0.x) across every natively-runnable desktop RID before
-        # publish. Bump the ziti patch as releases land. Soft gate: failures report but do not block.
+        # Exercise BOTH ziti lines (1.6.x and 2.0.x) across every natively-runnable desktop RID before publish.
         ziti: [v1.6.14, v2.0.0]
         target:
           - { rid: linux-x64, os: ubuntu-latest }
@@ -421,11 +408,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Traffic e2e (quickstart + prox-c) - ${{ matrix.target.rid }} / ziti ${{ matrix.ziti }}
         shell: pwsh
+        env:
+          # DEBUG so the native ziti SDK prints why a dial fails (e.g. the real rc behind a closed bridge).
+          ZITI_LOG: "4"
         run: ./scripts/run-e2e-test.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}" -Rid ${{ matrix.target.rid }}
 
-  # Push only after the hard smoke gate passes, and only from the canonical repo.
+  # Push only after the hard smoke AND e2e gates pass, and only from the canonical repo.
   publish:
-    needs: [create-nuget-package, smoke-test]
+    needs: [create-nuget-package, smoke-test, e2e-test]
     # Push only from the canonical repo, and never on a dry run.
     if: ${{ github.repository == 'openziti/ziti-sdk-csharp' && inputs.dryRun != true }}
     runs-on: windows-2022
