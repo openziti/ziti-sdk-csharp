@@ -53,7 +53,7 @@ internal static class ZitiNative
     [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
     private static extern nint Ziti_accept(nint socket, byte[] caller, int callerLen);
 
-    [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Dll, CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     private static extern int Ziti_connect(nint socket, nint ztx,
         [MarshalAs(UnmanagedType.LPUTF8Str)] string service, [MarshalAs(UnmanagedType.LPUTF8Str)] string terminator);
 
@@ -169,8 +169,9 @@ internal static class ZitiNative
         int rc = Ziti_connect(soc, ztx, service, terminator);
         if (rc != 0)
         {
+            int errno = Marshal.GetLastWin32Error();
             Ziti_close(soc);
-            throw new InvalidOperationException($"Ziti_connect failed: {ErrStr(rc)}");
+            throw new InvalidOperationException($"Ziti_connect failed: rc={rc} ({ErrStr(rc)}), errno={errno}");
         }
         return soc;
     }
