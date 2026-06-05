@@ -27,6 +27,6 @@ launchSettings.json
 Samples/Properties
 TestProject/Properties
 .run
-ZitiNativeApiForDotnetCore/Testing/
+native/ZitiNativeApiForDotnetCore/Testing/
 
 .nuget

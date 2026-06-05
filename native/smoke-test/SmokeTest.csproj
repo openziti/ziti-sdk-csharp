@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Isolated cross-OS smoke test for the freshly built OpenZiti.NET.native package.
+    It references ONLY the native package (no ProjectReferences, no network), so a failure
+    here means the native binary itself is broken, not some unrelated managed code.
+
+    The package version and the local nuget source (the folder holding the freshly packed
+    .nupkg) are supplied at build time so this never pins a stale version:
+
+      dotnet test -p:ZitiNativeVersion=1.16.0.213 `
+                  -p:RestoreAdditionalProjectSources=<dir-with-the-fresh-nupkg>
+
+    scripts/run-smoke-test.ps1 (the locally-runnable wrapper) passes both, plus the target RID.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!-- Fallback only for ad-hoc local runs; CI always passes -p:ZitiNativeVersion=... -->
+    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.10.4.213</ZitiNativeVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
+    <PackageReference Include="OpenZiti.NET.native" Version="$(ZitiNativeVersion)" />
+  </ItemGroup>
+
+</Project>

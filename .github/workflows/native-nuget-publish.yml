@@ -11,14 +11,36 @@ on:
         description: Debug or Release
         default: Release
         required: true
+      dryRun:
+        description: Run everything (build, pack, smoke, e2e) but do NOT push to nuget.org
+        type: boolean
+        default: false
+  # Reusable: the nightly daily-native-publish.yml calls this with secrets: inherit so the dispatched
+  # run actually fires (the default GITHUB_TOKEN cannot reliably trigger another workflow).
+  workflow_call:
+    inputs:
+      version:
+        description: Version of CSDK/Nuget Package
+        required: true
+        type: string
+      debugOrRelease:
+        description: Debug or Release
+        default: Release
+        required: false
+        type: string
+      dryRun:
+        description: Run everything but do NOT push to nuget.org
+        type: boolean
+        default: false
 
 env:
-  ZITI_SDK_C_BRANCH: ${{ github.event.inputs.version }}
-  ZITI_DEBUG_OR_RELEASE: ${{ github.event.inputs.debugOrRelease }}
+  # inputs.* is populated for BOTH workflow_dispatch and workflow_call, so this works either way.
+  ZITI_SDK_C_BRANCH: ${{ inputs.version }}
+  ZITI_DEBUG_OR_RELEASE: ${{ inputs.debugOrRelease }}
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   BUILD_NUMBER: ${{ github.run_number }}
-  BASEDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
-  TARGETDIR: ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build
+  BASEDIR: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
+  TARGETDIR: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build
 
 jobs:
   set-build-info:
@@ -50,8 +72,23 @@ jobs:
             echo "qualifier=-${BRANCH_NAME}rc${{github.run_number}}" >> $GITHUB_OUTPUT
           fi
 
+  # Pre-flight duplicate-publish guard: if this version's base is already on nuget.org, skip the whole
+  # build so a manual re-run just exits cleanly instead of pushing a second qualifier for the same version.
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      shouldPublish: ${{ steps.check.outputs.shouldPublish }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check whether this version is already published
+        id: check
+        shell: pwsh
+        run: ./scripts/check-and-publish-native.ps1 -Version "${{ inputs.version }}"
+
   native-matrix-build:
-    if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' }}"
+    needs: [preflight]
+    # Skip everything when already published (preflight) or when triggered by dependabot.
+    if: needs.preflight.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
     runs-on: ${{ matrix.os }}
     env:
       VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-bincache,readwrite"
@@ -144,13 +181,13 @@ jobs:
 
       - name: Ensure ninja exists
         if: runner.os == 'macOS'
-        working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
+        working-directory: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
         run: |
           echo "PATH=$PATH"
           echo "which ninja -> $(which ninja || echo NOT_FOUND)"
 
       - name: Configure and build
-        working-directory: ${{ github.workspace }}/ZitiNativeApiForDotnetCore
+        working-directory: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
         run: |
           echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
@@ -171,13 +208,13 @@ jobs:
           name: logs.${{ matrix.dist }}.${{ matrix.arch }}
           if-no-files-found: warn
           path: |
-            ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build/vcpkg-manifest-install.log
+            ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/vcpkg-manifest-install.log
             ${{ github.workspace }}/vcpkg/buildtrees/detect_compiler/**/*.log
             ${{ github.workspace }}/vcpkg/buildtrees/**/config-*-out.log
             ${{ github.workspace }}/vcpkg/buildtrees/**/config-*-err.log
             ${{ github.workspace }}/vcpkg/buildtrees/**/CMakeCache.txt.log
-            ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build/CMakeFiles/**/*.log
-            ${{ github.workspace }}/ZitiNativeApiForDotnetCore/build/**/CMakeCache.txt
+            ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/CMakeFiles/**/*.log
+            ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/**/CMakeCache.txt
 
 
   create-nuget-package:
@@ -188,16 +225,21 @@ jobs:
       branch: ${{needs.set-build-info.outputs.branch}}
       qualifier: ${{needs.set-build-info.outputs.qualifier}}
     runs-on: windows-2022
+    outputs:
+      resolvedversion: ${{ steps.ver.outputs.resolvedversion }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set resolved version
+        id: ver
         shell: pwsh
         run: |
-          "resolvedversion=${env:ZITI_SDK_C_BRANCH}${env:repo}${env:qualifier}" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          
+          $v = "${env:ZITI_SDK_C_BRANCH}${env:repo}${env:qualifier}"
+          "resolvedversion=$v" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "resolvedversion=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
       - run: mkdir ${{github.workspace}}/native
 
       - name: Download all artifacts
@@ -246,6 +288,114 @@ jobs:
           name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           if-no-files-found: error
 
+  # ---- Pre-publish gates ----------------------------------------------------------------------------
+  # Hard gate: prove the freshly packed native lib LOADS and is callable on every natively-runnable RID.
+  # linux-arm, linux-arm64, and ios-arm64 are cross-compiled and cannot run on hosted runners, so they are
+  # NOT smoke-tested here. That is a known coverage gap (logged below), not a silent skip.
+  smoke-test:
+    needs: [create-nuget-package]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: linux-x64
+            os: ubuntu-latest
+          - rid: win-x64
+            os: windows-2022
+          - rid: win-x86
+            os: windows-2022
+          - rid: osx-x64
+            os: macos-13
+          - rid: osx-arm64
+            os: macos-14
+    runs-on: ${{ matrix.os }}
+    env:
+      resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+      - name: Note un-smoke-tested RIDs
+        shell: bash
+        run: echo "NOT smoke-tested on hosted runners (cross-compiled / not runnable): linux-arm, linux-arm64, ios-arm64"
+      - name: Download packed nupkg
+        uses: actions/download-artifact@v4
+        with:
+          name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
+          path: ${{ github.workspace }}/artifacts
+      - name: Smoke test (load probe)
+        shell: pwsh
+        run: ./scripts/run-smoke-test.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}" -Rid ${{ matrix.rid }}
+
+  # Soft gate (for now): prove real traffic flows through the fresh lib via a quickstart overlay and the
+  # prox-c recreation. continue-on-error keeps a flaky overlay from blocking a release until it is trusted,
+  # and publish does NOT depend on this job. Flip to a hard gate (add to publish.needs, drop
+  # continue-on-error) once it has proven stable.
+  e2e-test:
+    needs: [create-nuget-package]
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        # Exercise BOTH ziti lines (1.6.x and 2.0.x) across every natively-runnable desktop RID before
+        # publish. Bump the ziti patch as releases land. Soft gate: failures report but do not block.
+        ziti: [v1.6.14, v2.0.0]
+        target:
+          - { rid: linux-x64, os: ubuntu-latest }
+          - { rid: win-x64, os: windows-2022 }
+          - { rid: osx-x64, os: macos-13 }
+          - { rid: osx-arm64, os: macos-14 }
+    runs-on: ${{ matrix.target.os }}
+    env:
+      resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+      - name: Download packed nupkg
+        uses: actions/download-artifact@v4
+        with:
+          name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
+          path: ${{ github.workspace }}/artifacts
+      - name: Traffic e2e (quickstart + prox-c) - ${{ matrix.target.rid }} / ziti ${{ matrix.ziti }}
+        shell: pwsh
+        run: ./scripts/run-e2e-test.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}" -Rid ${{ matrix.target.rid }} -ZitiVersion ${{ matrix.ziti }}
+
+  # Push only after the hard smoke gate passes, and only from the canonical repo.
+  publish:
+    needs: [create-nuget-package, smoke-test]
+    # Push only from the canonical repo, and never on a dry run.
+    if: ${{ github.repository == 'openziti/ziti-sdk-csharp' && inputs.dryRun != true }}
+    runs-on: windows-2022
+    env:
+      resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+      - name: Download packed nupkg
+        uses: actions/download-artifact@v4
+        with:
+          name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
+          path: ${{ github.workspace }}/artifacts
       - name: Publish OpenZiti.NET.native
-        if: "${{ github.repository == 'openziti/ziti-sdk-csharp'}}"
-        run: dotnet nuget push OpenZiti.NET.native.${{env.resolvedversion}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "${{ github.workspace }}/artifacts/OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+  # Failure-only notification, mirroring .github/workflows/mattermost-ziti-webhook.yml (same action and
+  # inputs). Depends on the hard-gate jobs only, so the soft e2e does not trigger it. A clean "already
+  # published" skip is not a failure, so it stays quiet then too.
+  notify-failure:
+    needs: [preflight, set-build-info, native-matrix-build, create-nuget-package, smoke-test, publish]
+    if: ${{ failure() && github.repository_owner == 'openziti' }}
+    runs-on: ubuntu-latest
+    name: POST Webhook (failure)
+    steps:
+      - uses: openziti/ziti-mattermost-action-py@main
+        with:
+          zitiId: ${{ secrets.ZITI_MATTERMOST_IDENTITY }}
+          webhookUrl: ${{ secrets.ZHOOK_URL }}
+          eventJson: ${{ toJson(github.event) }}
+          senderUsername: "GitHubZ"
+          destChannel: "dev-notifications"
