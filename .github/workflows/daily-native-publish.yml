@@ -15,9 +15,12 @@ on:
         required: false
         default: ''
       dryRun:
-        description: Only report what would happen; do not build or publish
+        description: Only report what would happen, do not build or publish
         type: boolean
         default: false
+
+permissions:
+  contents: read
 
 jobs:
   check:
