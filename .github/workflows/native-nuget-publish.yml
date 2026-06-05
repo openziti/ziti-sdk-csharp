@@ -318,7 +318,7 @@ jobs:
           dotnet-version: 8.x
       - name: Note un-smoke-tested RIDs
         shell: bash
-        run: echo "NOT smoke-tested on hosted runners (cross-compiled / not runnable): linux-arm, linux-arm64, ios-arm64"
+        run: 'echo "NOT smoke-tested on hosted runners (cross-compiled, not runnable): linux-arm, linux-arm64, ios-arm64"'
       - name: Download packed nupkg
         uses: actions/download-artifact@v4
         with:
