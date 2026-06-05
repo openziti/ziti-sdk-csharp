@@ -11,6 +11,12 @@
     All logic is here so it runs locally too. Cross-platform: on Windows the fetched nuget.exe is used
     directly; on linux/mac vcpkg drives nuget through mono, which this installs if missing.
 
+    Note for macOS: run-vcpkg sets VCPKG_FORCE_SYSTEM_BINARIES=1 (required for arm64), under which
+    `vcpkg fetch nuget` returns the bare `nuget` command (mono's own wrapper, not a CIL assembly) instead of
+    a real NuGet.exe, so `mono nuget` fails. We clear that flag only for the fetch so vcpkg downloads a real
+    NuGet.exe, then restore it. Invoke-Nuget also falls back to calling the command directly if a bare name
+    still comes back.
+
     Sets VCPKG_BINARY_SOURCES for the rest of the job (writes to GITHUB_ENV in CI) and for the current process
     (local runs). Run AFTER vcpkg is bootstrapped (VCPKG_ROOT must be set).
 
@@ -55,13 +61,25 @@ if (-not $IsWindows -and -not (Get-Command mono -ErrorAction SilentlyContinue)) 
     }
 }
 
-# Path to the nuget.exe vcpkg manages.
-$nuget = (& $vcpkg fetch nuget | Select-Object -Last 1).Trim()
+# Fetch the NuGet.exe vcpkg manages. On macOS, VCPKG_FORCE_SYSTEM_BINARIES=1 makes fetch hand back the bare
+# `nuget` (mono's wrapper, not a real assembly), which breaks `mono nuget`. Clear it just for the fetch so a
+# real NuGet.exe is downloaded, then restore the original value (the build step has its own process anyway).
+$savedForceSystemBinaries = $env:VCPKG_FORCE_SYSTEM_BINARIES
+if (-not $IsWindows) { $env:VCPKG_FORCE_SYSTEM_BINARIES = $null }
+try {
+    $nuget = (& $vcpkg fetch nuget | Select-Object -Last 1).Trim()
+}
+finally {
+    if ($null -ne $savedForceSystemBinaries) { $env:VCPKG_FORCE_SYSTEM_BINARIES = $savedForceSystemBinaries }
+}
+if ([string]::IsNullOrWhiteSpace($nuget)) { throw "vcpkg fetch nuget returned nothing." }
+Write-Host "Using NuGet at $nuget"
 
 function Invoke-Nuget {
     param([Parameter(ValueFromRemainingArguments = $true)] [string[]] $NugetArgs)
     if ($IsWindows) { & $nuget @NugetArgs }
-    else { & mono $nuget @NugetArgs }
+    elseif (Test-Path $nuget) { & mono $nuget @NugetArgs }  # a real NuGet.exe on disk
+    else { & $nuget @NugetArgs }                            # a 'nuget' command on PATH that drives mono itself
 }
 
 # Register the feed with credentials so vcpkg's nuget can authenticate. Re-running is harmless.
