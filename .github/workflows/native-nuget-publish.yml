@@ -97,6 +97,7 @@ jobs:
       VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-bincache,readwrite"
       VCPKG_FEATURE_FLAGS: "manifests,binarycaching"
     strategy:
+      fail-fast: false
       matrix:
         include:
           - ext: so
@@ -150,12 +151,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache vcpkg binary cache
-        uses: actions/cache@v4
+      - name: Restore vcpkg binary cache
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
         with:
-          path: |
-            ${{ github.workspace }}/vcpkg-bincache
-          key: vcpkg-bincache-${{ runner.os }}-${{ matrix.preset }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}
+          path: ${{ github.workspace }}/vcpkg-bincache
+          key: vcpkg-bincache-${{ runner.os }}-${{ matrix.preset }}-${{ inputs.version }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}-${{ github.run_id }}
+          restore-keys: |
+            vcpkg-bincache-${{ runner.os }}-${{ matrix.preset }}-${{ inputs.version }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}-
 
       - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
@@ -218,6 +221,13 @@ jobs:
             ${{ github.workspace }}/vcpkg/buildtrees/**/CMakeCache.txt.log
             ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/CMakeFiles/**/*.log
             ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/**/CMakeCache.txt
+
+      - name: Save vcpkg binary cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg-bincache
+          key: vcpkg-bincache-${{ runner.os }}-${{ matrix.preset }}-${{ inputs.version }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}-${{ github.run_id }}
 
 
   create-nuget-package:

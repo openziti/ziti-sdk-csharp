@@ -18,7 +18,7 @@ endif()
 
 message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
 
-file (STRINGS "../version" BUILD_NUMBER)
+file (STRINGS "../../version" BUILD_NUMBER)
 
 
 include(FetchContent)
@@ -77,7 +77,7 @@ add_subdirectory(library)
 string(TOLOWER "${GENERATE_ZITI_STATUS}" generate_csharp_enum)
 if("${generate_csharp_enum}" STREQUAL "yes")
     set(SourceErrorsFile "${ziti-sdk-c_SOURCE_DIR}/includes/ziti/errors.h")
-    set(OUTPUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs")
+    set(OUTPUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../../OpenZiti.NET/src/OpenZiti/ZitiStatus.cs")
     execute_process(
         COMMAND powershell -File "${CMAKE_CURRENT_SOURCE_DIR}/generateDotnetStatus.ps1" -SourceFile "${SourceErrorsFile}" -OutputPath ${OUTPUT_FILE}
     )
