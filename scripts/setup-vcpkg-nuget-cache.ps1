@@ -11,11 +11,16 @@
     All logic is here so it runs locally too. Cross-platform: on Windows the fetched nuget.exe is used
     directly; on linux/mac vcpkg drives nuget through mono, which this installs if missing.
 
-    Note for macOS: run-vcpkg sets VCPKG_FORCE_SYSTEM_BINARIES=1 (required for arm64), under which
-    `vcpkg fetch nuget` returns the bare `nuget` command (mono's own wrapper, not a CIL assembly) instead of
-    a real NuGet.exe, so `mono nuget` fails. We clear that flag only for the fetch so vcpkg downloads a real
-    NuGet.exe, then restore it. Invoke-Nuget also falls back to calling the command directly if a bare name
-    still comes back.
+    Note for macOS: run-vcpkg sets VCPKG_FORCE_SYSTEM_BINARIES=1 (required for arm64). Under that flag vcpkg
+    does not download its own NuGet.exe; it resolves `nuget` off PATH. On the hosted runner PATH includes
+    /Library/Frameworks/Mono.framework/.../Commands, whose `nuget` is a shell launcher, not a CIL assembly, so
+    vcpkg's `mono <launcher>` dies with "File does not contain a valid CIL image" and BOTH restore and push to
+    the feed silently fail (only the local `files` cache ever gets entries). We fix it in two parts: (1) clear
+    the flag just for `vcpkg fetch nuget` so we get a real NuGet.exe to configure the feed with, and (2) shadow
+    that real NuGet.exe onto PATH as a file named `nuget`, ahead of Mono's, so the build step's PATH-resolved
+    `mono <nuget>` runs a real assembly. Without (2) the build re-finds the Mono launcher and mac/iOS never seed
+    the feed (they cannot pull what they never pushed). Invoke-Nuget also falls back to calling the command
+    directly if a bare name still comes back.
 
     Sets VCPKG_BINARY_SOURCES for the rest of the job (writes to GITHUB_ENV in CI) and for the current process
     (local runs). Run AFTER vcpkg is bootstrapped (VCPKG_ROOT must be set).
@@ -74,6 +79,22 @@ finally {
 }
 if ([string]::IsNullOrWhiteSpace($nuget)) { throw "vcpkg fetch nuget returned nothing." }
 Write-Host "Using NuGet at $nuget"
+
+# macOS only: the build step runs with VCPKG_FORCE_SYSTEM_BINARIES=1 and re-resolves `nuget` off PATH, where it
+# finds Mono's launcher script (Commands/nuget) instead of a real assembly, so `mono <launcher>` fails and the
+# feed never restores or pushes. Shadow a real NuGet.exe onto PATH as a file named `nuget`, ahead of Mono's, so
+# the build's `mono <nuget>` runs a real CIL assembly. Restricted to macOS: linux/Windows resolve a real nuget
+# already, so we must not perturb their working PATH.
+if ($IsMacOS -and (Test-Path $nuget)) {
+    $shadowDir = Join-Path ([System.IO.Path]::GetTempPath()) 'vcpkg-real-nuget'
+    New-Item -ItemType Directory -Force -Path $shadowDir | Out-Null
+    $shadowNuget = Join-Path $shadowDir 'nuget'
+    Copy-Item -Path $nuget -Destination $shadowNuget -Force
+    & chmod +x $shadowNuget
+    $env:PATH = "$shadowDir$([System.IO.Path]::PathSeparator)$env:PATH"
+    if ($env:GITHUB_PATH) { $shadowDir | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8 }
+    Write-Host "Shadowed a real NuGet.exe onto PATH at $shadowNuget (ahead of Mono's launcher)."
+}
 
 function Invoke-Nuget {
     param([Parameter(ValueFromRemainingArguments = $true)] [string[]] $NugetArgs)
