@@ -4,7 +4,8 @@
     `ziti edge quickstart` overlay.
 
 .DESCRIPTION
-    1. Fetches the official getZiti helper from get.openziti.io and uses it to put the ziti CLI on PATH.
+    1. Requires the ziti CLI to already be on PATH (it does not install one). Install it however you like, e.g.
+       https://get.openziti.io/quick/getZiti.ps1, or in CI via the openziti/ziti/setup-cli action.
     2. Starts `ziti edge quickstart` in the background, pinned to localhost, admin/admin.
     3. Waits for the controller to answer.
     4. Runs native/e2e/E2ETest.csproj (the HostedEcho + prox-c ProxyBridge tests) against the fresh package.
@@ -14,22 +15,17 @@
     package actually works, not just that it loads. Locally runnable end to end.
 
     Note on ziti version: both the v1.6.x and v2.0.x quickstarts bootstrap an admin/admin controller on
-    localhost and are validated by this script. ZitiVersion selects which CLI release to download; CI runs a
-    matrix over both lines before publishing.
+    localhost and are validated by this script. Whichever ziti is on PATH is used; CI runs a matrix over both
+    lines (via setup-cli) before publishing.
 
 .PARAMETER PackageDir
     Folder containing the freshly packed OpenZiti.NET.native.<version>.nupkg (used as a local nuget source).
 
 .PARAMETER PackageVersion
-    The nuget version of the freshly packed package (e.g. 1.16.0.213). Named PackageVersion (not Version) on
-    purpose: getZiti.ps1 is dot-sourced and uses $Version internally, and PowerShell variable names are
-    case-insensitive, so a $Version here would be clobbered.
+    The nuget version of the freshly packed package (e.g. 1.16.0.213).
 
 .PARAMETER Rid
     The runtime identifier to test. The e2e is gated on win-x64. Defaults to win-x64.
-
-.PARAMETER ZitiVersion
-    The ziti CLI release tag to download for the overlay (e.g. v1.6.14). Defaults to a known-good v1.x.
 
 .PARAMETER CtrlAddress
     Controller advertised address. Defaults to localhost so enrolled identities resolve locally.
@@ -45,8 +41,6 @@ param(
     [Parameter(Mandatory = $true)] [string] $PackageDir,
     [Parameter(Mandatory = $true)] [string] $PackageVersion,
     [string] $Rid = 'win-x64',
-    [string] $ZitiVersion = 'v1.6.14',
-    [string] $GetZitiUrl = 'https://get.openziti.io/quick/getZiti.ps1',
     [string] $CtrlAddress = 'localhost',
     [int]    $CtrlPort = 1280,
     [string] $AdminUser = 'admin',
@@ -60,16 +54,14 @@ $project = Join-Path $repoRoot 'native/e2e/E2ETest.csproj'
 $source = (Resolve-Path $PackageDir).Path
 $logFile = Join-Path ([System.IO.Path]::GetTempPath()) "ziti-quickstart-$PID.log"
 
-# 1. Fetch the official getZiti helper and use it to put the ziti CLI on PATH. Downloaded fresh each run
-#    (no committed dependency) and dot-sourced so its PATH change reaches this scope.
-$getZiti = Join-Path ([System.IO.Path]::GetTempPath()) "getZiti-$PID.ps1"
-Write-Host "Fetching getZiti helper from $GetZitiUrl ..."
-Invoke-WebRequest -Uri $GetZitiUrl -OutFile $getZiti
-Write-Host "Installing ziti $ZitiVersion ..."
-. $getZiti -Version $ZitiVersion -NonInteractive
-if (-not (Get-Command ziti -ErrorAction SilentlyContinue)) {
-    throw "ziti CLI is not on PATH after running getZiti."
+# 1. Require the ziti CLI on PATH. This script does not install ziti: install it however you like (e.g.
+#    https://get.openziti.io/quick/getZiti.ps1) or, in CI, via the openziti/ziti/setup-cli action.
+$ziti = Get-Command ziti -ErrorAction SilentlyContinue
+if (-not $ziti) {
+    throw "ziti needs to be on your PATH. Install the ziti CLI (e.g. https://get.openziti.io/quick/getZiti.ps1) and re-run."
 }
+Write-Host "Using ziti from $($ziti.Source)"
+& ziti version
 
 $quickstart = $null
 try {

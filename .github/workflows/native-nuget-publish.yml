@@ -390,9 +390,15 @@ jobs:
         with:
           name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
           path: ${{ github.workspace }}/artifacts
+      - name: Put ziti ${{ matrix.ziti }} on PATH
+        uses: openziti/ziti/setup-cli@main
+        with:
+          version: ${{ matrix.ziti }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Traffic e2e (quickstart + prox-c) - ${{ matrix.target.rid }} / ziti ${{ matrix.ziti }}
         shell: pwsh
-        run: ./scripts/run-e2e-test.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}" -Rid ${{ matrix.target.rid }} -ZitiVersion ${{ matrix.ziti }}
+        run: ./scripts/run-e2e-test.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}" -Rid ${{ matrix.target.rid }}
 
   # Push only after the hard smoke gate passes, and only from the canonical repo.
   publish:
