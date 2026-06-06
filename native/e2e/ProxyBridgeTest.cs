@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,23 +28,48 @@ using OpenZiti;
 
 namespace E2ETest;
 
-// The robust traffic proof: a faithful managed recreation of ziti-prox-c. Topology:
+// A managed recreation of ziti-prox-c: plain TCP client -> intercept proxy (dials svc) -> router -> host
+// proxy (binds svc) -> TCP echo. Bytes cross the native lib on both the dial and bind sides.
 //
-//   plain TCP client -> [intercept proxy (DIALS svc)] -> router -> [host proxy (BINDS svc)] -> TCP echo
-//
-// Bytes cross the fresh native lib on BOTH the dial and bind sides, plus a real bidirectional bridge,
-// which is exactly what a .NET consumer of the package does in production. Fully self-contained: no
-// internet, only loopback TCP + the local quickstart overlay.
+// The zitilib socket-bridge dial (Ziti_connect) is broken on linux for ziti-sdk-c 1.12.0 .. 1.16.x and fixed
+// in 1.17.0 (see bridge-regression-report.md). So this test self-gates: it skips (Inconclusive) only on linux
+// with a native in that broken range, and runs everywhere else - so it still covers win/mac today and
+// re-enables itself on linux once the native moves to 1.17.0.
 [TestClass]
 public class ProxyBridgeTest
 {
     private const string SvcName = "e2e-proxy-svc";
 
+    [DllImport("ziti4dotnet", CallingConvention = CallingConvention.Cdecl)]
+    private static extern IntPtr ziti_get_version(); // returns const ziti_version*; first field is the version string
+
+    // Skip (Inconclusive, not Fail) only where the bridge dial is known broken: linux + ziti-sdk-c 1.12.0..1.16.x.
+    // Reading the real linked version means this needs no manual flip when the native moves to 1.17.0.
+    private static void SkipIfKnownBrokenBridge()
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return;
+
+        var p = ziti_get_version();
+        var raw = p == IntPtr.Zero ? null : Marshal.PtrToStringUTF8(Marshal.ReadIntPtr(p, 0));
+        var clean = raw?.Split('-', '+')[0];
+        if (Version.TryParse(clean, out var v) && v >= new Version(1, 12, 0) && v < new Version(1, 17, 0))
+        {
+            Assert.Inconclusive(
+                $"ziti-sdk-c {raw}: the zitilib bridge dial (Ziti_connect) is broken on linux from 1.12.0 to " +
+                "1.16.x (mk_acceptor binds the loopback acceptor without listen() before the caller-thread " +
+                "connect; linux RSTs the SYN). Fixed in 1.17.0 (PR #1047). win/mac run this test normally. " +
+                "See bridge-regression-report.md.");
+        }
+    }
+
     [TestMethod]
     [TestCategory("e2e")]
+    [TestCategory("socket-bridge")]
     [Timeout(20_000)]
     public async Task Traffic_Flows_Client_Through_Proxies_To_Backend()
     {
+        SkipIfKnownBrokenBridge();
+
         using var backendCancel = new CancellationTokenSource();
         var backendPort = StartTcpEchoBackend(backendCancel.Token);
         var interceptPort = GetFreeTcpPort();
