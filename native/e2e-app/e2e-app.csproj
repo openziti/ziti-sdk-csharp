@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The ziti client+server used by the e2e test. `e2e-app host ...` or `e2e-app dial ...`. -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>e2e-app</AssemblyName>
+    <RootNamespace>ZitiE2e</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+    <!-- which native build to test; CI passes the fresh one -->
+    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.10.4.213</ZitiNativeVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenZiti.NET.native" Version="$(ZitiNativeVersion)" />
+  </ItemGroup>
+
+</Project>

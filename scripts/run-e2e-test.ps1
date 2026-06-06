@@ -8,11 +8,14 @@
        https://get.openziti.io/quick/getZiti.ps1, or in CI via the openziti/ziti/setup-cli action.
     2. Starts `ziti edge quickstart` in the background, pinned to localhost, admin/admin.
     3. Waits for the controller to answer.
-    4. Runs native/e2e/E2ETest.csproj (the HostedEcho + prox-c ProxyBridge tests) against the fresh package.
-    5. Always tears the overlay down.
+    4. Builds the e2e app (native/e2e-app, the ziti client+server) against the fresh package.
+    5. Runs native/e2e/E2ETest.csproj (CallbackTrafficTest): provisions a service + identities, runs the app
+       as the server, then as the client; the client must dial the server and get its greeting. Two separate
+       processes, both through the fresh native lib.
+    6. Always tears the overlay down.
 
-    The e2e drives traffic through the managed SDK, which loads the fresh native lib, so it proves the
-    package actually works, not just that it loads. Locally runnable end to end.
+    This proves the C SDK works in .NET via P/Invoke as a real client+server, on whatever OS runs the script,
+    not just that the lib loads. Locally runnable end to end.
 
     Note on ziti version: both the v1.6.x and v2.0.x quickstarts bootstrap an admin/admin controller on
     localhost and are validated by this script. Whichever ziti is on PATH is used; CI runs a matrix over both
@@ -103,7 +106,19 @@ try {
     }
     Write-Host "Controller is up and admin authenticates."
 
-    # 4. Run the e2e tests against the fresh package.
+    # 4. Build the e2e app (the ziti client+server) against the fresh package. It P/Invokes the fresh native
+    #    lib; the test runs it as two processes (host + dial) via E2E_APP_DLL.
+    $appOut = Join-Path ([System.IO.Path]::GetTempPath()) "e2e-app-$PID"
+    $appProj = Join-Path $repoRoot 'native/e2e-app/e2e-app.csproj'
+    Write-Host "Building e2e app $appProj for $Rid ..."
+    dotnet publish $appProj -c Release -r $Rid --self-contained false `
+        -p:ZitiNativeVersion=$PackageVersion `
+        -p:RestoreAdditionalProjectSources=$source `
+        -o $appOut
+    if ($LASTEXITCODE -ne 0) { throw "failed to build e2e app $appProj" }
+    $env:E2E_APP_DLL = Join-Path $appOut 'e2e-app.dll'
+
+    # 5. Run the e2e test against the fresh package. It orchestrates the two programs above.
     $env:ZITI_BASEURL = "${CtrlAddress}:${CtrlPort}"
     $env:ZITI_USERNAME = $AdminUser
     $env:ZITI_PASSWORD = $AdminPassword

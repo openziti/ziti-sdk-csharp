@@ -1,28 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
-    Cross-overlay TRAFFIC smoke test for the freshly built OpenZiti.NET.native package.
-    Unlike the load probe (../smoke-test), this proves a client and a server
-    actually pass bytes to each other over a real Ziti overlay, through the managed SDK, which
-    in turn loads the fresh native lib. That is the real .NET-consumer code path.
-
-    The overlay itself (controller + edge router) is stood up out-of-band by
-    `ziti edge quickstart`; scripts/run-e2e-test.ps1 launches it, runs this test, then tears it
-    down. This project only talks to the controller at ZITI_BASEURL (default localhost:1280).
-
-    Native version override: the managed SDK projects pin OpenZiti.NET.native to an old version.
-    The direct PackageReference below, at the resolved fresh version from a local source, makes
-    NuGet unify the WHOLE project graph onto the fresh native lib without editing the SDK's pin:
-
-      dotnet test -p:ZitiNativeVersion=1.16.0.213 `
-                  -p:RestoreAdditionalProjectSources=<dir-with-the-fresh-nupkg>
-  -->
+  <!-- A .NET client dials a .NET server over ziti, proving a native build works. run-e2e-test.ps1 runs it. -->
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-    <!-- Fallback only for ad-hoc local runs; CI always passes -p:ZitiNativeVersion=... -->
+    <!-- which native build to test; CI passes the fresh one -->
     <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.10.4.213</ZitiNativeVersion>
   </PropertyGroup>
 
@@ -30,12 +14,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
-    <!-- Direct ref that overrides the SDK's transitive pin onto the fresh native package. -->
     <PackageReference Include="OpenZiti.NET.native" Version="$(ZitiNativeVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Managed SDK (ZitiSocket/ZitiContext/API) + management API client. No AspNetCore/EF. -->
     <ProjectReference Include="..\..\OpenZiti.NET\OpenZiti.NET.csproj" />
     <ProjectReference Include="..\..\OpenZiti.Management\OpenZiti.Management.csproj" />
   </ItemGroup>
