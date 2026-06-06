@@ -9,10 +9,17 @@ and then it produces a [NuGet package](https://www.nuget.org/packages/OpenZiti.N
 
 ## Publishing the NuGet Package
 
-Generally, this project is only built from GitHub via the [native-nuget-publish.yml](../.github/actions/native-nuget-publish.yml) action.
+This package is published by [native-nuget-publish.yml](../../.github/workflows/native-nuget-publish.yml). That
+workflow is reusable and is triggered two ways:
 
-The action will only push to NuGet when it's run from the organization/project of `openziti/ziti-sdk-csharp` and does
-not verify the branch is main.  It's designed to be runnable from any branch at this time. 
+- Automatically, nightly, by [daily-native-publish.yml](../../.github/workflows/daily-native-publish.yml), which
+  publishes whenever GitHub's latest `ziti-sdk-c` release is newer than what is already on nuget.org.
+- Manually (`workflow_dispatch`) with an explicit `version`, plus an optional `dryRun` that runs everything but
+  skips the push.
+
+Before it pushes, it gates on a cross-OS load probe (hard) and a traffic e2e (soft), and a preflight step skips the
+run entirely if that version is already on nuget.org. It only pushes to NuGet from `openziti/ziti-sdk-csharp`. The
+decision and setup logic lives in locally-runnable scripts under `scripts/`.
 
 This project also layers on helper functions as needed. Often these additional functions will be to do things
 which dotnet doesn't seem to support, or we haven't discovered how to support it yet. Generally things like 
@@ -82,6 +89,11 @@ NOTE!
 > When upgrading the C SDK Library, you really should verify ziti.def and ZitiStatus.cs are correct.
 
 ### ziti.def
+
+> CI now regenerates ziti.def automatically on every Windows build, via `scripts/regenerate-ziti-def.ps1`, so for a
+> normal version bump you no longer have to run defgen and commit the result by hand. The committed ziti.def is a
+> local-build fallback. The notes below explain the process and still apply to local builds.
+
 If you explore the CMakeLists.txt file you will see there is a ziti.def file referenced. This file is **REQUIRED** for 
 Windows library builds. It is also imperative that it is kept up to date. A 
 [.bat file named defgen.bat](./defgen.bat) exists in this folder which _should_ create this def file properly. As of

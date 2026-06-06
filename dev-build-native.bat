@@ -12,7 +12,7 @@ REM    local-nuget-packages\OpenZiti.NET.native.2022.11.1.14.nupkg
 REM    local-nuget-packages\OpenZiti.NET.native.2022.11.1.946.nupkg
 REM
 set CODE_ROOT=%~dp0
-set NATIVE_ROOT=%CODE_ROOT%ZitiNativeApiForDotnetCore
+set NATIVE_ROOT=%CODE_ROOT%native\ZitiNativeApiForDotnetCore
 set LOCAL_NUGET_PACKAGES=%CODE_ROOT%local-nuget-packages
 
 del /s %NATIVE_ROOT%\build-win\win32\library\Debug\ziti4dotnet.*

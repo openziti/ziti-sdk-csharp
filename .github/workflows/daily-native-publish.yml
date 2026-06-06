@@ -1,0 +1,81 @@
+name: Daily check + publish Ziti Native to nuget
+
+# Nightly: ask GitHub for the newest ziti-sdk-c release, ask nuget.org what is already published,
+# and if a new release is missing, build + smoke-test + publish it via the reusable publish workflow.
+# Can also be run on demand, with an optional explicit version and a dry-run switch.
+
+on:
+  schedule:
+    # 04:17 UTC nightly (off the top of the hour to dodge cron congestion).
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Explicit ziti-sdk-c version/tag to publish (overrides the auto-check)
+        required: false
+        default: ''
+      dryRun:
+        description: Only report what would happen, do not build or publish
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      shouldPublish: ${{ steps.decide.outputs.shouldPublish }}
+      version: ${{ steps.decide.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Manual override: a version was supplied, so skip the nuget check and publish exactly that.
+      - name: Use explicit version override
+        id: override
+        if: github.event.inputs.version != ''
+        run: |
+          echo "shouldPublish=true" >> "$GITHUB_OUTPUT"
+          echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+
+      # Otherwise run the locally-runnable script to decide.
+      - name: Check nuget vs latest ziti-sdk-c release
+        id: autocheck
+        if: github.event.inputs.version == ''
+        shell: pwsh
+        run: |
+          ./scripts/check-and-publish-native.ps1 `
+            -CSdkRepo openziti/ziti-sdk-c `
+            -NugetPackageId OpenZiti.NET.native `
+            -GithubToken $env:GH_TOKEN
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Collapse the two paths into a single pair of outputs for the publish job to gate on.
+      - name: Decide
+        id: decide
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "shouldPublish=${{ steps.override.outputs.shouldPublish }}" >> "$GITHUB_OUTPUT"
+            echo "version=${{ steps.override.outputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "shouldPublish=${{ steps.autocheck.outputs.shouldPublish }}" >> "$GITHUB_OUTPUT"
+            echo "version=${{ steps.autocheck.outputs.version }}" >> "$GITHUB_OUTPUT"
+          fi
+
+  publish:
+    needs: check
+    # Reusable-workflow permissions are capped by this calling job, and the native build needs contents:write
+    # to push the per-RID cache tarballs to the rolling release.
+    permissions:
+      contents: write
+    # Only build+publish when there is something new AND this is not a dry run.
+    if: >-
+      needs.check.outputs.shouldPublish == 'true' &&
+      github.event.inputs.dryRun != 'true'
+    uses: ./.github/workflows/native-nuget-publish.yml
+    with:
+      version: ${{ needs.check.outputs.version }}
+      debugOrRelease: Release
+    secrets: inherit

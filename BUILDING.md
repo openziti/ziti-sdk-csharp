@@ -55,13 +55,13 @@ echo "dummy" > runtimes\osx-x64\native\libziti4dotnet.dylib
 
 ### Windows Only
 ```
-## build the ZitiNativeApiForDotnetCore project
-cd ZitiNativeApiForDotnetCore
+## build the native/ZitiNativeApiForDotnetCore project
+cd native/ZitiNativeApiForDotnetCore
 msvc-build.bat
 
 cd ..
-copy /y ZitiNativeApiForDotnetCore\build-win\x64\library\Release\ziti4dotnet.dll runtimes\win-x64\native
-copy /y ZitiNativeApiForDotnetCore\build-win\x86\library\Release\ziti4dotnet.dll runtimes\win-x86\native
+copy /y native/ZitiNativeApiForDotnetCore\build-win\x64\library\Release\ziti4dotnet.dll runtimes\win-x64\native
+copy /y native/ZitiNativeApiForDotnetCore\build-win\x86\library\Release\ziti4dotnet.dll runtimes\win-x86\native
 
 mkdir local-packages
 
@@ -82,7 +82,7 @@ nuget pack -version %yearstr%.%monthstr%.%daystr%.%HOUR%%minstr% -OutputDirector
 
 ### MacOS
 ```
-cd ZitiNativeApiForDotnetCore
+cd native/ZitiNativeApiForDotnetCore
 cmake -E make_directory build/macos
 cmake -S . -B build/macos
 cmake --build build/macos --config Release
@@ -93,7 +93,7 @@ cmake --build build/macos --config Release
 
 ### Linux
 ```
-cd ZitiNativeApiForDotnetCore
+cd native/ZitiNativeApiForDotnetCore
 cmake -E make_directory build/linux
 cmake -S . -B build/linux
 cmake --build build/linux --config Release

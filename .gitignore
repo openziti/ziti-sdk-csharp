@@ -1,6 +1,13 @@
 .vs
 bin
 obj
+publish
+TestResults
+.claude
+# local scratch notes, kept on disk but never committed
+bridge-regression-report.md
+bucketlist.md
+review-csharp-expert.md
 NuGet
 .idea
 nuget-local
@@ -27,6 +34,6 @@ launchSettings.json
 Samples/Properties
 TestProject/Properties
 .run
-ZitiNativeApiForDotnetCore/Testing/
+native/ZitiNativeApiForDotnetCore/Testing/
 
 .nuget

@@ -12,9 +12,8 @@ Ziti_freeaddrinfo @9
 Ziti_get_ext_signers @10 
 Ziti_last_error @11 
 Ziti_lib_init @12 
-Ziti_lib_shutdown @13 
-Ziti_lib_thread @14 
-Ziti_listen @15 
+Ziti_lib_shutdown @13
+Ziti_listen @15
 Ziti_load_context @16 
 Ziti_load_context_with_timeout @17 
 Ziti_login_external @18 

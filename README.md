@@ -136,12 +136,12 @@ By far, the most complex part of dealing with the dotnet sdk is building the nat
 a few helper functions, writting in C that are vital to the dotnet SDK. Building the native library is somewhat complex.
 If you're unfamiliar with [cmake](https://cmake.org/), you'll need to learn a fair bit about what `cmake` is and how it works. Also,
 the C SDK now uses [vcpkg](https://github.com/microsoft/vcpkg) which is also somewhat complex for a new learner. We
-leverage a [CMakePresets.json](./ZitiNativeApiForDotnetCore/CMakePresets.json) which you'll need to learn about. The 
-`cmake` [CMakeLists.txt](./ZitiNativeApiForDotnetCore/CMakeLists.txt) is located in the `ZitiNativeApiForDotnetCore`.
+leverage a [CMakePresets.json](./native/ZitiNativeApiForDotnetCore/CMakePresets.json) which you'll need to learn about. The 
+`cmake` [CMakeLists.txt](./native/ZitiNativeApiForDotnetCore/CMakeLists.txt) is located in the `native/ZitiNativeApiForDotnetCore`.
 
 If you are interested in learning how the native library is built, see the 
 github action file](.github/workflows/native-nuget-publish.yml). For more information about the 
-`ZitiNativeApiForDotnetCore`, go to [the readme in the project folder](./ZitiNativeApiForDotnetCore/README.md).
+`native/ZitiNativeApiForDotnetCore`, go to [the readme in the project folder](./native/ZitiNativeApiForDotnetCore/README.md).
 
 Once the the native library is published to NuGet, the idiomatic SDK references the NuGet package to provide the single,
 cross-platform, idiomatic dotnet NuGet package for easy downstream inclusion in projects.
