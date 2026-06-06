@@ -1,13 +1,15 @@
 <#
 .SYNOPSIS
-    Sync the vcpkg binary cache for one RID+version to/from a rolling GitHub Release.
+    Sync the vcpkg binary cache for one RID to/from a single rolling GitHub Release, keyed by the vcpkg baseline.
 
 .DESCRIPTION
     The cache is the vcpkg binary-cache directory (the prebuilt openssl/protobuf/etc archives vcpkg replays so it
-    does not recompile). We store it as one tarball per RID+version, `<version>-<rid>.tgz`, on a single rolling
-    prerelease (tag `native-build-cache`). Pull is anonymous (plain HTTPS download), so anyone who trusts our
-    build can grab `<version>-<rid>.tgz`, drop it in their files cache, and build fast. Push needs a token with
-    contents:write (CI only).
+    does not recompile). What those archives contain is pinned by the vcpkg baseline, so we key the cache by the
+    baseline (read from native/ZitiNativeApiForDotnetCore/vcpkg.json `builtin-baseline`), NOT the ziti-sdk-c
+    version. Every ziti version that shares a baseline reuses the same cache. One rolling prerelease (tag
+    `native-build-cache`) holds every baseline's tarballs, named `<baseline>-<rid>.tgz`. Pull is anonymous
+    (plain HTTPS download), so any repo or developer can grab `<baseline>-<rid>.tgz`, drop it in their files
+    cache, and build fast. Push needs a token with contents:write (CI only).
 
     No nuget, no mono: vcpkg only ever reads a local directory via VCPKG_BINARY_SOURCES=files,<dir>. This script
     just moves that directory in and out of the release.
@@ -15,9 +17,9 @@
     Actions:
       ensure-release  Create the rolling prerelease if missing (idempotent). Run once before the matrix so the
                       parallel save legs do not race the create.
-      restore         Anonymously download <version>-<rid>.tgz and extract into -CacheDir. A miss (404) is fine.
+      restore         Anonymously download <baseline>-<rid>.tgz and extract into -CacheDir. A miss (404) is fine.
       save            Hash -CacheDir's contents; if it differs from the sidecar on the release, tar it up and
-                      upload <version>-<rid>.tgz plus <version>-<rid>.tgz.sha256 (clobbering). Unchanged = skip.
+                      upload <baseline>-<rid>.tgz plus its .sha256 (clobbering). Unchanged = skip.
 
 .PARAMETER Action
     ensure-release | restore | save.
@@ -25,8 +27,8 @@
 .PARAMETER Rid
     Runtime identifier, e.g. win-x64 (required for restore/save).
 
-.PARAMETER Version
-    The C SDK version, e.g. 1.16.0 (required for restore/save). Leads the filename so assets sort by version.
+.PARAMETER Baseline
+    The vcpkg builtin-baseline that keys the cache. Defaults to the `builtin-baseline` read from -VcpkgJson.
 
 .PARAMETER CacheDir
     The vcpkg files binary-cache directory (the dir named in VCPKG_BINARY_SOURCES=files,<dir>).
@@ -34,23 +36,27 @@
 .PARAMETER Repo
     owner/repo that hosts the release. Defaults to GITHUB_REPOSITORY.
 
+.PARAMETER VcpkgJson
+    Path to the vcpkg manifest to read the baseline from. Defaults to native/ZitiNativeApiForDotnetCore/vcpkg.json.
+
 .PARAMETER Tag
-    Release tag. Defaults to native-build-cache.
+    Release tag. Defaults to native-build-cache (one rolling release holds all baselines).
 
 .PARAMETER Token
     Token with contents:write, for ensure-release/save. Defaults to GH_TOKEN then GITHUB_TOKEN. Not needed for
     restore.
 
 .EXAMPLE
-    ./sync-vcpkg-cache.ps1 -Action restore -Rid win-x64 -Version 1.16.0 -CacheDir ./vcpkg-bincache
+    ./sync-vcpkg-cache.ps1 -Action restore -Rid win-x64 -CacheDir ./vcpkg-bincache
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)] [ValidateSet('ensure-release', 'restore', 'save')] [string] $Action,
     [string] $Rid,
-    [string] $Version,
+    [string] $Baseline,
     [string] $CacheDir,
     [string] $Repo = $env:GITHUB_REPOSITORY,
+    [string] $VcpkgJson = (Join-Path $PSScriptRoot '..' 'native' 'ZitiNativeApiForDotnetCore' 'vcpkg.json'),
     [string] $Tag = 'native-build-cache',
     [string] $Token = ($env:GH_TOKEN ? $env:GH_TOKEN : $env:GITHUB_TOKEN)
 )
@@ -59,7 +65,16 @@ $ErrorActionPreference = 'Stop'
 
 if ([string]::IsNullOrWhiteSpace($Repo)) { throw "Repo is required (-Repo or GITHUB_REPOSITORY)." }
 
-$asset = "$Version-$Rid.tgz"
+# The cache key is the vcpkg BASELINE (+ RID/triplet), not the ziti-sdk-c version: the prebuilt deps are
+# pinned by the vcpkg baseline, so every ziti version that shares a baseline reuses the same cache, and a
+# baseline change naturally lands in a different release. Read the baseline from the manifest unless passed in.
+if ([string]::IsNullOrWhiteSpace($Baseline)) {
+    if (-not (Test-Path -LiteralPath $VcpkgJson)) { throw "vcpkg.json not found at $VcpkgJson (pass -Baseline or -VcpkgJson)." }
+    $Baseline = (Get-Content -LiteralPath $VcpkgJson -Raw | ConvertFrom-Json).'builtin-baseline'
+    if ([string]::IsNullOrWhiteSpace($Baseline)) { throw "no builtin-baseline in $VcpkgJson (pass -Baseline)." }
+}
+# One rolling release holds every baseline's tarballs; the baseline + RID key the asset name.
+$asset = "$Baseline-$Rid.tgz"
 $shaAsset = "$asset.sha256"
 $downloadBase = "https://github.com/$Repo/releases/download/$Tag"
 
@@ -112,12 +127,12 @@ switch ($Action) {
         else {
             Write-Host "Creating rolling prerelease '$Tag' ..."
             Invoke-Gh release create $Tag --repo $Repo --prerelease --title 'Native build cache' `
-                --notes 'vcpkg binary cache tarballs (<version>-<rid>.tgz) for fast native builds. Auto-managed; do not edit.'
+                --notes 'vcpkg binary cache tarballs, one <baseline>-<rid>.tgz per vcpkg baseline + RID. Anonymous pull, fast native builds. Auto-managed, do not edit.'
         }
     }
 
     'restore' {
-        if (-not $Rid -or -not $Version -or -not $CacheDir) { throw "restore needs -Rid, -Version, -CacheDir." }
+        if (-not $Rid -or -not $CacheDir) { throw "restore needs -Rid and -CacheDir." }
         New-Item -ItemType Directory -Force -Path $CacheDir | Out-Null
         $tmp = Join-Path ([System.IO.Path]::GetTempPath()) $asset
         Write-Host "Restoring $asset from $downloadBase ..."
@@ -138,7 +153,7 @@ switch ($Action) {
     }
 
     'save' {
-        if (-not $Rid -or -not $Version -or -not $CacheDir) { throw "save needs -Rid, -Version, -CacheDir." }
+        if (-not $Rid -or -not $CacheDir) { throw "save needs -Rid and -CacheDir." }
         if (-not (Test-Path -LiteralPath $CacheDir)) {
             Write-Host "No cache dir at $CacheDir; nothing to save."
             return

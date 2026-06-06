@@ -88,8 +88,9 @@ jobs:
         shell: pwsh
         run: ./scripts/check-and-publish-native.ps1 -Version "${{ inputs.version }}"
 
-  # Create the rolling prerelease that holds the per-RID cache tarballs, once, before the matrix fans out, so
-  # the parallel save steps never race to create it. Idempotent.
+  # Create the rolling prerelease that holds the cache tarballs, once, before the matrix fans out, so the
+  # parallel save steps never race to create it. Idempotent. Assets are keyed by the vcpkg baseline (read from
+  # vcpkg.json) + RID, not the ziti version, so versions sharing a baseline reuse one cache.
   ensure-cache-release:
     needs: [preflight]
     if: needs.preflight.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
@@ -113,7 +114,7 @@ jobs:
       contents: write
     env:
       # Binary cache is a plain local directory (vcpkg `files` provider). We sync that directory to/from a
-      # rolling GitHub Release as one tarball per RID+version (scripts/sync-vcpkg-cache.ps1). No nuget, no mono.
+      # rolling GitHub Release as one tarball per baseline+RID (scripts/sync-vcpkg-cache.ps1). No nuget, no mono.
       VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-bincache,readwrite"
       VCPKG_FEATURE_FLAGS: "manifests,binarycaching"
     strategy:
@@ -182,7 +183,7 @@ jobs:
       # Pull this RID's prebuilt vcpkg deps from the rolling release (anonymous). A miss just builds them.
       - name: Restore native build cache (release)
         shell: pwsh
-        run: ./scripts/sync-vcpkg-cache.ps1 -Action restore -Rid ${{ matrix.rid }} -Version "${{ inputs.version }}" -CacheDir "${{ github.workspace }}/vcpkg-bincache"
+        run: ./scripts/sync-vcpkg-cache.ps1 -Action restore -Rid ${{ matrix.rid }} -CacheDir "${{ github.workspace }}/vcpkg-bincache"
 
       - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
@@ -253,7 +254,7 @@ jobs:
             ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/CMakeFiles/**/*.log
             ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore/build/**/CMakeCache.txt
 
-      # Push this RID's deps to the rolling release. Runs on success or a real build failure (the deps are built
+      # Push this RID's deps to the rolling release. Runs on success or a real build failure (deps are built
       # before ziti4dotnet links, so they are worth keeping), but NOT on cancel. Skips upload when the cache
       # content is unchanged. Forks have no write token and simply error here; they are expected to pull only.
       - name: Save native build cache (release)
@@ -261,7 +262,7 @@ jobs:
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./scripts/sync-vcpkg-cache.ps1 -Action save -Rid ${{ matrix.rid }} -Version "${{ inputs.version }}" -CacheDir "${{ github.workspace }}/vcpkg-bincache"
+        run: ./scripts/sync-vcpkg-cache.ps1 -Action save -Rid ${{ matrix.rid }} -CacheDir "${{ github.workspace }}/vcpkg-bincache"
 
 
   create-nuget-package:
