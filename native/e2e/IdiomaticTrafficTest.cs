@@ -107,7 +107,8 @@ public class IdiomaticTrafficTest
         {
             // API.Accept blocks until a client connects; the test-level timeout bounds a never-arriving dial.
             var client = API.Accept(server, out _);
-            using (client)
+            // ToNetworkStream wraps the fd with ownsSocket:true, so the stream owns and closes it. Do NOT also
+            // dispose the ZitiSocket, or the fd gets closed twice.
             using (var stream = client.ToNetworkStream())
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream) { AutoFlush = true })
@@ -123,9 +124,11 @@ public class IdiomaticTrafficTest
     private static string RunIdiomaticDial(string identityFile, string message)
     {
         var ztx = new ZitiContext(identityFile);
-        using var sock = new ZitiSocket(SocketType.Stream);
+        var sock = new ZitiSocket(SocketType.Stream);
         API.Connect(sock, ztx, SvcName, "");
 
+        // ToNetworkStream owns the fd (ownsSocket:true) and closes it on dispose; don't also dispose the
+        // ZitiSocket or the fd gets closed twice.
         using var stream = sock.ToNetworkStream();
         using var writer = new StreamWriter(stream) { AutoFlush = true };
         using var reader = new StreamReader(stream);
