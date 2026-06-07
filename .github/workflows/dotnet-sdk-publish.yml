@@ -1,30 +1,32 @@
 name: Build and publish the OpenZiti.NET nuget project
 
+# Publishing the managed SDK is gated behind an explicit signal so that merging a PR to main no longer
+# mints an accidental release. It publishes only on a pushed version tag (v*) or a manual dispatch.
 on:
   workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Build and pack only, do not push to nuget.org'
+        type: boolean
+        default: false
   push:
-    branches:
-      - main
-      - 'release-*'
-      - 'beta-release-*'
-      
+    tags:
+      - 'v*'
+
 jobs:
   build-and-push:
     if: "!contains(github.event.head_commit.message, 'ci skip') && ${{ github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}"
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.x
-      - if: github.event_name == 'push'
-        run: echo "GIT_BRANCH=$($env:GITHUB_REF.replace('refs/heads/', ''))" >> $env:GITHUB_ENV
-      - if: github.event_name == 'pull_request'
-        run: echo "GIT_BRANCH=$env:GITHUB_HEAD_REF" >> $env:GITHUB_ENV
-      - if: ${{ env.GIT_BRANCH == 'main' }} 
-        name: Publish OpenZiti.NET
-        run: dotnet build OpenZiti.NET/OpenZiti.NET.csproj /t:NugetPush /p:Configuration=Release /p:NUGET_SOURCE=https://api.nuget.org/v3/index.json /p:API_KEY=${{secrets.NUGET_API_KEY}}
-
+          dotnet-version: 8.x
+      - name: Publish OpenZiti.NET
+        shell: pwsh
+        run: |
+          $dryRun = '${{ github.event.inputs.dryRun }}' -eq 'true'
+          ./scripts/publish-managed-nuget.ps1 -ApiKey '${{ secrets.NUGET_API_KEY }}' -DryRun:$dryRun
