@@ -18,6 +18,9 @@ If you're new to OpenZiti or overlay networks it might be useful to check out
 [the official documentation](https://openziti.io) or inspect [https://github.com/openziti/ziti](the main repo) and 
 learn a more about OpenZiti and zero trust in general.
 
+> **Upgrading to the ziti-sdk-c 1.16 native?** See [MIGRATION.md](MIGRATION.md). Most apps need no code changes; the
+> breaking changes are confined to the low-level `OpenZiti.Native` interop types.
+
 ## Getting Started
 
 To get started you'll need to have an OpenZiti overlay network. Deploy one by running 

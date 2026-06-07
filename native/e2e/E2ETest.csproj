@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <!-- which native build to test; CI passes the fresh one -->
-    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.10.4.213</ZitiNativeVersion>
+    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.16.0.243</ZitiNativeVersion>
   </PropertyGroup>
 
   <ItemGroup>
