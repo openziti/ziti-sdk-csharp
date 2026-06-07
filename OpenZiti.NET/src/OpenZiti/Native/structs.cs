@@ -38,6 +38,10 @@ namespace OpenZiti.Native {
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_struct_test", CallingConvention = API.CALL_CONVENTION)]
         public static extern IntPtr z4d_struct_test();
 
+        //Z4D_API const char* z4d_layout_report();
+        [DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_layout_report", CallingConvention = API.CALL_CONVENTION)]
+        public static extern IntPtr z4d_layout_report();
+
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "z4d_ziti_posture_query", CallingConvention = API.CALL_CONVENTION)]
         public static extern IntPtr z4d_ziti_posture_query();
 
