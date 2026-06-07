@@ -158,6 +158,10 @@ internal static class Program
         int logLevel = int.TryParse(Environment.GetEnvironmentVariable("ZITI_LOG"), out var lv) ? lv : 2; // WARN
         ziti_log_init(loop, logLevel, IntPtr.Zero);
 
+        // ziti_load_config fills a ziti_config struct here. That struct is tiny (~48 bytes on 64-bit:
+        // controller_url, controllers list, id (3 strings), cfg_source); 8192 is a deliberately generous fixed
+        // over-allocation so it never overflows even if the struct grows. There is no bounds check from the
+        // native side, so if ziti_config ever approaches this size, grow the buffer (or add a sizeof shim).
         var cfg = new byte[8192];
         _cfgPin = GCHandle.Alloc(cfg, GCHandleType.Pinned);
         var cfgPtr = _cfgPin.AddrOfPinnedObject();
@@ -226,7 +230,8 @@ internal static class Program
         var bytes = Encoding.UTF8.GetBytes(text);
         var buf = Marshal.AllocHGlobal(bytes.Length);
         Marshal.Copy(bytes, 0, buf, bytes.Length);
-        ziti_write(conn, buf, (IntPtr)bytes.Length, _onWrite, buf); // freed in OnWrite via ctx
+        int rc = ziti_write(conn, buf, (IntPtr)bytes.Length, _onWrite, buf); // freed in OnWrite via ctx...
+        if (rc != 0) Marshal.FreeHGlobal(buf); // ...unless the write was rejected outright, so the callback never fires
     }
 
     // ---- client (dial) ----
