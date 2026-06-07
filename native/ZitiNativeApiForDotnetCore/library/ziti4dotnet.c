@@ -460,6 +460,195 @@ ziti_types_v2* z4d_struct_test() {
     return rtn;
 }
 
+/*
+ * Machine-readable struct layout, callable from managed code (z4d_layout_report). The managed alignment test
+ * P/Invokes this and compares the offsets/sizes (from the native compiler, the independent source of truth)
+ * against the managed structs' Marshal.OffsetOf/SizeOf. Pipe-delimited lines:
+ *   Z4DARCH|<sizeof(void*)>
+ *   Z4DSTRUCT|<ctype>|<sizeof>
+ *   Z4DFIELD|<ctype>|<field>|<offset>|<fieldsize>
+ * sizeof(((T*)0)->F) is compile-time (operand unevaluated), so the null deref is safe.
+ */
+static char z4d_layout_buf[16384];
+#define LROW(...)    do { layout_off += snprintf(z4d_layout_buf + layout_off, sizeof(z4d_layout_buf) - layout_off, __VA_ARGS__); } while (0)
+#define LSTRUCT(T)   LROW("Z4DSTRUCT|%s|%zu\n", #T, sizeof(T))
+#define LFIELD(T, F) LROW("Z4DFIELD|%s|%s|%zu|%zu\n", #T, #F, (size_t)offsetof(T, F), sizeof(((T*)0)->F))
+
+Z4D_API const char* z4d_layout_report() {
+    size_t layout_off = 0;
+    LROW("Z4DARCH|%zu\n", sizeof(void*));
+
+    LSTRUCT(ziti_id_cfg);
+    LFIELD(ziti_id_cfg, cert);
+    LFIELD(ziti_id_cfg, key);
+    LFIELD(ziti_id_cfg, ca);
+
+    LSTRUCT(ziti_config);
+    LFIELD(ziti_config, controller_url);
+    LFIELD(ziti_config, controllers);
+    LFIELD(ziti_config, id);
+    LFIELD(ziti_config, cfg_source);
+
+    LSTRUCT(api_path);
+    LFIELD(api_path, path);
+    LFIELD(api_path, base_urls);
+
+    LSTRUCT(ziti_api_versions);
+    LFIELD(ziti_api_versions, edge);
+    LFIELD(ziti_api_versions, oidc);
+
+    LSTRUCT(ziti_version);
+    LFIELD(ziti_version, version);
+    LFIELD(ziti_version, revision);
+    LFIELD(ziti_version, build_date);
+    LFIELD(ziti_version, capabilities);
+    LFIELD(ziti_version, api_versions);
+
+    LSTRUCT(ziti_identity);
+    LFIELD(ziti_identity, id);
+    LFIELD(ziti_identity, name);
+    LFIELD(ziti_identity, app_data);
+
+    LSTRUCT(ziti_process);
+    LFIELD(ziti_process, path);
+
+    LSTRUCT(ziti_posture_query);
+    LFIELD(ziti_posture_query, id);
+    LFIELD(ziti_posture_query, is_passing);
+    LFIELD(ziti_posture_query, query_type);
+    LFIELD(ziti_posture_query, process);
+    LFIELD(ziti_posture_query, processes);
+    LFIELD(ziti_posture_query, timeout);
+    LFIELD(ziti_posture_query, timeoutRemaining);
+    LFIELD(ziti_posture_query, updated_at);
+
+    LSTRUCT(ziti_posture_query_set);
+    LFIELD(ziti_posture_query_set, policy_id);
+    LFIELD(ziti_posture_query_set, is_passing);
+    LFIELD(ziti_posture_query_set, policy_type);
+    LFIELD(ziti_posture_query_set, posture_queries);
+
+    LSTRUCT(ziti_service);
+    LFIELD(ziti_service, id);
+    LFIELD(ziti_service, name);
+    LFIELD(ziti_service, permissions);
+    LFIELD(ziti_service, encryption);
+    LFIELD(ziti_service, perm_flags);
+    LFIELD(ziti_service, config);
+    LFIELD(ziti_service, posture_query_set);
+    LFIELD(ziti_service, posture_query_map);
+    LFIELD(ziti_service, terminator_strategy);
+    LFIELD(ziti_service, updated_at);
+
+    LSTRUCT(ziti_address);
+    LFIELD(ziti_address, type);
+    LFIELD(ziti_address, addr);
+
+    LSTRUCT(ziti_client_cfg_v1);
+    LFIELD(ziti_client_cfg_v1, hostname);
+    LFIELD(ziti_client_cfg_v1, port);
+
+    LSTRUCT(ziti_intercept_cfg_v1);
+    LFIELD(ziti_intercept_cfg_v1, protocols);
+    LFIELD(ziti_intercept_cfg_v1, addresses);
+    LFIELD(ziti_intercept_cfg_v1, port_ranges);
+    LFIELD(ziti_intercept_cfg_v1, dial_options);
+    LFIELD(ziti_intercept_cfg_v1, source_ip);
+    LFIELD(ziti_intercept_cfg_v1, allowed_source_addresses);
+
+    LSTRUCT(ziti_server_cfg_v1);
+    LFIELD(ziti_server_cfg_v1, protocol);
+    LFIELD(ziti_server_cfg_v1, hostname);
+    LFIELD(ziti_server_cfg_v1, port);
+
+    LSTRUCT(ziti_listen_options);
+    LFIELD(ziti_listen_options, bind_with_identity);
+    LFIELD(ziti_listen_options, connect_timeout);
+    LFIELD(ziti_listen_options, connect_timeout_seconds);
+    LFIELD(ziti_listen_options, cost);
+    LFIELD(ziti_listen_options, identity);
+    LFIELD(ziti_listen_options, max_connections);
+    LFIELD(ziti_listen_options, precendence);
+
+    LSTRUCT(ziti_host_cfg_v1);
+    LFIELD(ziti_host_cfg_v1, protocol);
+    LFIELD(ziti_host_cfg_v1, forward_protocol);
+    LFIELD(ziti_host_cfg_v1, allowed_protocols);
+    LFIELD(ziti_host_cfg_v1, address);
+    LFIELD(ziti_host_cfg_v1, forward_address);
+    LFIELD(ziti_host_cfg_v1, forward_address_translations);
+    LFIELD(ziti_host_cfg_v1, allowed_addresses);
+    LFIELD(ziti_host_cfg_v1, port);
+    LFIELD(ziti_host_cfg_v1, forward_port);
+    LFIELD(ziti_host_cfg_v1, allowed_port_ranges);
+    LFIELD(ziti_host_cfg_v1, allowed_source_addresses);
+    LFIELD(ziti_host_cfg_v1, proxy);
+    LFIELD(ziti_host_cfg_v1, listen_options);
+
+    LSTRUCT(ziti_host_cfg_v2);
+    LFIELD(ziti_host_cfg_v2, terminators);
+
+    LSTRUCT(ziti_mfa_enrollment);
+    LFIELD(ziti_mfa_enrollment, is_verified);
+    LFIELD(ziti_mfa_enrollment, recovery_codes);
+    LFIELD(ziti_mfa_enrollment, provisioning_url);
+
+    LSTRUCT(ziti_port_range);
+    LFIELD(ziti_port_range, low);
+    LFIELD(ziti_port_range, high);
+
+    LSTRUCT(ziti_proxy_server);
+    LFIELD(ziti_proxy_server, address);
+    LFIELD(ziti_proxy_server, type);
+
+    LSTRUCT(ziti_options);
+    LFIELD(ziti_options, disabled);
+    LFIELD(ziti_options, config_types);
+    LFIELD(ziti_options, api_page_size);
+    LFIELD(ziti_options, refresh_interval);
+    LFIELD(ziti_options, metrics_type);
+    LFIELD(ziti_options, pq_mac_cb);
+    LFIELD(ziti_options, pq_os_cb);
+    LFIELD(ziti_options, pq_process_cb);
+    LFIELD(ziti_options, pq_domain_cb);
+    LFIELD(ziti_options, app_ctx);
+    LFIELD(ziti_options, events);
+    LFIELD(ziti_options, event_cb);
+    LFIELD(ziti_options, cert_extension_window);
+    LFIELD(ziti_options, enroll_mode);
+
+    LSTRUCT(struct ziti_context_event);
+    LFIELD(struct ziti_context_event, ctrl_status);
+    LFIELD(struct ziti_context_event, err);
+    LFIELD(struct ziti_context_event, ctrl_count);
+    LFIELD(struct ziti_context_event, ctrl_details);
+
+    LSTRUCT(struct ziti_router_event);
+    LFIELD(struct ziti_router_event, status);
+    LFIELD(struct ziti_router_event, name);
+    LFIELD(struct ziti_router_event, address);
+    LFIELD(struct ziti_router_event, version);
+
+    LSTRUCT(struct ziti_service_event);
+    LFIELD(struct ziti_service_event, removed);
+    LFIELD(struct ziti_service_event, changed);
+    LFIELD(struct ziti_service_event, added);
+
+    LSTRUCT(struct ziti_auth_event);
+    LFIELD(struct ziti_auth_event, action);
+    LFIELD(struct ziti_auth_event, error);
+    LFIELD(struct ziti_auth_event, error_code);
+    LFIELD(struct ziti_auth_event, type);
+    LFIELD(struct ziti_auth_event, detail);
+    LFIELD(struct ziti_auth_event, providers);
+
+    LSTRUCT(struct ziti_config_event);
+    LFIELD(struct ziti_config_event, identity_name);
+    LFIELD(struct ziti_config_event, config);
+
+    return z4d_layout_buf;
+}
+
 ziti_posture_query* z4d_ziti_posture_query() {
     ziti_posture_query* q = calloc(sizeof(ziti_posture_query), 1);
     q->id = "id";

@@ -135,6 +135,7 @@ Z4D_API void z4d_ziti_dump_log(ziti_context ztx);
 Z4D_API void z4d_ziti_dump_file(ziti_context ztx, const char* outputFile);
 
 Z4D_API ziti_types_v2* z4d_struct_test();
+Z4D_API const char* z4d_layout_report();
 Z4D_API ziti_posture_query* z4d_ziti_posture_query();
 
 typedef void (*z4d_cb)(void* context);
