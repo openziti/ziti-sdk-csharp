@@ -1,0 +1,27 @@
+name: CI
+
+# Fast checks on every PR (and pushes to main): build the managed solution and run the managed tests that
+# need no ziti overlay. The heavier e2e/smoke tests stay in the native publish gate.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  managed-tests:
+    # Windows is where the full managed struct catalog is verified (the ziti_options C `long` width differs on
+    # linux/mac, which the live layout test would flag; keep the PR check on Windows for now).
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+      - name: Build and run managed tests
+        shell: pwsh
+        run: ./scripts/run-managed-tests.ps1
