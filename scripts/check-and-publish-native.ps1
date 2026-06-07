@@ -33,6 +33,8 @@ param(
     [string] $GithubToken = '',
     # When set, check THIS tag instead of resolving the latest release.
     [string] $Version = '',
+    # Force publishing even if this version's base is already on nuget.org (shim/build changed, version did not).
+    [switch] $Force,
     [switch] $DryRun
 )
 
@@ -110,7 +112,11 @@ $alreadyPublished = $publishedBases -contains $releaseBase
 $shouldPublish = -not $alreadyPublished
 
 Write-Host ''
-if ($alreadyPublished) {
+if ($alreadyPublished -and $Force) {
+    Write-Host "Release '$releaseBase' is already published, but -Force was set: publishing anyway (new run number)."
+    $shouldPublish = $true
+}
+elseif ($alreadyPublished) {
     Write-Host "Release '$releaseBase' is already published. Nothing to do."
 }
 else {

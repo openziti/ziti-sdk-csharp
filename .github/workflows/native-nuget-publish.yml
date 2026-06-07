@@ -15,6 +15,10 @@ on:
         description: Run everything (build, pack, smoke, e2e) but do NOT push to nuget.org
         type: boolean
         default: false
+      force:
+        description: Publish even if this version's base is already on nuget.org
+        type: boolean
+        default: false
   # Reusable: the nightly daily-native-publish.yml calls this with secrets: inherit so the dispatched
   # run actually fires (the default GITHUB_TOKEN cannot reliably trigger another workflow).
   workflow_call:
@@ -30,6 +34,10 @@ on:
         type: string
       dryRun:
         description: Run everything but do NOT push to nuget.org
+        type: boolean
+        default: false
+      force:
+        description: Publish even if this version's base is already on nuget.org
         type: boolean
         default: false
 
@@ -86,7 +94,9 @@ jobs:
       - name: Check whether this version is already published
         id: check
         shell: pwsh
-        run: ./scripts/check-and-publish-native.ps1 -Version "${{ inputs.version }}"
+        run: |
+          $force = '${{ inputs.force }}' -eq 'true'
+          ./scripts/check-and-publish-native.ps1 -Version "${{ inputs.version }}" -Force:$force
 
   # Create the rolling prerelease that holds the cache tarballs, once, before the matrix fans out, so the
   # parallel save steps never race to create it. Idempotent. Assets are keyed by the vcpkg baseline (read from
