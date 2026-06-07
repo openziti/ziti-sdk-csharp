@@ -29,4 +29,13 @@ public static class E2eDebugInit
         ZitiNative.LibInit();
         ZitiNative.EnableNativeLogging();
     }
+
+    // The in-process tests (ProxyBridgeTest, IdiomaticTrafficTest) load ziti contexts into the one shared
+    // zitilib loop and there is no per-context unload exposed. Tear the whole lib down once at the end so those
+    // contexts and the background thread are released rather than leaked for the life of the test process.
+    [AssemblyCleanup]
+    public static void Cleanup()
+    {
+        ZitiNative.LibShutdown();
+    }
 }

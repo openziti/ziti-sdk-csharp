@@ -90,7 +90,7 @@ jobs:
     outputs:
       shouldPublish: ${{ steps.check.outputs.shouldPublish }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check whether this version is already published
         id: check
         shell: pwsh
@@ -108,7 +108,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Ensure the native-build-cache release exists
         shell: pwsh
         env:
@@ -186,7 +186,7 @@ jobs:
             preset: win32
             rid: win-x86
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -208,7 +208,7 @@ jobs:
 
       - name: install contemporary cmake
         if: runner.os != 'Linux'
-        uses: lukka/get-cmake@v3.27.7
+        uses: lukka/get-cmake@v4.3.3
 
       - name: Install Ninja (macOS)
         if: runner.os == 'macOS'
@@ -218,7 +218,7 @@ jobs:
 
       - name: Set up MSVC
         if: matrix.dist == 'win'
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: Ensure ninja exists
         if: runner.os == 'macOS'
@@ -243,7 +243,7 @@ jobs:
           cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           path: ${{ env.TARGETDIR }}/library/**/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
@@ -251,7 +251,7 @@ jobs:
 
       - name: Upload cmake/vcpkg logs on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: logs.${{ matrix.dist }}.${{ matrix.arch }}
           if-no-files-found: warn
@@ -286,7 +286,7 @@ jobs:
     outputs:
       resolvedversion: ${{ steps.ver.outputs.resolvedversion }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -340,7 +340,7 @@ jobs:
         run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}\native-package.nuspec
 
       - name: Upload nuget package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           path: ${{ github.workspace }}\OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
@@ -368,7 +368,7 @@ jobs:
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
@@ -402,7 +402,7 @@ jobs:
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x

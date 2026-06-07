@@ -100,6 +100,8 @@ internal static class ZitiNative
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             uint blocking = 0; // FIONBIO arg 0 => blocking
+            // 0x8004667E is the Win32 FIONBIO ioctl code (_IOW('f', 126, u_long)); its high bit is set, so
+            // unchecked is required to fit it into the int that ioctlsocket takes.
             ioctlsocket(fd, unchecked((int)0x8004667E), ref blocking);
             return;
         }

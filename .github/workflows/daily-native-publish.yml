@@ -29,7 +29,7 @@ jobs:
       shouldPublish: ${{ steps.decide.outputs.shouldPublish }}
       version: ${{ steps.decide.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Manual override: a version was supplied, so skip the nuget check and publish exactly that.
       - name: Use explicit version override

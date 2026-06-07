@@ -5,6 +5,19 @@ All notable changes to the OpenZiti.NET SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Updated `OpenZiti.NET.native` dependency from 1.10.4.213 to 1.16.0.243 (ziti-sdk-c 1.16.0).
+- **BREAKING (low-level interop only)**: re-laid the `OpenZiti.Native` model structs and event types to match the
+  ziti-sdk-c 1.16 ABI. `model_number`-backed fields are now `long`, the event model is restructured (no leading
+  event-type field on the union sub-structs; `ZitiMfaAuthEvent`→`ZitiAuthEvent`, `ZitiAPIEvent`→`ZitiConfigEvent`),
+  and several structs gained/renamed fields. Apps using the modern `ZitiContext`/`ZitiSocket` surface are unaffected.
+  See [MIGRATION.md](MIGRATION.md) for the full list.
+
+### Fixed
+- `TestCSDKStructAlignments` now validates the full 1.16 struct layout on both x64 and x86.
+
 ## [1.0.0] - 2026-01-20
 
 ### Changed
