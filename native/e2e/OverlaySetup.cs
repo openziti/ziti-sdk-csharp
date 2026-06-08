@@ -16,9 +16,14 @@ limitations under the License.
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 
 using OpenZiti;
 using OpenZiti.Generated;
@@ -35,11 +40,18 @@ internal sealed class OverlaySetup
 
     private OverlaySetup(ManagementAPI mapi) => _mapi = mapi;
 
+    // Step narration so a test run reads like a story (configuring overlay, enrolling, binding, dialing...).
+    // Shown by `dotnet test` at detailed verbosity (run-e2e-test.ps1 turns that on).
+    internal static void Say(string message) => Console.WriteLine($">>> {message}");
+
     public static async Task<OverlaySetup> ConnectAsync()
     {
+        EnsureZitiOnPath();
+
         var baseUrl = EnvOr("ZITI_BASEURL", "localhost:1280");
         var user = EnvOr("ZITI_USERNAME", "admin");
         var pass = EnvOr("ZITI_PASSWORD", "admin");
+        Say($"[overlay] connecting to controller https://{baseUrl} as '{user}'");
 
         // The quickstart controller uses a self-signed PKI; accept it for the test only.
         var handler = new HttpClientHandler
@@ -53,6 +65,7 @@ internal sealed class OverlaySetup
         var auth = new Authenticate { Username = user, Password = pass };
         var detail = await mapi.AuthenticateAsync(auth, Method.Password);
         http.DefaultRequestHeaders.Add("zt-session", detail.Data.Token);
+        Say("[overlay] authenticated to the management API");
 
         return new OverlaySetup(mapi);
     }
@@ -63,11 +76,35 @@ internal sealed class OverlaySetup
         return string.IsNullOrEmpty(v) ? fallback : v;
     }
 
+    // These e2e tests need a live ziti overlay, which means the `ziti` CLI must be on PATH (CI puts it there via
+    // the openziti/ziti/setup-cli action; locally `scripts/run-e2e-test.ps1` stands up the overlay for you).
+    // If ziti is missing, skip with an actionable message rather than failing with an opaque connection error.
+    private static void EnsureZitiOnPath()
+    {
+        var exe = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ziti.exe" : "ziti";
+        var path = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+        var onPath = path.Split(Path.PathSeparator).Any(dir =>
+        {
+            try { return !string.IsNullOrEmpty(dir) && File.Exists(Path.Combine(dir, exe)); }
+            catch { return false; }
+        });
+
+        if (!onPath)
+        {
+            Assert.Inconclusive(
+                "The 'ziti' CLI is not on your PATH, so no overlay is available for these e2e tests. Put ziti on " +
+                "your PATH (install via https://get.openziti.io/quick/getZiti.ps1), then either run " +
+                "`ziti edge quickstart` yourself or just run scripts/run-e2e-test.ps1, which stands up the overlay " +
+                "and runs these tests for you.");
+        }
+    }
+
     // Ensure every identity can reach every router and every router can carry every service. The
     // quickstart usually creates these, but creating them again is idempotent and removes a flaky
     // dependency on quickstart internals.
     public async Task EnsureRouterPoliciesAsync()
     {
+        Say("[overlay] ensuring router policies (#all endpoints <-> #all routers <-> #all services)");
         if (await FindAsync(n => _mapi.ListEdgeRouterPoliciesAsync(null, null, n), "all-endpoints-public-routers") == null)
         {
             await _mapi.CreateEdgeRouterPolicyAsync(new EdgeRouterPolicyCreate
@@ -99,6 +136,7 @@ internal sealed class OverlaySetup
         var binderIdFile = await BootstrapAndEnrollAsync($"{svcName}-binder", bindRole);
         var dialerIdFile = await BootstrapAndEnrollAsync($"{svcName}-dialer", dialRole);
 
+        Say($"[overlay] creating service '{svcName}' (+ dial and bind service policies)");
         await DeleteServiceByNameAsync(svcName);
         await _mapi.CreateServiceAsync(new ServiceCreate
         {
@@ -112,6 +150,60 @@ internal sealed class OverlaySetup
         await RecreatePolicyAsync($"{svcName}.sp.bind", DialBind.Bind, bindRole, svcRole);
 
         return (binderIdFile, dialerIdFile);
+    }
+
+    // Like SetupServiceAsync, but also attaches an intercept.v1 config so an SDK client can dial the service by
+    // an address (e.g. http.server.ziti:80) and have the SDK map it to the service. The service is still
+    // SDK-bound (no host.v1, no router bind role), exactly like the kestrel sample.
+    public async Task<(string binderIdFile, string dialerIdFile)> SetupInterceptServiceAsync(
+        string svcName, string interceptHost, int port)
+    {
+        var svcRole = $"{svcName}.service.role";
+        var bindRole = $"{svcName}.binders";
+        var dialRole = $"{svcName}.dialers";
+
+        var binderIdFile = await BootstrapAndEnrollAsync($"{svcName}-binder", bindRole);
+        var dialerIdFile = await BootstrapAndEnrollAsync($"{svcName}-dialer", dialRole);
+
+        var interceptCfgId = await RecreateInterceptConfigAsync($"{svcName}.intercept.v1", interceptHost, port);
+
+        Say($"[overlay] creating intercept service '{svcName}' mapping {interceptHost}:{port} -> the service");
+        await DeleteServiceByNameAsync(svcName);
+        await _mapi.CreateServiceAsync(new ServiceCreate
+        {
+            Name = svcName,
+            RoleAttributes = new[] { svcRole },
+            Configs = new[] { interceptCfgId },
+            EncryptionRequired = true,
+        });
+
+        await RecreatePolicyAsync($"{svcName}.sp.dial", DialBind.Dial, dialRole, svcRole);
+        await RecreatePolicyAsync($"{svcName}.sp.bind", DialBind.Bind, bindRole, svcRole);
+
+        return (binderIdFile, dialerIdFile);
+    }
+
+    // Create an OTT identity and enroll it through the SDK (API.EnrollIdentity), returning the strong identity
+    // file. Used directly by the enrollment test to prove enroll + load works end to end.
+    public Task<string> EnrollNewIdentityAsync(string name) => BootstrapAndEnrollAsync(name);
+
+    private async Task<string> RecreateInterceptConfigAsync(string name, string host, int port)
+    {
+        var existing = await FindAsync(n => _mapi.ListConfigsAsync(null, null, n), name);
+        if (existing != null) await _mapi.DeleteConfigAsync(existing);
+
+        var typeId = await FindAsync(n => _mapi.ListConfigTypesAsync(null, null, n), "intercept.v1");
+        var data = JsonConvert.DeserializeObject(
+            "{\"protocols\":[\"tcp\"],\"addresses\":[\"" + host + "\"]," +
+            "\"portRanges\":[{\"low\":" + port + ",\"high\":" + port + "}]}");
+
+        var created = await _mapi.CreateConfigAsync(new ConfigCreate
+        {
+            Name = name,
+            ConfigTypeId = typeId,
+            Data = data,
+        });
+        return created.Data.Id;
     }
 
     private async Task RecreatePolicyAsync(string name, DialBind type, string identityRole, string svcRole)
@@ -129,6 +221,7 @@ internal sealed class OverlaySetup
 
     private async Task<string> BootstrapAndEnrollAsync(string name, params string[] roles)
     {
+        Say($"[overlay] enrolling identity '{name}'" + (roles.Length > 0 ? $" (roles: {string.Join(", ", roles)})" : ""));
         var existingId = await FindAsync(n => _mapi.ListIdentitiesAsync(null, null, n, null, null), name);
         if (existingId != null) await _mapi.DeleteIdentityAsync(existingId);
 
@@ -154,6 +247,7 @@ internal sealed class OverlaySetup
     // is actually dialable), or the timeout elapses. Returns false on timeout.
     public async Task<bool> WaitForTerminatorAsync(string svcName, TimeSpan timeout)
     {
+        Say($"[overlay] waiting for a terminator on '{svcName}' (binder registered, service is dialable)");
         var svcId = await FindAsync(n => _mapi.ListServicesAsync(null, null, n, null, null), svcName);
         if (svcId == null) return false;
 

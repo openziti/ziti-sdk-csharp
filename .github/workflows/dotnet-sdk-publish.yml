@@ -19,7 +19,35 @@ permissions:
   contents: read
 
 jobs:
+  # Gate the managed publish on the live idiomatic-SDK tests over a real overlay, against the PUBLISHED native
+  # (no native rebuild): echo bind/dial, intercept HTTP, enrollment. Matrixed over both ziti lines.
+  e2e-gate:
+    if: ${{ !contains(github.event.head_commit.message, 'ci skip') && github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ziti: [v1.6.14, v2.0.0]
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+      - name: Put ziti ${{ matrix.ziti }} on PATH
+        uses: openziti/ziti/setup-cli@main
+        with:
+          version: ${{ matrix.ziti }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Idiomatic e2e (quickstart + echo/intercept/enroll) - ziti ${{ matrix.ziti }}
+        shell: pwsh
+        env:
+          ZITI_LOG: "4"
+        run: ./scripts/run-e2e-test.ps1 -Rid win-x64
+
   build-and-push:
+    needs: [e2e-gate]
     if: ${{ !contains(github.event.head_commit.message, 'ci skip') && github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}
     runs-on: windows-latest
     steps:
