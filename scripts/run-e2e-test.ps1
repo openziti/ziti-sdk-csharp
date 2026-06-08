@@ -21,11 +21,17 @@
     localhost and are validated by this script. Whichever ziti is on PATH is used; CI runs a matrix over both
     lines (via setup-cli) before publishing.
 
+    Dual mode:
+      - Native publish gate: pass -PackageDir/-PackageVersion to test a freshly packed nupkg (local source).
+      - Idiomatic SDK / PR gate: omit them to test against the already-PUBLISHED OpenZiti.NET.native version
+        pinned in the csprojs (currently 1.16.0.245), restored from nuget.org. No native rebuild.
+
 .PARAMETER PackageDir
-    Folder containing the freshly packed OpenZiti.NET.native.<version>.nupkg (used as a local nuget source).
+    Optional. Folder containing a freshly packed OpenZiti.NET.native.<version>.nupkg (local nuget source).
+    Omit to use the published package pinned in the csprojs.
 
 .PARAMETER PackageVersion
-    The nuget version of the freshly packed package (e.g. 1.16.0.213).
+    Optional. The nuget version of the freshly packed package (e.g. 1.16.0.213). Omit to use the csproj default.
 
 .PARAMETER Rid
     The runtime identifier to test. The e2e is gated on win-x64. Defaults to win-x64.
@@ -41,8 +47,8 @@
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)] [string] $PackageDir,
-    [Parameter(Mandatory = $true)] [string] $PackageVersion,
+    [string] $PackageDir = '',
+    [string] $PackageVersion = '',
     [string] $Rid = 'win-x64',
     [string] $CtrlAddress = 'localhost',
     [int]    $CtrlPort = 1280,
@@ -54,8 +60,20 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path $PSScriptRoot -Parent
 $project = Join-Path $repoRoot 'native/e2e/E2ETest.csproj'
-$source = (Resolve-Path $PackageDir).Path
 $logFile = Join-Path ([System.IO.Path]::GetTempPath()) "ziti-quickstart-$PID.log"
+
+# Build the native-version props to pass to dotnet. With a PackageDir we add a local nuget source + pin the
+# packed version (native publish gate); without one we leave them off and the csproj's published default
+# (1.16.0.245) is restored from nuget.org (idiomatic / PR gate).
+$nativeProps = @()
+if ($PackageVersion) { $nativeProps += "-p:ZitiNativeVersion=$PackageVersion" }
+if ($PackageDir) {
+    $source = (Resolve-Path $PackageDir).Path
+    $nativeProps += "-p:RestoreAdditionalProjectSources=$source"
+    Write-Host "Testing freshly packed native $PackageVersion from $source"
+} else {
+    Write-Host "Testing the published native pinned in the csprojs (restored from nuget.org)"
+}
 
 # 1. Require the ziti CLI on PATH. This script does not install ziti: install it however you like (e.g.
 #    https://get.openziti.io/quick/getZiti.ps1) or, in CI, via the openziti/ziti/setup-cli action.
@@ -111,10 +129,7 @@ try {
     $appOut = Join-Path ([System.IO.Path]::GetTempPath()) "e2e-app-$PID"
     $appProj = Join-Path $repoRoot 'native/e2e-app/e2e-app.csproj'
     Write-Host "Building e2e app $appProj for $Rid ..."
-    dotnet publish $appProj -c Release -r $Rid --self-contained false `
-        -p:ZitiNativeVersion=$PackageVersion `
-        -p:RestoreAdditionalProjectSources=$source `
-        -o $appOut
+    dotnet publish $appProj -c Release -r $Rid --self-contained false @nativeProps -o $appOut
     if ($LASTEXITCODE -ne 0) { throw "failed to build e2e app $appProj" }
     $env:E2E_APP_DLL = Join-Path $appOut 'e2e-app.dll'
 
@@ -123,11 +138,13 @@ try {
     $env:ZITI_USERNAME = $AdminUser
     $env:ZITI_PASSWORD = $AdminPassword
 
+    # detailed console logger so the per-test step narration (OverlaySetup.Say / the tests) is shown, not just
+    # the pass/fail summary.
     dotnet test $project `
         -p:RuntimeIdentifier=$Rid `
-        -p:ZitiNativeVersion=$PackageVersion `
-        -p:RestoreAdditionalProjectSources=$source `
-        --filter TestCategory=e2e
+        @nativeProps `
+        --filter TestCategory=e2e `
+        --logger "console;verbosity=detailed"
     $testExit = $LASTEXITCODE
 }
 finally {

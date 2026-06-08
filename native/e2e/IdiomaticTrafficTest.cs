@@ -41,7 +41,7 @@ namespace E2ETest;
 public class IdiomaticTrafficTest
 {
     private const string SvcName = "e2e-idiomatic-svc";
-    private const string HostGreeting = "Hello from the idiomatic dotnet host!";
+    private const string Message = "hello-from-idiomatic-client";
 
     [DllImport("ziti4dotnet", CallingConvention = CallingConvention.Cdecl)]
     private static extern IntPtr ziti_get_version(); // returns const ziti_version*; first field is the version string
@@ -79,7 +79,8 @@ public class IdiomaticTrafficTest
 
         using var hostCancel = new CancellationTokenSource(TimeSpan.FromSeconds(50));
 
-        // Host side: bind + listen + accept the service through the idiomatic API, then greet whoever dials.
+        // Host side: bind + listen + accept the service through the idiomatic API, then echo what it receives.
+        OverlaySetup.Say($"[echo] starting idiomatic echo server on '{SvcName}' (API.Bind/Listen/Accept)");
         var hostTask = Task.Run(() => RunIdiomaticHost(binderIdFile, hostCancel.Token), hostCancel.Token);
 
         // Only dial once the bind terminator exists so the dial resolves promptly.
@@ -87,12 +88,14 @@ public class IdiomaticTrafficTest
             "Host never registered a terminator; the idiomatic bind side did not come up.");
 
         // Dial side: connect + send + receive through the idiomatic API.
-        var reply = await Task.Run(() => RunIdiomaticDial(dialerIdFile, "hello-from-idiomatic-client"));
+        OverlaySetup.Say($"[echo] dialing '{SvcName}' (API.Connect) and sending '{Message}'");
+        var reply = await Task.Run(() => RunIdiomaticDial(dialerIdFile, Message));
+        OverlaySetup.Say($"[echo] server echoed back: '{reply.Trim()}'");
 
         hostCancel.Cancel();
 
-        StringAssert.Contains(reply, HostGreeting,
-            "Idiomatic client did not receive the host greeting over the ZitiSocket Connect/Bind path.");
+        StringAssert.Contains(reply, Message,
+            "Idiomatic client did not get its bytes echoed back over the ZitiSocket Connect/Bind path.");
     }
 
     // Bind the service and accept a single client, echoing a fixed greeting. Uses only the public idiomatic API.
@@ -113,8 +116,8 @@ public class IdiomaticTrafficTest
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream) { AutoFlush = true })
             {
-                _ = reader.ReadLine(); // consume the client's message
-                writer.WriteLine(HostGreeting);
+                var received = reader.ReadLine(); // echo server: send back exactly what the client sent
+                writer.WriteLine(received);
             }
             return; // one round trip is enough to prove the path
         }

@@ -25,3 +25,30 @@ jobs:
       - name: Build and run managed tests
         shell: pwsh
         run: ./scripts/run-managed-tests.ps1
+
+  # Live idiomatic-SDK tests over a real ziti overlay, against the PUBLISHED native (no native rebuild):
+  # echo bind/dial, the intercept HTTP dial, and enrollment. Windows so the bridge-based tests actually run
+  # (they self-gate/skip on linux for native 1.16.x). Matrixed over both ziti lines.
+  idiomatic-e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        ziti: [v1.6.14, v2.0.0]
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+      - name: Put ziti ${{ matrix.ziti }} on PATH
+        uses: openziti/ziti/setup-cli@main
+        with:
+          version: ${{ matrix.ziti }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Idiomatic e2e (quickstart + echo/intercept/enroll) - ziti ${{ matrix.ziti }}
+        shell: pwsh
+        env:
+          ZITI_LOG: "4"
+        run: ./scripts/run-e2e-test.ps1 -Rid win-x64
