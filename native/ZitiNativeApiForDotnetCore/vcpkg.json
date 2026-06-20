@@ -17,7 +17,13 @@
     "libsodium",
     "json-c",
     "stc",
-    "protobuf-c"
+    "protobuf-c",
+    {
+      "name": "pkgconf",
+      "host": true,
+      "platform": "windows",
+      "$comment": "supplies pkg-config.exe on Windows for the C SDK's pkg_check_modules() calls; mirrors ziti-sdk-c's own vcpkg.json. Without it the Windows legs fail configure with 'pkg-config tool not found'."
+    }
   ],
   "features": {
     "test": {

@@ -108,7 +108,8 @@
         "common-windows"
       ],
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md",
+        "VCPKG_HOST_TRIPLET": "x64-windows"
       }
     },
     {
@@ -118,7 +119,8 @@
         "common-windows"
       ],
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x86-windows-static-md"
+        "VCPKG_TARGET_TRIPLET": "x86-windows-static-md",
+        "VCPKG_HOST_TRIPLET": "x64-windows"
       },
       "architecture": "Win32"
     },
@@ -131,6 +133,7 @@
       "architecture": "ARM64",
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "arm64-windows-static-md",
+        "VCPKG_HOST_TRIPLET": "x64-windows",
         "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/toolchains/Windows-arm64.cmake"
       }
     }
