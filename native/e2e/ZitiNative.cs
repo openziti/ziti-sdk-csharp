@@ -172,16 +172,17 @@ internal static class ZitiNative
         return ztx;
     }
 
-    // Server side: plain socket -> Ziti_bind -> Ziti_listen. Returns the server socket fd.
-    public static nint BindListen(nint ztx, string service, string terminator, int backlog)
+    // Plain socket -> Ziti_bind -> Ziti_listen; returns the server fd. setBlocking (default true) forces the fd
+    // blocking after listen. Ziti_accept only waits for a dialer on a blocking fd; pass false to leave the fd in
+    // whatever mode the native layer left it.
+    public static nint BindListen(nint ztx, string service, string terminator, int backlog, bool setBlocking = true)
     {
         var srv = NewOsSocket();
         int rc = Ziti_bind(srv, ztx, service, terminator);
         if (rc != 0) throw new InvalidOperationException($"Ziti_bind failed: {ErrStr(Ziti_last_error())}");
         rc = Ziti_listen(srv, backlog);
         if (rc != 0) throw new InvalidOperationException($"Ziti_listen failed: {ErrStr(Ziti_last_error())}");
-        // Block on accept so the SDK hands a dialing client off directly (see SetBlocking).
-        SetBlocking(srv);
+        if (setBlocking) SetBlocking(srv);
         return srv;
     }
 
@@ -212,6 +213,22 @@ internal static class ZitiNative
             }
             Thread.Sleep(50);
         }
+    }
+
+    // One Ziti_accept call: returns the accepted client fd, or throws on failure (EWOULDBLOCK included). Unlike
+    // Accept, it does not retry, so a non-blocking server fd surfaces as an error here instead of a poll loop.
+    public static nint AcceptOnce(nint server, out string caller)
+    {
+        var buf = new byte[256];
+        var clt = Ziti_accept(server, buf, buf.Length);
+        if (clt != -1 && clt.ToInt64() >= 0)
+        {
+            int z = Array.IndexOf(buf, (byte)0);
+            caller = Encoding.UTF8.GetString(buf, 0, z < 0 ? buf.Length : z);
+            return clt;
+        }
+        int err = Ziti_last_error();
+        throw new InvalidOperationException($"Ziti_accept failed: {ErrStr(err)} (errno {err})");
     }
 
     // Client side: plain socket -> Ziti_connect by service name on the explicit dialer context. Returns the
