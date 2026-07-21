@@ -19,7 +19,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <!-- Fallback only for ad-hoc local runs; CI always passes -p:ZitiNativeVersion=... -->
-    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.16.0.245</ZitiNativeVersion>
+    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.18.2.49</ZitiNativeVersion>
   </PropertyGroup>
 
   <ItemGroup>

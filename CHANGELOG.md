@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Updated `OpenZiti.NET.native` dependency from 1.10.4.213 to 1.16.0.243 (ziti-sdk-c 1.16.0).
+- Updated `OpenZiti.NET.native` dependency from 1.10.4.213 to 1.18.2.49 (ziti-sdk-c 1.18.2).
 - **BREAKING (low-level interop only)**: re-laid the `OpenZiti.Native` model structs and event types to match the
   ziti-sdk-c 1.16 ABI. `model_number`-backed fields are now `long`, the event model is restructured (no leading
   event-type field on the union sub-structs; `ZitiMfaAuthEvent`→`ZitiAuthEvent`, `ZitiAPIEvent`→`ZitiConfigEvent`),
