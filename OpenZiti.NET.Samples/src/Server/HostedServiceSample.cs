@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 using OpenZiti.NET.Samples.Common;
@@ -38,26 +39,33 @@ namespace OpenZiti.NET.Samples.Server {
             API.Bind(socket, ctx, svcName, terminator);
             API.Listen(socket, 100);
 
-            Log.Info("Beginning accept loop...");
-            while (true) {
-                ZitiSocket client = API.Accept(socket, out var caller);
-                using (var s = client.ToNetworkStream())
-                using (var r = new StreamReader(s))
-                using (var w = new StreamWriter(s)) {
-                    w.AutoFlush = true;
-                    Log.Info($"receiving connection from {caller}");
-                    string read = await r.ReadLineAsync();
-                    while (read != "EOL") {
-                        Log.Info($"{caller} sent {read}");
-                        string resp = $"Hi {caller}. Thanks for sending me: {read}";
-                        await w.WriteLineAsync(resp);
-                        Log.Info($"replied to {caller}");
-                        read = r.ReadLine();
+            // Cancelling the token closes the listener and unblocks AcceptAsync (Ctrl-C for graceful shutdown).
+            using var cts = new CancellationTokenSource();
+            Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
+
+            Log.Info("Beginning async accept loop (Ctrl-C to stop)...");
+            try {
+                while (!cts.Token.IsCancellationRequested) {
+                    ZitiSocket client = await API.AcceptAsync(socket, cts.Token);
+                    using (var s = client.ToNetworkStream())
+                    using (var r = new StreamReader(s))
+                    using (var w = new StreamWriter(s)) {
+                        w.AutoFlush = true;
+                        Log.Info($"receiving connection from {client.Caller}");
+                        string read = await r.ReadLineAsync();
+                        while (read != null && read != "EOL") {
+                            Log.Info($"{client.Caller} sent {read}");
+                            await w.WriteLineAsync($"Hi {client.Caller}. Thanks for sending me: {read}");
+                            read = await r.ReadLineAsync();
+                        }
+                        await w.WriteLineAsync("disconnecting...");
+                        Log.Info($"{client.Caller} disconnected");
                     }
-                    await w.WriteLineAsync("disconnecting...");
-                    Log.Info($"{caller} disconnected");
                 }
+            } catch (OperationCanceledException) {
+                Log.Info("accept loop cancelled; shutting down");
             }
+            return null;
         }
     }
 }

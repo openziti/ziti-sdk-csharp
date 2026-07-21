@@ -52,7 +52,6 @@ internal class ZitiConnectionListenerFactory : IConnectionListenerFactory {
     private class ZitiSocketListener : IConnectionListener {
         private readonly ZitiSocket _zitiSocket;
         private readonly ZitiContext _zitiContext;  // Keep context alive
-        private readonly Socket _socket;
         private readonly ILogger _logger;
         private readonly SocketConnectionContextFactory _contextFactory;
         private readonly Channel<(ZitiSocket socket, string caller)> _connectionChannel;
@@ -63,7 +62,6 @@ internal class ZitiConnectionListenerFactory : IConnectionListenerFactory {
         public ZitiSocketListener(ZitiSocket zitiSocket, ZitiContext zitiContext, ILogger logger) {
             _zitiSocket = zitiSocket;
             _zitiContext = zitiContext;  // Keep reference to prevent GC
-            _socket = zitiSocket.ToSocket();
             _logger = logger;
             _contextFactory = new SocketConnectionContextFactory(new SocketConnectionFactoryOptions(), logger);
 
@@ -82,55 +80,25 @@ internal class ZitiConnectionListenerFactory : IConnectionListenerFactory {
             _logger.LogInformation("Started dedicated Ziti accept loop");
         }
 
-        public EndPoint EndPoint => _socket.LocalEndPoint ?? new IPEndPoint(IPAddress.Any, 0);
+        public EndPoint EndPoint => new IPEndPoint(IPAddress.Any, 0);
 
         /// <summary>
-        /// Background thread that uses non-blocking accept with select/poll
-        /// to allow periodic cancellation checks
+        /// Dedicated thread that blocks in API.Accept for each Ziti client and queues it for Kestrel.
+        /// UnbindAsync closes the listening socket to unblock the pending accept on shutdown.
         /// </summary>
         private async Task AcceptLoopAsync() {
             _logger.LogInformation("Ziti accept loop starting");
-
             try {
-                // Set socket to non-blocking mode
-                _socket.Blocking = false;
-                _logger.LogInformation("Socket set to non-blocking mode");
-
                 while (!_acceptLoopCts.Token.IsCancellationRequested) {
+                    ZitiSocket client;
+                    string caller;
                     try {
-                        // Poll with timeout to check if socket is readable (connection waiting)
-                        // Using 1 second timeout so we can check cancellation frequently
-                        _logger.LogDebug("Polling for Ziti connection...");
-                        bool ready = _socket.Poll(1_000_000, SelectMode.SelectRead); // 1 second in microseconds
-
-                        if (!ready) {
-                            // Timeout - no connection available, loop again and check cancellation
-                            continue;
-                        }
-
-                        // Socket is readable - accept should not block
-                        _logger.LogDebug("Socket ready, calling Accept...");
-                        var client = API.Accept(_zitiSocket, out var caller);
-                        _logger.LogInformation("Accepted connection from Ziti client: {Caller}", caller ?? "unknown");
-
-                        // Push to channel for Kestrel to consume asynchronously
-                        await _connectionChannel.Writer.WriteAsync((client, caller ?? "unknown"), _acceptLoopCts.Token);
-                        _logger.LogDebug("Connection queued for processing");
-
-                    } catch (SocketException ex) when (ex.SocketErrorCode == SocketError.WouldBlock && !_disposed) {
-                        // Non-blocking accept returned EWOULDBLOCK - try again
-                        _logger.LogDebug("Accept would block, retrying...");
-                        continue;
-                    } catch (SocketException ex) when (!_disposed) {
-                        _logger.LogError(ex, "Socket error in accept loop: {ErrorCode}", ex.SocketErrorCode);
-                        // Continue accepting, transient error
-                    } catch (ObjectDisposedException) {
-                        _logger.LogDebug("Socket disposed, exiting accept loop");
-                        break;
-                    } catch (Exception ex) when (!_disposed) {
-                        _logger.LogError(ex, "Unexpected error in accept loop");
-                        // Continue accepting
+                        client = API.Accept(_zitiSocket, out caller);
+                    } catch (Exception) when (_acceptLoopCts.Token.IsCancellationRequested || _disposed) {
+                        break; // listener closed on shutdown -> accept unblocked with an error
                     }
+                    _logger.LogInformation("Accepted connection from Ziti client: {Caller}", caller ?? "unknown");
+                    await _connectionChannel.Writer.WriteAsync((client, caller ?? "unknown"), _acceptLoopCts.Token);
                 }
             } finally {
                 _connectionChannel.Writer.Complete();
@@ -213,7 +181,8 @@ internal class ZitiConnectionListenerFactory : IConnectionListenerFactory {
                     }
                 }
 
-                _socket?.Dispose();
+                // The listener fd was already closed by UnbindAsync (which unblocks the accept); do not
+                // close it again here (avoids a double Ziti_close on the same handle).
                 _acceptLoopCts?.Dispose();
 
             } catch (Exception ex) {
