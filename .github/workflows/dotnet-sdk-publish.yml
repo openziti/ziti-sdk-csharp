@@ -50,6 +50,9 @@ jobs:
     needs: [e2e-gate]
     if: ${{ !contains(github.event.head_commit.message, 'ci skip') && github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}
     runs-on: windows-latest
+    # Overrides the top-level contents:read so the publish can push the OpenZiti.NET/<version> release tag.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -62,4 +65,4 @@ jobs:
         shell: pwsh
         run: |
           $dryRun = '${{ github.event.inputs.dryRun }}' -eq 'true'
-          ./scripts/publish-managed-nuget.ps1 -ApiKey '${{ secrets.NUGET_API_KEY }}' -DryRun:$dryRun
+          ./scripts/publish-managed-nuget.ps1 -ApiKey '${{ secrets.NUGET_API_KEY }}' -DryRun:$dryRun -Tag
