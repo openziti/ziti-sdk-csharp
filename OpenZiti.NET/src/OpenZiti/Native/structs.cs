@@ -250,6 +250,13 @@ namespace OpenZiti.Native {
         ziti_enroll_token,
     }
 
+    public enum ziti_crypto_method {
+        ziti_crypto_invalid = -1,
+        ziti_crypto_none = 0,
+        ziti_crypto_libsodium,
+        ziti_crypto_aes_gcm,
+    }
+
     // 1.16: ziti_options no longer carries `config` or `router_keepalive`; it gained
     // `cert_extension_window` and `enroll_mode`. NOTE the C `long refresh_interval` is 4 bytes on
     // Windows (LLP64) but 8 bytes on Linux/macOS (LP64). This managed layout matches Windows, which
@@ -258,6 +265,7 @@ namespace OpenZiti.Native {
     public struct ziti_options {
         [MarshalAs(UnmanagedType.I1)] public bool disabled;
         public IntPtr /*public char**/ config_types;
+        public ziti_crypto_method e2ee_mode; //end-to-end encryption mode
         public uint api_page_size;
         public uint refresh_interval; //C `long`: seconds between controller refreshes (see note above re: width)
         public ziti_metric_type metrics_type; //an enum describing the metrics to collect
