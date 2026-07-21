@@ -25,8 +25,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace E2ETest;
 
 // Echo round-trip exercised only through the native package's public zitilib functions via raw P/Invoke
-// (ZitiNative), not the managed OpenZiti.NET SDK. Binds with setBlocking:false to verify the native lib
-// leaves the server socket in a state where Ziti_accept still works.
+// (ZitiNative), not the managed OpenZiti.NET SDK. BindListen sets the server socket blocking (the bridge
+// hands off incoming clients on a blocking fd), and the accept loop waits for readiness before Ziti_accept.
 [TestClass]
 public class NativeBridgeTrafficTest
 {
@@ -58,7 +58,7 @@ public class NativeBridgeTrafficTest
     [TestCategory("e2e")]
     [TestCategory("socket-bridge")]
     [Timeout(60_000)]
-    public async Task Native_Client_Dials_Native_Server_NoSetBlocking()
+    public async Task Native_Client_Dials_Native_Server()
     {
         SkipIfKnownBrokenBridge();
 
@@ -68,7 +68,7 @@ public class NativeBridgeTrafficTest
 
         using var hostCancel = new CancellationTokenSource(TimeSpan.FromSeconds(50));
 
-        OverlaySetup.Say($"[native-echo] starting raw-native echo server on '{SvcName}' (Ziti_bind/listen/accept, no SetBlocking)");
+        OverlaySetup.Say($"[native-echo] starting raw-native echo server on '{SvcName}' (Ziti_bind/listen/accept)");
         var hostTask = Task.Run(() => RunNativeHost(binderIdFile), hostCancel.Token);
 
         Assert.IsTrue(await setup.WaitForTerminatorAsync(SvcName, TimeSpan.FromSeconds(20)),
@@ -84,13 +84,13 @@ public class NativeBridgeTrafficTest
             "Native client did not get its bytes echoed back over the raw Ziti_bind/Ziti_accept/Ziti_connect path.");
     }
 
-    // Binds and listens without forcing the socket blocking, accepts one client, and echoes the line back.
+    // Bind, listen, accept one client, and echo the line back.
     private static void RunNativeHost(string identityFile)
     {
         var ctx = ZitiNative.LoadContext(identityFile);
-        var server = ZitiNative.BindListen(ctx, SvcName, "", 10, setBlocking: false);
+        var server = ZitiNative.BindListen(ctx, SvcName, "", 10);
 
-        var client = ZitiNative.AcceptOnce(server, out _);
+        var client = ZitiNative.Accept(server, out _);
         using var stream = ZitiNative.ToStream(client);
         using var reader = new StreamReader(stream);
         using var writer = new StreamWriter(stream) { AutoFlush = true };

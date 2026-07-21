@@ -339,6 +339,33 @@ namespace OpenZiti.Native {
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "Ziti_accept", CallingConvention = API.CALL_CONVENTION)]
         public static extern IntPtr /*ziti_socket_t*/ Ziti_accept(IntPtr /*ziti_socket_t*/ socket, IntPtr caller, int caller_len);
 
+        // ---- socket blocking mode for the zitilib bridge ---------------------------------------------
+        [DllImport("libc", EntryPoint = "fcntl", SetLastError = true)]
+        private static extern int posix_fcntl(int fd, int cmd, int arg);
+
+        [DllImport("ws2_32.dll", EntryPoint = "ioctlsocket", SetLastError = true)]
+        private static extern int win_ioctlsocket(IntPtr s, int cmd, ref uint argp);
+
+        private const int F_GETFL = 3;
+        private const int F_SETFL = 4;
+        private const int FIONBIO = unchecked((int)0x8004667E); // Win32 _IOW('f',126,u_long)
+
+        /// <summary>
+        /// Put <paramref name="socket"/> into blocking mode. The zitilib bridge hands back fds that may be
+        /// non-blocking after bind/connect; the managed accept and NetworkStream I/O need them blocking.
+        /// Setting the mode is safe on every platform (unlike querying it, which win32 cannot do).
+        /// </summary>
+        public static void SetBlocking(IntPtr socket) {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                uint blocking = 0; // FIONBIO 0 => blocking
+                win_ioctlsocket(socket, FIONBIO, ref blocking);
+                return;
+            }
+            int oNonBlock = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? 0x0004 : 0x0800; // O_NONBLOCK
+            int flags = posix_fcntl((int)socket, F_GETFL, 0);
+            if (flags >= 0) posix_fcntl((int)socket, F_SETFL, flags & ~oNonBlock);
+        }
+
         //void Ziti_lib_shutdown(void);
         [DllImport(API.Z4D_DLL_PATH, EntryPoint = "Ziti_lib_shutdown", CallingConvention = API.CALL_CONVENTION)]
         public static extern void Ziti_lib_shutdown();

@@ -164,6 +164,8 @@ namespace OpenZiti {
                 string s = Marshal.PtrToStringAnsi(Native.API.ziti_errorstr(rtn));
                 throw new ZitiException(s);
             }
+            // The bridge leaves the socket non-blocking after connect; managed NetworkStream I/O needs blocking.
+            nAPI.SetBlocking(socket.NativeSocket);
             return socket;
         }
 
@@ -173,7 +175,17 @@ namespace OpenZiti {
                 string s = Marshal.PtrToStringAnsi(Native.API.ziti_errorstr(rtn));
                 throw new ZitiException(s);
             }
+            // The bridge leaves the socket non-blocking after connect; managed NetworkStream I/O needs blocking.
+            nAPI.SetBlocking(socket.NativeSocket);
             return socket;
+        }
+
+        public static Task<ZitiSocket> ConnectAsync(ZitiSocket socket, ZitiContext ztx, string service, string terminator, CancellationToken cancellationToken = default) {
+            return Task.Run(() => Connect(socket, ztx, service, terminator), cancellationToken);
+        }
+
+        public static Task<ZitiSocket> ConnectByAddressAsync(ZitiSocket socket, string host, UInt16 port, CancellationToken cancellationToken = default) {
+            return Task.Run(() => ConnectByAddress(socket, host, port), cancellationToken);
         }
 
         public static void Bind(ZitiSocket socket, ZitiContext ztx, string service, string terminator) {
@@ -190,29 +202,54 @@ namespace OpenZiti {
                 int errNo = LastError();
                 throw ZitiException.Create(errNo);
             }
+            // The native side hands off an incoming client directly on a blocking listen socket; leaving it
+            // non-blocking takes a broken backlog path. Accept unblocks by closing this socket on cancel.
+            nAPI.SetBlocking(socket.NativeSocket);
         }
 
         /// <summary>
-        /// Accept a client Ziti connection as a socket
+        /// Accept a client Ziti connection as a socket, blocking until a client connects.
         /// </summary>
-        /// <param name="socket"></param>
-        /// <param name="caller">An identifier for the calling identity</param>
-        /// <returns></returns>
+        /// <param name="socket">a bound, listening ziti socket</param>
+        /// <param name="caller">an identifier for the calling identity</param>
         public static ZitiSocket Accept(ZitiSocket socket, out string caller) {
+            return Accept(socket, CancellationToken.None, out caller);
+        }
 
+        /// <summary>
+        /// Accept a client Ziti connection as a socket, blocking until a client connects or the token is
+        /// cancelled. Cancelling closes the listening socket to unblock the accept, so after cancellation the
+        /// listener is no longer usable (like <see cref="System.Net.Sockets.TcpListener.Stop"/>).
+        /// </summary>
+        /// <param name="socket">a bound, listening ziti socket</param>
+        /// <param name="cancellationToken">cancels a waiting accept by closing the listener</param>
+        /// <param name="caller">an identifier for the calling identity</param>
+        /// <exception cref="OperationCanceledException">the token was cancelled while waiting</exception>
+        public static ZitiSocket Accept(ZitiSocket socket, CancellationToken cancellationToken, out string caller) {
             IntPtr callerBuff = Marshal.AllocHGlobal(MaxCallerLen);
-
-            IntPtr client_sock = nAPI.Ziti_accept(socket.NativeSocket, callerBuff, MaxCallerLen);
-
-            if (client_sock.ToInt64() < 0) {
-                int errNo = LastError();
-                throw ZitiException.Create(errNo);
+            using var reg = cancellationToken.Register(() => nAPI.Ziti_close(socket.NativeSocket));
+            try {
+                IntPtr client_sock = nAPI.Ziti_accept(socket.NativeSocket, callerBuff, MaxCallerLen);
+                if (client_sock.ToInt64() != -1) {
+                    caller = Marshal.PtrToStringUTF8(callerBuff);
+                    nAPI.SetBlocking(client_sock); // the accepted client feeds a NetworkStream; sync I/O needs blocking
+                    return new ZitiSocket(client_sock, caller);
+                }
+                cancellationToken.ThrowIfCancellationRequested(); // accept was unblocked by the cancel-close above
+                throw ZitiException.Create(LastError());
             }
+            finally {
+                Marshal.FreeHGlobal(callerBuff);
+            }
+        }
 
-            caller = Marshal.PtrToStringUTF8(callerBuff);
-            Marshal.FreeHGlobal(callerBuff);
-
-            return new ZitiSocket(client_sock);
+        /// <summary>
+        /// Accept a client Ziti connection as a socket, awaiting a client or cancellation. See
+        /// <see cref="Accept(ZitiSocket, CancellationToken, out string)"/> for the cancellation semantics; the
+        /// caller identity is available on <see cref="ZitiSocket.Caller"/>.
+        /// </summary>
+        public static Task<ZitiSocket> AcceptAsync(ZitiSocket socket, CancellationToken cancellationToken = default) {
+            return Task.Run(() => Accept(socket, cancellationToken, out _), cancellationToken);
         }
 
         /// <summary>

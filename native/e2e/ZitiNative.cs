@@ -20,6 +20,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
+using nAPI = OpenZiti.Native.API;
+
 namespace E2ETest;
 
 // Raw P/Invoke into ziti4dotnet's zitilib socket API, mirroring the C SDK's own samples
@@ -83,33 +85,6 @@ internal static class ZitiNative
     [DllImport("ws2_32.dll", EntryPoint = "socket", SetLastError = true)]
     private static extern nint win_socket(int af, int type, int protocol);
 
-    [DllImport("libc", SetLastError = true)]
-    private static extern int fcntl(int fd, int cmd, int arg);
-
-    [DllImport("ws2_32.dll", SetLastError = true)]
-    private static extern int ioctlsocket(nint s, int cmd, ref uint argp);
-
-    private const int F_GETFL = 3;
-    private const int F_SETFL = 4;
-
-    // Force a socket into blocking mode. ziti's zl_is_blocking() is (fcntl(F_GETFL) & O_NONBLOCK)==0 on posix;
-    // when the server socket is blocking, Ziti_accept waits and the SDK hands a dialing client off directly
-    // instead of dropping it into a backlog. O_NONBLOCK differs by platform (macOS 0x4, linux 0x800).
-    private static void SetBlocking(nint fd)
-    {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            uint blocking = 0; // FIONBIO arg 0 => blocking
-            // 0x8004667E is the Win32 FIONBIO ioctl code (_IOW('f', 126, u_long)); its high bit is set, so
-            // unchecked is required to fit it into the int that ioctlsocket takes.
-            ioctlsocket(fd, unchecked((int)0x8004667E), ref blocking);
-            return;
-        }
-        int oNonBlock = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? 0x0004 : 0x0800;
-        int flags = fcntl((int)fd, F_GETFL, 0);
-        if (flags >= 0) fcntl((int)fd, F_SETFL, flags & ~oNonBlock);
-    }
-
     private static nint NewOsSocket()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -172,59 +147,30 @@ internal static class ZitiNative
         return ztx;
     }
 
-    // Plain socket -> Ziti_bind -> Ziti_listen; returns the server fd. setBlocking (default true) forces the fd
-    // blocking after listen. Ziti_accept only waits for a dialer on a blocking fd; pass false to leave the fd in
-    // whatever mode the native layer left it.
-    public static nint BindListen(nint ztx, string service, string terminator, int backlog, bool setBlocking = true)
+    // Plain socket -> Ziti_bind -> Ziti_listen; returns the server fd set blocking, so the native side hands off
+    // incoming clients directly. Accept unblocks by closing the socket on shutdown.
+    public static nint BindListen(nint ztx, string service, string terminator, int backlog)
     {
         var srv = NewOsSocket();
         int rc = Ziti_bind(srv, ztx, service, terminator);
         if (rc != 0) throw new InvalidOperationException($"Ziti_bind failed: {ErrStr(Ziti_last_error())}");
         rc = Ziti_listen(srv, backlog);
         if (rc != 0) throw new InvalidOperationException($"Ziti_listen failed: {ErrStr(Ziti_last_error())}");
-        if (setBlocking) SetBlocking(srv);
+        nAPI.SetBlocking(srv);
         return srv;
     }
 
-    // EAGAIN/EWOULDBLOCK across linux (11), macOS (35) and Windows WSAEWOULDBLOCK (10035).
-    private static bool IsWouldBlock(int err) => err == 11 || err == 35 || err == 10035;
-
-    // Server side: poll until a ziti client connects, then return the accepted client fd. Ziti_accept is
-    // non-blocking (it resolves with EAGAIN when no client is pending), so the C sample loops on EWOULDBLOCK;
-    // we do the same. A real error (e.g. the server socket closed on shutdown) is not would-block, so we throw
-    // and let the caller stop. The overall test timeout bounds the wait.
+    // Server side: blocking Ziti_accept on the blocking listen socket. Closing the socket (on shutdown/cancel)
+    // unblocks it and surfaces here as an error.
     public static nint Accept(nint server, out string caller)
     {
         var buf = new byte[256];
-        while (true)
-        {
-            Array.Clear(buf);
-            var clt = Ziti_accept(server, buf, buf.Length);
-            if (clt != -1 && clt.ToInt64() >= 0)
-            {
-                int z = Array.IndexOf(buf, (byte)0);
-                caller = Encoding.UTF8.GetString(buf, 0, z < 0 ? buf.Length : z);
-                return clt;
-            }
-            int err = Ziti_last_error();
-            if (!IsWouldBlock(err))
-            {
-                throw new InvalidOperationException($"Ziti_accept failed: {ErrStr(err)} (errno {err})");
-            }
-            Thread.Sleep(50);
-        }
-    }
-
-    // One Ziti_accept call: returns the accepted client fd, or throws on failure (EWOULDBLOCK included). Unlike
-    // Accept, it does not retry, so a non-blocking server fd surfaces as an error here instead of a poll loop.
-    public static nint AcceptOnce(nint server, out string caller)
-    {
-        var buf = new byte[256];
         var clt = Ziti_accept(server, buf, buf.Length);
-        if (clt != -1 && clt.ToInt64() >= 0)
+        if (clt != -1)
         {
             int z = Array.IndexOf(buf, (byte)0);
             caller = Encoding.UTF8.GetString(buf, 0, z < 0 ? buf.Length : z);
+            nAPI.SetBlocking(clt); // the accepted client feeds a NetworkStream, which needs a blocking fd
             return clt;
         }
         int err = Ziti_last_error();
@@ -244,6 +190,7 @@ internal static class ZitiNative
             Ziti_close(soc);
             throw new InvalidOperationException($"Ziti_connect failed: rc={rc} ({ErrStr(rc)}), errno={errno}");
         }
+        nAPI.SetBlocking(soc); // the dialed socket feeds a NetworkStream, which needs a blocking fd
         return soc;
     }
 
