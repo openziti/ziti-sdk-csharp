@@ -25,7 +25,7 @@ public class KestrelClientSample : SampleBase {
         var client = new HttpClient(new Debugging.LoggingHandler(zitiSocketHandler));
         client.DefaultRequestHeaders.Add("User-Agent", "curl/7.59.0");
 
-        var result = client.GetStringAsync(args[0]).Result;
+        var result = await client.GetStringAsync(args[0]);
         Log.Info("result: {}", result);
 
         return result;
