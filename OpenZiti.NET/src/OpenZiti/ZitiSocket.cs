@@ -33,11 +33,18 @@ namespace OpenZiti {
 
         internal IntPtr NativeSocket { get; } = IntPtr.Zero;
 
+        /// <summary>The dialing identity's name, set on sockets returned by Accept/AcceptAsync; otherwise null.</summary>
+        public string Caller { get; }
+
         public ZitiSocket(SocketType type) {
             NativeSocket = nAPI.Ziti_socket(type);
         }
         public ZitiSocket(IntPtr nativeSocket) {
             NativeSocket = nativeSocket;
+        }
+        internal ZitiSocket(IntPtr nativeSocket, string caller) {
+            NativeSocket = nativeSocket;
+            Caller = caller;
         }
 
         public void Dispose() {

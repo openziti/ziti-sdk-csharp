@@ -55,12 +55,13 @@ namespace OpenZiti {
             var ziti_socket_t = nAPI.Ziti_socket(SocketType.Stream);
             int connectResult = nAPI.Ziti_connect(ziti_socket_t, nativeContext, serviceName, identity);
 
-            int errNo = nAPI.Ziti_last_error();
-            if (errNo != 0) {
-                string err = Marshal.PtrToStringUTF8(Native.API.ziti_errorstr(errNo));
+            if (connectResult < 0) {
+                string err = Marshal.PtrToStringUTF8(Native.API.ziti_errorstr(connectResult));
+                nAPI.Ziti_close(ziti_socket_t);
                 throw new Exception(err);
             }
 
+            nAPI.SetBlocking(ziti_socket_t); // NetworkStream I/O over the bridge needs a blocking fd
             var sockH = new SafeSocketHandle(ziti_socket_t, true);
             var socket = new Socket(sockH);
             return new ZitifiedNetworkStream(nativeContext, serviceName, identity, sockH, socket, FileAccess.ReadWrite, true);
@@ -70,12 +71,13 @@ namespace OpenZiti {
             var ziti_socket_t = nAPI.Ziti_socket(SocketType.Stream);
             int connectResult = nAPI.Ziti_connect(ziti_socket_t, ctx.NativeContext, serviceName, identity);
 
-            int errNo = nAPI.Ziti_last_error();
-            if (errNo != 0) {
-                string err = Marshal.PtrToStringUTF8(Native.API.ziti_errorstr(errNo));
+            if (connectResult < 0) {
+                string err = Marshal.PtrToStringUTF8(Native.API.ziti_errorstr(connectResult));
+                nAPI.Ziti_close(ziti_socket_t);
                 throw new Exception(err);
             }
 
+            nAPI.SetBlocking(ziti_socket_t); // NetworkStream I/O over the bridge needs a blocking fd
             var sockH = new SafeSocketHandle(ziti_socket_t, true);
             var socket = new Socket(sockH);
             return new ZitifiedNetworkStream(ctx, serviceName, identity, sockH, socket, FileAccess.ReadWrite, true);
@@ -85,12 +87,13 @@ namespace OpenZiti {
             var ziti_socket_t = nAPI.Ziti_socket(SocketType.Stream);
             int connectResult = nAPI.Ziti_connect(ziti_socket_t, ctx.NativeContext, serviceName, identity);
 
-            int errNo = nAPI.Ziti_last_error();
-            if (errNo != 0) {
-                string err = Marshal.PtrToStringUTF8(Native.API.ziti_errorstr(errNo));
+            if (connectResult < 0) {
+                string err = Marshal.PtrToStringUTF8(Native.API.ziti_errorstr(connectResult));
+                nAPI.Ziti_close(ziti_socket_t);
                 throw new Exception(err);
             }
 
+            nAPI.SetBlocking(ziti_socket_t); // NetworkStream I/O over the bridge needs a blocking fd
             var sockH = new SafeSocketHandle(ziti_socket_t, true);
             var socket = new Socket(sockH);
             return new ZitifiedNetworkStream(ctx, serviceName, identity, sockH, socket, FileAccess.ReadWrite, true);

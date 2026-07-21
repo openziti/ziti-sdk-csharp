@@ -15,7 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and several structs gained/renamed fields. Apps using the modern `ZitiContext`/`ZitiSocket` surface are unaffected.
   See [MIGRATION.md](MIGRATION.md) for the full list.
 
+### Added
+- `API.AcceptAsync`, `API.ConnectAsync` and `API.ConnectByAddressAsync` (awaitable, `CancellationToken`-aware),
+  plus an `Accept(socket, CancellationToken, out caller)` overload. Cancelling closes the listening socket to
+  unblock the accept (like `TcpListener.Stop()`). New `ZitiSocket.Caller` exposes the dialing identity on
+  accepted sockets. The bind/dial surface now supports both synchronous and `async`/`await` usage.
+
 ### Fixed
+- Socket-bridge host/dial only worked on Windows: ziti-sdk-c leaves bridge fds non-blocking after
+  `Ziti_bind`/`Ziti_connect`, so blocking `Accept` and `NetworkStream` I/O failed on linux/macOS. The SDK now
+  forces the sockets it hands out to blocking, so sync and async accept/read/write work across platforms.
+- `ZitifiedNetworkStream` now keys connect success/failure off the `Ziti_connect` return code instead of the
+  process-global last error.
 - `TestCSDKStructAlignments` now validates the full 1.16 struct layout on both x64 and x86.
 
 ## [1.0.0] - 2026-01-20
