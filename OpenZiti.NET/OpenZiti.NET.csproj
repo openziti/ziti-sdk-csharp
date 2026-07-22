@@ -7,7 +7,7 @@
         <UtcDayOfYear>$([System.DateTime]::UtcNow.DayOfYear)</UtcDayOfYear>
         <UtcSecondsOfDay>$([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds), 2).ToString('F0'))</UtcSecondsOfDay>
         <major>1</major>
-        <minor>0</minor>
+        <minor>1</minor>
         <Version>$(major).$(minor).$(CurrentYear)$(UtcDayOfYear).$(UtcSecondsOfDay)</Version>
         <Authors>OpenZiti</Authors>
         <Company>NetFoundry</Company>

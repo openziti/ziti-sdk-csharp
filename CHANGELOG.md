@@ -2,10 +2,18 @@
 
 All notable changes to the OpenZiti.NET SDK will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions are
+`MAJOR.MINOR.<datecode>`: `MAJOR`/`MINOR` follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) intent
+(`MINOR` for backward-compatible additions, `MAJOR` for breaking changes), while the trailing datecode is an
+auto-generated, monotonic build number, not a SemVer patch.
 
 ## [Unreleased]
+
+### Changed
+- Release versioning now bumps `MINOR` for backward-compatible API additions and `MAJOR` for breaking changes
+  (the version was previously pinned at `1.0`). The trailing datecode build number is unchanged.
+
+## [1.0.26202.40124] - 2026-07-21
 
 ### Changed
 - Updated `OpenZiti.NET.native` dependency from 1.10.4.213 to 1.18.2.49 (ziti-sdk-c 1.18.2).
