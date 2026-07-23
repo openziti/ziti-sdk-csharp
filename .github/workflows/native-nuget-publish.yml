@@ -1,12 +1,18 @@
 name: Matrix Build and publish Ziti Native to nuget
 
 on:
+  # Nightly: resolve the latest ziti-sdk-c release and publish it if nuget.org doesn't have it yet.
+  schedule:
+    # 04:17 UTC nightly (off the top of the hour to dodge cron congestion).
+    - cron: '17 4 * * *'
+  # Same machine, on demand. Leave version blank to do exactly what the nightly does (publish the latest csdk);
+  # or give an explicit full version to (re)publish a specific build.
   workflow_dispatch:
     inputs:
       version:
-        description: Version of CSDK/Nuget Package
-        default: _CHANGE_
-        required: true
+        description: Full package version to publish, e.g. 1.18.2.50 (<ziti-sdk-c version>.<revision>). Leave blank to publish the latest ziti-sdk-c release automatically.
+        default: ''
+        required: false
       debugOrRelease:
         description: Debug or Release
         default: Release
@@ -19,32 +25,11 @@ on:
         description: Publish even if this version's base is already on nuget.org
         type: boolean
         default: false
-  # Reusable: the nightly daily-native-publish.yml calls this with secrets: inherit so the dispatched
-  # run actually fires (the default GITHUB_TOKEN cannot reliably trigger another workflow).
-  workflow_call:
-    inputs:
-      version:
-        description: Version of CSDK/Nuget Package
-        required: true
-        type: string
-      debugOrRelease:
-        description: Debug or Release
-        default: Release
-        required: false
-        type: string
-      dryRun:
-        description: Run everything but do NOT push to nuget.org
-        type: boolean
-        default: false
-      force:
-        description: Publish even if this version's base is already on nuget.org
-        type: boolean
-        default: false
 
 env:
-  # inputs.* is populated for BOTH workflow_dispatch and workflow_call, so this works either way.
-  ZITI_SDK_C_BRANCH: ${{ inputs.version }}
-  ZITI_DEBUG_OR_RELEASE: ${{ inputs.debugOrRelease }}
+  # The full package version and the csdk build tag are computed by the resolve job (inputs.* are empty on the
+  # schedule trigger, so nothing version-related can live here). Default the build config for the cron path.
+  ZITI_DEBUG_OR_RELEASE: ${{ inputs.debugOrRelease || 'Release' }}
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   BUILD_NUMBER: ${{ github.run_number }}
   BASEDIR: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
@@ -54,56 +39,57 @@ permissions:
   contents: read
 
 jobs:
-  set-build-info:
-    runs-on: ubuntu-latest
-    outputs:
-      now: ${{ steps.buildinfo.outputs.now }}
-      repo: ${{ steps.buildinfo.outputs.repo }}
-      branch: ${{ steps.buildinfo.outputs.branch }}
-      qualifier: ${{ steps.qualifierinfo.outputs.qualifier }}
-    steps:
-      - name: Set now, repo, branch, build num
-        id: buildinfo
-        run: |
-          echo "now=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-          if [ "${{ github.repository }}" == 'openziti/ziti-sdk-csharp' ]; then
-            echo "repo=" >> $GITHUB_OUTPUT
-          else
-            echo "repo=${{github.repository_owner}}" >> $GITHUB_OUTPUT
-          fi
-          echo "BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_ENV
-          echo "branch=$(echo $GITHUB_REF | sed 's/refs\/heads\///')" >> $GITHUB_OUTPUT
-
-      - name: Set qualifier
-        id: qualifierinfo
-        run: |
-          if [ "${BRANCH_NAME}" = "main" ]; then
-            echo "qualifier=.${{github.run_number}}" >> $GITHUB_OUTPUT
-          else
-            echo "qualifier=-${BRANCH_NAME}rc${{github.run_number}}" >> $GITHUB_OUTPUT
-          fi
-
-  # Pre-flight duplicate-publish guard: if this version's base is already on nuget.org, skip the whole
-  # build so a manual re-run just exits cleanly instead of pushing a second qualifier for the same version.
-  preflight:
+  # Decide what to publish and whether to publish at all. Two paths:
+  #  - version input given (manual explicit): publish exactly that full <csdk>.<revision>.
+  #  - version input blank (nightly cron, or manual "publish latest"): resolve the latest ziti-sdk-c release and
+  #    publish it as <csdk>.<run_number> if nuget doesn't already have that base.
+  # check-and-publish-native.ps1 dedups on the 3-part base, so republishing a new revision of an already-published
+  # csdk base (e.g. 1.18.2.50 when 1.18.2.x exists) needs -Force.
+  resolve:
     runs-on: ubuntu-latest
     outputs:
       shouldPublish: ${{ steps.check.outputs.shouldPublish }}
+      csdk: ${{ steps.norm.outputs.csdk }}
+      version: ${{ steps.norm.outputs.version }}
     steps:
       - uses: actions/checkout@v5
-      - name: Check whether this version is already published
+      - name: Check nuget vs ziti-sdk-c
         id: check
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $force = '${{ inputs.force }}' -eq 'true'
-          ./scripts/check-and-publish-native.ps1 -Version "${{ inputs.version }}" -Force:$force
+          $v = '${{ inputs.version }}'
+          if ($v) {
+            ./scripts/check-and-publish-native.ps1 -Version $v -Force:$force -GithubToken $env:GH_TOKEN
+          } else {
+            ./scripts/check-and-publish-native.ps1 -Force:$force -GithubToken $env:GH_TOKEN
+          }
+      - name: Resolve full package version + csdk build tag
+        id: norm
+        run: |
+          csdk="${{ steps.check.outputs.baseVersion }}"
+          if [ -n "${{ inputs.version }}" ]; then
+            full="${{ inputs.version }}"
+          else
+            # Automated path: the latest csdk tag plus this run's number as the revision (e.g. 1.19.0.42).
+            full="${{ steps.check.outputs.version }}.${{ github.run_number }}"
+          fi
+          if ! echo "$full" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::resolved version '$full' is not <ziti-sdk-c version>.<revision>, e.g. 1.18.2.50"
+            exit 1
+          fi
+          echo "csdk=$csdk" >> "$GITHUB_OUTPUT"
+          echo "version=$full" >> "$GITHUB_OUTPUT"
+          echo "resolved package version: $full  ->  csdk build tag: $csdk"
 
   # Create the rolling prerelease that holds the cache tarballs, once, before the matrix fans out, so the
   # parallel save steps never race to create it. Idempotent. Assets are keyed by the vcpkg baseline (read from
   # vcpkg.json) + RID, not the ziti version, so versions sharing a baseline reuse one cache.
   ensure-cache-release:
-    needs: [preflight]
-    if: needs.preflight.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
+    needs: [resolve]
+    if: needs.resolve.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -116,13 +102,16 @@ jobs:
         run: ./scripts/sync-vcpkg-cache.ps1 -Action ensure-release
 
   native-matrix-build:
-    needs: [preflight, ensure-cache-release]
-    # Skip everything when already published (preflight) or when triggered by dependabot.
-    if: needs.preflight.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
+    needs: [resolve, ensure-cache-release]
+    # Skip everything when already published (resolve) or when triggered by dependabot.
+    if: needs.resolve.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     env:
+      # The ziti-sdk-c release to build, resolved from the package version (CMake reads this to fetch the C SDK
+      # source and, on Windows, the defgen archive).
+      ZITI_SDK_C_BRANCH: ${{ needs.resolve.outputs.csdk }}
       # Binary cache is a plain local directory (vcpkg `files` provider). We sync that directory to/from a
       # rolling GitHub Release as one tarball per baseline+RID (scripts/sync-vcpkg-cache.ps1). No nuget, no mono.
       VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-bincache,readwrite"
@@ -232,7 +221,7 @@ jobs:
       - name: Regenerate ziti.def from the C SDK release (Windows)
         if: matrix.dist == 'win'
         shell: pwsh
-        run: ./scripts/regenerate-ziti-def.ps1 -Version "${{ inputs.version }}"
+        run: ./scripts/regenerate-ziti-def.ps1 -Version "${{ needs.resolve.outputs.csdk }}"
 
       - name: Configure and build
         working-directory: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
@@ -276,12 +265,7 @@ jobs:
 
 
   create-nuget-package:
-    needs: [set-build-info, native-matrix-build]
-    env:
-      now: ${{needs.set-build-info.outputs.now}}
-      repo: ${{needs.set-build-info.outputs.repo}}
-      branch: ${{needs.set-build-info.outputs.branch}}
-      qualifier: ${{needs.set-build-info.outputs.qualifier}}
+    needs: [resolve, native-matrix-build]
     runs-on: windows-2022
     outputs:
       resolvedversion: ${{ steps.ver.outputs.resolvedversion }}
@@ -294,7 +278,8 @@ jobs:
         id: ver
         shell: pwsh
         run: |
-          $v = "${env:ZITI_SDK_C_BRANCH}${env:repo}${env:qualifier}"
+          # The published package version, resolved once in the resolve job (e.g. 1.18.2.50).
+          $v = "${{ needs.resolve.outputs.version }}"
           "resolvedversion=$v" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           "resolvedversion=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
@@ -430,9 +415,16 @@ jobs:
     # Push only from the canonical repo, and never on a dry run.
     if: ${{ github.repository == 'openziti/ziti-sdk-csharp' && inputs.dryRun != true }}
     runs-on: windows-2022
+    # Overrides the top-level contents:read so the release step can create the tag + GitHub Release.
+    permissions:
+      contents: write
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
+      # Checked out for the release step (changelog file + gh repo context). The nupkg is downloaded separately.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
@@ -444,12 +436,48 @@ jobs:
       - name: Publish OpenZiti.NET.native
         run: dotnet nuget push "${{ github.workspace }}/artifacts/OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
+      # Tag + GitHub Release, only reached after the push above (which only runs after the smoke + e2e gates).
+      # gh release create makes a lightweight tag on github.sha; it inherits "Verified" when that commit was a
+      # Squash/Merge-button commit. Notes come from the ziti-sdk-c version's section of CHANGELOG.native.md.
+      - name: Tag + GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/create-release.ps1 `
+            -Tag "OpenZiti.NET.native/${{ env.resolvedversion }}" `
+            -Title "OpenZiti.NET.native ${{ env.resolvedversion }}" `
+            -TargetSha "${{ github.sha }}" `
+            -ChangelogFile "CHANGELOG.native.md" `
+            -Section "${{ env.resolvedversion }}" `
+            -AllowGeneratedNotes
+
+  # Keep the repo active so GitHub doesn't disable this nightly after 60 days of inactivity, and log publishes.
+  # Runs after the publish attempt on every main-branch run (always(), even when nothing shipped): a successful
+  # publish is logged, which resets the 60-day clock; otherwise it commits a heartbeat only once the repo has been
+  # quiet ~50 days, so a long ziti-sdk-c dry spell can't let the cron lapse. Logic is in scripts/keepalive.sh.
+  keepalive:
+    needs: [resolve, publish]
+    if: ${{ always() && github.ref == 'refs/heads/main' && github.repository == 'openziti/ziti-sdk-csharp' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Keepalive / publish log
+        run: |
+          if [ "${{ needs.publish.result }}" = "success" ]; then
+            ./scripts/keepalive.sh --published "${{ needs.resolve.outputs.version }}"
+          else
+            ./scripts/keepalive.sh
+          fi
+
   # Failure-only notification over the mattermost ziti webhook. The action has no free-text message input, it
   # formats from the event JSON, so we feed it a crafted event with NO inputs (which is what produced the ugly
   # JSON dump) and a concise failure line plus the run URL instead. Depends on the hard-gate jobs only, so the
   # soft e2e does not trigger it, and a clean "already published" skip is not a failure so it stays quiet.
   notify-failure:
-    needs: [preflight, set-build-info, native-matrix-build, create-nuget-package, smoke-test, publish]
+    needs: [resolve, native-matrix-build, create-nuget-package, smoke-test, publish]
     if: ${{ failure() && github.repository_owner == 'openziti' }}
     runs-on: ubuntu-latest
     name: POST Webhook (failure)
@@ -458,6 +486,6 @@ jobs:
         with:
           zitiId: ${{ secrets.ZITI_MATTERMOST_IDENTITY }}
           webhookUrl: ${{ secrets.ZHOOK_URL }}
-          eventJson: '{"repository":{"full_name":"${{ github.repository }}","html_url":"${{ github.server_url }}/${{ github.repository }}"},"sender":{"login":"GitHubZ","avatar_url":"https://github.com/fluidicon.png","html_url":"${{ github.server_url }}/${{ github.repository }}"},"workflow":"native-nuget-publish FAILED for ziti-sdk-c ${{ inputs.version }}. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
+          eventJson: '{"repository":{"full_name":"${{ github.repository }}","html_url":"${{ github.server_url }}/${{ github.repository }}"},"sender":{"login":"GitHubZ","avatar_url":"https://github.com/fluidicon.png","html_url":"${{ github.server_url }}/${{ github.repository }}"},"workflow":"native-nuget-publish FAILED for ${{ needs.resolve.outputs.version }}. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
           senderUsername: "GitHubZ"
           destChannel: "dev-notifications"
