@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - main
+    # Keepalive/publish-log commits touch only this file; don't spend a CI run on them.
+    paths-ignore:
+      - native-publish.log
 
 permissions:
   contents: read
