@@ -9,17 +9,21 @@ and then it produces a [NuGet package](https://www.nuget.org/packages/OpenZiti.N
 
 ## Publishing the NuGet Package
 
-This package is published by [native-nuget-publish.yml](../../.github/workflows/native-nuget-publish.yml). That
-workflow is reusable and is triggered two ways:
+This package is published by [native-nuget-publish.yml](../../.github/workflows/native-nuget-publish.yml) — a
+single workflow triggered two ways:
 
-- Automatically, nightly, by [daily-native-publish.yml](../../.github/workflows/daily-native-publish.yml), which
-  publishes whenever GitHub's latest `ziti-sdk-c` release is newer than what is already on nuget.org.
-- Manually (`workflow_dispatch`) with an explicit `version`, plus an optional `dryRun` that runs everything but
-  skips the push.
+- Automatically, on a nightly `schedule` cron, which resolves GitHub's latest `ziti-sdk-c` release and publishes it
+  if nuget.org doesn't already have it.
+- Manually (`workflow_dispatch`): leave `version` blank to do the same as the nightly, or pass a full
+  `<ziti-sdk-c version>.<revision>` (e.g. `1.18.2.50`) to publish a specific build. `dryRun` runs everything but
+  skips the push; `force` republishes a revision of a csdk base already on nuget.
 
-Before it pushes, it gates on a cross-OS load probe (hard) and a traffic e2e (soft), and a preflight step skips the
-run entirely if that version is already on nuget.org. It only pushes to NuGet from `openziti/ziti-sdk-csharp`. The
-decision and setup logic lives in locally-runnable scripts under `scripts/`.
+A `resolve` job makes that decision (deduping on the 3-part csdk base). Before it pushes it gates on a cross-OS
+load probe and a traffic e2e, and only pushes from `openziti/ziti-sdk-csharp`. On a successful push it creates a
+lightweight git tag `OpenZiti.NET.native/<version>` on the built commit, but no GitHub Release and no changelog —
+the native package is transient plumbing for the managed SDK. A `keepalive` job records each publish (and
+heartbeats a quiet repo) so GitHub doesn't disable the nightly cron. All the decision and setup logic lives in
+locally-runnable scripts under `scripts/`.
 
 This project also layers on helper functions as needed. Often these additional functions will be to do things
 which dotnet doesn't seem to support, or we haven't discovered how to support it yet. Generally things like 
@@ -59,7 +63,7 @@ When the build completes (shown here using the Windows x64 preset) you'll have t
 
 (Every arch is different. Linux produces "libziti4dotnet.so", macOS produces "libziti4dotnet.dylib".)
 
-Inspect the [native-nuget-publish.yml](../.github/actions/native-nuget-publish.yml) action to see the exact set of steps
+Inspect the [native-nuget-publish.yml](../../.github/workflows/native-nuget-publish.yml) workflow to see the exact set of steps
 performed, but really you will probably (hopefully) never need to learn how to build this project.
 
 ### C SDK Version

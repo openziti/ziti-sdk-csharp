@@ -409,22 +409,22 @@ jobs:
           ZITI_LOG: "4"
         run: ./scripts/run-e2e-test.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}" -Rid ${{ matrix.target.rid }}
 
-  # Push only after the hard smoke AND e2e gates pass, and only from the canonical repo.
+  # Push only after the hard smoke AND e2e gates pass, and only from the canonical repo. The native package is
+  # transient plumbing for the managed SDK, so it gets a lightweight git tag (to find the commit behind a nuget
+  # version) but NO GitHub Release. Releases live on the idiomatic OpenZiti.NET package.
   publish:
     needs: [create-nuget-package, smoke-test, e2e-test]
     # Push only from the canonical repo, and never on a dry run.
     if: ${{ github.repository == 'openziti/ziti-sdk-csharp' && inputs.dryRun != true }}
     runs-on: windows-2022
-    # Overrides the top-level contents:read so the release step can create the tag + GitHub Release.
+    # Overrides the top-level contents:read so the tag step can push the tag.
     permissions:
       contents: write
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
-      # Checked out for the release step (changelog file + gh repo context). The nupkg is downloaded separately.
+      # Checked out so the tag step can run git against the built commit; the nupkg is downloaded separately.
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
@@ -436,21 +436,11 @@ jobs:
       - name: Publish OpenZiti.NET.native
         run: dotnet nuget push "${{ github.workspace }}/artifacts/OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
-      # Tag + GitHub Release, only reached after the push above (which only runs after the smoke + e2e gates).
-      # gh release create makes a lightweight tag on github.sha; it inherits "Verified" when that commit was a
-      # Squash/Merge-button commit. Notes come from the ziti-sdk-c version's section of CHANGELOG.native.md.
-      - name: Tag + GitHub Release
+      # Lightweight tag on the built commit, no GitHub Release. Inherits "Verified" when that commit was a
+      # Squash/Merge-button commit.
+      - name: Tag the publish
         shell: pwsh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          ./scripts/create-release.ps1 `
-            -Tag "OpenZiti.NET.native/${{ env.resolvedversion }}" `
-            -Title "OpenZiti.NET.native ${{ env.resolvedversion }}" `
-            -TargetSha "${{ github.sha }}" `
-            -ChangelogFile "CHANGELOG.native.md" `
-            -Section "${{ env.resolvedversion }}" `
-            -AllowGeneratedNotes
+        run: ./scripts/create-tag.ps1 -Tag "OpenZiti.NET.native/${{ env.resolvedversion }}" -Sha "${{ github.sha }}"
 
   # Keep the repo active so GitHub doesn't disable this nightly after 60 days of inactivity, and log publishes.
   # Runs after the publish attempt on every main-branch run (always(), even when nothing shipped): a successful
