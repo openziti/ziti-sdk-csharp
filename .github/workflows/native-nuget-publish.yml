@@ -1,7 +1,7 @@
 name: Matrix Build and publish Ziti Native to nuget
 
 on:
-  # Nightly: resolve the latest ziti-sdk-c release and publish it if nuget.org doesn't have it yet.
+  # Nightly: build the newest ziti-sdk-c release (prereleases included) and push it if nuget.org lacks it.
   schedule:
     # 04:17 UTC nightly (off the top of the hour to dodge cron congestion).
     - cron: '17 4 * * *'
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Full package version to publish, e.g. 1.18.2.50 (<ziti-sdk-c version>.<revision>). Leave blank to publish the latest ziti-sdk-c release automatically.
+        description: Full package version to publish, e.g. 1.18.2.50 (<ziti-sdk-c version>.<revision>), optionally with a prerelease label (1.18.7.50-preview). Leave blank to publish the newest ziti-sdk-c release automatically.
         default: ''
         required: false
       debugOrRelease:
@@ -22,7 +22,7 @@ on:
         type: boolean
         default: false
       force:
-        description: Publish even if this version's base is already on nuget.org
+        description: Publish even if this version's base + channel (stable/preview) is already on nuget.org
         type: boolean
         default: false
 
@@ -39,17 +39,22 @@ permissions:
   contents: read
 
 jobs:
-  # Decide what to publish and whether to publish at all. Two paths:
+  # Decide what to build and whether to push it. Two paths:
   #  - version input given (manual explicit): publish exactly that full <csdk>.<revision>.
-  #  - version input blank (nightly cron, or manual "publish latest"): resolve the latest ziti-sdk-c release and
-  #    publish it as <csdk>.<run_number> if nuget doesn't already have that base.
-  # check-and-publish-native.ps1 dedups on the 3-part base, so republishing a new revision of an already-published
-  # csdk base (e.g. 1.18.2.50 when 1.18.2.x exists) needs -Force.
+  #  - version input blank (nightly cron, or manual "publish latest"): resolve the newest ziti-sdk-c release,
+  #    PRERELEASES INCLUDED, and publish it as <csdk>.<run_number>, suffixed "-preview" when csdk marks that
+  #    release as a prerelease.
+  # check-and-publish-native.ps1 dedups on the 3-part csdk base plus the channel (stable or preview), so the
+  # run number never matters, a csdk prerelease publishes once, and the same base publishes again as stable
+  # when csdk promotes it. Republishing a new revision of an already-published base+channel needs -Force.
   resolve:
     runs-on: ubuntu-latest
     outputs:
       shouldPublish: ${{ steps.check.outputs.shouldPublish }}
+      # csdk: the 3-part csdk version (the git tag to build, and the base of the package version).
+      # channel: stable | preview, mirroring whether the csdk release is marked as a prerelease.
       csdk: ${{ steps.norm.outputs.csdk }}
+      channel: ${{ steps.check.outputs.channel }}
       version: ${{ steps.norm.outputs.version }}
     steps:
       - uses: actions/checkout@v5
@@ -69,15 +74,23 @@ jobs:
       - name: Resolve full package version + csdk build tag
         id: norm
         run: |
-          csdk="${{ steps.check.outputs.baseVersion }}"
           if [ -n "${{ inputs.version }}" ]; then
+            # Explicit path: the caller named the full package version. There is no csdk release to consult,
+            # so the build tag is that version's 3-part base.
+            csdk="${{ steps.check.outputs.baseVersion }}"
             full="${{ inputs.version }}"
           else
-            # Automated path: the latest csdk tag plus this run's number as the revision (e.g. 1.19.0.42).
-            full="${{ steps.check.outputs.version }}.${{ github.run_number }}"
+            # Automated path: the newest csdk release's tag, plus this run's number as the revision
+            # (e.g. 1.19.0.42). A csdk prerelease ships as a nuget prerelease so it can never be mistaken
+            # for a released native, and so the same base can publish again as stable once csdk promotes it.
+            csdk="${{ steps.check.outputs.version }}"
+            full="${{ steps.check.outputs.baseVersion }}.${{ github.run_number }}"
+            if [ "${{ steps.check.outputs.channel }}" = "preview" ]; then
+              full="$full-preview"
+            fi
           fi
-          if ! echo "$full" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "::error::resolved version '$full' is not <ziti-sdk-c version>.<revision>, e.g. 1.18.2.50"
+          if ! echo "$full" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error::resolved version '$full' is not <ziti-sdk-c version>.<revision>[-label], e.g. 1.18.2.50 or 1.18.7.50-preview"
             exit 1
           fi
           echo "csdk=$csdk" >> "$GITHUB_OUTPUT"
@@ -89,7 +102,7 @@ jobs:
   # vcpkg.json) + RID, not the ziti version, so versions sharing a baseline reuse one cache.
   ensure-cache-release:
     needs: [resolve]
-    if: needs.resolve.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -103,8 +116,9 @@ jobs:
 
   native-matrix-build:
     needs: [resolve, ensure-cache-release]
-    # Skip everything when already published (resolve) or when triggered by dependabot.
-    if: needs.resolve.outputs.shouldPublish == 'true' && github.actor != 'dependabot[bot]'
+    # Build on every run, even when nothing will be pushed: a nightly build+gate is how a csdk or shim
+    # break gets found the night it happens instead of on release day. Only 'publish' gates on shouldPublish.
+    if: github.actor != 'dependabot[bot]'
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
@@ -413,9 +427,11 @@ jobs:
   # transient plumbing for the managed SDK, so it gets a lightweight git tag (to find the commit behind a nuget
   # version) but NO GitHub Release. Releases live on the idiomatic OpenZiti.NET package.
   publish:
-    needs: [create-nuget-package, smoke-test, e2e-test]
-    # Push only from the canonical repo, and never on a dry run.
-    if: ${{ github.repository == 'openziti/ziti-sdk-csharp' && inputs.dryRun != true }}
+    needs: [resolve, create-nuget-package, smoke-test, e2e-test]
+    # Push only from the canonical repo, never on a dry run, and only when this csdk version + channel is not
+    # already on nuget.org. The build and both gates above ran regardless; this is the only job that cares
+    # whether there is something new to ship.
+    if: ${{ github.repository == 'openziti/ziti-sdk-csharp' && inputs.dryRun != true && needs.resolve.outputs.shouldPublish == 'true' }}
     runs-on: windows-2022
     # Overrides the top-level contents:read so the tag step can push the tag.
     permissions:
