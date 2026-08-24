@@ -38,6 +38,70 @@ If you want to make changes to the solution, here are the basic steps you
 need to perform. For every platform you don't have access to you will need
 to make a stub/dummy file in order for the nuspec packaging to complete.
 
+### Building one RID the way CI does
+
+CI builds each RID from the presets in `native/ZitiNativeApiForDotnetCore/CMakePresets.json`. `ZITI_SDK_C_BRANCH`
+selects which ziti-sdk-c release to fetch and compile against, so this is how you check a C SDK bump before it
+reaches the build matrix:
+
+```
+$env:ZITI_SDK_C_BRANCH = "1.18.4"
+cmake --preset win64 -S native/ZitiNativeApiForDotnetCore
+cmake --build native/ZitiNativeApiForDotnetCore/build --config Release
+```
+
+The first configure is slow: vcpkg compiles openssl, protobuf and the rest of the dependency set from source.
+
+#### `MSB8020`: the v143 toolset is missing
+
+The `common-windows` preset pins `"generator": "Visual Studio 17 2022"`, which requires the v143 toolset. On a
+machine with only a newer Visual Studio installed, MSBuild fails during configure:
+
+```
+error MSB8020: The build tools for Visual Studio 2022 (Platform Toolset = 'v143') cannot be found.
+```
+
+vcpkg surfaces the same failure indirectly, as a dependency that "failed to build" while it was really asking
+MSBuild for `VCTargetsPath`. Either install the VS2022 build tools, or configure without the preset and let Ninja
+use whichever toolset you do have. This expands `win64` by hand, generator swapped, with `CMAKE_BUILD_TYPE` set
+because Ninja is single-config:
+
+```
+$env:ZITI_SDK_C_BRANCH = "1.18.4"
+$env:VCPKG_ROOT = "C:\Program Files\Microsoft Visual Studio\18\Community\VC\vcpkg"
+
+cmake -S native/ZitiNativeApiForDotnetCore -B native/ZitiNativeApiForDotnetCore/build `
+  -G Ninja `
+  -D CMAKE_BUILD_TYPE=Release `
+  -D CMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
+  -D VCPKG_INSTALLED_DIR=D:/vi `
+  -D VCPKG_TARGET_TRIPLET=x64-windows-static-md `
+  -D VCPKG_HOST_TRIPLET=x64-windows `
+  -D CMAKE_C_FLAGS="/utf-8 /W4 /permissive- /volatile:iso /Zc:preprocessor" `
+  -D CMAKE_CXX_FLAGS="/utf-8 /W4 /permissive- /volatile:iso /Zc:preprocessor /Zc:__cplusplus /Zc:externConstexpr /Zc:throwingNew /EHsc"
+
+cmake --build native/ZitiNativeApiForDotnetCore/build
+```
+
+Switching generators needs an empty build directory; delete `native/ZitiNativeApiForDotnetCore/build` first or
+CMake refuses to reuse the cache.
+
+#### `LNK1104: cannot open file ... intermediate.manifest`
+
+`VCPKG_INSTALLED_DIR=D:/vi` above is not cosmetic. By default vcpkg builds its dependencies under
+`<build>/vcpkg_installed/vcpkg/blds/<port>/<triplet>/CMakeFiles/CMakeScratch/TryCompile-xxxxxx/`, and under a
+deep checkout path that blows the 250-character limit on an object file path. CMake warns first, then the link
+step fails because it cannot create its manifest:
+
+```
+The object file directory ... has 242 characters. The maximum full path to an object file is 250 characters
+LINK : fatal error LNK1104: cannot open file 'CMakeFiles\cmTC_89549.dir/intermediate.manifest'
+```
+
+Pointing `VCPKG_INSTALLED_DIR` at a short root fixes it. The `LongPathsEnabled` registry setting does not:
+`link.exe` and several other MSVC tools are not long-path aware. A shallow checkout path leaves enough headroom to
+avoid this entirely.
+
 ### Stubs
 
 To generate a nuget package with stubs, follow these steps:
