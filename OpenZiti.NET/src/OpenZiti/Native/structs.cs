@@ -502,8 +502,6 @@ namespace OpenZiti.Native {
         public string version;
         public string revision;
         public string build_date;
-        public IntPtr capabilities;   //1.16: ziti_ctrl_cap array
-        public IntPtr api_versions;
     }
 
     // 1.16: api versions split into `edge` and `oidc` maps (was a single api_path_map).

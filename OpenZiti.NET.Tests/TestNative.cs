@@ -37,7 +37,6 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual("version", values.ziti_version.version);
             Assert.AreEqual("revision", values.ziti_version.revision);
             Assert.AreEqual("build_date", values.ziti_version.build_date);
-            Assert.AreNotEqual(IntPtr.Zero, values.ziti_version.api_versions);
 
             Assert.AreEqual("id", values.ziti_identity.id);
             Assert.AreEqual("name", values.ziti_identity.name);

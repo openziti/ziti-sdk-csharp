@@ -231,7 +231,6 @@ ziti_types_v2* z4d_struct_test() {
     rtn->ziti_version_data.version = "version";
     rtn->ziti_version_data.revision = "revision";
     rtn->ziti_version_data.build_date = "build_date";
-    rtn->ziti_version_data.api_versions = &rtn->ziti_api_versions_data;
     BYTEALIGNCHECK(ziti_version);
 
     rtn->ziti_identity_data.id = "id";
@@ -501,8 +500,6 @@ Z4D_API const char* z4d_layout_report() {
     LFIELD(ziti_version, version);
     LFIELD(ziti_version, revision);
     LFIELD(ziti_version, build_date);
-    LFIELD(ziti_version, capabilities);
-    LFIELD(ziti_version, api_versions);
 
     LSTRUCT(ziti_identity);
     LFIELD(ziti_identity, id);
