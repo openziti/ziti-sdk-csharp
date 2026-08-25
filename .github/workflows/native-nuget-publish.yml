@@ -346,6 +346,30 @@ jobs:
           if-no-files-found: error
 
   # ---- Pre-publish gates ----------------------------------------------------------------------------
+  # Hard gate: the managed interop structs must still match the freshly packed native. NativeLayoutChecker
+  # reads the per-field layout out of the native's own z4d_layout_report() and compares it to the managed
+  # structs, so a ziti-sdk-c model change is caught here rather than after the package is on nuget.org --
+  # permanently. The smoke and traffic gates cannot see this: a moved struct field still loads and still
+  # carries traffic, because the idiomatic path marshals only handles and primitives.
+  abi-test:
+    needs: [create-nuget-package]
+    runs-on: windows-2022
+    env:
+      resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+      - name: Download packed nupkg
+        uses: actions/download-artifact@v4
+        with:
+          name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
+          path: ${{ github.workspace }}/artifacts
+      - name: Managed ABI tests against the packed native
+        shell: pwsh
+        run: ./scripts/run-managed-tests.ps1 -PackageDir "${{ github.workspace }}/artifacts" -PackageVersion "${{ env.resolvedversion }}"
+
   # Hard gate: prove the freshly packed native lib LOADS and is callable on every natively-runnable RID.
   # linux-arm, linux-arm64, and ios-arm64 are cross-compiled and cannot run on hosted runners, so they are
   # NOT smoke-tested here. That is a known coverage gap (logged below), not a silent skip.
@@ -427,7 +451,7 @@ jobs:
   # transient plumbing for the managed SDK, so it gets a lightweight git tag (to find the commit behind a nuget
   # version) but NO GitHub Release. Releases live on the idiomatic OpenZiti.NET package.
   publish:
-    needs: [resolve, create-nuget-package, smoke-test, e2e-test]
+    needs: [resolve, create-nuget-package, abi-test, smoke-test, e2e-test]
     # Push only from the canonical repo, never on a dry run, and only when this csdk version + channel is not
     # already on nuget.org. The build and both gates above ran regardless; this is the only job that cares
     # whether there is something new to ship.
@@ -483,7 +507,7 @@ jobs:
   # JSON dump) and a concise failure line plus the run URL instead. Depends on the hard-gate jobs only, so the
   # soft e2e does not trigger it, and a clean "already published" skip is not a failure so it stays quiet.
   notify-failure:
-    needs: [resolve, native-matrix-build, create-nuget-package, smoke-test, publish]
+    needs: [resolve, native-matrix-build, create-nuget-package, abi-test, smoke-test, publish]
     if: ${{ failure() && github.repository_owner == 'openziti' }}
     runs-on: ubuntu-latest
     name: POST Webhook (failure)

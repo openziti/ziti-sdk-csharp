@@ -10,7 +10,11 @@
 # clock and the heartbeat only fires when the repo is genuinely quiet. A committed file change is used on purpose:
 # empty commits and tag pushes don't reliably count as activity.
 #
-# Safe to run locally; override the threshold with KEEPALIVE_MAX_AGE_DAYS.
+# The commit is written through the GitHub contents API rather than git push, because main requires verified
+# signatures. Needs gh with a token carrying contents:write; override the target with KEEPALIVE_BRANCH.
+#
+# Override the threshold with KEEPALIVE_MAX_AGE_DAYS. Running it with no args on a repo that is not yet stale
+# exits before touching anything, which makes it safe to try by hand.
 #
 # Usage:
 #   ./scripts/keepalive.sh                        # heartbeat if the repo is going stale
@@ -48,17 +52,36 @@ else
     commit_msg="keepalive: repo heartbeat (reset 60-day inactivity clock)"
 fi
 
-echo "$entry" >> "$log_file"
-git add "$log_file"
+# main requires verified signatures, and a runner has no signing key, so the write goes through the GitHub
+# contents API instead of git push: commits created that way are signed with GitHub's own web-flow key and
+# satisfy the rule. gh supplies auth from GH_TOKEN.
+repo="${GITHUB_REPOSITORY:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
+branch="${KEEPALIVE_BRANCH:-main}"
 
-if git diff --cached --quiet; then
-    echo "keepalive: nothing to commit"
-    exit 0
+# The blob sha of the file as it exists on the branch, empty when the log has never been written.
+existing_sha="$(gh api "repos/${repo}/contents/${log_file}?ref=${branch}" --jq .sha 2>/dev/null || true)"
+
+if [ -n "$existing_sha" ]; then
+    existing_content="$(gh api "repos/${repo}/contents/${log_file}?ref=${branch}" --jq .content | tr -d '\n' | base64 -d)"
+    new_content="${existing_content}${entry}"$'\n'
+else
+    new_content="${entry}"$'\n'
 fi
 
-# Commit as the Actions bot without persisting identity into repo config.
-git \
-    -c user.name="github-actions[bot]" \
-    -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-    commit -m "$commit_msg"
-git push
+encoded="$(printf '%s' "$new_content" | base64 -w0)"
+
+echo "keepalive: committing to ${repo}@${branch}: ${commit_msg}"
+if [ -n "$existing_sha" ]; then
+    gh api -X PUT "repos/${repo}/contents/${log_file}" \
+        -f message="$commit_msg" \
+        -f content="$encoded" \
+        -f branch="$branch" \
+        -f sha="$existing_sha" \
+        --jq '.commit.sha'
+else
+    gh api -X PUT "repos/${repo}/contents/${log_file}" \
+        -f message="$commit_msg" \
+        -f content="$encoded" \
+        -f branch="$branch" \
+        --jq '.commit.sha'
+fi

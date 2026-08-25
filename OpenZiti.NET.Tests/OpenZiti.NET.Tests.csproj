@@ -39,7 +39,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="OpenZiti.NET.native" Version="1.18.2.49" />
+    <!--
+      Normally absent: the native arrives transitively from OpenZiti.NET, whose PackageReference is the single
+      pin (and the one dependabot maintains). The native publish gate sets ZitiNativeVersion to the version it
+      just packed, and this direct reference then wins over the transitive one, so the ABI tests measure the
+      fresh native instead of the pinned one. scripts/run-managed-tests.ps1 -PackageDir/-PackageVersion.
+    -->
+    <PackageReference Include="OpenZiti.NET.native" Version="$(ZitiNativeVersion)"
+                      Condition="'$(ZitiNativeVersion)' != ''" />
   </ItemGroup>
 
   <ItemGroup>
