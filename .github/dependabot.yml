@@ -15,6 +15,16 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - dependencies
+    # First matching group wins, so the native lands in a PR of its own: its ABI check is the signal worth
+    # reading, and burying it among test-framework bumps makes a red run ambiguous. Everything else rides
+    # together in one PR.
+    groups:
+      ziti-native:
+        patterns:
+          - OpenZiti.NET.native
+      nuget:
+        patterns:
+          - "*"
 
   - package-ecosystem: github-actions
     directory: /
@@ -22,3 +32,7 @@ updates:
       interval: weekly
     labels:
       - dependencies
+    groups:
+      actions:
+        patterns:
+          - "*"
