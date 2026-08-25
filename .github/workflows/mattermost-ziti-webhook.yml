@@ -15,6 +15,11 @@ on:
   watch:
     types: [started]
 
+# The action POSTs the event payload to Mattermost over a ziti identity and never calls the GitHub API, so it
+# needs no GITHUB_TOKEN at all. Empty rather than contents:read because this workflow triggers on events from
+# forks, where a token with any scope is worth withholding.
+permissions: {}
+
 jobs:
   mattermost-ziti-webhook:
     runs-on: ubuntu-latest
