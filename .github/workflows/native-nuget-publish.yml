@@ -246,7 +246,7 @@ jobs:
           cmake --build ${{ env.TARGETDIR }} --config ${{ env.ZITI_DEBUG_OR_RELEASE }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.dist }}.${{ matrix.arch }}.${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
           path: ${{ env.TARGETDIR }}/library/**/${{ matrix.prefix }}ziti4dotnet.${{ matrix.ext }}
@@ -254,7 +254,7 @@ jobs:
 
       - name: Upload cmake/vcpkg logs on failure
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: logs.${{ matrix.dist }}.${{ matrix.arch }}
           if-no-files-found: warn
@@ -339,7 +339,7 @@ jobs:
         run: nuget pack -version ${{env.resolvedversion}} ${{ github.workspace }}\native-package.nuspec
 
       - name: Upload nuget package
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           path: ${{ github.workspace }}\OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
           name: OpenZiti.NET.native.${{env.resolvedversion}}.nupkg
