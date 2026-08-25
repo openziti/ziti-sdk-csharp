@@ -300,7 +300,7 @@ jobs:
       - run: mkdir ${{github.workspace}}/native-libs
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: ${{github.workspace}}/native-libs
 
@@ -362,7 +362,7 @@ jobs:
         with:
           dotnet-version: 8.x
       - name: Download packed nupkg
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
           path: ${{ github.workspace }}/artifacts
@@ -399,7 +399,7 @@ jobs:
         shell: bash
         run: 'echo "NOT smoke-tested on hosted runners (cross-compiled or scarce Intel-mac runner): linux-arm, linux-arm64, osx-x64, ios-arm64"'
       - name: Download packed nupkg
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
           path: ${{ github.workspace }}/artifacts
@@ -430,7 +430,7 @@ jobs:
         with:
           dotnet-version: 8.x
       - name: Download packed nupkg
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
           path: ${{ github.workspace }}/artifacts
@@ -469,7 +469,7 @@ jobs:
         with:
           dotnet-version: 8.x
       - name: Download packed nupkg
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
           path: ${{ github.workspace }}/artifacts
