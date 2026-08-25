@@ -20,7 +20,7 @@ jobs:
     # linux/mac, which the live layout test would flag; keep the PR check on Windows for now).
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -39,7 +39,7 @@ jobs:
         ziti: [v1.6.14, v2.0.0]
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:

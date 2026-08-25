@@ -57,7 +57,7 @@ jobs:
       channel: ${{ steps.check.outputs.channel }}
       version: ${{ steps.norm.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Check nuget vs ziti-sdk-c
         id: check
         shell: pwsh
@@ -107,7 +107,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Ensure the native-build-cache release exists
         shell: pwsh
         env:
@@ -189,7 +189,7 @@ jobs:
             preset: win32
             rid: win-x86
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -284,7 +284,7 @@ jobs:
     outputs:
       resolvedversion: ${{ steps.ver.outputs.resolvedversion }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -357,7 +357,7 @@ jobs:
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
@@ -391,7 +391,7 @@ jobs:
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
@@ -425,7 +425,7 @@ jobs:
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
@@ -464,7 +464,7 @@ jobs:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
       # Checked out so the tag step can run git against the built commit; the nupkg is downloaded separately.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
@@ -493,7 +493,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Keepalive / publish log
         run: |
           if [ "${{ needs.publish.result }}" = "success" ]; then
