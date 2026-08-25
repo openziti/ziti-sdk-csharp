@@ -53,18 +53,22 @@ else
 fi
 
 # main requires verified signatures, and a runner has no signing key, so the write goes through the GitHub
-# contents API instead of git push: commits created that way are signed with GitHub's own web-flow key and
-# satisfy the rule. gh supplies auth from GH_TOKEN.
+# contents API instead of git push. GitHub signs those commits with its web-flow key when the caller is an app
+# installation token, which the Actions GITHUB_TOKEN is. Running this by hand with a personal access token
+# produces an UNSIGNED commit, so a local run proves the file write but not the signature.
 repo="${GITHUB_REPOSITORY:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
 branch="${KEEPALIVE_BRANCH:-main}"
 
-# The blob sha of the file as it exists on the branch, empty when the log has never been written.
-existing_sha="$(gh api "repos/${repo}/contents/${log_file}?ref=${branch}" --jq .sha 2>/dev/null || true)"
-
-if [ -n "$existing_sha" ]; then
-    existing_content="$(gh api "repos/${repo}/contents/${log_file}?ref=${branch}" --jq .content | tr -d '\n' | base64 -d)"
+# Read the file as it exists on the branch. A 404 means the log has never been written, which is normal on a
+# fresh repo, so fall through to creating it. Note gh prints its error BODY to stdout, so the response is only
+# parsed when the call actually succeeded -- otherwise the error json gets mistaken for content.
+if existing_json="$(gh api "repos/${repo}/contents/${log_file}?ref=${branch}" 2>/dev/null)"; then
+    existing_sha="$(printf '%s' "$existing_json" | jq -r '.sha // empty')"
+    existing_content="$(printf '%s' "$existing_json" | jq -r '.content // empty' | tr -d '\n' | base64 -d)"
     new_content="${existing_content}${entry}"$'\n'
 else
+    echo "keepalive: ${log_file} not on ${branch} yet; creating it"
+    existing_sha=""
     new_content="${entry}"$'\n'
 fi
 
