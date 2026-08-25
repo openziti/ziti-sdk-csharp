@@ -1,0 +1,24 @@
+version: 2
+
+updates:
+  # The managed SDK's native dependency tracks ziti-sdk-c, and a csdk struct change breaks the interop layer.
+  # Letting dependabot raise the bump means managed-tests runs the ABI check (NativeLayoutChecker reads the
+  # layout live from the referenced native) against every new native, so a break shows up as a red PR rather
+  # than a surprise at release time.
+  #
+  # Dependabot offers a prerelease version only when the current requirement is already a prerelease, so this
+  # tracks -preview natives while the pin carries a label, and stable ones once it does not.
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
