@@ -331,7 +331,7 @@ jobs:
 
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.x
 
@@ -358,7 +358,7 @@ jobs:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.x
       - name: Download packed nupkg
@@ -392,7 +392,7 @@ jobs:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.x
       - name: Note un-smoke-tested RIDs
@@ -426,7 +426,7 @@ jobs:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.x
       - name: Download packed nupkg
@@ -465,7 +465,7 @@ jobs:
     steps:
       # Checked out so the tag step can run git against the built commit; the nupkg is downloaded separately.
       - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.x
       - name: Download packed nupkg
