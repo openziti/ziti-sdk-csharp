@@ -11,8 +11,12 @@
     <RootNamespace>ZitiE2e</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
-    <!-- which native build to test; CI passes the fresh one -->
-    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.18.2.49</ZitiNativeVersion>
+    <!--
+      Which native to run against. CI passes the fresh one. This project P/Invokes the native directly with no
+      reference to OpenZiti.NET, so it needs its own default; keep it matching the pin in OpenZiti.NET.csproj
+      or a local run tests the app against one native and the e2e against another.
+    -->
+    <ZitiNativeVersion Condition="'$(ZitiNativeVersion)' == ''">1.18.7.289-preview</ZitiNativeVersion>
   </PropertyGroup>
 
   <ItemGroup>
