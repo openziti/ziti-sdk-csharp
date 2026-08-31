@@ -108,6 +108,10 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
+      # sync-vcpkg-cache.ps1 reads the baseline out of vcpkg.json, which is fetched rather than checked in.
+      - name: Fetch C SDK vcpkg inputs
+        shell: pwsh
+        run: ./scripts/fetch-csdk-vcpkg.ps1 -Version "${{ needs.resolve.outputs.csdk }}"
       - name: Ensure the native-build-cache release exists
         shell: pwsh
         env:
@@ -192,6 +196,12 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+
+      # First: the manifest, overlays and toolchains are the C SDK's and are not checked in. The cache restore
+      # below reads the baseline out of the fetched vcpkg.json, and CMake refuses to configure without them.
+      - name: Fetch C SDK vcpkg inputs
+        shell: pwsh
+        run: ./scripts/fetch-csdk-vcpkg.ps1 -Version "${{ needs.resolve.outputs.csdk }}"
 
       # Pull this RID's prebuilt vcpkg deps from the rolling release (anonymous). A miss just builds them.
       - name: Restore native build cache (release)
