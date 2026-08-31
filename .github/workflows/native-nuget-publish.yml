@@ -227,7 +227,12 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install ninja autoconf autoconf-archive automake pkg-config libtool
 
+      # Point at OUR manifest explicitly. The action's default glob is '**/vcpkg.json', and the C SDK's overlay
+      # ports each carry their own vcpkg.json, so the default matches several files and the action cannot work
+      # out which one holds the baseline.
       - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: native/ZitiNativeApiForDotnetCore/vcpkg.json
 
       - name: Set up MSVC
         if: matrix.dist == 'win'
