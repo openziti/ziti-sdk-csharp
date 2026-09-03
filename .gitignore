@@ -36,4 +36,12 @@ TestProject/Properties
 .run
 native/ZitiNativeApiForDotnetCore/Testing/
 
+# The vcpkg manifest, overlays and toolchains belong to the C SDK, not to us.
+# scripts/fetch-csdk-vcpkg.ps1 pulls them per version.
+native/ZitiNativeApiForDotnetCore/vcpkg.json
+native/ZitiNativeApiForDotnetCore/vcpkg-configuration.json
+native/ZitiNativeApiForDotnetCore/vcpkg-overlays/
+native/ZitiNativeApiForDotnetCore/toolchains/
+native/ZitiNativeApiForDotnetCore/.csdk-version
+
 .nuget

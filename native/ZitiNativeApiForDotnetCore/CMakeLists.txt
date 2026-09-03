@@ -18,6 +18,28 @@ endif()
 
 message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
 
+# The vcpkg manifest, overlays and toolchains are fetched per C SDK version by scripts/fetch-csdk-vcpkg.ps1.
+# Must come before project(), where vcpkg reads the manifest and chainloads a toolchain. Stale inputs are the
+# case worth failing on: they do not break the build, they build against another release's dependency set.
+set(ZITI_CSDK_STAMP "${CMAKE_CURRENT_SOURCE_DIR}/.csdk-version")
+set(ZITI_FETCH_HINT "Run: ./scripts/fetch-csdk-vcpkg.ps1 -Version ${ZITI_SDK_C_BRANCH}")
+
+if (NOT EXISTS "${ZITI_CSDK_STAMP}")
+    message(FATAL_ERROR
+            "C SDK vcpkg inputs are missing from ${CMAKE_CURRENT_SOURCE_DIR}.\n"
+            "vcpkg.json, vcpkg-configuration.json, vcpkg-overlays/ and toolchains/ are not checked in; they are\n"
+            "fetched for the C SDK version being built.\n"
+            "${ZITI_FETCH_HINT}")
+endif()
+
+file(READ "${ZITI_CSDK_STAMP}" ZITI_CSDK_STAMP_VERSION)
+string(STRIP "${ZITI_CSDK_STAMP_VERSION}" ZITI_CSDK_STAMP_VERSION)
+if (NOT ZITI_CSDK_STAMP_VERSION STREQUAL ZITI_SDK_C_BRANCH)
+    message(FATAL_ERROR
+            "C SDK vcpkg inputs are stale: fetched for '${ZITI_CSDK_STAMP_VERSION}', building '${ZITI_SDK_C_BRANCH}'.\n"
+            "${ZITI_FETCH_HINT}")
+endif()
+
 file (STRINGS "../../version" BUILD_NUMBER)
 
 

@@ -108,6 +108,10 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
+      # sync-vcpkg-cache.ps1 reads the baseline out of vcpkg.json, which is fetched rather than checked in.
+      - name: Fetch C SDK vcpkg inputs
+        shell: pwsh
+        run: ./scripts/fetch-csdk-vcpkg.ps1 -Version "${{ needs.resolve.outputs.csdk }}"
       - name: Ensure the native-build-cache release exists
         shell: pwsh
         env:
@@ -193,16 +197,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Must precede the cache restore below, which reads the baseline out of the fetched vcpkg.json.
+      - name: Fetch C SDK vcpkg inputs
+        shell: pwsh
+        run: ./scripts/fetch-csdk-vcpkg.ps1 -Version "${{ needs.resolve.outputs.csdk }}"
+
       # Pull this RID's prebuilt vcpkg deps from the rolling release (anonymous). A miss just builds them.
       - name: Restore native build cache (release)
         shell: pwsh
         run: ./scripts/sync-vcpkg-cache.ps1 -Action restore -Rid ${{ matrix.rid }} -CacheDir "${{ github.workspace }}/vcpkg-bincache"
 
+      # autoconf/automake/libtool are for libsodium, whose vcpkg port builds with autotools and refuses to
+      # configure without them.
       - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt update -y
-          sudo apt install -y pkg-config ninja-build
+          sudo apt install -y pkg-config ninja-build autoconf autoconf-archive automake libtool
 
       - name: Install Linux crossbuild tools
         if: matrix.os == 'ubuntu-22.04' && contains(matrix.arch, 'arm')
@@ -217,7 +228,11 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install ninja autoconf autoconf-archive automake pkg-config libtool
 
+      # Must name our manifest: the default glob '**/vcpkg.json' also matches every overlay port's own
+      # vcpkg.json, and the action then cannot tell which one holds the baseline.
       - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: native/ZitiNativeApiForDotnetCore/vcpkg.json
 
       - name: Set up MSVC
         if: matrix.dist == 'win'
@@ -239,6 +254,9 @@ jobs:
 
       - name: Configure and build
         working-directory: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
+        env:
+          # Only arm64-ios has an overlay here, so this is inert on the other legs.
+          VCPKG_OVERLAY_TRIPLETS: ${{ env.BASEDIR }}/triplets-local
         run: |
           echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
