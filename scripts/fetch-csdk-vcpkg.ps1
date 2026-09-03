@@ -55,8 +55,6 @@ if ([string]::IsNullOrWhiteSpace($NativeDir)) {
 }
 if (-not (Test-Path $NativeDir)) { throw "Native dir not found: $NativeDir" }
 
-# Paths are fetched wholesale: a directory is replaced, a file is overwritten. Nothing local survives in them,
-# which is the point.
 $paths = @('vcpkg.json', 'vcpkg-configuration.json', 'vcpkg-overlays', 'toolchains')
 $stamp = Join-Path $NativeDir '.csdk-version'
 
@@ -83,7 +81,7 @@ try {
         $src = Join-Path $tmp $p
         $dst = Join-Path $NativeDir $p
         if (-not (Test-Path $src)) {
-            # vcpkg-configuration.json is the one that may legitimately be absent in an older release.
+            # Older C SDK releases legitimately have no vcpkg-configuration.json.
             if ($p -eq 'vcpkg-configuration.json') {
                 if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
                 Write-Host "  skipped $p (not in $Version)"
@@ -94,6 +92,15 @@ try {
         if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
         Copy-Item $src $dst -Recurse -Force
         Write-Host "  fetched $p"
+    }
+
+    # toolchains-local/ wins over the fetched copy. Each file there says why it has to differ from upstream.
+    $localToolchains = Join-Path $NativeDir 'toolchains-local'
+    if (Test-Path $localToolchains) {
+        Get-ChildItem $localToolchains -File | ForEach-Object {
+            Copy-Item $_.FullName (Join-Path $NativeDir "toolchains/$($_.Name)") -Force
+            Write-Host "  override toolchains/$($_.Name) (from toolchains-local/)"
+        }
     }
 
     $Version | Set-Content -Path $stamp -Encoding utf8 -NoNewline

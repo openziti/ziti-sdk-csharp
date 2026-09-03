@@ -197,8 +197,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # First: the manifest, overlays and toolchains are the C SDK's and are not checked in. The cache restore
-      # below reads the baseline out of the fetched vcpkg.json, and CMake refuses to configure without them.
+      # Must precede the cache restore below, which reads the baseline out of the fetched vcpkg.json.
       - name: Fetch C SDK vcpkg inputs
         shell: pwsh
         run: ./scripts/fetch-csdk-vcpkg.ps1 -Version "${{ needs.resolve.outputs.csdk }}"
@@ -208,11 +207,13 @@ jobs:
         shell: pwsh
         run: ./scripts/sync-vcpkg-cache.ps1 -Action restore -Rid ${{ matrix.rid }} -CacheDir "${{ github.workspace }}/vcpkg-bincache"
 
+      # autoconf/automake/libtool are for libsodium, whose vcpkg port builds with autotools and refuses to
+      # configure without them.
       - name: Install Linux build tools
         if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt update -y
-          sudo apt install -y pkg-config ninja-build
+          sudo apt install -y pkg-config ninja-build autoconf autoconf-archive automake libtool
 
       - name: Install Linux crossbuild tools
         if: matrix.os == 'ubuntu-22.04' && contains(matrix.arch, 'arm')
@@ -227,9 +228,8 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install ninja autoconf autoconf-archive automake pkg-config libtool
 
-      # Point at OUR manifest explicitly. The action's default glob is '**/vcpkg.json', and the C SDK's overlay
-      # ports each carry their own vcpkg.json, so the default matches several files and the action cannot work
-      # out which one holds the baseline.
+      # Must name our manifest: the default glob '**/vcpkg.json' also matches every overlay port's own
+      # vcpkg.json, and the action then cannot tell which one holds the baseline.
       - uses: lukka/run-vcpkg@v11
         with:
           vcpkgJsonGlob: native/ZitiNativeApiForDotnetCore/vcpkg.json

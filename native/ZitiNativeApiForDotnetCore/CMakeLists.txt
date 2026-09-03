@@ -18,10 +18,9 @@ endif()
 
 message("CSDK SELECTED: ${ZITI_SDK_C_BRANCH}")
 
-# The vcpkg manifest, overlays and cross-compile toolchains are the C SDK's, fetched per version by
-# scripts/fetch-csdk-vcpkg.ps1 rather than checked in. Check the stamp before project(), which is where vcpkg
-# reads the manifest and chainloads a toolchain: missing files fail there with an unhelpful message, and stale
-# ones do not fail at all, they build against another release's dependency set and compiler flags.
+# The vcpkg manifest, overlays and toolchains are fetched per C SDK version by scripts/fetch-csdk-vcpkg.ps1.
+# Must come before project(), where vcpkg reads the manifest and chainloads a toolchain. Stale inputs are the
+# case worth failing on: they do not break the build, they build against another release's dependency set.
 set(ZITI_CSDK_STAMP "${CMAKE_CURRENT_SOURCE_DIR}/.csdk-version")
 set(ZITI_FETCH_HINT "Run: ./scripts/fetch-csdk-vcpkg.ps1 -Version ${ZITI_SDK_C_BRANCH}")
 
