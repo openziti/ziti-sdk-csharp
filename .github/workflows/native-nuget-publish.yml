@@ -254,6 +254,9 @@ jobs:
 
       - name: Configure and build
         working-directory: ${{ github.workspace }}/native/ZitiNativeApiForDotnetCore
+        env:
+          # Only arm64-ios has an overlay here, so this is inert on the other legs.
+          VCPKG_OVERLAY_TRIPLETS: ${{ env.BASEDIR }}/triplets-local
         run: |
           echo "VCPKG_ROOT = ${{ env.VCPKG_ROOT }}"
           cmake -E make_directory ${{ env.TARGETDIR }}
