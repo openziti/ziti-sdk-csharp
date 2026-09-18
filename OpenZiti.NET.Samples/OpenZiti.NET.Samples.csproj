@@ -27,8 +27,8 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.*" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.*" />
 		<PackageReference Include="Microsoft.OpenApi" Version="3.10.2" />
-		<PackageReference Include="NLog" Version="6.2.0" />
-		<PackageReference Include="NLog.Web.AspNetCore" Version="6.2.0" />
+		<PackageReference Include="NLog" Version="6.2.1" />
+		<PackageReference Include="NLog.Web.AspNetCore" Version="6.2.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.*" />
 	</ItemGroup>
 
