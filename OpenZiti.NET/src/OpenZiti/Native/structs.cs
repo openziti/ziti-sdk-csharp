@@ -342,6 +342,8 @@ namespace OpenZiti.Native {
         public IntPtr allowed_source_addresses;//, ziti_address, array, allowedSourceAddresses, __VA_ARGS__) \
         public ziti_proxy_server proxy;//, ziti_proxy_server, none, proxy
         public IntPtr listen_options;//, ziti_listen_options, ptr, listenOptions, __VA_ARGS__)
+        public IntPtr port_checks;//, ziti_port_check, array, portChecks, __VA_ARGS__)
+        public IntPtr http_checks;//, ziti_http_check, array, httpChecks, __VA_ARGS__)
     }
 
     [StructLayout(LayoutKind.Sequential)]
