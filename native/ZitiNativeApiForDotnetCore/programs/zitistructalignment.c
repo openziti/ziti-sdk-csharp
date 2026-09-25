@@ -203,8 +203,8 @@ int main() {
     OFFSET(ziti_listen_options, identity);
     lopts.max_connections = 10;
     OFFSET(ziti_listen_options, max_connections);
-    lopts.precendence = "precedence";
-    OFFSET(ziti_listen_options, precendence);
+    lopts.precedence = "precedence";
+    OFFSET(ziti_listen_options, precedence);
 
     ziti_host_cfg_v1 zhcv1 = {0};
     zhcv1.protocol = "protocol";

@@ -329,7 +329,7 @@ ziti_types_v2* z4d_struct_test() {
     rtn->ziti_listen_options_data.cost = 9;
     rtn->ziti_listen_options_data.identity = "identity";
     rtn->ziti_listen_options_data.max_connections = 10;
-    rtn->ziti_listen_options_data.precendence = "precedence";
+    rtn->ziti_listen_options_data.precedence = "precedence";
     BYTEALIGNCHECK(ziti_listen_options);
 
     rtn->ziti_host_cfg_v1_data.protocol = "protocol";
@@ -565,7 +565,7 @@ Z4D_API const char* z4d_layout_report() {
     LFIELD(ziti_listen_options, cost);
     LFIELD(ziti_listen_options, identity);
     LFIELD(ziti_listen_options, max_connections);
-    LFIELD(ziti_listen_options, precendence);
+    LFIELD(ziti_listen_options, precedence);
 
     LSTRUCT(ziti_host_cfg_v1);
     LFIELD(ziti_host_cfg_v1, protocol);
