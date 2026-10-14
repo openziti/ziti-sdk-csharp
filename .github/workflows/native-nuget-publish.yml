@@ -222,7 +222,7 @@ jobs:
 
       - name: install contemporary cmake
         if: runner.os != 'Linux'
-        uses: lukka/get-cmake@v4.4.2
+        uses: lukka/get-cmake@v4.4.4
 
       - name: Install Ninja (macOS)
         if: runner.os == 'macOS'
