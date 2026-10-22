@@ -328,6 +328,7 @@ ziti_types_v2* z4d_struct_test() {
     rtn->ziti_listen_options_data.connect_timeout_seconds = 100;
     rtn->ziti_listen_options_data.cost = 9;
     rtn->ziti_listen_options_data.identity = "identity";
+    rtn->ziti_listen_options_data.listen_identity_type = ziti_listen_identity_type_dns;
     rtn->ziti_listen_options_data.max_connections = 10;
     rtn->ziti_listen_options_data.precedence = "precedence";
     BYTEALIGNCHECK(ziti_listen_options);
@@ -564,8 +565,25 @@ Z4D_API const char* z4d_layout_report() {
     LFIELD(ziti_listen_options, connect_timeout_seconds);
     LFIELD(ziti_listen_options, cost);
     LFIELD(ziti_listen_options, identity);
+    LFIELD(ziti_listen_options, listen_identity_type);
     LFIELD(ziti_listen_options, max_connections);
     LFIELD(ziti_listen_options, precedence);
+
+    LSTRUCT(ziti_listen_opts);
+    LFIELD(ziti_listen_opts, terminator_cost);
+    LFIELD(ziti_listen_opts, terminator_precedence);
+    LFIELD(ziti_listen_opts, connect_timeout_seconds);
+    LFIELD(ziti_listen_opts, max_connections);
+    LFIELD(ziti_listen_opts, identity);
+    LFIELD(ziti_listen_opts, bind_using_edge_identity);
+
+    LSTRUCT(ziti_dial_opts);
+    LFIELD(ziti_dial_opts, stream);
+    LFIELD(ziti_dial_opts, connect_timeout_seconds);
+    LFIELD(ziti_dial_opts, identity);
+    LFIELD(ziti_dial_opts, group);
+    LFIELD(ziti_dial_opts, app_data);
+    LFIELD(ziti_dial_opts, app_data_sz);
 
     LSTRUCT(ziti_host_cfg_v1);
     LFIELD(ziti_host_cfg_v1, protocol);
