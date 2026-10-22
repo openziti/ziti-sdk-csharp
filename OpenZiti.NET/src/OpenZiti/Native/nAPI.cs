@@ -115,15 +115,15 @@ namespace OpenZiti.Native {
         //defined in C: extern int ziti_dial(ziti_connection conn, const char *service, ziti_conn_cb cb, ziti_data_cb data_cb);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_dial", CallingConvention = CALL_CONVENTION)]
         public static extern int ziti_dial(IntPtr ziti_connection, string serviceName, ziti_conn_cb conn_cb, ziti_data_cb data_cb);
-        //defined in C: extern int ziti_dial_with_options(ziti_connection conn, const char *service, ziti_dial_opts *dial_opts, ziti_conn_cb cb, ziti_data_cb data_cb);
+        //defined in C: extern int ziti_dial_with_options(ziti_connection conn, const char *service, const ziti_dial_opts *dial_opts, ziti_conn_cb cb, ziti_data_cb data_cb);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_dial_with_options", CallingConvention = CALL_CONVENTION)]
-        public static extern int ziti_dial_with_options(IntPtr ziti_connection, string serviceName, ziti_dial_opts opts, ziti_conn_cb conn_cb, ziti_data_cb data_cb);
+        public static extern int ziti_dial_with_options(IntPtr ziti_connection, string serviceName, in ziti_dial_opts opts, ziti_conn_cb conn_cb, ziti_data_cb data_cb);
         //defined in C: extern int ziti_listen(ziti_connection serv_conn, const char *service, ziti_listen_cb lcb, ziti_client_cb cb);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_listen", CallingConvention = CALL_CONVENTION)]
         public static extern int ziti_listen(IntPtr serv_conn, string service, ziti_listen_cb lcb, ziti_client_cb cb);
         //defined in C: extern int ziti_listen_with_options(ziti_connection serv_conn, const char *service, ziti_listen_opts *listen_opts, ziti_listen_cb lcb, ziti_client_cb cb);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_listen_with_options", CallingConvention = CALL_CONVENTION)]
-        public static extern int ziti_listen_with_options(IntPtr serv_conn, string service, ziti_listen_opts opts, ziti_listen_cb lcb, ziti_client_cb cb);
+        public static extern int ziti_listen_with_options(IntPtr serv_conn, string service, in ziti_listen_opts opts, ziti_listen_cb lcb, ziti_client_cb cb);
         //defined in C: extern int ziti_accept(ziti_connection clt, ziti_conn_cb cb, ziti_data_cb data_cb);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_accept", CallingConvention = CALL_CONVENTION)]
         public static extern int ziti_accept(IntPtr conn, ziti_conn_cb cb, ziti_data_cb data_cb);

@@ -100,6 +100,7 @@ namespace OpenZiti.NET.Tests {
             Assert.AreEqual(100L, values.ziti_listen_options.connect_timeout_seconds);
             Assert.AreEqual(9L, values.ziti_listen_options.cost);
             Assert.AreEqual("identity", values.ziti_listen_options.identity);
+            Assert.AreEqual(ziti_listen_identity_type.dns, values.ziti_listen_options.listen_identity_type);
             Assert.AreEqual(10L, values.ziti_listen_options.max_connections);
             Assert.AreEqual("precedence", values.ziti_listen_options.precedence);
             

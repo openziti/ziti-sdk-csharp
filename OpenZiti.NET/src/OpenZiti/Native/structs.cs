@@ -353,9 +353,15 @@ namespace OpenZiti.Native {
         public long connect_timeout_seconds;   //model_number (int64)
         public long cost;                      //model_number (int64)
         public string identity;
+        public ziti_listen_identity_type listen_identity_type;
         public long max_connections;           //model_number (int64)
         public string precedence;
 
+    }
+
+    public enum ziti_listen_identity_type {
+        Unknown = 0,
+        dns = 1
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -565,21 +571,26 @@ namespace OpenZiti.Native {
     //
 
 
+    // ziti.h ziti_dial_opts_s, not a model struct
+    [StructLayout(LayoutKind.Sequential)]
     public struct ziti_dial_opts {
-        private readonly int connect_timeout_seconds;
-        private readonly string identity;
-        private readonly IntPtr app_data;
-        private size_t app_data_sz;
+        [MarshalAs(UnmanagedType.I1)] public bool stream;
+        public int connect_timeout_seconds;
+        public string identity;
+        public string group;
+        public IntPtr app_data;
+        public nuint app_data_sz;
     }
 
+    // ziti.h ziti_listen_opts_s, not the ziti_listen_options model
+    [StructLayout(LayoutKind.Sequential)]
     public struct ziti_listen_opts {
-        public bool bind_with_identity;//, bool, none, bindUsingEdgeIdentity, __VA_ARGS__) \
-        public ulong connect_timeout;//, duration, none, connectTimeout, __VA_ARGS__)       \
-        public int connect_timeout_seconds;//, int, none, connectTimeoutSeconds, __VA_ARGS__) \
-        public int cost;//, int, none, cost, __VA_ARGS__) \
-        public string identity;//, string, none, identity, __VA_ARGS__) \
-        public int max_connections;//, int, none, maxConnections, __VA_ARGS__)\
-        public string precendence;//, string, none, precendence, __VA_ARGS__)
+        public ushort terminator_cost;
+        public byte terminator_precedence;
+        public int connect_timeout_seconds;
+        public int max_connections;
+        public string identity;
+        [MarshalAs(UnmanagedType.I1)] public bool bind_using_edge_identity;
     }
 
 

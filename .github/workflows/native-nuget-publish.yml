@@ -162,21 +162,21 @@ jobs:
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macos-14
+            os: macos-15
             arch: x64
             preset: macOS-x64
             rid: osx-x64
           - ext: dylib
             prefix: lib
             dist: macos
-            os: macos-14
+            os: macos-15
             arch: arm64
             preset: macOS-arm64
             rid: osx-arm64
           - ext: dylib
             prefix: lib
             dist: iOS
-            os: macos-14
+            os: macos-15
             arch: arm64
             preset: ios-arm64
             rid: ios-arm64
@@ -404,7 +404,7 @@ jobs:
           - rid: win-x86
             os: windows-2022
           - rid: osx-arm64
-            os: macos-14
+            os: macos-15
     runs-on: ${{ matrix.os }}
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
@@ -438,7 +438,7 @@ jobs:
         target:
           - { rid: linux-x64, os: ubuntu-latest }
           - { rid: win-x64, os: windows-2022 }
-          - { rid: osx-arm64, os: macos-14 }
+          - { rid: osx-arm64, os: macos-15 }
     runs-on: ${{ matrix.target.os }}
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
