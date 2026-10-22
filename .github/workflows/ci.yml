@@ -18,16 +18,22 @@ jobs:
   managed-tests:
     # Windows is where the full managed struct catalog is verified (the ziti_options C `long` width differs on
     # linux/mac, which the live layout test would flag; keep the PR check on Windows for now).
-    runs-on: windows-latest
+    # windows-2022 for the VS 2022 generator the win64 preset names, used when the change needs a native build.
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v7
+        with:
+          # -BaseRef diffs against the base commit, which a shallow clone lacks.
+          fetch-depth: 0
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.x
       - name: Build and run managed tests
         shell: pwsh
-        run: ./scripts/run-managed-tests.ps1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/run-managed-tests.ps1 -BaseRef "${{ github.event.pull_request.base.sha || github.event.before }}"
 
   # Live idiomatic-SDK tests over a real ziti overlay, against the PUBLISHED native (no native rebuild):
   # echo bind/dial, the intercept HTTP dial, and enrollment. Windows so the bridge-based tests actually run

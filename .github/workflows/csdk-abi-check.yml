@@ -1,0 +1,48 @@
+name: C SDK ABI check
+
+# Early warning: build the win-x64 native shim against a ziti-sdk-c ref (main by default) and run the managed ABI
+# tests against it, so a C SDK struct change shows up before the C SDK releases it. Logic is in
+# scripts/run-csdk-abi-check.ps1, which runs the same way locally.
+on:
+  schedule:
+    # 03:43 UTC, ahead of the 04:17 native publish.
+    - cron: '43 3 * * *'
+  workflow_dispatch:
+    inputs:
+      csdkRef:
+        description: ziti-sdk-c tag or branch to build. Blank builds the newest release, prereleases included.
+        default: main
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  csdk-abi-check:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.x
+      - name: Build the native from ziti-sdk-c and run the managed ABI tests
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/run-csdk-abi-check.ps1 -CsdkRef "${{ github.event_name == 'schedule' && 'main' || inputs.csdkRef }}"
+
+  # Failure-only notification over the mattermost ziti webhook, same shape as native-nuget-publish.yml.
+  notify-failure:
+    needs: [csdk-abi-check]
+    if: ${{ failure() && github.repository_owner == 'openziti' }}
+    runs-on: ubuntu-latest
+    name: POST Webhook (failure)
+    steps:
+      - uses: openziti/ziti-mattermost-action-py@main
+        with:
+          zitiId: ${{ secrets.ZITI_MATTERMOST_IDENTITY }}
+          webhookUrl: ${{ secrets.ZHOOK_URL }}
+          eventJson: '{"repository":{"full_name":"${{ github.repository }}","html_url":"${{ github.server_url }}/${{ github.repository }}"},"sender":{"login":"GitHubZ","avatar_url":"https://github.com/fluidicon.png","html_url":"${{ github.server_url }}/${{ github.repository }}"},"workflow":"csdk-abi-check FAILED against ziti-sdk-c ${{ github.event_name == ''schedule'' && ''main'' || inputs.csdkRef }}. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
+          senderUsername: "GitHubZ"
+          destChannel: "dev-notifications"
