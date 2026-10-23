@@ -126,6 +126,8 @@ if (-not $Preset) {
 }
 
 & (Join-Path $PSScriptRoot 'regenerate-ziti-def.ps1') -Version $defVersion
+# regenerate-ziti-def.ps1 sets ZITI_SDK_C_BRANCH to the release it read ziti.def from.
+$env:ZITI_SDK_C_BRANCH = $CsdkRef
 
 $buildDir = if ($Preset) { Join-Path $nativeDir "build/$Preset" } else { Join-Path $WorkDir 'build-win64' }
 Push-Location $nativeDir

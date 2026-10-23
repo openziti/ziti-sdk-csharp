@@ -513,6 +513,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Keepalive / publish log
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ needs.publish.result }}" = "success" ]; then
             ./scripts/keepalive.sh --published "${{ needs.resolve.outputs.version }}"
