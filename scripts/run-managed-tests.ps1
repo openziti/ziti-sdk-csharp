@@ -73,7 +73,8 @@ $abiPaths = @(
     'native/ZitiNativeApiForDotnetCore/includes/',
     'OpenZiti.NET/src/OpenZiti/Native/',
     'OpenZiti.NET.Tests/TestNative.cs',
-    'OpenZiti.NET.Tests/NativeLayout.cs'
+    'OpenZiti.NET.Tests/NativeLayout.cs',
+    'OpenZiti.NET.Tests/NativeExports.cs'
 )
 if ($BaseRef) {
     $changed = @(git -C $repoRoot diff --name-only "$BaseRef...HEAD")
@@ -147,7 +148,8 @@ if ($NativeLib) {
 Write-Host "Running managed ABI tests ..."
 dotnet test (Join-Path $repoRoot 'OpenZiti.NET.Tests/OpenZiti.NET.Tests.csproj') `
     -c $Configuration --no-build --nologo @nativeProps `
-    --filter "FullyQualifiedName~NativeCodeValueChecker|FullyQualifiedName~NativeLayoutChecker"
+    --filter ("FullyQualifiedName~NativeCodeValueChecker|FullyQualifiedName~NativeLayoutChecker|" +
+              "FullyQualifiedName~NativeExportsChecker")
 if ($LASTEXITCODE -ne 0) { throw "managed tests failed ($LASTEXITCODE)" }
 
 Write-Host "Managed tests passed."
