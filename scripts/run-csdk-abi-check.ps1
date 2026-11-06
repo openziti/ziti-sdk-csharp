@@ -11,9 +11,11 @@
         that release is on nuget.org
       - a C SDK branch such as main, so a struct change shows up before the C SDK releases it
 
-    ziti.def is generated from a C SDK release zip, and a branch has none, so a branch build uses the newest
-    release's exports. A branch that removes an exported function then fails the link, which is also a break
-    worth hearing about. ziti.def is a tracked file: a local run leaves it modified.
+    ziti.def has to list the exports of the C SDK being built. A release ref reads them from the release's
+    ziti.dll. A branch has no release, so its build also builds the C SDK's own ziti.dll and reads them from
+    that. A branch's exports run ahead of the last release, and a release .def against a branch fails the link
+    on any export the branch dropped, whether or not the managed SDK calls it. A removed function the managed
+    SDK does call fails NativeExportsChecker instead. ziti.def is a tracked file: a local run leaves it modified.
 
     Windows x64 only: the managed tests verify the full struct catalog on Windows (see ci.yml).
 
@@ -86,8 +88,7 @@ function Get-NewestCsdkRelease {
 $newestRelease = Get-NewestCsdkRelease
 if ([string]::IsNullOrWhiteSpace($CsdkRef)) { $CsdkRef = $newestRelease }
 $isRelease = $CsdkRef -match '^\d+\.\d+\.\d+'
-$defVersion = if ($isRelease) { $CsdkRef } else { $newestRelease }
-Write-Host "C SDK ref: $CsdkRef (ziti.def from release $defVersion)"
+Write-Host "C SDK ref: $CsdkRef (ziti.def from $(if ($isRelease) { 'the release' } else { 'its own ziti.dll' }))"
 
 # CMakeLists reads the C SDK ref from this env var.
 $env:ZITI_SDK_C_BRANCH = $CsdkRef
@@ -125,9 +126,9 @@ if (-not $Preset) {
     & (Join-Path $PSScriptRoot 'sync-vcpkg-cache.ps1') -Action restore -Repo $Repo -Rid win-x64 -CacheDir $cacheDir
 }
 
-& (Join-Path $PSScriptRoot 'regenerate-ziti-def.ps1') -Version $defVersion
-# regenerate-ziti-def.ps1 sets ZITI_SDK_C_BRANCH to the release it read ziti.def from.
-$env:ZITI_SDK_C_BRANCH = $CsdkRef
+if ($isRelease) {
+    & (Join-Path $PSScriptRoot 'regenerate-ziti-def.ps1') -Version $CsdkRef
+}
 
 $buildDir = if ($Preset) { Join-Path $nativeDir "build/$Preset" } else { Join-Path $WorkDir 'build-win64' }
 Push-Location $nativeDir
@@ -139,14 +140,27 @@ try {
         Enter-VsDevShell -VsInstallPath $vsPath -SkipAutomaticLocation `
             -DevCmdArguments '-arch=x64 -host_arch=x64' | Out-Null
     }
+    # BUILD_SHARED_LIBS adds the C SDK's ziti_dll target. Set either way, so a reused build dir does not keep
+    # the last run's value.
+    $sharedCsdk = "-DBUILD_SHARED_LIBS=$(if ($isRelease) { 'OFF' } else { 'ON' })"
     if ($Preset) {
-        cmake --preset $Preset -B $buildDir
+        cmake --preset $Preset -B $buildDir $sharedCsdk
     } else {
         # regenerate-ziti-def.ps1's VS dev shell points VCPKG_ROOT at the vcpkg bundled with VS.
         $env:VCPKG_ROOT = $VcpkgRoot
-        cmake --preset win64 -B $buildDir
+        cmake --preset win64 -B $buildDir $sharedCsdk
     }
     if ($LASTEXITCODE -ne 0) { throw "cmake configure failed ($LASTEXITCODE)" }
+
+    if (-not $isRelease) {
+        cmake --build $buildDir --config Release --target ziti_dll
+        if ($LASTEXITCODE -ne 0) { throw "C SDK ziti_dll build failed ($LASTEXITCODE)" }
+        $csdkDll = Get-ChildItem (Join-Path $buildDir '_deps') -Recurse -Filter ziti.dll | Select-Object -First 1
+        if (-not $csdkDll) { throw "C SDK ziti.dll not found under $buildDir/_deps" }
+        & (Join-Path $PSScriptRoot 'regenerate-ziti-def.ps1') -Dll $csdkDll.FullName
+        if (-not $Preset) { $env:VCPKG_ROOT = $VcpkgRoot }
+    }
+
     cmake --build $buildDir --config Release --target ziti4dotnet
     if ($LASTEXITCODE -ne 0) { throw "native build failed ($LASTEXITCODE)" }
 } finally {

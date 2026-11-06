@@ -36,11 +36,11 @@ namespace OpenZiti {
         }
 
         public static string GetVersion(bool verbose) {
-            Func<int> verboseLogging = () => {
-                return verbose ? 1 : 0;
-            };
-            var zitiVersion = OpenZiti.Native.API.ziti_get_build_version(verboseLogging());
-            return Marshal.PtrToStringUTF8(zitiVersion);
+            var v = Marshal.PtrToStructure<OpenZiti.Native.ziti_version>(OpenZiti.Native.API.ziti_get_version());
+            if (!verbose) {
+                return v.version;
+            }
+            return $"\n\tVersion:\t{v.version}\n\tRevision:\t{v.revision}\n\tBuild Date:\t{v.build_date}\n";
         }
     }
 }

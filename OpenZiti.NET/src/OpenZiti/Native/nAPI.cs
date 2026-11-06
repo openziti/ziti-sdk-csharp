@@ -46,12 +46,6 @@ namespace OpenZiti.Native {
         //defined in C: extern void ziti_set_app_info(const char *app_id, const char *app_version);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_set_app_info", CallingConvention = CALL_CONVENTION)]
         public static extern int ziti_set_app_info(string app_id, string app_version);
-        //defined in C: extern int ziti_init(const char *config, uv_loop_t *loop, ziti_event_cb evnt_cb, int events, void *app_ctx);
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init", CallingConvention = CALL_CONVENTION)]
-        public static extern int ziti_init(string config, IntPtr loop, ziti_event_cb event_cb, int event_flags, IntPtr init_ctx);
-        //defined in C: extern int ziti_init_opts(ziti_options *options, uv_loop_t *loop);
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_init_opts", CallingConvention = CALL_CONVENTION)]
-        public static extern int ziti_init_opts(IntPtr options, IntPtr loop);
         //defined in C: extern bool ziti_is_enabled(ziti_context ztx);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_is_enabled", CallingConvention = CALL_CONVENTION)]
         public static extern bool ziti_is_enabled(IntPtr ziti_context);
@@ -76,9 +70,6 @@ namespace OpenZiti.Native {
         //defined in C: extern void ziti_get_transfer_rates(ziti_context ztx, double *up, double *down);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_transfer_rates", CallingConvention = CALL_CONVENTION)]
         public static extern void ziti_get_transfer_rates(IntPtr ztx, ref double up, ref double down);
-        //defined in C: extern int ziti_set_timeout(ziti_context ztx, int timeout);
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_set_timeout", CallingConvention = CALL_CONVENTION)]
-        public static extern int ziti_set_timeout(IntPtr ztx, int timeout);
         //defined in C: extern int ziti_shutdown(ziti_context ztx);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_shutdown")]
         public static extern int ziti_shutdown(IntPtr ztx);
@@ -95,7 +86,7 @@ namespace OpenZiti.Native {
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_init", CallingConvention = CALL_CONVENTION)]
         public static extern int ziti_conn_init(IntPtr ziti_context, out IntPtr ziti_connection, IntPtr connection_context);
         //defined in C: extern ziti_context ziti_conn_context(ziti_connection conn);
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_context", CallingConvention = CALL_CONVENTION)]
+        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_context", CallingConvention = CALL_CONVENTION)]
         public static extern IntPtr ziti_context(IntPtr ziti_conn);
         //defined in C: extern void *ziti_conn_data(ziti_connection conn);
         [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_conn_data")]
@@ -278,13 +269,6 @@ namespace OpenZiti.Native {
 
         #endregion
 
-        #region //functions from ziti/utils.h
-
-        //defined in C: ziti_get_build_version(int verbose);
-        [DllImport(Z4D_DLL_PATH, EntryPoint = "ziti_get_build_version", CallingConvention = CALL_CONVENTION)]
-        public static extern IntPtr ziti_get_build_version(int verbose);
-
-        #endregion
 
         #region //functions from zitilib.h
 
