@@ -149,27 +149,26 @@ github action file](.github/workflows/native-nuget-publish.yml). For more inform
 Once the the native library is published to NuGet, the idiomatic SDK references the NuGet package to provide the single,
 cross-platform, idiomatic dotnet NuGet package for easy downstream inclusion in projects.
 
-## Rotating the NuGet API Key
-Here's a short set of instructions for how to rotate the NuGet API key for pushing updates
+## Publishing to NuGet (trusted publishing)
+CI pushes to nuget.org with [trusted publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing). There
+is no stored API key to rotate. Each publish job runs `NuGet/login`, which exchanges the GitHub OIDC token for a
+short-lived nuget.org key.
 
-* go to https://www.nuget.org/account/ApiKeys
-  ```
-  Key Name:
-    Expires In: 365 days
-    Package Owner: OpenZiti
-  
-  Select Scopes:
-    Push (checked)
-      Push new packages and package versions (selected)
-	  Push only new package versions (unselected)
-	Unlist package (unchecked)
-  Glob Pattern: OpenZiti.*
-  
-  Select Packages:
-    Available Packages:
-      OpenZiti.NET
-      OpenZiti.NET.native
-  ```
+One-time setup:
 
-* go to https://github.com/organizations/openziti/settings/secrets/actions
-* find/update: NUGET_API_KEY with the key made above
+* go to https://www.nuget.org/account/trustedpublishing and add one policy per publishing workflow, each scoped to the
+  one package that workflow pushes
+  ```
+  Policy Name:      ziti-sdk-csharp native         | ziti-sdk-csharp managed
+  Package Owner:    OpenZiti                       | OpenZiti
+  CI/CD Provider:   GitHub Actions                 | GitHub Actions
+  Repository Owner: openziti                       | openziti
+  Repository:       ziti-sdk-csharp                | ziti-sdk-csharp
+  Workflow File:    native-nuget-publish.yml       | dotnet-sdk-publish.yml
+  Environment:      (blank)                        | (blank)
+  Scopes:           Push, only new package versions (both); unlist/relist unchecked
+  Packages:         OpenZiti.NET.native            | OpenZiti.NET
+  ```
+* go to https://github.com/openziti/ziti-sdk-csharp/settings/variables/actions
+* set the variable NUGET_USER to the nuget.org profile name (not the email) of a member of the OpenZiti nuget.org
+  organization

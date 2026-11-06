@@ -13,8 +13,7 @@ on:
     tags:
       - 'v*'
 
-# Minimal token scope: this only checks out the repo and pushes to nuget.org with an API key (not the
-# GITHUB_TOKEN), so it never needs write access to repo contents.
+# Minimal token scope by default; build-and-push widens it for the release tag and the nuget.org OIDC login.
 permissions:
   contents: read
 
@@ -51,8 +50,10 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, 'ci skip') && github.actor != 'dependabot[bot]' && github.repository_owner == 'openziti' }}
     runs-on: windows-latest
     # Overrides the top-level contents:read so the publish can push the OpenZiti.NET/<version> release tag.
+    # id-token:write lets NuGet/login exchange the GitHub OIDC token for a short-lived nuget.org key.
     permissions:
       contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@v7
         with:
@@ -61,8 +62,14 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.x
+      - name: NuGet login (trusted publishing)
+        id: nuget-login
+        if: ${{ github.event.inputs.dryRun != 'true' }}
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
       - name: Publish OpenZiti.NET
         shell: pwsh
         run: |
           $dryRun = '${{ github.event.inputs.dryRun }}' -eq 'true'
-          ./scripts/publish-managed-nuget.ps1 -ApiKey '${{ secrets.NUGET_API_KEY }}' -DryRun:$dryRun -Tag
+          ./scripts/publish-managed-nuget.ps1 -ApiKey '${{ steps.nuget-login.outputs.NUGET_API_KEY }}' -DryRun:$dryRun -Tag

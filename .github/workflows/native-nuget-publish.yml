@@ -475,9 +475,11 @@ jobs:
     # whether there is something new to ship.
     if: ${{ github.repository == 'openziti/ziti-sdk-csharp' && inputs.dryRun != true && needs.resolve.outputs.shouldPublish == 'true' }}
     runs-on: windows-2022
-    # Overrides the top-level contents:read so the tag step can push the tag.
+    # Overrides the top-level contents:read so the tag step can push the tag. id-token:write lets NuGet/login
+    # exchange the GitHub OIDC token for a short-lived nuget.org key (trusted publishing).
     permissions:
       contents: write
+      id-token: write
     env:
       resolvedversion: ${{ needs.create-nuget-package.outputs.resolvedversion }}
     steps:
@@ -491,8 +493,17 @@ jobs:
         with:
           name: OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg
           path: ${{ github.workspace }}/artifacts
+      - name: NuGet login (trusted publishing)
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
       - name: Publish OpenZiti.NET.native
-        run: dotnet nuget push "${{ github.workspace }}/artifacts/OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        shell: pwsh
+        run: >-
+          ./scripts/publish-native-nuget.ps1
+          -Package "${{ github.workspace }}/artifacts/OpenZiti.NET.native.${{ env.resolvedversion }}.nupkg"
+          -ApiKey "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
 
       # Lightweight tag on the built commit, no GitHub Release. Inherits "Verified" when that commit was a
       # Squash/Merge-button commit.
