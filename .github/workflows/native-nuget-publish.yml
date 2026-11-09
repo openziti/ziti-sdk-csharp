@@ -287,7 +287,7 @@ jobs:
 
       # Push this RID's deps to the rolling release. Runs on success or a real build failure (deps are built
       # before ziti4dotnet links, so they are worth keeping), but NOT on cancel. Skips upload when the cache
-      # content is unchanged. Forks have no write token and simply error here; they are expected to pull only.
+      # content is unchanged. Forks have no write token and only get a warning here; they only pull.
       - name: Save native build cache (release)
         if: ${{ success() || failure() }}
         shell: pwsh

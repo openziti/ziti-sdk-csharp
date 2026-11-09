@@ -7,7 +7,8 @@
     1. Requires the ziti CLI to already be on PATH (it does not install one). Install it however you like, e.g.
        https://get.openziti.io/quick/getZiti.ps1, or in CI via the openziti/ziti/setup-cli action.
     2. Starts `ziti edge quickstart` in the background, pinned to localhost, admin/admin.
-    3. Waits for the controller to answer.
+    3. Waits for the controller to answer and the quickstart's edge router to come online. A quickstart that
+       does not come up is retried once.
     4. Builds the e2e app (native/e2e-app, the ziti client+server) against the fresh package.
     5. Runs native/e2e/E2ETest.csproj (CallbackTrafficTest): provisions a service + identities, runs the app
        as the server, then as the client; the client must dial the server and get its greeting. Two separate
@@ -42,6 +43,9 @@
 .PARAMETER CtrlPort
     Controller port. Defaults to 1280.
 
+.PARAMETER RouterPort
+    Port of the quickstart's integrated edge router. Defaults to 3022.
+
 .EXAMPLE
     ./run-e2e-test.ps1 -PackageDir ./artifacts -PackageVersion 1.16.0.213
 #>
@@ -52,6 +56,7 @@ param(
     [string] $Rid = 'win-x64',
     [string] $CtrlAddress = 'localhost',
     [int]    $CtrlPort = 1280,
+    [int]    $RouterPort = 3022,
     [string] $AdminUser = 'admin',
     [string] $AdminPassword = 'admin'
 )
@@ -84,45 +89,86 @@ if (-not $ziti) {
 Write-Host "Using ziti from $($ziti.Source)"
 & ziti version
 
+function Stop-Quickstart([System.Diagnostics.Process] $Process) {
+    if ($Process -and -not $Process.HasExited) {
+        Write-Host "Stopping quickstart (PID $($Process.Id)) ..."
+        if ($IsWindows) {
+            taskkill /T /F /PID $Process.Id 2>$null | Out-Null
+        }
+        else {
+            Stop-Process -Id $Process.Id -Force -ErrorAction SilentlyContinue
+        }
+        $Process.WaitForExit(15000) | Out-Null
+    }
+}
+
+function Show-QuickstartLog([string] $Path) {
+    foreach ($p in @($Path, "$Path.err")) {
+        if (Test-Path -LiteralPath $p) {
+            Write-Host "----- last 40 lines of $p -----"
+            Get-Content -LiteralPath $p -Tail 40 | ForEach-Object { Write-Host $_ }
+        }
+    }
+}
+
 $quickstart = $null
 try {
-    # 2. Start the overlay in the background.
-    Write-Host "Starting ziti edge quickstart on ${CtrlAddress}:${CtrlPort} ..."
-    $quickstart = Start-Process -FilePath ziti -PassThru -NoNewWindow `
-        -RedirectStandardOutput $logFile -RedirectStandardError "$logFile.err" `
-        -ArgumentList @(
-            'edge', 'quickstart',
-            '--ctrl-address', $CtrlAddress,
-            '--router-address', $CtrlAddress,
-            '--username', $AdminUser,
-            '--password', $AdminPassword
-        )
-
-    # 3. Wait for the controller to answer (and to actually authenticate admin/admin).
+    # 2-3. Start the overlay in the background and wait for the controller to answer and authenticate
+    #      admin/admin, and for the edge router to come online. A quickstart that does not come up is retried
+    #      once with a fresh process.
     $versionUrl = "https://${CtrlAddress}:${CtrlPort}/edge/client/v1/version"
     $authUrl = "https://${CtrlAddress}:${CtrlPort}/edge/management/v1/authenticate?method=password"
-    $deadline = (Get-Date).AddSeconds(120)
+    $routersUrl = "https://${CtrlAddress}:${CtrlPort}/edge/management/v1/edge-routers"
+    $maxAttempts = 2
     $ready = $false
-    while ((Get-Date) -lt $deadline) {
-        if ($quickstart.HasExited) {
-            throw "quickstart exited early (code $($quickstart.ExitCode)). See $logFile.err"
+    for ($attempt = 1; $attempt -le $maxAttempts -and -not $ready; $attempt++) {
+        Write-Host "Starting ziti edge quickstart on ${CtrlAddress}:${CtrlPort} (attempt $attempt/$maxAttempts) ..."
+        $quickstart = Start-Process -FilePath ziti -PassThru -NoNewWindow `
+            -RedirectStandardOutput $logFile -RedirectStandardError "$logFile.err" `
+            -ArgumentList @(
+                'edge', 'quickstart',
+                '--ctrl-address', $CtrlAddress,
+                '--router-address', $CtrlAddress,
+                '--ctrl-port', $CtrlPort,
+                '--router-port', $RouterPort,
+                '--username', $AdminUser,
+                '--password', $AdminPassword
+            )
+
+        $lastError = ''
+        $deadline = (Get-Date).AddSeconds(150)
+        while ((Get-Date) -lt $deadline) {
+            if ($quickstart.HasExited) {
+                Write-Warning "quickstart exited early (code $($quickstart.ExitCode))."
+                break
+            }
+            try {
+                Invoke-WebRequest -SkipCertificateCheck -TimeoutSec 5 -Uri $versionUrl | Out-Null
+                $body = @{ username = $AdminUser; password = $AdminPassword } | ConvertTo-Json
+                $auth = Invoke-RestMethod -SkipCertificateCheck -TimeoutSec 5 -Method Post -Uri $authUrl `
+                    -ContentType 'application/json' -Body $body
+                # The tests need the quickstart's router online, not just the controller.
+                $routers = Invoke-RestMethod -SkipCertificateCheck -TimeoutSec 5 -Uri $routersUrl `
+                    -Headers @{ 'zt-session' = $auth.data.token }
+                if (-not ($routers.data | Where-Object { $_.isOnline })) { throw "no edge router online yet" }
+                $ready = $true
+                break
+            }
+            catch {
+                $lastError = $_.Exception.Message.Split("`n")[0]
+                Start-Sleep -Seconds 2
+            }
         }
-        try {
-            Invoke-WebRequest -SkipCertificateCheck -TimeoutSec 5 -Uri $versionUrl | Out-Null
-            $body = @{ username = $AdminUser; password = $AdminPassword } | ConvertTo-Json
-            Invoke-WebRequest -SkipCertificateCheck -TimeoutSec 5 -Method Post -Uri $authUrl `
-                -ContentType 'application/json' -Body $body | Out-Null
-            $ready = $true
-            break
-        }
-        catch {
-            Start-Sleep -Seconds 2
+        if (-not $ready) {
+            Write-Warning "Controller at $versionUrl not ready on attempt $attempt. Last error: $lastError"
+            Show-QuickstartLog $logFile
+            Stop-Quickstart $quickstart
         }
     }
     if (-not $ready) {
-        throw "Controller at $versionUrl did not become ready (admin auth) within the timeout."
+        throw "Controller at $versionUrl did not become ready (admin auth, router online) after $maxAttempts attempts."
     }
-    Write-Host "Controller is up and admin authenticates."
+    Write-Host "Controller is up, admin authenticates, and an edge router is online."
 
     # 4. Build the e2e app (the ziti client+server) against the fresh package. It P/Invokes the fresh native
     #    lib; the test runs it as two processes (host + dial) via E2E_APP_DLL.
@@ -148,16 +194,8 @@ try {
     $testExit = $LASTEXITCODE
 }
 finally {
-    # 5. Always tear the overlay down.
-    if ($quickstart -and -not $quickstart.HasExited) {
-        Write-Host "Stopping quickstart (PID $($quickstart.Id)) ..."
-        if ($IsWindows) {
-            taskkill /T /F /PID $quickstart.Id 2>$null | Out-Null
-        }
-        else {
-            Stop-Process -Id $quickstart.Id -Force -ErrorAction SilentlyContinue
-        }
-    }
+    # 6. Always tear the overlay down.
+    Stop-Quickstart $quickstart
 }
 
 exit $testExit

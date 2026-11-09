@@ -18,8 +18,10 @@
       ensure-release  Create the rolling prerelease if missing (idempotent). Run once before the matrix so the
                       parallel save legs do not race the create.
       restore         Anonymously download <baseline>-<rid>.tgz and extract into -CacheDir. A miss (404) is fine.
+                      Other download errors retry, then fall back to a miss.
       save            Hash -CacheDir's contents; if it differs from the sidecar on the release, tar it up and
-                      upload <baseline>-<rid>.tgz plus its .sha256 (clobbering). Unchanged = skip.
+                      upload <baseline>-<rid>.tgz plus its .sha256 (clobbering). Unchanged = skip. A failed save
+                      warns and does not fail the job.
 
 .PARAMETER Action
     ensure-release | restore | save.
@@ -136,18 +138,38 @@ switch ($Action) {
         New-Item -ItemType Directory -Force -Path $CacheDir | Out-Null
         $tmp = Join-Path ([System.IO.Path]::GetTempPath()) $asset
         Write-Host "Restoring $asset from $downloadBase ..."
-        try {
-            Invoke-WebRequest -Uri "$downloadBase/$asset" -OutFile $tmp -UseBasicParsing
-        }
-        catch {
-            if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) {
-                Write-Host "Cache miss: $asset not on release '$Tag'. Build will populate it."
-                return
+        # The cache only speeds the build up. A 404 is a plain miss. Any other failure (GitHub 5xx, network) is
+        # retried, then treated as a miss so the build still runs from source.
+        $maxAttempts = 3
+        $downloaded = $false
+        for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+            try {
+                Invoke-WebRequest -Uri "$downloadBase/$asset" -OutFile $tmp -UseBasicParsing
+                $downloaded = $true
+                break
             }
-            throw
+            catch {
+                if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) {
+                    Write-Host "Cache miss: $asset not on release '$Tag'. Build will populate it."
+                    return
+                }
+                $reason = $_.Exception.Message.Split("`n")[0]
+                if ($_.Exception.Response) { $reason = "HTTP $([int]$_.Exception.Response.StatusCode)" }
+                Write-Warning "Cache download attempt $attempt/$maxAttempts failed: $reason"
+                if ($attempt -lt $maxAttempts) { Start-Sleep -Seconds (10 * $attempt) }
+            }
+        }
+        if (-not $downloaded) {
+            Write-Warning "Cache unavailable after $maxAttempts attempts. Building without it."
+            return
         }
         & tar -xzf $tmp -C $CacheDir
-        if ($LASTEXITCODE -ne 0) { throw "tar extract failed with exit code $LASTEXITCODE." }
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "tar extract failed with exit code $LASTEXITCODE. Building without the cache."
+            Get-ChildItem -LiteralPath $CacheDir -Force | Remove-Item -Recurse -Force
+            Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue
+            return
+        }
         Remove-Item -LiteralPath $tmp -Force
         Write-Host "Restored cache into $CacheDir."
     }
@@ -163,20 +185,28 @@ switch ($Action) {
             Write-Host "Cache dir $CacheDir is empty; nothing to save."
             return
         }
-        $remote = (Get-AssetText -Name $shaAsset)
-        if ($remote -and $remote.Trim() -eq $hash) {
-            Write-Host "Cache unchanged ($hash); skipping upload of $asset."
-            return
-        }
+        # A failed save only costs the next build its cache, so it warns rather than failing the job.
         $tmp = Join-Path ([System.IO.Path]::GetTempPath()) $asset
         $tmpSha = Join-Path ([System.IO.Path]::GetTempPath()) $shaAsset
-        Write-Host "Cache changed; packing $asset ..."
-        & tar -czf $tmp -C $CacheDir .
-        if ($LASTEXITCODE -ne 0) { throw "tar create failed with exit code $LASTEXITCODE." }
-        $hash | Out-File -FilePath $tmpSha -Encoding ascii -NoNewline
-        Write-Host "Uploading $asset and $shaAsset to release '$Tag' ..."
-        Invoke-Gh release upload $Tag --repo $Repo --clobber $tmp $tmpSha
-        Remove-Item -LiteralPath $tmp, $tmpSha -Force
-        Write-Host "Saved $asset ($hash)."
+        try {
+            $remote = (Get-AssetText -Name $shaAsset)
+            if ($remote -and $remote.Trim() -eq $hash) {
+                Write-Host "Cache unchanged ($hash); skipping upload of $asset."
+                return
+            }
+            Write-Host "Cache changed; packing $asset ..."
+            & tar -czf $tmp -C $CacheDir .
+            if ($LASTEXITCODE -ne 0) { throw "tar create failed with exit code $LASTEXITCODE." }
+            $hash | Out-File -FilePath $tmpSha -Encoding ascii -NoNewline
+            Write-Host "Uploading $asset and $shaAsset to release '$Tag' ..."
+            Invoke-Gh release upload $Tag --repo $Repo --clobber $tmp $tmpSha
+            Write-Host "Saved $asset ($hash)."
+        }
+        catch {
+            Write-Warning "Cache save failed, the next build runs without it: $($_.Exception.Message.Split("`n")[0])"
+        }
+        finally {
+            Remove-Item -LiteralPath $tmp, $tmpSha -Force -ErrorAction SilentlyContinue
+        }
     }
 }
